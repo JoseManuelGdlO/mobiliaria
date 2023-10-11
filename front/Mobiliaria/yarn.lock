@@ -4785,6 +4785,11 @@ lodash.throttle@^4.1.1:
   resolved "https://registry.npmjs.org/lodash.throttle/-/lodash.throttle-4.1.1.tgz"
   integrity sha512-wIkUCfVKpVsWo3JSZlc+8MB5it+2AN5W8J7YVMST30UrvcQNZ1Okbj+rbVniijTWE6FGYy4XJq/rHkas8qJMLQ==
 
+lodash.wrap@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.npmjs.org/lodash.wrap/-/lodash.wrap-4.1.1.tgz"
+  integrity sha512-zOvgaTFh+7jBC80FKyoOwMyi8VF3LWAWuakrSXFVTIZAmrJEAYiu7lqwJYDhwh6l5wXuF5aGlzTBymvD+1q6LA==
+
 lodash@^4.17.21:
   version "4.17.21"
   resolved "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz"
@@ -5735,6 +5740,13 @@ react-native-gesture-handler@^2.13.1:
     invariant "^2.2.4"
     lodash "^4.17.21"
     prop-types "^15.7.2"
+
+react-native-global-font@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.npmjs.org/react-native-global-font/-/react-native-global-font-1.0.3.tgz"
+  integrity sha512-yzsFcJhlFn5OAQGuxS/Pa7WBbcOj0H/o2Irve5R5yWcRx4e1k3F3SpZs6F9qfzTKXr9nhjPKtMgMpIQwvbQeVQ==
+  dependencies:
+    lodash.wrap "^4.1.1"
 
 react-native-paper@^5.10.6:
   version "5.10.6"

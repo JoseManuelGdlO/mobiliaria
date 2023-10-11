@@ -24,6 +24,8 @@ import { Provider } from 'react-redux';
 import rootReducer, { persistor } from './src/redux/reducers'
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { PersistGate } from 'redux-persist/lib/integration/react';
+// @ts-expect-error
+import GlobalFont from 'react-native-global-font'
 
 const MyStatusBar = ({ backgroundColor, barStyle, ...props }: { backgroundColor: string, barStyle: StatusBarStyle }): ReactElement => (
   <View style={{ height: StatusBar.currentHeight, backgroundColor }}>
@@ -34,6 +36,7 @@ const MyStatusBar = ({ backgroundColor, barStyle, ...props }: { backgroundColor:
 )
 
 const App = (): JSX.Element => {
+  GlobalFont.applyGlobal('Inter')
   return (
     <>
       <GestureHandlerRootView style={{ flex: 1 }}>
