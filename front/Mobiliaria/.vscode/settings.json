@@ -1,0 +1,17 @@
+{
+  "editor.formatOnSave": false,
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "standard.enable": true,
+  "standard.usePackageJson": true,
+  "standard.engine": "ts-standard",
+  "standard.run": "onType",
+  "standard.autoFixOnSave": true,
+  "standard.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "god.tsconfig": "./tsconfig.json",
+  "java.compile.nullAnalysis.mode": "automatic"
+}

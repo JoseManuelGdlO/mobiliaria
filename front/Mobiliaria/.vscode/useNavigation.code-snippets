@@ -1,0 +1,6 @@
+{
+	"useNavigation template": {
+		"prefix": "useNavigation",
+		"body": ["const navigation = useNavigation<StackNavigationProp<NavigationScreens>>()"]
+	}
+}

@@ -1,0 +1,30 @@
+{
+	"style template": {
+		"prefix": "rnsty",
+		"body": [
+			"import { StyleSheet, TextStyle, ViewStyle, ImageStyle } from 'react-native'",
+			"import { useTheme } from '@hooks/useTheme'",
+			"",
+			"interface StyleTypes {",
+			"  container: ViewStyle",
+			"  title: TextStyle",
+			"  image: ImageStyle",
+			"}",
+			"",
+			"const styles = (): StyleTypes => {",
+			"  const { colors, navigationTheme, paperTheme, fonts } = useTheme()",
+			"  return StyleSheet.create({",
+			"    container: {",
+			"    },",
+			"    title: {",
+			"    },",
+			"    image: {",
+			"    }",
+			"  })",
+			"}",
+			"",
+			"export default styles",
+			"",
+		],
+	}
+}

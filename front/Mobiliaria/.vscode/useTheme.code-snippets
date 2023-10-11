@@ -1,0 +1,6 @@
+{
+	"useTheme template": {
+		"prefix": "useTheme",
+		"body": ["const { mode, realMode, setTheme, colors, navigationTheme, paperTheme, fonts } = useTheme()"]
+	}
+}

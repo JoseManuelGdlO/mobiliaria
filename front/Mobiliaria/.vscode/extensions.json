@@ -1,0 +1,17 @@
+
+{
+
+  "recommendations": [
+  "chenxsan.vscode-standardjs",
+  "grimmer.vscode-back-forward-button",
+  "aeschli.vscode-css-formatter",
+  "eamodio.gitlens",
+  "pkief.material-icon-theme",
+  "christian-kohler.path-intellisense",
+  "timonvs.reactsnippetsstandard",
+  "wayou.vscode-todo-highlight",
+  "vscode-icons-team.vscode-icons",
+  "standard.vscode-standard",
+  "quicktype.quicktype",
+  ]
+}
