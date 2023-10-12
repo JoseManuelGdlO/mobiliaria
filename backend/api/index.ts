@@ -1,7 +1,8 @@
 import express, { Express, Request, Response, Application } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors'
-const authRouter = require("./routes/auth"); 
+const authRouter = require("./routes/auth");
+const eventsRouter = require("./routes/events"); 
 
 //For env File 
 dotenv.config();
@@ -29,6 +30,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/auth", authRouter);
+app.use("/events", eventsRouter);
 /* Error handler middleware */
 app.use((err: any, req: any, res: any, next: any) => {
     const statusCode = err.statusCode || 500;

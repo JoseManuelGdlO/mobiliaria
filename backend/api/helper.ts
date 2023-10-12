@@ -1,10 +1,14 @@
-export function getOffset(currentPage = 1, listPerPage: any) {
-    return (currentPage - 1) * listPerPage;
-}
-
-export function emptyOrRows(rows: any) {
-    if (!rows) {
-        return [];
+export module helper {
+    
+    export function getOffset(currentPage = 1, listPerPage: any) {
+        return (currentPage - 1) * listPerPage;
     }
-    return rows;
+
+    export function emptyOrRows(rows: any) {
+        if (!rows) {
+            return [];
+        }
+        return rows;
+    }
+
 }
