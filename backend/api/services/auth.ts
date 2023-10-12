@@ -1,6 +1,6 @@
-const db = require('./db');
-const helper = require('../helper');
-const encrypt = require('../libs/encrypt');
+import { db } from './db';
+import { helper } from '../helper';
+import { encrypt } from '../libs/encrypt';
 
 async function register(body: any) {
     // body.password = await encrypt.encryptPassword(body.password);
