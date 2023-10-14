@@ -4,6 +4,8 @@ import * as React from 'react'
 import { Dimensions } from 'react-native'
 import { useTheme } from '../hooks/useTheme'
 import Login from '../screens/Login'
+import Home from '@screens/home'
+import BasicHeader from '@components/BasicHeader'
 
 const windowWidth = Dimensions.get('window').width
 
@@ -28,26 +30,7 @@ export default function SignedOut(): JSX.Element {
             }}
         >
             <Stack.Group>
-                <Stack.Screen
-                    options={{
-                        headerShown: false,
-                        title: ''
-                        // demo custom header
-                        // headerLeft (props) {
-                        //   return (
-                        //     <>
-                        //       <TouchableOpacity onPress={() => { }}>
-                        //         <View>
-                        //           <Icon name={Icons.Flechas.chicoIzquierda} fill='#000' height={12} width={12} />
-                        //         </View>
-                        //       </TouchableOpacity>
-                        //     </>
-                        //   )
-                        // }
-                    }}
-                    name='Login'
-                    component={Login}
-                />
+                <Stack.Screen options={{ title: 'Detalle de curso', headerShown: true, header: (props) => <BasicHeader hideBackArrow title='Home' backgroundColor='white' />  }} name='Home' component={Home} />
             </Stack.Group>
         </Stack.Navigator>
     )

@@ -36,7 +36,7 @@ export default function Navigation(): JSX.Element {
         translateY = (windowheight - maxLottieHeight) / 4.5
     }
     return (
-        <View style={{ flex: 1, backgroundColor: colors.background }}>
+        <View style={{ flex: 1, backgroundColor: 'white' }}>
             <Stack.Navigator
                 screenOptions={{
                     headerShown: false,

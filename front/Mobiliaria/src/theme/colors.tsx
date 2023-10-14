@@ -1,0 +1,77 @@
+export const palette = {
+  white: '#FFFFFF',
+  black: '#000000',
+  transparent: 'transparent',
+  blue: '#00C1DE',
+  pink: '#EC1C6D',
+  orange: '#FF9300',
+  yellow: '#EDBF00',
+  purple: '#B474D9',
+  deepBlue: '#0030FF',
+  lightPink: '#FC7EB2',
+  green: '#84E349',
+  red: '#F74F58',
+  indigo: '#041860',
+  blueLight: '#a1e1f0',
+  grey: '#bdbdbd'
+}
+
+export default {
+  Griss50: '#F5F5F5',
+  Griss100: '#EBEBEB',
+  Griss200: '#E0E0E0',
+  Griss300: '#D6D6D6',
+  Griss400: '#CCCCCC',
+  Griss500: '#CCCCCC',
+  Griss600: '#A3A3A3',
+  Griss700: '#7A7A7A',
+  Griss800: '#525252',
+  Griss900: '#292929',
+
+  Neutral50: '#FAFAFB',
+  Neutral100: '#DCDFE5',
+  Neutral200: '#C4C9D4',
+  Neutral300: '#A0A9BA',
+  Neutral400: '#68768D',
+  Neutral500: '#576275',
+  Neutral600: '#454E5E',
+  Neutral700: '#343A46',
+  Neutral800: '#23272F',
+  Neutral900: '#111317',
+
+  Exito50: '#E8F9DC',
+  Exito300: '#C3F1A7',
+  Exito500: '#ABEC83',
+  Exito700: '#84E349',
+  Exito900: '#55B01C',
+
+  Advertencia50: '#FFEED6',
+  Advertencia300: '#FFC370',
+  Advertencia500: '#FFAA33',
+  Advertencia700: '#FF9300',
+  Advertencia900: '#CC7700',
+
+  Error50: '#FEECED',
+  Error300: '#FCB1B4',
+  Error500: '#F74F58',
+  Error700: '#EA0B16',
+  Error900: '#88070E',
+
+  Primario50: '#EBFCFF',
+  Primario300: '#ACF1FC',
+  Primario500: '#2ECFE8',
+  Primario700: '#049CB4',
+  Primario900: '#036F80',
+
+  Secundario50: '#FFFAE5',
+  Secundario300: '#FFF2A8',
+  Secundario500: '#FFE270',
+  Secundario700: '#EDBF00',
+  Secundario900: '#E5A309',
+
+  Acento50: '#FDECF3',
+  Acento300: '#F8B4CE',
+  Acento500: '#F3689D',
+  Acento700: '#EC1C6D',
+  Acento900: '#AA0E4A'
+}

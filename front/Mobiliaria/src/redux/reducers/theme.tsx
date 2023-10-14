@@ -240,8 +240,8 @@ const navigationTheme = (_mode: ThemeMode): NavigationTheme => {
     dark: _mode === 'dark',
     colors: {
       primary: _colors.Magenta700,
-      background: _colors.background,
-      card: _colors.background,
+      background: '#FFF',
+      card: '#FFF',
       text: _colors.gris200,
       border: _colors.Neutral500,
       notification: _colors.blue
