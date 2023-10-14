@@ -1,0 +1,48 @@
+import { StyleSheet, TextStyle, ViewStyle } from 'react-native'
+import { useTheme } from '@hooks/useTheme'
+
+interface StyleTypes {
+  container: ViewStyle
+  containerIcon: ViewStyle
+  title: TextStyle
+  logoTalisis: ViewStyle
+}
+
+const styles = (headerHeight: number, backgroundColor: string | undefined, hideBackArrow: boolean): StyleTypes => {
+  const { colors, fonts } = useTheme()
+  return StyleSheet.create({
+    container: {
+      height: headerHeight,
+      backgroundColor: backgroundColor ?? colors.white,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingVertical: 16
+    },
+    containerIcon: {
+      height: headerHeight,
+      backgroundColor: colors.white,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      textAlign: 'center',
+      paddingHorizontal: 16
+    },
+    title: {
+      fontFamily: fonts.Inter.Bold,
+      flexGrow: 1,
+      fontSize: 20,
+      color: colors.black,
+      alignSelf: 'center',
+      textAlign: 'center',
+      marginRight: (!hideBackArrow) ? 315 : 340,
+    },
+    logoTalisis: {
+      flexGrow: 1,
+      alignItems: 'center',
+      marginRight: (!hideBackArrow) ? 25 : 0,
+    }
+  })
+}
+
+export default styles
