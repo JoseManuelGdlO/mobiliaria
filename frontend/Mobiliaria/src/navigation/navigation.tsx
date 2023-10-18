@@ -7,6 +7,8 @@ import useReduxUser from '@hooks/useReduxUser'
 import { Dimensions, Platform, StyleSheet, Text, View } from 'react-native'
 import { NavigationRouteState, getActiveRouteState } from '@utils/route'
 import { useTheme } from '../hooks/useTheme'
+import SignedIn from './SignedIn'
+import Login from '@screens/Login'
 
 
 
@@ -15,16 +17,13 @@ const windowWidth = Dimensions.get('window').width
 const windowheight = Dimensions.get('window').height
 
 export default function Navigation(): JSX.Element {
-    const { realUser } = useReduxUser()
-
-    const { colors } = useTheme()
-
-
+    const { remember, token } = useReduxUser()
     const maxLottieWidth = 300
     const maxLottieHeight = 300
     let margin = 0
     let translateX = 0
     let translateY = 0
+    
     if (windowWidth > maxLottieWidth) {
         margin = (windowWidth - maxLottieWidth) / 4
     }
@@ -44,8 +43,9 @@ export default function Navigation(): JSX.Element {
                 }}
             >
                 {
-                    realUser.email.length > 0
-                        ? <Stack.Screen name='SignedInStack' component={SignedOut} />
+
+                    token
+                        ? <Stack.Screen name='SignedInStack' component={SignedIn} />
                         : <Stack.Screen name='SignedInStack' component={SignedOut} />
                 }
 

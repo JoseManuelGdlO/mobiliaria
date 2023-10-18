@@ -30,7 +30,7 @@ export default function SignedOut(): JSX.Element {
             }}
         >
             <Stack.Group>
-                <Stack.Screen options={{ title: 'Detalle de curso', headerShown: true, header: (props) => <BasicHeader hideBackArrow title='Home' backgroundColor='white' />  }} name='Home' component={Home} />
+                <Stack.Screen options={{ title: 'Detalle de curso', headerShown: false }} name='Login' component={Login} />
             </Stack.Group>
         </Stack.Navigator>
     )

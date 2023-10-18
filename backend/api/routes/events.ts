@@ -1,12 +1,15 @@
 import express from 'express';
+import { verifyToken } from '../libs/headers';
 const router = express.Router();
 const eventService = require('../services/events');
-const jwt = require('jsonwebtoken');
+import jwt_decode from "jwt-decode";
 
 
-router.get('/getEvents', async function (req: any, res: any, next: any) {
+router.get('/getEvents', verifyToken, async function (req: any, res: any, next: any) {
     try {
-        let id = req.query.id;
+        const bearer: any = jwt_decode( req.headers['authorization']);
+        let id = bearer.data.id_empresa;
+        
         res.status(201).json(await eventService.getEvents(id));
     } catch (err: any) {
         console.error(`Error while getting enarm students info `, err.message);
@@ -15,7 +18,7 @@ router.get('/getEvents', async function (req: any, res: any, next: any) {
 });
 
 
-router.get('/getEventsDay', async function (req: any, res: any, next: any) {
+router.get('/getEventsDay', verifyToken, async function (req: any, res: any, next: any) {
     try {
         let id = req.query.id;
         let date = req.query.date;
@@ -26,7 +29,7 @@ router.get('/getEventsDay', async function (req: any, res: any, next: any) {
     }
 });
 
-router.get('/available', async function (req: any, res: any, next: any) {
+router.get('/available', verifyToken, async function (req: any, res: any, next: any) {
     try {
         let id = req.query.id;
         let date = req.query.date;
@@ -37,7 +40,7 @@ router.get('/available', async function (req: any, res: any, next: any) {
     }
 });
 
-router.post('/add', async function (req: any, res: any, next: any) {
+router.post('/add', verifyToken, async function (req: any, res: any, next: any) {
     try {
         const body = req.body;
         res.status(201).json(await eventService.addEvent(body));

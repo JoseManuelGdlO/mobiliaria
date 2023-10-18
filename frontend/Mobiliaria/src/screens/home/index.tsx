@@ -9,7 +9,7 @@ import { useTheme } from "@hooks/useTheme";
 import CardEvents from "@components/CardEvents";
 import { monthToString } from "@utils/dateFormat";
 import { Skeleton } from "@rneui/themed/dist/Skeleton";
-import { LinearGradient } from "react-native-svg";
+import Loading from "@components/loading";
 
 LocaleConfig.locales['es'] = {
     monthNames: [
@@ -43,34 +43,29 @@ const Home = (): JSX.Element => {
 
     const { colors, fonts } = useTheme();
 
-    const getColorSpecific = (number: number): string => {
-        if (number < 3) {
-            return '#ff9a9a'
-        } else if (number < 5) {
-            return '#7f0101'
-        } else if (number < 8) {
-            return '#4c0000'
-        }
-        return 'transparent'
+    const getColorSpecific = (total: number): string => {
+        
+        if (total <= 2) {
+            return '#9E2EBE'
+        } else if (total <= 4) {
+            return '#4E52D7'
+        } else if (total <= 7) {
+            return '#5533BF'
+        } 
+        return '#331f73'
     }
 
     const getEvents = async () => {
         try {
             const response = await eventService.getEvents()
-            const groupedKeys = response.data.reduce((group: { [key: string]: any }, item: any) => {
-                if (!group[item.fecha_envio_evento.split('T')[0]]) {
-                    group[item.fecha_envio_evento.split('T')[0]] = 1;
-                }
-                group[item.fecha_envio_evento.split('T')[0]] = group[item.fecha_envio_evento.split('T')[0]] + 1;
-                return group;
-            }, {});
 
             const dates: MarkedDates = {}
-            for (const date in groupedKeys) {
-                dates[date] = {
+            for (const date of response.data) {
+                
+                dates[date.fecha_envio_evento.split('T')[0]] = {
                     selected: true,
                     marked: false,
-                    selectedColor: getColorSpecific(groupedKeys[date]),
+                    selectedColor: getColorSpecific(date.total),
                 }
             }
             setDates(dates)
@@ -78,6 +73,7 @@ const Home = (): JSX.Element => {
             console.log(error);
         } finally {
             setRefreshing(false);
+            setLoading(false)
         }
 
     }
@@ -86,14 +82,12 @@ const Home = (): JSX.Element => {
         try {
 
             const response = await eventService.getEventsDay(date)
-            console.log(response.data);
-
+            
             setEventsDay(response.data)
         } catch (error) {
             console.log(error);
         } finally {
             setRefreshing(false);
-            setLoading(false)
         }
 
     }
@@ -141,11 +135,13 @@ const Home = (): JSX.Element => {
                 }>
             <CalendarList
                 key={1}
-                onDayPress={(day: any) => {
+                onDayPress={async (day: any) => {
                     const date = day.dateString
                     const arrDate = date.split('-')
+                    setLoading(true)
                     setDateEvent(`${arrDate[2]} de ${monthToString(Number(arrDate[1]))}`)
-                    getEventsDay(date)
+                    await getEventsDay(date)
+                    setLoading(false)
                 }}
                 // Enable horizontal scrolling, default = false
                 horizontal={true}
@@ -155,14 +151,15 @@ const Home = (): JSX.Element => {
                 calendarWidth={Dimensions.get('window').width}
                 markedDates={dates}
             />
+            </ScrollView>
             {loading
-                ? <View style={{ backgroundColor: 'rgba(148, 167, 244, 0.79)', borderTopLeftRadius: 8, paddingHorizontal: 30, paddingVertical: 25, borderTopRightRadius: 8, marginTop: -25, height: '100%' }}>
+                ? <View style={{ backgroundColor: 'rgba(148, 167, 244, 0.79)', borderTopLeftRadius: 8, paddingHorizontal: 30, paddingVertical: 25, borderTopRightRadius: 8, marginTop: -25}}>
                     <Skeleton animation="pulse" width={175} height={20} />
                     <Skeleton animation="pulse" style={{ borderRadius: 8, marginTop: 15 }} width={350} height={180} />
                     <Skeleton animation="pulse" style={{ borderRadius: 8, marginTop: 15 }} width={350} height={180} />
                 </View>
                 :
-                <View style={{ backgroundColor: 'rgba(148, 167, 244, 0.79)', borderTopLeftRadius: 8, borderTopRightRadius: 8, marginTop: -25 }}>
+                <View style={{ backgroundColor: 'rgba(148, 167, 244, 0.79)', borderTopLeftRadius: 8, borderTopRightRadius: 8, marginTop: -25, height: 500, paddingBottom: 50 }}>
                     <FlatList
                         ListHeaderComponent={() => {
                             return (
@@ -187,7 +184,7 @@ const Home = (): JSX.Element => {
                         keyExtractor={keyExtractor}
                     />
                 </View>}
-            </ScrollView>
+            <Loading loading={loading}></Loading>
         </View>
     )
 }

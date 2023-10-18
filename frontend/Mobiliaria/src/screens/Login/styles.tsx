@@ -7,7 +7,7 @@ interface StyleTypes {
 const styles = (): StyleTypes => {
     return StyleSheet.create({
         textHola: {
-            color: '#fff'
+            color: '#000000'
         }
     })
 }
