@@ -29,12 +29,15 @@ const styles = (headerHeight: number, backgroundColor: string | undefined, hideB
       paddingHorizontal: 16
     },
     title: {
+      height: 30,
+      paddingLeft: 15,
+      width: '80%',
       fontFamily: fonts.Inter.Bold,
       flexGrow: 1,
       fontSize: 20,
       color: colors.black,
       alignSelf: 'center',
-      textAlign: 'center',
+      textAlign: 'left',
       marginRight: (!hideBackArrow) ? 315 : 340,
     },
     logoTalisis: {

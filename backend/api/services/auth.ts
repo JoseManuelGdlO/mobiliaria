@@ -34,8 +34,8 @@ async function register(body: any) {
 async function login(body: any) {
     let code = 200;
     const rows = await db.query(
-        `SELECT * FROM usuario
-      WHERE email = "${body.email}"`
+        `SELECT * FROM usuarios_mobiliaria
+      WHERE correo = "${body.email}" AND contrasena = "${body.password}"`
     );
 
     let data = helper.emptyOrRows(rows);
@@ -47,22 +47,7 @@ async function login(body: any) {
         }
     }
 
-    const samePass = data[0].password == body.password;
-    if (!samePass) {
-        data = [];
-        code = 403;
-        return {
-            data,
-            code
-        }
-    }
-    console.log(data);
-
-    const account = await db.query(
-        `SELECT * FROM account_estatus
-      WHERE idUsuario = "${data[0].id}"`
-    );
-    data = { data: data[0], account: account[0] }
+    data = data[0]
 
 
     return {

@@ -7,6 +7,7 @@ import SaveButton from './SaveButton'
 import _styles from './styles'
 import { useTheme } from '@hooks/useTheme'
 import BackIcon from '@assets/images/icons/BackIcon'
+import useReduxUser from '@hooks/useReduxUser'
 
 interface Props {
   title?: string
@@ -26,6 +27,8 @@ const BasicHeader = ({
   backgroundColor = 'white',
 }: Props): JSX.Element => {
   const isBlockedRef = useRef(false)
+  const [ titleState, setTitleState ] = React.useState('')
+  const { user } = useReduxUser()
   const navigation = useNavigation<StackNavigationProp<NavigationScreens>>()
   const route = useRoute()
   const styles = _styles(headerHeight, backgroundColor, hideBackArrow)
@@ -72,6 +75,18 @@ const BasicHeader = ({
     }, [navigation])
   )
 
+  const getTitle = () => {
+    if (title === 'Home') {
+      setTitleState(`Hola ${user.nombre_comp} 👋🏻`)
+      return
+    }
+    setTitleState(title)
+  }
+
+  useEffect(() => {
+    getTitle()
+  })
+
  
   return (
     <View style={styles.container}>
@@ -91,7 +106,7 @@ const BasicHeader = ({
             </TouchableOpacity>)
       }
 
-      <Text style={[styles.title, {color}]} numberOfLines={1} >{title}</Text>
+      <Text style={[styles.title, { color }]} numberOfLines={1} >{titleState}</Text>
     </View>
   )
 }

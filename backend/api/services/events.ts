@@ -5,7 +5,7 @@ async function getEvents(id: number) {
     let code = 200;
 
     const rows = await db.query(
-        `SELECT nombre_evento, fecha_envio_evento from evento_mob where id_empresa = "${id}" AND fecha_envio_evento LIKE "%202%"`
+        `SELECT nombre_evento, fecha_envio_evento, COUNT(fecha_envio_evento) as total from evento_mob where id_empresa = "${id}" AND fecha_envio_evento LIKE "%202%" GROUP BY fecha_envio_evento`
     );
 
     let data = helper.emptyOrRows(rows);

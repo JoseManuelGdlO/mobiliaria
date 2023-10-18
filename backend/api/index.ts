@@ -2,7 +2,8 @@ import express, { Express, Request, Response, Application } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors'
 const authRouter = require("./routes/auth");
-const eventsRouter = require("./routes/events"); 
+const eventsRouter = require("./routes/events");
+const inventaryRouter = require("./routes/inventary"); 
 
 //For env File 
 dotenv.config();
@@ -31,6 +32,7 @@ app.get("/", (req, res) => {
 
 app.use("/auth", authRouter);
 app.use("/events", eventsRouter);
+app.use("/inventary", inventaryRouter);
 /* Error handler middleware */
 app.use((err: any, req: any, res: any, next: any) => {
     const statusCode = err.statusCode || 500;
