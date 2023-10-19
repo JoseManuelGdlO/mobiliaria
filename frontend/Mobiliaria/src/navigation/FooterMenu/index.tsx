@@ -47,7 +47,7 @@ const WorkerStack = (): JSX.Element => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        options={{ title: 'Trabajadores', headerShown: true, header: (props) => <BasicHeader hideBackArrow title='Trabajadores' backgroundColor='white' /> }}
+        options={{ title: 'Administrador de trabajadores', headerShown: true, header: (props) => <BasicHeader color='#9E2EBE' hideBackArrow title='Trabajadores 🐱‍🚀' backgroundColor='white' /> }}
         name='Workers'
         component={Workers}
       />

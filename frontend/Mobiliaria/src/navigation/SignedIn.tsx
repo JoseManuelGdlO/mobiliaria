@@ -44,7 +44,7 @@ export default function SignedIn(): JSX.Element {
 
                         }}
                     />
-                    <Stack.Screen options={{ title: 'Clientes', headerShown: true, header: (props) => <BasicHeader hideBackArrow color='#00bcbb' title='Home' backgroundColor='white' /> }} name='Clients' component={Clients} />
+                    <Stack.Screen options={{ title: 'Clientes', headerShown: true, header: (props) => <BasicHeader  title='Catalogo de clientes 🚏' backgroundColor='white' /> }} name='Clients' component={Clients} />
                     <Stack.Screen options={{ title: 'Seguimiento a pagos', headerShown: true, header: (props) => <BasicHeader hideBackArrow color='#00bcbb' title='Home' backgroundColor='white' /> }} name='Payments' component={Payments} />
                 </Stack.Group>
             </Stack.Navigator>
