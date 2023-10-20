@@ -7,5 +7,7 @@ export type NavigationScreens =
         Workers: undefined,
         ViewMore: undefined,
         Clients: undefined,
-        
+        EventDetail: {
+            id: number
+        }
     }

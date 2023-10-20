@@ -5,7 +5,8 @@ const authRouter = require("./routes/auth");
 const eventsRouter = require("./routes/events");
 const inventaryRouter = require("./routes/inventary");
 const workersRouter = require("./routes/workers");
-const clientsRouter = require("./routes/clients"); 
+const clientsRouter = require("./routes/clients");
+const paymentsRouter = require("./routes/payments"); 
 
 //For env File 
 dotenv.config();
@@ -37,6 +38,7 @@ app.use("/events", eventsRouter);
 app.use("/inventary", inventaryRouter);
 app.use("/workers", workersRouter);
 app.use("/clients", clientsRouter);
+app.use("/payments", paymentsRouter);
 /* Error handler middleware */
 app.use((err: any, req: any, res: any, next: any) => {
     const statusCode = err.statusCode || 500;

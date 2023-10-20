@@ -17,12 +17,12 @@ export const GetOptionsMenu = (): Option[] => {
   options = [
     {
       name: 'Clientes',
-      icon: <ProfileIcon color='#FFA700' />,
+      icon: <ProfileIcon color='#9E2EBE' />,
       navigate: 'Clients'
     },
     {
       name: 'Seguimiento a pagos',
-      icon: <Support color='#FFA700' />,
+      icon: <Support color='#9E2EBE' />,
       navigate: 'Payments'
     }
   ]

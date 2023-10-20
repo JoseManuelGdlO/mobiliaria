@@ -29,6 +29,16 @@ router.get('/getEventsDay', verifyToken, async function (req: any, res: any, nex
     }
 });
 
+router.get('/getDetail', verifyToken, async function (req: any, res: any, next: any) {
+    try {
+        let id = req.query.id;
+        res.status(201).json(await eventService.getDetails(id));
+    } catch (err: any) {
+        console.error(`Error while getting enarm students info `, err.message);
+        next(err);
+    }
+});
+
 router.get('/available', verifyToken, async function (req: any, res: any, next: any) {
     try {
         let id = req.query.id;

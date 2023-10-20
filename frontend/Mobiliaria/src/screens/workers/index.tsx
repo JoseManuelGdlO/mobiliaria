@@ -59,10 +59,10 @@ const Workers = (): JSX.Element => {
                             // Find more Lottie files at https://lottiefiles.com/featured
                             source={require('../../assets/images/lottie/user.json')}
                         />
-                    <View style={{ paddingTop: 10 }}>
-                        <Text style={{ fontFamily: fonts.Roboto.Bold }}>{item.nombre_comp}</Text>
+                        <View style={{ paddingTop: 10 }}>
+                            <Text style={{ fontFamily: fonts.Roboto.Bold }}>{item.nombre_comp}</Text>
                             <Text style={{ fontFamily: fonts.Roboto.MediumItalic, fontSize: 12 }}>Creacion {item.fecha_creacion}</Text>
-                    </View>
+                        </View>
                     </View>
                     <View style={{ paddingHorizontal: 10 }}>
                         <Text style={{ color: '#9E2EBE', fontFamily: fonts.Roboto.Medium, fontSize: 15 }}>Usuario: {item.usuario}</Text>

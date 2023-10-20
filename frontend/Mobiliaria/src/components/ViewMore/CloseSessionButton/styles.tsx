@@ -18,7 +18,7 @@ const styles = (): StyleTypes => {
       marginLeft: 18,
       fontFamily: fonts.Inter.Regular,
       fontSize: 16,
-      color: '#FFA700'
+      color: '#9E2EBE'
     }
   })
 }
