@@ -7,6 +7,9 @@ import { TouchableRipple } from 'react-native-paper'
 import Book2Line from '@assets/images/icons/Book2Line'
 import BookMarkLine from '@assets/images/icons/BookMarkLine'
 import TeamLine from '@assets/images/icons/TeamLine'
+import { NavigationScreens } from '@interfaces/navigation'
+import { useNavigation } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 
 
 interface Props {
@@ -17,13 +20,14 @@ interface Props {
 const CardEvents = ({
   data,
 }: Props): JSX.Element => {
+  const navigation = useNavigation<StackNavigationProp<NavigationScreens>>()
   const { colors } = useTheme()
   const styles = _styles()
 
   return (
     <TouchableRipple
       borderless
-      onPress={() => {console.log('')}}
+      onPress={() => { navigation.navigate('EventDetail', { id: data.id_evento })}}
       style={styles.rippleContainer}
     >
       <View style={styles.container}>

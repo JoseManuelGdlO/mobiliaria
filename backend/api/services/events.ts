@@ -23,6 +23,77 @@ async function getEvents(id: number) {
     }
 }
 
+async function getDetails(id: number) {
+    let code = 200;
+    try {
+
+
+    let rows = await db.query(
+        `select * from evento_mob where id_evento = '${id}'`
+    );
+
+    let event = helper.emptyOrRows(rows);
+    if (event.length === 0) {
+        code = 404;
+        return {
+            details: 'No se encontró el evento',
+            event,
+            code
+        }
+    }
+
+    rows = await db.query(
+        `select a.nombre_mob, a.costo_mob, b.id_mob, b.ocupados, b.id_evento, b.id_fecha,
+		b.fecha_evento
+		from inventario_mob a, inventario_disponibilidad_mob b where b.id_mob = a.id_mob and id_evento='${id}'`
+    );
+
+    let items = helper.emptyOrRows(rows);
+    if (items.length === 0) {
+        code = 404;
+        return {
+            details: 'No se encontraron los items',
+            items,
+            code
+        }
+    }
+
+    rows = await db.query(
+        `SELECT P.* 
+        FROM pagos_mob P
+        LEFT JOIN evento_mob E
+        ON P.id_evento = E.id_evento
+        WHERE P.id_evento ='${id}'`
+    );
+
+    let payments = helper.emptyOrRows(rows);
+    if (payments.length === 0) {
+        code = 404;
+        return {
+            details: 'No se encontraron los pagos',
+            payments,
+            code
+        }
+    }
+
+
+
+    return {
+        event: {
+            event: event[0],
+            payments,
+            items,
+        },
+        code
+    }
+    } catch (error) {
+        console.log(error);
+        return {
+            code: 500
+        }
+    }
+}
+
 async function getEventsOfDay(id: number, date: string) {
     let code = 200;
 
@@ -120,5 +191,6 @@ async function addEvent(body: any) {
 module.exports = {
     getEvents,
     getEventsOfDay,
-    availiable
+    availiable,
+    getDetails
 }
