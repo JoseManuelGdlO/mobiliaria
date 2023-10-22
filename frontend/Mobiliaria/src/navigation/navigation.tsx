@@ -8,7 +8,7 @@ import { Dimensions, Platform, StyleSheet, Text, View } from 'react-native'
 import { NavigationRouteState, getActiveRouteState } from '@utils/route'
 import { useTheme } from '../hooks/useTheme'
 import SignedIn from './SignedIn'
-import Login from '@screens/Login'
+import SupportFAB from '@components/SupportFab'
 
 
 
@@ -18,6 +18,7 @@ const windowheight = Dimensions.get('window').height
 
 export default function Navigation(): JSX.Element {
     const { remember, token } = useReduxUser()
+    const [activeRouteName, setActiveRouteName] = useState('')
     const maxLottieWidth = 300
     const maxLottieHeight = 300
     let margin = 0
@@ -41,6 +42,14 @@ export default function Navigation(): JSX.Element {
                     headerShown: false,
                     orientation: 'portrait'
                 }}
+                screenListeners={{
+                    state: e => {
+                        if (e.data !== undefined) {
+                            const activeRoute = getActiveRouteState(e.data as NavigationRouteState)
+                            setActiveRouteName(activeRoute?.name ?? '')
+                        }
+                    }
+                }}
             >
                 {
 
@@ -50,6 +59,7 @@ export default function Navigation(): JSX.Element {
                 }
 
             </Stack.Navigator>
+            <SupportFAB activeRouteName={activeRouteName} />
         </View>
     )
 }

@@ -24,7 +24,6 @@ const Inventary = (): JSX.Element => {
         if (search.length > 2) {
             return
         }
-        console.log('add data');
         let inv: IInventary[] = []
         if (page === 1) {
             inv = totalInventary.slice(0, page * ITEMS_PEER_PAGE)
@@ -34,8 +33,6 @@ const Inventary = (): JSX.Element => {
 
         inv = [...inventary, ...inv]
         setInventary(inv)
-
-
         setPage(page + 1)
     }
 
@@ -43,8 +40,10 @@ const Inventary = (): JSX.Element => {
     const getInventary = async () => {
         try {
             const response = await inventaryService.getInventary() as IInventary[]
-            setTotalInventary(response)
-            addData();
+            
+            await setTotalInventary(response)
+            const inv = response.slice(0, page * ITEMS_PEER_PAGE)
+            setInventary(inv)
         } catch (error) {
             console.log(error);
         } finally {

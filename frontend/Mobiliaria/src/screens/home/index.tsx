@@ -44,14 +44,14 @@ const Home = (): JSX.Element => {
     const { colors, fonts } = useTheme();
 
     const getColorSpecific = (total: number): string => {
-        
+
         if (total <= 2) {
             return '#9E2EBE'
         } else if (total <= 4) {
             return '#4E52D7'
         } else if (total <= 7) {
             return '#5533BF'
-        } 
+        }
         return '#331f73'
     }
 
@@ -61,7 +61,7 @@ const Home = (): JSX.Element => {
 
             const dates: MarkedDates = {}
             for (const date of response.data) {
-                
+
                 dates[date.fecha_envio_evento.split('T')[0]] = {
                     selected: true,
                     marked: false,
@@ -82,7 +82,7 @@ const Home = (): JSX.Element => {
         try {
 
             const response = await eventService.getEventsDay(date)
-            
+
             setEventsDay(response.data)
         } catch (error) {
             console.log(error);
@@ -133,50 +133,58 @@ const Home = (): JSX.Element => {
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                 }>
-            <CalendarList
-                key={1}
-                onDayPress={async (day: any) => {
-                    const date = day.dateString
-                    const arrDate = date.split('-')
-                    setLoading(true)
-                    setDateEvent(`${arrDate[2]} de ${monthToString(Number(arrDate[1]))}`)
-                    await getEventsDay(date)
-                    setLoading(false)
-                }}
-                // Enable horizontal scrolling, default = false
-                horizontal={true}
-                // Enable paging on horizontal, default = false
-                pagingEnabled={true}
-                // Set custom calendarWidth.
-                calendarWidth={Dimensions.get('window').width}
-                markedDates={dates}
-            />
+                <CalendarList
+                    key={1}
+                    onDayPress={async (day: any) => {
+                        const date = day.dateString
+                        const arrDate = date.split('-')
+                        setLoading(true)
+                        setDateEvent(`${arrDate[2]} de ${monthToString(Number(arrDate[1]))}`)
+                        await getEventsDay(date)
+                        setLoading(false)
+                    }}
+                    // Enable horizontal scrolling, default = false
+                    horizontal={true}
+                    // Enable paging on horizontal, default = false
+                    pagingEnabled={true}
+                    // Set custom calendarWidth.
+                    calendarWidth={Dimensions.get('window').width}
+                    markedDates={dates}
+                />
             </ScrollView>
             {loading
-                ? <View style={{ backgroundColor: 'rgba(148, 167, 244, 0.79)', borderTopLeftRadius: 8, paddingHorizontal: 30, paddingVertical: 25, borderTopRightRadius: 8, marginTop: -25}}>
+                ? <View style={{ backgroundColor: 'rgba(148, 167, 244, 0.79)', borderTopLeftRadius: 8, paddingHorizontal: 30, paddingVertical: 25, borderTopRightRadius: 8, marginTop: -15 }}>
                     <Skeleton animation="pulse" width={175} height={20} />
                     <Skeleton animation="pulse" style={{ borderRadius: 8, marginTop: 15 }} width={350} height={180} />
                     <Skeleton animation="pulse" style={{ borderRadius: 8, marginTop: 15 }} width={350} height={180} />
                 </View>
                 :
-                <View style={{ backgroundColor: 'rgba(148, 167, 244, 0.79)', borderTopLeftRadius: 8, borderTopRightRadius: 8, marginTop: -25, height: 500, paddingBottom: 50 }}>
+                <View style={{ backgroundColor: 'rgba(148, 167, 244, 0.79)', borderTopLeftRadius: 8, borderTopRightRadius: 8, marginTop: -15, height: 500, paddingBottom: 50 }}>
                     <FlatList
                         ListHeaderComponent={() => {
                             return (
-                                <Text style={{ color: colors.white, fontSize: 15, fontWeight: '100', marginVertical: 8, paddingHorizontal: 5, fontFamily: fonts.Roboto.Regular }}>
+                                <Text style={{ backgroundColor: 'rgba(148, 167, 244, 0.79)', color: colors.white, fontSize: 15, fontWeight: '100', marginVertical: 8, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8, fontFamily: fonts.Roboto.Regular }}>
                                     Eventos del dia <Text style={{ fontWeight: '500', color: '#153acb', fontFamily: fonts.Roboto.BlackItalic, fontStyle: 'italic' }}>{dateEvent}</Text>
                                 </Text>
                             )
                         }}
                         ListEmptyComponent={() => {
                             return (
-                                <View style={{ backgroundColor: 'rgba(148, 167, 244, 0.79)', paddingVertical:100, height: 350, alignItems: 'center', justifyContent: 'center', flex: 1, marginTop: 50 }}>
+                                <View style={{ backgroundColor: 'rgba(148, 167, 244, 0.79)', paddingVertical: 100, height: 350, alignItems: 'center', justifyContent: 'center', flex: 1, marginTop: 50 }}>
                                     <Text style={{ color: colors.white, fontSize: 15, fontWeight: '100', marginVertical: 8, paddingHorizontal: 5, fontFamily: fonts.Roboto.Regular }}>
                                         No hay eventos para este dia 😪
                                     </Text>
                                 </View>
                             )
                         }}
+                        ListFooterComponent={() => {
+                            return (
+                                <View style={{ paddingVertical: 100, height: 50, alignItems: 'center', justifyContent: 'center', flex: 1, marginTop: 50 }}>
+
+                                </View>
+                            )
+                        }}
+                        stickyHeaderIndices={[0]}
                         contentContainerStyle={{ padding: 16 }}
                         data={eventsDay}
                         scrollEnabled
