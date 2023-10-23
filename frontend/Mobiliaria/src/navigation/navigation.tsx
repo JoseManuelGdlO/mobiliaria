@@ -1,14 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-// import SignedIn from './SignedIn'
 import SignedOut from './SignedOut'
 import useReduxUser from '@hooks/useReduxUser'
 
-import { Dimensions, Platform, StyleSheet, Text, View } from 'react-native'
+import { Dimensions, Platform, View } from 'react-native'
 import { NavigationRouteState, getActiveRouteState } from '@utils/route'
-import { useTheme } from '../hooks/useTheme'
 import SignedIn from './SignedIn'
-import SupportFAB from '@components/SupportFab'
+import NewEventFab from '@components/NewEventFab'
+import SignedInDelivery from './SignedInDelivery'
 
 
 
@@ -17,7 +16,7 @@ const windowWidth = Dimensions.get('window').width
 const windowheight = Dimensions.get('window').height
 
 export default function Navigation(): JSX.Element {
-    const { remember, token } = useReduxUser()
+    const { remember, token, user } = useReduxUser()
     const [activeRouteName, setActiveRouteName] = useState('')
     const maxLottieWidth = 300
     const maxLottieHeight = 300
@@ -45,7 +44,7 @@ export default function Navigation(): JSX.Element {
                 screenListeners={{
                     state: e => {
                         if (e.data !== undefined) {
-                            const activeRoute = getActiveRouteState(e.data as NavigationRouteState)
+                            const activeRoute = getActiveRouteState(e.data as NavigationRouteState)                            
                             setActiveRouteName(activeRoute?.name ?? '')
                         }
                     }
@@ -54,12 +53,14 @@ export default function Navigation(): JSX.Element {
                 {
 
                     token
-                        ? <Stack.Screen name='SignedInStack' component={SignedIn} />
-                        : <Stack.Screen name='SignedInStack' component={SignedOut} />
+                        ? user.rol_usuario !== 'Repartidor' 
+                        ? <Stack.Screen name='SignedInStack' component={SignedIn} /> 
+                        : <Stack.Screen name='SignedWorkerStack' component={SignedInDelivery} />
+                        : <Stack.Screen name='SignedOutStack' component={SignedOut} />
                 }
 
             </Stack.Navigator>
-            <SupportFAB activeRouteName={activeRouteName} />
+            <NewEventFab activeRouteName={activeRouteName} />
         </View>
     )
 }
