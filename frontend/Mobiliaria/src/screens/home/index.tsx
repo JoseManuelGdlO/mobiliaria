@@ -10,6 +10,7 @@ import CardEvents from "@components/CardEvents";
 import { monthToString } from "@utils/dateFormat";
 import { Skeleton } from "@rneui/themed/dist/Skeleton";
 import Loading from "@components/loading";
+import PrimaryButton from "@components/PrimaryButton";
 
 LocaleConfig.locales['es'] = {
     monthNames: [
@@ -42,6 +43,8 @@ const Home = (): JSX.Element => {
     const [loading, setLoading] = React.useState<boolean>(false);
 
     const { colors, fonts } = useTheme();
+
+    const addEvent = () => { }
 
     const getColorSpecific = (total: number): string => {
 
@@ -163,14 +166,23 @@ const Home = (): JSX.Element => {
                     <FlatList
                         ListHeaderComponent={() => {
                             return (
-                                <Text style={{ backgroundColor: 'rgba(148, 167, 244, 0.79)', color: colors.white, fontSize: 15, fontWeight: '100', marginVertical: 8, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8, fontFamily: fonts.Roboto.Regular }}>
-                                    Eventos del dia <Text style={{ fontWeight: '500', color: '#153acb', fontFamily: fonts.Roboto.BlackItalic, fontStyle: 'italic' }}>{dateEvent}</Text>
-                                </Text>
+                                <View>
+                                    <Text style={{ backgroundColor: 'rgba(148, 167, 244, 0.79)', color: colors.white, fontSize: 15, fontWeight: '100', marginVertical: 8, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8, fontFamily: fonts.Roboto.Regular }}>
+                                        Eventos del dia <Text style={{ fontWeight: '500', color: '#153acb', fontFamily: fonts.Roboto.BlackItalic, fontStyle: 'italic' }}>{dateEvent}</Text>
+                                    </Text>
+                                    <PrimaryButton
+                                        containerStyle={{ width: '100%', paddingVertical: 5, marginBottom: 5 }}
+                                        textStyle={{ fontSize: 12, fontFamily: fonts.Roboto.Regular, color: colors.black }}
+                                        backgroundButton="#9E2EBE"
+                                        onPress={addEvent}
+                                        title='Crear nuevo evento'
+                                    />
+                                </View>
                             )
                         }}
                         ListEmptyComponent={() => {
                             return (
-                                <View style={{ backgroundColor: 'rgba(148, 167, 244, 0.79)', paddingVertical: 100, height: 350, alignItems: 'center', justifyContent: 'center', flex: 1, marginTop: 50 }}>
+                                <View style={{ backgroundColor: 'rgba(148, 167, 244, 0.79)', paddingVertical: 20, height: 150, alignItems: 'center', justifyContent: 'center', flex: 1, marginTop: 50 }}>
                                     <Text style={{ color: colors.white, fontSize: 15, fontWeight: '100', marginVertical: 8, paddingHorizontal: 5, fontFamily: fonts.Roboto.Regular }}>
                                         No hay eventos para este dia 😪
                                     </Text>
