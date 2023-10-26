@@ -9,5 +9,11 @@ export type NavigationScreens =
         Clients: undefined,
         EventDetail: {
             id: number
+        },
+        Available: {
+            date: string
+        },
+        AddEvent: {
+            date: string
         }
     }

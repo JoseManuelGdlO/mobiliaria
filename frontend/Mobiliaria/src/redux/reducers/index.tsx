@@ -6,6 +6,7 @@ import { persistReducer, persistStore } from 'redux-persist'
 import { combineReducers } from 'redux'
 import user from './user'
 import theme from './theme'
+import event from './event'
 
 const middlewares = [
     thunk
@@ -25,7 +26,8 @@ const persistConfig = {
 }
 const cReducers = combineReducers({
     user,
-    theme
+    theme,
+    event
 })
 const persistedReducer = persistReducer(persistConfig, cReducers)
 
