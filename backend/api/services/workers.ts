@@ -84,10 +84,7 @@ async function getEventsDay(id: number, date: string) {
     }
 
     return {
-        data: {
-            envio: dataEventsDelivery,
-            recoleccion: dataeventReturn
-        },
+        data: [...dataEventsDelivery, ...dataeventReturn],
         code
     }
 }

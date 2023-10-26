@@ -11,6 +11,9 @@ import { monthToString } from "@utils/dateFormat";
 import { Skeleton } from "@rneui/themed/dist/Skeleton";
 import Loading from "@components/loading";
 import PrimaryButton from "@components/PrimaryButton";
+import { NavigationScreens } from "@interfaces/navigation";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 LocaleConfig.locales['es'] = {
     monthNames: [
@@ -36,15 +39,19 @@ LocaleConfig.defaultLocale = 'es';
 
 
 const Home = (): JSX.Element => {
+    const navigation = useNavigation<StackNavigationProp<NavigationScreens>>()
     const [dates, setDates] = React.useState<MarkedDates>({});
     const [eventsDay, setEventsDay] = React.useState<any>([]);
     const [refreshing, setRefreshing] = React.useState(false);
     const [dateEvent, setDateEvent] = React.useState('');
     const [loading, setLoading] = React.useState<boolean>(false);
+    const [ requestDate, setRequestDate ] = React.useState<string>('');
 
     const { colors, fonts } = useTheme();
 
-    const addEvent = () => { }
+    const addEvent = () => { 
+        navigation.navigate('Available', { date: requestDate })
+    }
 
     const getColorSpecific = (total: number): string => {
 
@@ -111,6 +118,8 @@ const Home = (): JSX.Element => {
         getEvents()
         const date = new Date().toISOString().split('T')[0]
         const arrDate = date.split('-')
+        
+        setRequestDate(`${arrDate[2]}-${arrDate[1]}-${arrDate[0]}`)
         setDateEvent(`${arrDate[2]} de ${monthToString(Number(arrDate[1]))}`)
         getEventsDay(date)
     }, [])
@@ -142,6 +151,8 @@ const Home = (): JSX.Element => {
                         const date = day.dateString
                         const arrDate = date.split('-')
                         setLoading(true)
+
+                        setRequestDate(`${arrDate[0]}-${arrDate[1]}-${arrDate[2]}`)
                         setDateEvent(`${arrDate[2]} de ${monthToString(Number(arrDate[1]))}`)
                         await getEventsDay(date)
                         setLoading(false)

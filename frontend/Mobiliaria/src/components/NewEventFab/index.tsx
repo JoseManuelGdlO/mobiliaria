@@ -46,6 +46,11 @@ const NewEventFab = ({ activeRouteName }: props): JSX.Element => {
     setVisible(false)
   }
 
+  const goToAvailable = (): void => {
+    navigation.navigate('Available', { date: date.toISOString() })
+    setVisible(false)
+  }
+
   return (
     blackListSupportIconRoutes.includes(activeRouteName)
       ? <></>
@@ -81,6 +86,7 @@ const NewEventFab = ({ activeRouteName }: props): JSX.Element => {
                     open={open}
                     date={date}
                     locale='es'
+                    mode='date'
                     onDateChange={(date) => {
                       console.log(date);
                       setDate(date)
@@ -90,7 +96,7 @@ const NewEventFab = ({ activeRouteName }: props): JSX.Element => {
                 <View style={{ margin: 16, display: 'flex', flexDirection: 'row' }}>
                   <PrimaryButton
                   containerStyle={{ width: '50%'}}
-                    onPress={closeModal}
+                    onPress={goToAvailable}
                     title='Aceptar'
                   />
                   <PrimaryButton

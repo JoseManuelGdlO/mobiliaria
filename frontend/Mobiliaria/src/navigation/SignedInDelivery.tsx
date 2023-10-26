@@ -18,7 +18,7 @@ export default function SignedInDelivery(): JSX.Element {
             }}
         >
             <Stack.Group>
-                <Stack.Screen options={{ title: 'Detalle de curso', headerShown: true, header: (props) => <BasicHeader hideBackArrow title='Eventiva trabajadores' backgroundColor='white' /> }} name='Delivery' component={Delivery} />
+                <Stack.Screen options={{ title: 'Detalle de curso', headerShown: true, header: (props) => <BasicHeader hideBackArrow showLogout={true} title='Eventiva trabajadores' backgroundColor='white' /> }} name='Delivery' component={Delivery} />
             </Stack.Group>
         </Stack.Navigator>
     )

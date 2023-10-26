@@ -8,6 +8,7 @@ import _styles from './styles'
 import { useTheme } from '@hooks/useTheme'
 import BackIcon from '@assets/images/icons/BackIcon'
 import useReduxUser from '@hooks/useReduxUser'
+import useLogout from '@hooks/useLogout'
 
 interface Props {
   title?: string
@@ -15,6 +16,7 @@ interface Props {
   color?: string
   hideBackArrow?: boolean
   backgroundColor?: string
+  showLogout?: boolean
 }
 
 export const headerHeight = 56
@@ -25,14 +27,16 @@ const BasicHeader = ({
   backButtonAction,
   hideBackArrow = false,
   backgroundColor = 'white',
+  showLogout
 }: Props): JSX.Element => {
   const isBlockedRef = useRef(false)
-  const [ titleState, setTitleState ] = React.useState('')
+  const [titleState, setTitleState] = React.useState('')
   const { user } = useReduxUser()
   const navigation = useNavigation<StackNavigationProp<NavigationScreens>>()
   const route = useRoute()
   const styles = _styles(headerHeight, backgroundColor, hideBackArrow)
   const { colors } = useTheme()
+  const { logout, loading } = useLogout(() => { })
 
   const back = (): void => {
     // Previene ejecutar dos veces la acción antes de cargar
@@ -87,26 +91,35 @@ const BasicHeader = ({
     getTitle()
   })
 
- 
+
   return (
     <View style={styles.container}>
       {
         !hideBackArrow
-          && (
-            <TouchableOpacity
-              hitSlop={{
-                top: 10,
-                left: 8,
-                right: 10,
-                bottom: 10
-              }}
-              onPress={back}
-            >
-              <BackIcon color={colors.DarkBlack200} />
-            </TouchableOpacity>)
+        && (
+          <TouchableOpacity
+            hitSlop={{
+              top: 10,
+              left: 8,
+              right: 10,
+              bottom: 10
+            }}
+            onPress={back}
+          >
+            <BackIcon color={colors.DarkBlack200} />
+          </TouchableOpacity>)
       }
 
       <Text style={[styles.title, { color }]} numberOfLines={1} >{titleState}</Text>
+      {
+        showLogout
+        && (
+          <TouchableOpacity onPress={logout} style={{ width: 30 }}>
+            <Text style={{ width: '100%' }}>
+              Salir
+            </Text>
+          </TouchableOpacity>)
+      }
     </View>
   )
 }

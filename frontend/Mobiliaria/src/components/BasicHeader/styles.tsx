@@ -38,7 +38,7 @@ const styles = (headerHeight: number, backgroundColor: string | undefined, hideB
       color: colors.black,
       alignSelf: 'center',
       textAlign: 'left',
-      marginRight: (!hideBackArrow) ? 315 : 340,
+      marginRight: (!hideBackArrow) ? 315 : 0,
     },
     logoTalisis: {
       flexGrow: 1,

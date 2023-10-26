@@ -9,7 +9,10 @@ import React from "react";
 import { useTheme } from "@hooks/useTheme";
 import { IEventDetail, IInventaryRent } from "@interfaces/event-details";
 
-const EventDetail = ({ route: { params: { id } } }: StackScreenProps<NavigationScreens, 'EventDetail'>): JSX.Element => {
+const EventDetail = ({
+    route
+}: StackScreenProps<NavigationScreens, 'EventDetail'>): JSX.Element => {
+    const id = route.params.id
     const [event, setEvent] = useState<IEventDetail>({} as IEventDetail)
     const [loading, setLoading] = useState<boolean>(true)
 
@@ -20,7 +23,6 @@ const EventDetail = ({ route: { params: { id } } }: StackScreenProps<NavigationS
     const getDetails = async () => {
         try {
             const response = await eventService.getEventDetail(id) as IEventDetail
-            console.log(response.payments);
             
             setEvent(response)
         } catch (error) {

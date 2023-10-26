@@ -58,7 +58,7 @@ const Inventary = (): JSX.Element => {
         getInventary()
     }, [])
 
-    const keyExtractor = (item: (any), index: number): string => item.id_mob.toString()
+    const keyExtractor = (item: (any), index: number): string => item.id_mob.toString()+index
 
     const renderItem = ({
         item,
@@ -121,7 +121,6 @@ const Inventary = (): JSX.Element => {
                                     setInventary(totalInventary.slice(0, page * ITEMS_PEER_PAGE))
                                 }
                                 else if (value.length > 2) {
-                                    console.log(value, 'value');
                                     
                                     setPage(1)
                                     const total = totalInventary.filter((item: IInventary) => item.nombre_mob.toLocaleLowerCase().includes(value.toLocaleLowerCase()))
