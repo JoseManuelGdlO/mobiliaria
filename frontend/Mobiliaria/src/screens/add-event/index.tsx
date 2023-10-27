@@ -12,6 +12,9 @@ import { useNavigation } from "@react-navigation/native";
 import useReduxEvent from "@hooks/useEvent";
 import { IAvailability } from "@interfaces/availability";
 import DatePickerComponent from "@components/datepicker";
+import Toast from "react-native-toast-message";
+import { IInvDelivery } from "@interfaces/event-delivery";
+import AreYouSure from "@components/are-you-suere-modal";
 
 export enum ETypesPicker {
     Recolection = 1,
@@ -26,39 +29,101 @@ const AddEvent = ({
     const date = route.params.date
     const navigation = useNavigation<StackNavigationProp<NavigationScreens>>()
     const [event, setEvent] = useState<IEventDetail>({} as IEventDetail)
-    const [loading, setLoading] = useState<boolean>(true)
+    const [loading, setLoading] = useState<boolean>(false)
     const { inventaryRx, totalRx, eventRx } = useReduxEvent()
     const [total, setTotal] = useState<number>(totalRx)
     const [persentage, setPersentage] = useState<string>('')
     const [ flete, setFlete ] = useState<string>('')
     const [ iva, setIva ] = useState<boolean>(false)
-    const [datePickerMode, setDatePickerMode] = useState<"date" | "time" | "datetime">('date')
     const [ openModalPicker, setOpenModalPicker] = useState<boolean>(false)
 
     const [typePicker, setTypePicker] = useState<{ type: number, mode: "date" | "time" | "datetime" }>({ type: ETypesPicker.Recolection, mode: 'date' })
-    const[recolectedDay, setRecolectedDay] = useState<{date: string, hour: string}>({date: '', hour: ''})
+    const [ recolectedDay, setRecolectedDay] = useState<{date: string, hour: string}>({date: '', hour: ''})
     const [deliveredDay, setDeliveredDay] = useState<{ date: string, hour: string }>({ date: '', hour: '' })
+    const [ anticipo, SetAnticipo ] = useState<string>('')
+    const [detailsEvent, setDetailsEvent] = useState<{ titular: string, tipo: string, telefono: string, direccion: string, nombreEvento: string }>({ nombreEvento: '', titular: '', tipo: '', telefono: '', direccion: '' })
+    const [ openAlert, setOpenAlert ] = useState<boolean>(false)
 
     const animation = React.useRef(null);
 
     const { fonts, colors } = useTheme()
 
     const submit = () => {
-
-    }
-
-    const getDetails = async () => {
-        try {
-
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setLoading(false);
+        console.log(detailsEvent);
+        
+        if (inventaryRx.length === 0) {
+            Toast.show({
+                type: 'error',
+                text1: 'Error',
+                text2: 'No hay material agregado',
+                visibilityTime: 1000,
+                autoHide: true,
+                onHide: () => {
+                }
+            })
+            return
         }
+
+        if(detailsEvent.titular === '' || detailsEvent.tipo === '' || detailsEvent.telefono === '' || detailsEvent.direccion === '') {
+            Toast.show({
+                type: 'error',
+                text1: 'Error',
+                text2: 'Faltan campos por llenar',
+                visibilityTime: 1000,
+                autoHide: true,
+                onHide: () => {
+                }
+            })
+            return
+        }
+
+        const event: any = {
+            nombre_evento: detailsEvent.nombreEvento,
+            tipo_evento: detailsEvent.tipo,
+            fecha_envio_evento: date,
+            hora_envio_evento: deliveredDay.hour,
+            fecha_recoleccion_evento: recolectedDay.date,
+            hora_recoleccion_evento: recolectedDay.hour,
+            nombre_titular_evento: detailsEvent.titular,
+            direccion_evento: detailsEvent.direccion,
+            telefono_titular_evento: detailsEvent.telefono,
+            descuento: persentage ? parseInt(persentage) : 0,
+            ivavalor: iva ? 1 : 0,
+            fletevalor: flete ? Number(flete) : 0
+        }
+
+        event.pagado_evento = Number(anticipo) === total ? 1 : 0
+
+        const mobiliario: any = []
+
+        inventaryRx.forEach((item: IAvailability) => {
+            mobiliario.push({
+                fecha_evento: date,
+                hora_evento: deliveredDay.hour,
+                id_mob: item.id_mob,
+                ocupados: item.cantidad,
+                hora_recoleccion: recolectedDay.hour,
+                costo: item.costo_mob
+            })
+        })
+
+        const costo = {
+            costo_total: total,
+            anticipo: anticipo,
+            saldo: total - Number(anticipo)
+        }
+
+        const body = {
+            evento: event,
+            mobiliario: mobiliario,
+            costo
+        }
+
+        console.log(body);
     }
+        
+
     useEffect(() => {
-        setLoading(true)
-        getDetails()
     }, [])
 
 
@@ -112,21 +177,41 @@ const AddEvent = ({
                         <View style={{ paddingTop: 20, width: '100%' }}>
                             <View style={{ display: 'flex', flexDirection: 'row' }}>
                                 <View style={{ width: '20%' }}>
+                                    <Text style={{ fontFamily: fonts.Roboto.Bold, color: '#488aff', paddingTop: 10 }}>Nombre.- </Text>
                                     <Text style={{ fontFamily: fonts.Roboto.Bold, color: '#488aff', paddingTop: 10 }}>Titular.- </Text>
                                     <Text style={{ fontFamily: fonts.Roboto.Bold, color: '#488aff', paddingTop: 2 }}>Tipo evento.- </Text>
                                     <Text style={{ fontFamily: fonts.Roboto.Bold, color: '#488aff', paddingTop: 10 }}>Telefono.- </Text>
                                 </View>
                                 <View style={{ width: '80%', paddingEnd: 15 }}>
-                                    <TextInput placeholder="Emilio lozada" style={{ width: '70%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular }}></TextInput>
-                                    <TextInput placeholder="Boda" style={{ width: '70%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular }}></TextInput>
-                                    <TextInput placeholder="5553 381 1233" keyboardType="number-pad" style={{ width: '70%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular }}></TextInput>
+                                    <TextInput placeholder="Club rotario" onChangeText={(value: string) => {
+                                        setDetailsEvent({ ...detailsEvent, nombreEvento: value })
+                                    }}
+                                        style={{ width: '70%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular }}></TextInput>
+                                    <TextInput placeholder="Emilio lozada" onChangeText={(value: string) => {
+                                        setDetailsEvent({...detailsEvent, titular: value})
+                                    }} 
+                                    style={{ width: '70%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular }}></TextInput>
+                                    <TextInput placeholder="Boda"
+                                        onChangeText={(value: string) => {
+                                            setDetailsEvent({ ...detailsEvent, tipo: value })
+                                        }}
+                                        style={{ width: '70%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular }}></TextInput>
+                                    <TextInput placeholder="5553 381 1233" keyboardType="number-pad"
+                                        onChangeText={(value: string) => {
+                                            setDetailsEvent({ ...detailsEvent, telefono: value })
+                                        }}
+                                        style={{ width: '70%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular }}></TextInput>
                                 </View>
                             </View>
                         </View>
                     </View>
                     <View style={{ paddingHorizontal: 10, paddingTop: 15 }}>
                         <Text style={{ color: '#9E2EBE', fontFamily: fonts.Roboto.Medium, fontSize: 15 }}>Direccion:</Text>
-                        <TextInput placeholder="Acalpa 121-173, Col del Bosque, 34108 Durango, Dgo." style={{ width: '100%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular }}></TextInput>
+                        <TextInput placeholder="Acalpa 121-173, Col del Bosque, 34108 Durango, Dgo."
+                            onChangeText={(value: string) => {
+                                setDetailsEvent({ ...detailsEvent, direccion: value })
+                            }}
+                            style={{ width: '100%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular }}></TextInput>
                         <View style={{ display: 'flex', flexDirection: 'row', marginTop: 20 }}>
                             <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12, paddingTop: 10 }}>Fecha: </Text>
                             <TextInput editable={false} value={date} style={{ width: '90%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular, fontSize: 12 }} ></TextInput>
@@ -214,7 +299,6 @@ const AddEvent = ({
                     </View>
 
                     <TouchableOpacity onPress={() => {
-                        console.log('total', totalRx);
                         
                         setTotal(totalRx)
                         if(flete !== '') {
@@ -241,7 +325,9 @@ const AddEvent = ({
                         <Text style={{ fontFamily: fonts.Roboto.MediumItalic, fontSize: 15, paddingTop: 5, color: '#9E2EBE' }}>Anticipo </Text>
                     </View>
                     <View style={{ backgroundColor: 'rgba(0, 0, 0, 0.12)', width: '100%', minHeight: 30, borderRadius: 8, marginTop: 5, paddingHorizontal: 10, paddingBottom: 8 }}>
-                        <TextInput keyboardType="numeric" style={{ fontFamily: fonts.Roboto.Regular, fontSize: 25, paddingTop: 5 }}>{event?.event?.observaciones}</TextInput>
+                        <TextInput keyboardType="numeric"
+                            onChangeText={SetAnticipo}
+                            style={{ fontFamily: fonts.Roboto.Regular, fontSize: 25, paddingTop: 5 }}></TextInput>
                     </View>
                 </View>
             </ScrollView>
@@ -314,7 +400,7 @@ const AddEvent = ({
                         <Text style={{ fontFamily: fonts.Roboto.Regular, color: 'white', fontSize: 15 }}>Continuar</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => {
-                        navigation.goBack()
+                        setOpenAlert(true)
                     }}
                         style={{ height: 40, width: '20%', backgroundColor: 'red', justifyContent: 'center', alignItems: 'center', borderRadius: 5, marginTop: 10 }}>
                         <Text style={{ fontFamily: fonts.Roboto.Regular, color: 'white', fontSize: 15 }}>Cancelar</Text>
@@ -346,6 +432,15 @@ const AddEvent = ({
                 }
             }
             }></DatePickerComponent>
+            <AreYouSure open={openAlert} sure={() => {
+                setOpenAlert(false)
+                navigation.navigate('Home')
+            }}
+            notsure={() => {
+                setOpenAlert(false)
+            }}
+            ></AreYouSure>
+            <Toast />
         </View>
     )
 }

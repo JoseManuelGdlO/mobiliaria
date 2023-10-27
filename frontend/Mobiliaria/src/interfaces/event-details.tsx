@@ -45,4 +45,5 @@ export interface IInventaryRent {
     id_evento: number,
     id_fecha: number,
     fecha_evento: string
+    costo?: number
 }

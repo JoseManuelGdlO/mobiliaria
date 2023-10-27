@@ -55,7 +55,9 @@ router.get('/available', verifyToken, async function (req: any, res: any, next: 
 router.post('/add', verifyToken, async function (req: any, res: any, next: any) {
     try {
         const body = req.body;
-        res.status(201).json(await eventService.addEvent(body));
+        const bearer: any = jwt_decode(req.headers['authorization']);
+        let id = bearer.data.id_empresa;
+        res.status(201).json(await eventService.addEvent(body, id));
     } catch (err: any) {
         console.error(`Error while getting enarm students info `, err.message);
         next(err);
