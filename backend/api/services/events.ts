@@ -148,7 +148,7 @@ async function availiable(id: number, date: string) {
     }
 }
 
-async function addEvent(body: any) {
+async function addEvent(body: any, id: number) {
 
     const connection = await db.connection();
     await connection.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
@@ -158,7 +158,7 @@ async function addEvent(body: any) {
 
         const [event,] = await connection.execute(
             `INSERT INTO evento_mob (nombre_evento, id_empresa, tipo_evento, fecha_envio_evento, hora_envio_evento, fecha_recoleccion_evento, hora_recoleccion_evento, pagado_evento, nombre_titular_evento, direccion_evento ,telefono_titular_evento, descuento, iva, flete)
-            VALUES ('${body.evento.nombre_evento}',${body.evento.id_empresa}, '${body.evento.tipo_evento}', '${body.evento.fecha_envio_evento}',
+            VALUES ('${body.evento.nombre_evento}',${id}, '${body.evento.tipo_evento}', '${body.evento.fecha_envio_evento}',
                  	'${body.evento.hora_envio_evento}', '${body.evento.fecha_recoleccion_evento}', '${body.evento.hora_recoleccion_evento}',
                  		'${body.evento.pagado_evento}', '${body.evento.nombre_titular_evento}', '${body.evento.direccion_evento}', '${body.evento.telefono_titular_evento}',
                  		${body.evento.descuento}, ${body.evento.ivavalor}, ${body.evento.fletevalor})`
@@ -192,5 +192,6 @@ module.exports = {
     getEvents,
     getEventsOfDay,
     availiable,
+    addEvent,
     getDetails
 }
