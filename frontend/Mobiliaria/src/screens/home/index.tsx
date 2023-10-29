@@ -13,7 +13,7 @@ import Loading from "@components/loading";
 import PrimaryButton from "@components/PrimaryButton";
 import { NavigationScreens } from "@interfaces/navigation";
 import { useNavigation } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
+import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 
 LocaleConfig.locales['es'] = {
     monthNames: [
@@ -38,7 +38,10 @@ LocaleConfig.locales['es'] = {
 LocaleConfig.defaultLocale = 'es';
 
 
-const Home = (): JSX.Element => {
+const Home = ({
+    route
+}: StackScreenProps<NavigationScreens, 'Home'>): JSX.Element => {
+    const refresh = route.params?.refresh
     const navigation = useNavigation<StackNavigationProp<NavigationScreens>>()
     const [dates, setDates] = React.useState<MarkedDates>({});
     const [eventsDay, setEventsDay] = React.useState<any>([]);
@@ -68,7 +71,8 @@ const Home = (): JSX.Element => {
     const getEvents = async () => {
         try {
             const response = await eventService.getEvents()
-
+            console.log(response.data);
+            
             const dates: MarkedDates = {}
             for (const date of response.data) {
 
@@ -92,6 +96,7 @@ const Home = (): JSX.Element => {
         try {
 
             const response = await eventService.getEventsDay(date)
+            console.log(response.data, date);
 
             setEventsDay(response.data)
         } catch (error) {
@@ -100,6 +105,11 @@ const Home = (): JSX.Element => {
             setRefreshing(false);
         }
 
+    }
+
+    if (refresh) {
+        setLoading(true)
+        getEvents()
     }
 
     const keyExtractor = (item: (any), index: number): string => index.toString()
@@ -114,7 +124,6 @@ const Home = (): JSX.Element => {
 
     useEffect(() => {
         setLoading(true)
-        setRefreshing(true);
         getEvents()
         const date = new Date().toISOString().split('T')[0]
         const arrDate = date.split('-')

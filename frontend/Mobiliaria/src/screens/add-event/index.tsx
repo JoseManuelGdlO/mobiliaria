@@ -13,7 +13,7 @@ import useReduxEvent from "@hooks/useEvent";
 import { IAvailability } from "@interfaces/availability";
 import DatePickerComponent from "@components/datepicker";
 import Toast from "react-native-toast-message";
-import { IInvDelivery } from "@interfaces/event-delivery";
+import * as eventService from '@services/events'
 import AreYouSure from "@components/are-you-suere-modal";
 
 export enum ETypesPicker {
@@ -48,9 +48,8 @@ const AddEvent = ({
 
     const { fonts, colors } = useTheme()
 
-    const submit = () => {
-        console.log(detailsEvent);
-        
+    const submit = async () => {    
+        setLoading(true)    
         if (inventaryRx.length === 0) {
             Toast.show({
                 type: 'error',
@@ -119,7 +118,16 @@ const AddEvent = ({
             costo
         }
 
-        console.log(body);
+        try {
+            const response = await eventService.addEvent(body)
+            console.log(response);
+            navigation.navigate('Home', { refresh: true })
+            
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false)
+        }
     }
         
 
@@ -434,7 +442,7 @@ const AddEvent = ({
             }></DatePickerComponent>
             <AreYouSure open={openAlert} sure={() => {
                 setOpenAlert(false)
-                navigation.navigate('Home')
+                navigation.navigate('Home', { refresh: false })
             }}
             notsure={() => {
                 setOpenAlert(false)
