@@ -16,4 +16,15 @@ router.get('/getPayments', verifyToken, async function (req: any, res: any, next
     }
 });
 
+router.put('/addPayment', verifyToken, async function (req: any, res: any, next: any) {
+    try {
+        const body = req.body;
+        res.status(201).json(await paymentsService.addPayment(body));
+    } catch (err: any) {
+        console.error(`Error while getting enarm students info `, err.message);
+        next(err);
+    }
+}); 
+
+
 module.exports = router;

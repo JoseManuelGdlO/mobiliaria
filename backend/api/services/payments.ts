@@ -28,6 +28,31 @@ async function getPayments(id: number) {
     }
 }
 
+
+async function addPayment(body: any) {
+    let code = 200;
+
+    const rows = await db.query(
+        `INSERT INTO pagos_mob (id_evento, costo_total, saldo, anticipo, fecha, abono ) VALUE
+            (${body.id_evento}, ${body.total}, ${body.saldo}, ${body.anticipo}, ${new Date().toISOString().split('T')[0]}, ${body.abono})`
+    );
+
+    let data = helper.emptyOrRows(rows);
+    if (data.length === 0) {
+        code = 404;
+        return {
+            data,
+            code
+        }
+    }
+
+    return {
+        data,
+        code
+    }
+}
+
 module.exports = {
-    getPayments
+    getPayments,
+    addPayment
 }

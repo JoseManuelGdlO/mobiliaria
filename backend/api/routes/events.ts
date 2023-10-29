@@ -20,7 +20,8 @@ router.get('/getEvents', verifyToken, async function (req: any, res: any, next: 
 
 router.get('/getEventsDay', verifyToken, async function (req: any, res: any, next: any) {
     try {
-        let id = req.query.id;
+        const bearer: any = jwt_decode(req.headers['authorization']);
+        let id = bearer.data.id_empresa;
         let date = req.query.date;
         res.status(201).json(await eventService.getEventsOfDay(id, date));
     } catch (err: any) {

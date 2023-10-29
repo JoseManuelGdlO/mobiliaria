@@ -96,6 +96,8 @@ async function getDetails(id: number) {
 
 async function getEventsOfDay(id: number, date: string) {
     let code = 200;
+    console.log(date, id);
+    
 
     const rows = await db.query(
         `SELECT distinct a.id_evento, a.nombre_evento, a.tipo_evento, a.fecha_envio_evento, a.hora_envio_evento,
@@ -167,13 +169,13 @@ async function addEvent(body: any, id: number) {
         for (const mobiliario of body.mobiliario) {
             await connection.execute(
                 `INSERT INTO inventario_disponibilidad_mob (fecha_evento, hora_evento, id_mob, ocupados, id_evento, hora_recoleccion, costo)
-                VALUES (${mobiliario.fecha_evento}, ${mobiliario.hora_evento}, ${mobiliario.id_mob}, ${mobiliario.ocupados},${event.insertId}, ${mobiliario.hora_recoleccion}, ${mobiliario.costo})`
+                VALUES (${mobiliario.fecha_evento}, '${mobiliario.hora_evento}', ${mobiliario.id_mob}, ${mobiliario.ocupados},${event.insertId}, '${mobiliario.hora_recoleccion}', ${mobiliario.costo})`
             );
         }
 
         const [paymenth,] = await connection.execute(
             `INSERT INTO pagos_mob (id_evento, costo_total, saldo, anticipo)
-            VALUES ('${event.insertId}','${body.costo.costo_total}','${body.costo.saldo}','${body.costo.anticipo}'))`
+            VALUES (${event.insertId},${body.costo.costo_total},${body.costo.saldo},${body.costo.anticipo})`
         );
 
         await connection.commit()

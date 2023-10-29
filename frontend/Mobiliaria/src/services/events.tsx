@@ -1,5 +1,5 @@
 import useReduxUser from "@hooks/useReduxUser"
-import { GET_AVAILABLE_DAY_PATH, GET_DETAILS_EVENT_PATH, GET_EVENTS_DAY_PATH, GET_EVENTS_PATH } from "./endpoints"
+import { CREATE_EVENT, GET_AVAILABLE_DAY_PATH, GET_DETAILS_EVENT_PATH, GET_EVENTS_DAY_PATH, GET_EVENTS_PATH } from "./endpoints"
 import axios from 'axios'
 import { getAccessTokenAsync } from "@utils/token"
 
@@ -83,6 +83,28 @@ export const getAvailableDay = async (date: string): Promise<any> => {
 
     return await instance
         .get(url)
+        .then(async response => {
+            return response.data.data
+        })
+        .catch(async error => {
+            return await Promise.reject(error)
+        })
+}
+
+export const addEvent = async (body: any): Promise<any> => {
+    const url = `${process.env.API_URL}${CREATE_EVENT}`
+
+    const instance = axios.create({
+        baseURL: url,
+        headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${await getAccessTokenAsync()}`,
+            'content-Type': 'application/json',
+        }
+    })
+
+    return await instance
+        .post(url, body)
         .then(async response => {
             return response.data.data
         })

@@ -1,7 +1,9 @@
 export type NavigationScreens =
     {
         Login: undefined,
-        Home: undefined,
+        Home: {
+            refresh: boolean
+        },
         Inventary: undefined,
         Payments: undefined,
         Workers: undefined,
