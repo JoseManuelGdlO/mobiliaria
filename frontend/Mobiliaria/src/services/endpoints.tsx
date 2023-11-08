@@ -10,6 +10,9 @@ export const GET_EVENTS_DAY_PATH = API_EVENTS + '/getEventsDay'
 export const GET_DETAILS_EVENT_PATH = API_EVENTS + '/getDetail'
 export const GET_AVAILABLE_DAY_PATH = API_EVENTS + '/available'
 export const CREATE_EVENT = API_EVENTS + '/add'
+export const ADD_OBS = API_EVENTS + '/observaciones'
+export const STATUS_DELIVERY = API_EVENTS + '/status'
+export const ADD_ITEMS = API_EVENTS + '/additems'
 
 export const LOGIN_PATH = API_AUTH + '/login'
 

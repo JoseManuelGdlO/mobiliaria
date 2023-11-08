@@ -4,6 +4,8 @@ import { getAccessTokenAsync } from "@utils/token"
 
 export const getInventary = async (): Promise<any> => {
     const url = `${process.env.API_URL}${GET_INVENTARY}`
+    console.log(url);
+    
 
     const instance = axios.create({
         baseURL: url,

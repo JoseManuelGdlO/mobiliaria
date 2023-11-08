@@ -1,5 +1,5 @@
 import { NavigationScreens } from "@interfaces/navigation";
-import { StackScreenProps } from "@react-navigation/stack";
+import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 import { useEffect, useState } from "react";
 import { FlatList, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native"
 import * as eventService from '../../services/events';
@@ -10,14 +10,19 @@ import { useTheme } from "@hooks/useTheme";
 import { IEventDetail, IInventaryRent } from "@interfaces/event-details";
 import Toast from "react-native-toast-message";
 import * as paymentService from '../../services/payments';
+import AreYouSure from "@components/are-you-suere-modal";
+import { useNavigation } from "@react-navigation/native";
 
 const EventDetail = ({
     route
 }: StackScreenProps<NavigationScreens, 'EventDetail'>): JSX.Element => {
+    const navigation = useNavigation<StackNavigationProp<NavigationScreens>>()
     const id = route.params.id
     const [event, setEvent] = useState<IEventDetail>({} as IEventDetail)
     const [loading, setLoading] = useState<boolean>(true)
     const [abono, setAbono] = useState<string>('')
+    const [obs, setObs] = useState<string>('')
+    const [openAlert, setOpenAlert] = useState<boolean>(false)
 
     const animation = React.useRef(null);
 
@@ -27,6 +32,7 @@ const EventDetail = ({
         try {
             const response = await eventService.getEventDetail(id) as IEventDetail
             console.log(response);
+            setObs(response?.event?.observaciones)
             
             setEvent(response)
         } catch (error) {
@@ -67,6 +73,44 @@ const EventDetail = ({
                 </TouchableOpacity>
             </View>
         )
+    }
+
+    const changeStatus = async () => {
+        if (event?.event?.entregado === 0) {
+            event.event.entregado = 1
+            setEvent(event)
+        } else if(event?.event?.recolectado === 0) {
+            event.event.recolectado = 1
+            setEvent(event)
+        } else {
+            Toast.show({
+                type: 'error',
+                text1: 'Error',
+                text2: 'El evento ya esta entregado y recolectado',
+                visibilityTime: 1000,
+                autoHide: true
+            })
+            return
+        }
+
+        try {
+            await eventService.changeStatus(event?.event?.id_evento, event?.event?.entregado, event?.event?.recolectado)
+            Toast.show({
+                type: 'success',
+                text1: 'Hecho',
+                text2: 'se ha agregado la observacion',
+                visibilityTime: 1000,
+                autoHide: true
+            })
+
+        } catch (error) {
+            console.log(error);
+        }
+
+    }
+
+    const addItems = () => {
+        navigation.navigate('Available', { date: event?.event?.fecha_envio_evento.split('T')[0], id: event?.event?.id_evento })
     }
 
     return (
@@ -154,9 +198,13 @@ const EventDetail = ({
                                 }}>
                                     {event?.event?.recolectado === 0 ? 'No recolectado' : 'Recolectado'}</Text>
                             </View>
-                            {/* <TouchableOpacity style={{ backgroundColor: 'red', borderRadius: 20, paddingHorizontal: 30, justifyContent: 'center' }}>
-                            <Text style={{ fontFamily: fonts.Roboto.Black, fontSize: 12, color: colors.black }}>Eliminar</Text>
-                        </TouchableOpacity> */}
+                            <TouchableOpacity
+                                onPress={() => setOpenAlert(true)}
+                                style={{ backgroundColor: '#488aff', borderRadius: 20, paddingHorizontal: 15, justifyContent: 'center' }}>
+                                <Text style={{ fontFamily: fonts.Roboto.Medium, fontSize: 10, color: colors.black }}>
+                                        {event?.event?.entregado === 0 ? 'Entregar' : 'Recolectar'}
+                                </Text>
+                            </TouchableOpacity>
                         </View>
                         <View style={{
                             flexDirection: 'row',
@@ -165,12 +213,44 @@ const EventDetail = ({
                             marginTop: 10
                         }}>
                             <Text style={{ fontFamily: fonts.Roboto.MediumItalic, fontSize: 12, paddingTop: 5 }}>Observaciones </Text>
-                            <TouchableOpacity style={{ backgroundColor: '#488aff', alignItems: 'center', borderRadius: 20, paddingHorizontal: 15, paddingVertical: 3 }}>
+                            <TouchableOpacity
+                                onPress={async () => {
+
+                                if (obs === event.event.observaciones) {
+                                    Toast.show({
+                                        type: 'error',
+                                        text1: 'Error',
+                                        text2: 'No hay cambios en las observaciones',
+                                        visibilityTime: 1000,
+                                        autoHide: true
+                                    })
+                                    return
+                                }
+                                setLoading(true)
+
+                                try {
+                                    await eventService.addObservation(obs, event?.event?.id_evento)
+                                    Toast.show({
+                                        type: 'success',
+                                        text1: 'Hecho',
+                                        text2: 'se ha agregado la observacion',
+                                        visibilityTime: 1000,
+                                        autoHide: true
+                                    })
+                                    getDetails()
+
+                                } catch (error) {
+                                    console.log(error);
+                                    setLoading(false)
+                                }
+
+                            }}
+                                 style={{ backgroundColor: '#488aff', alignItems: 'center', borderRadius: 20, paddingHorizontal: 15, paddingVertical: 3 }}>
                                 <Text style={{ fontFamily: fonts.Roboto.MediumItalic, fontSize: 12, color: colors.black }}>Agregar Obs</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={{ backgroundColor: 'rgba(0, 0, 0, 0.12)', width: '100%', minHeight: 30, borderRadius: 8, marginTop: 5, paddingHorizontal: 10, paddingBottom: 8 }}>
-                            <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12, paddingTop: 5 }}>{event?.event?.observaciones}</Text>
+                            <TextInput placeholder="agrega aqui si tienes observaciones" onChangeText={setObs} value={obs} style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12, paddingTop: 5 }}></TextInput>
                         </View>
                     </View>
                 </View>
@@ -192,11 +272,13 @@ const EventDetail = ({
                                     <Text style={{ fontFamily: fonts.Roboto.MediumItalic, marginTop: 5, fontSize: 12 }}>Abonos </Text>
                                     <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12 }}>{event?.payments.map((item, index) => {
                                         const comma = index !== event?.payments.length+1 ? ', ' : ''
+                                        
+                                        if(!item.abono) return
                                         return item.abono + comma
                                     })} </Text>
 
 
-                                    <TextInput placeholder="100" onChangeText={setAbono}
+                                    <TextInput placeholder="Ingrese abono" onChangeText={setAbono}
                                         style={{ width: '100%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular }}></TextInput>
                                     <TouchableOpacity disabled={abono.length === 0} onPress={ async () => {
                                         
@@ -250,7 +332,6 @@ const EventDetail = ({
                                         height: 150,
                                         backgroundColor: 'transparent',
                                     }}
-                                    // Find more Lottie files at https://lottiefiles.com/featured
                                     source={require('../../assets/images/lottie/followpayment.json')}
                                 />
                             </View>
@@ -265,7 +346,7 @@ const EventDetail = ({
                     keyExtractor={keyExtractor}
                     ListFooterComponent={() => {
                         return (
-                            <TouchableOpacity style={{ justifyContent: 'center', alignItems: 'center' }}>
+                            <TouchableOpacity onPress={addItems} style={{ justifyContent: 'center', alignItems: 'center' }}>
                                 <Text style={{ fontFamily: fonts.Roboto.Bold, color: '#488aff', fontSize: 16 }}>Agregar material</Text>
                             </TouchableOpacity>
                         )
@@ -278,6 +359,14 @@ const EventDetail = ({
             </TouchableOpacity>
             <Loading loading={loading}></Loading>
             <Toast />
+            <AreYouSure open={openAlert} sure={() => {
+                changeStatus()
+                setOpenAlert(false)
+            }}
+                notsure={() => {
+                    setOpenAlert(false)
+                }}
+            ></AreYouSure>
         </>
     )
 }

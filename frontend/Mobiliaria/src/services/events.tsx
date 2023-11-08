@@ -1,10 +1,12 @@
 import useReduxUser from "@hooks/useReduxUser"
-import { CREATE_EVENT, GET_AVAILABLE_DAY_PATH, GET_DETAILS_EVENT_PATH, GET_EVENTS_DAY_PATH, GET_EVENTS_PATH } from "./endpoints"
+import { ADD_ITEMS, ADD_OBS, CREATE_EVENT, GET_AVAILABLE_DAY_PATH, GET_DETAILS_EVENT_PATH, GET_EVENTS_DAY_PATH, GET_EVENTS_PATH, STATUS_DELIVERY } from "./endpoints"
 import axios from 'axios'
 import { getAccessTokenAsync } from "@utils/token"
+import { IAvailability } from "@interfaces/availability"
 
 export const getEvents = async (): Promise<any> => {
     const url = `${process.env.API_URL}${GET_EVENTS_PATH}?id=1`
+    console.log(url);
 
     const instance = axios.create({
         baseURL: url,
@@ -27,6 +29,7 @@ export const getEvents = async (): Promise<any> => {
 
 export const getEventsDay = async (date: string): Promise<any> => {
     const url = `${process.env.API_URL}${GET_EVENTS_DAY_PATH}?id=1&date=${date}`
+    console.log(url);
 
     const instance = axios.create({
         baseURL: url,
@@ -49,6 +52,7 @@ export const getEventsDay = async (date: string): Promise<any> => {
 
 export const getEventDetail = async (id: number): Promise<any> => {
     const url = `${process.env.API_URL}${GET_DETAILS_EVENT_PATH}?id=${id}`
+    console.log(url);
 
     const instance = axios.create({
         baseURL: url,
@@ -61,7 +65,7 @@ export const getEventDetail = async (id: number): Promise<any> => {
 
     return await instance
         .get(url)
-        .then(async response => {        
+        .then(async response => {
             return response.data.event
         })
         .catch(async error => {
@@ -71,6 +75,7 @@ export const getEventDetail = async (id: number): Promise<any> => {
 
 export const getAvailableDay = async (date: string): Promise<any> => {
     const url = `${process.env.API_URL}${GET_AVAILABLE_DAY_PATH}?date=${date}`
+    console.log(url);
 
     const instance = axios.create({
         baseURL: url,
@@ -93,6 +98,7 @@ export const getAvailableDay = async (date: string): Promise<any> => {
 
 export const addEvent = async (body: any): Promise<any> => {
     const url = `${process.env.API_URL}${CREATE_EVENT}`
+    console.log(url);
 
     const instance = axios.create({
         baseURL: url,
@@ -107,6 +113,85 @@ export const addEvent = async (body: any): Promise<any> => {
         .post(url, body)
         .then(async response => {
             return response.data.data
+        })
+        .catch(async error => {
+            return await Promise.reject(error)
+        })
+}
+
+
+
+export const addObservation = async (obs: string, id: number): Promise<any> => {
+    const url = `${process.env.API_URL}${ADD_OBS}`
+
+    const instance = axios.create({
+        baseURL: url,
+        headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${await getAccessTokenAsync()}`,
+            'content-Type': 'application/json',
+        }
+    })
+
+    const body = {
+        id,
+        observaciones: obs
+    }
+
+    return await instance
+        .put(url, body)
+        .then(async response => {
+            return response.data.data
+        })
+        .catch(async error => {
+            return await Promise.reject(error)
+        })
+}
+
+export const changeStatus = async (id: number, delivered: number, recolected: number): Promise<any> => {
+    const url = `${process.env.API_URL}${STATUS_DELIVERY}?id=${id}&delivered=${delivered}&recolected=${recolected}`
+
+    const instance = axios.create({
+        baseURL: url,
+        headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${await getAccessTokenAsync()}`,
+            'content-Type': 'application/json',
+        }
+    })
+
+    return await instance
+        .put(url)
+        .then(async response => {
+            return response.data.data
+        })
+        .catch(async error => {
+            return await Promise.reject(error)
+        })
+}
+
+export const addItemsToEvent = async (id: number, items: IAvailability[]): Promise<any> => {
+    const url = `${process.env.API_URL}${ADD_ITEMS}`
+    const body = {
+        id,
+        items
+    }
+
+    const instance = axios.create({
+        baseURL: url,
+        headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${await getAccessTokenAsync()}`,
+            'content-Type': 'application/json',
+        }
+    })
+
+    return await instance
+        .post(url, body)
+        .then(async response => {
+            console.log(response);
+            
+            return response
         })
         .catch(async error => {
             return await Promise.reject(error)

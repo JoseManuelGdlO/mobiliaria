@@ -107,10 +107,6 @@ const Home = ({
 
     }
 
-    if (refresh) {
-        setLoading(true)
-        getEvents()
-    }
 
     const keyExtractor = (item: (any), index: number): string => index.toString()
 
@@ -126,7 +122,12 @@ const Home = ({
         setLoading(true)
         getEvents()
         const date = new Date().toISOString().split('T')[0]
-        const arrDate = date.split('-')
+        const arrDate = date.split('-') 
+        
+        if (refresh) {
+            setLoading(true)
+            getEvents()
+        }
         
         setRequestDate(`${arrDate[2]}-${arrDate[1]}-${arrDate[0]}`)
         setDateEvent(`${arrDate[2]} de ${monthToString(Number(arrDate[1]))}`)

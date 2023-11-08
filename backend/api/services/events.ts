@@ -190,10 +190,94 @@ async function addEvent(body: any, id: number) {
 }
 
 
+
+async function addItems(body: any) {
+
+    const connection = await db.connection();
+    await connection.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
+
+    await connection.beginTransaction();
+    try {
+        let [event,] = await connection.execute(
+            `SELECT * FROM evento_mob WHERE id_evento = ${body.id}`
+        );
+        event = event[0]
+        console.log(event);
+        
+
+        for (const mobiliario of body.items) {
+            await connection.execute(
+                `INSERT INTO inventario_disponibilidad_mob (fecha_evento, hora_evento, id_mob, ocupados, id_evento, hora_recoleccion, costo)
+                VALUES (${event.fecha_envio_evento.toISOString().split('T')[0]}, '${event.hora_envio_evento}', ${mobiliario.id_mob}, ${mobiliario.cantidad_mob}, ${body.id}, '${event.fecha_recoleccion_evento.toISOString().split('T')[0]}', ${mobiliario.costo_mob})`
+            );
+        }
+
+        await connection.commit()
+        return 201
+    } catch (error) {
+        console.error(error);
+        connection.rollback();
+        console.info('Rollback successful');
+        return 405
+    }
+}
+
+async function updateObvs(body: any) {
+    let code = 200;
+    
+    const rows = await db.query(
+        `UPDATE evento_mob SET observaciones = '${body.observaciones}'
+                WHERE id_evento = ${body.id}`
+    );
+
+    let data = helper.emptyOrRows(rows);
+    if (data.length === 0) {
+        code = 404;
+        return {
+            data,
+            code
+        }
+    }
+
+    return {
+        data,
+        code
+    }
+}
+
+async function changeStatus(id: number, delivered: number, recolected: number) {
+    let code = 200;
+    console.log(id, delivered, recolected);
+    
+
+    const rows = await db.query(
+        `UPDATE evento_mob SET entregado = '${delivered}', recolectado = '${recolected}'
+                WHERE id_evento = ${id}`
+    );
+
+    let data = helper.emptyOrRows(rows);
+    if (data.length === 0) {
+        code = 404;
+        return {
+            data,
+            code
+        }
+    }
+
+    return {
+        data,
+        code
+    }
+}
+
+
 module.exports = {
     getEvents,
     getEventsOfDay,
     availiable,
     addEvent,
-    getDetails
+    updateObvs,
+    getDetails,
+    changeStatus,
+    addItems
 }

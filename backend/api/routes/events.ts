@@ -63,6 +63,42 @@ router.post('/add', verifyToken, async function (req: any, res: any, next: any) 
         console.error(`Error while getting enarm students info `, err.message);
         next(err);
     }
+}); 
+
+router.put('/observaciones', verifyToken, async function (req: any, res: any, next: any) {
+    try {
+        let body = req.body
+        res.status(201).json(await eventService.updateObvs(body));
+    } catch (err: any) {
+        console.error(`Error while getting enarm students info `, err.message);
+        next(err);
+    }
 });
+
+router.put('/status', verifyToken, async function (req: any, res: any, next: any) {
+    try {
+        let id = req.query.id
+        let delivered = req.query.delivered
+        let recolected = req.query.recolected
+        const response = await eventService.changeStatus(id, delivered, recolected);
+        res.status(response.code).json(response.data);
+    } catch (err: any) {
+        console.error(`Error while getting enarm students info `, err.message);
+        next(err);
+    }
+});
+
+router.post('/additems', verifyToken, async function (req: any, res: any, next: any) {
+    try {
+        let body = req.body
+        console.log(body);
+        
+        const response = await eventService.addItems(body);
+        res.status(response);
+    } catch (err: any) {
+        console.error(`Error while getting enarm students info `, err.message);
+        next(err);
+    }
+}); 
 
 module.exports = router;

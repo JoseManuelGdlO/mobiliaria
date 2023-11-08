@@ -13,7 +13,8 @@ export type NavigationScreens =
             id: number
         },
         Available: {
-            date: string
+            date: string,
+            id?: number
         },
         AddEvent: {
             date: string
