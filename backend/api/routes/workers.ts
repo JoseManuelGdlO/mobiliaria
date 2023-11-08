@@ -29,4 +29,56 @@ router.get('/getEventsDay', verifyToken, async function (req: any, res: any, nex
         next(err);
     }
 });
+
+
+router.post('/addWorker', verifyToken, async function (req: any, res: any, next: any) {
+    try {
+        const bearer: any = jwt_decode(req.headers['authorization']);
+        let id = bearer.data.id_empresa;
+
+        let body = req.body;
+        const response = await workersService.addWorker(body, id)
+        res.status(response.code).json(response.data);
+    } catch (err: any) {
+        console.error(`Error while getting enarm students info `, err.message);
+        next(err);
+    }
+});
+
+
+router.delete('/remove', verifyToken, async function (req: any, res: any, next: any) {
+    try {
+        let id = req.query.id;
+        const response = await workersService.remove(id)
+        res.status(response.code).json(response.data);
+    } catch (err: any) {
+        console.error(`Error while getting enarm students info `, err.message);
+        next(err);
+    }
+});
+
+
+router.put('/active', verifyToken, async function (req: any, res: any, next: any) {
+    try {
+        let id = req.query.id;
+        let type = req.query.type;
+        const response = await workersService.active(type, id)
+        res.status(response.code).json(response.data);
+    } catch (err: any) {
+        console.error(`Error while getting enarm students info `, err.message);
+        next(err);
+    }
+});
+
+router.get('/gen', verifyToken, async function (req: any, res: any, next: any) {
+    try {
+        let id = req.query.id;
+        const response = await workersService.generePass(id)
+        res.status(response.code).json(response.data);
+    } catch (err: any) {
+        console.error(`Error while getting enarm students info `, err.message);
+        next(err);
+    }
+});
+
 module.exports = router;

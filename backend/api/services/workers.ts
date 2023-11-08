@@ -1,5 +1,6 @@
 import { db } from './db';
 import { helper } from '../helper';
+import { generatePassword } from '../libs/encrypt';
 
 async function getWorkers(id: number) {
     let code = 200;
@@ -89,7 +90,105 @@ async function getEventsDay(id: number, date: string) {
     }
 }
 
+
+async function addWorker(body: any, id: number) {
+    let code = 200;
+
+    const rows = await db.query(
+        `INSERT INTO usuarios_mobiliaria (id_empresa, nombre_comp, contrasena, usuario, rol_usuario, fecha_creacion, correo, active)
+        VALUES ('${id}', '${body.name}', '${body.pass}', '${body.user}', '${body.userType}', '${body.creation}', '${body.email}', ${body.active});`
+    );
+
+    let data = helper.emptyOrRows(rows);
+    if (data.length === 0) {
+        code = 404;
+        return {
+            data,
+            code
+        }
+    }
+
+    return {
+        data,
+        code
+    }
+}
+
+async function active(type: number, id: number) {
+    let code = 200;
+
+    const rows = await db.query(
+        `UPDATE usuarios_mobiliaria SET active = ${type}
+                WHERE id_usuario = ${id}`
+    );
+
+    let data = helper.emptyOrRows(rows);
+    if (data.length === 0) {
+        code = 404;
+        return {
+            data,
+            code
+        }
+    }
+
+    return {
+        data,
+        code
+    }
+}
+
+async function remove(id: number) {
+    let code = 200;
+
+
+    const rows = await db.query(
+        `UPDATE usuarios_mobiliaria SET delete_usuario = 1
+                WHERE id_usuario = ${id}`
+    );
+
+    let data = helper.emptyOrRows(rows);
+    if (data.length === 0) {
+        code = 404;
+        return {
+            data,
+            code
+        }
+    }
+
+    return {
+        data,
+        code
+    }
+}
+
+async function generePass(id: number) {
+    let code = 200;
+
+    const rows = await db.query(
+        `UPDATE usuarios_mobiliaria SET contrasena = ${generatePassword()}
+                WHERE id_usuario = ${id}`
+    );
+
+    let data = helper.emptyOrRows(rows);
+    if (data.length === 0) {
+        code = 404;
+        return {
+            data,
+            code
+        }
+    }
+
+    return {
+        data,
+        code
+    }
+}
+
 module.exports = {
     getWorkers,
-    getEventsDay
+    getEventsDay,
+    addWorker,
+    remove,
+    active,
+    generePass
 }

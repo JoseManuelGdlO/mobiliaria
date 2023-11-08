@@ -27,6 +27,8 @@ const Availability = ({
     if (date.includes('T')) {
         date = date.split('T')[0]
     }
+    let id = route.params.id
+
     const dispatch = useDispatch()
 
     const navigation = useNavigation<StackNavigationProp<NavigationScreens>>()
@@ -41,13 +43,18 @@ const Availability = ({
     const [modalVisible, setModalVisible] = React.useState(false)
     const [itemSelected, setItemSelected] = React.useState<IAvailability>({} as IAvailability)
     const [ inputvalue, setInputValue ] = React.useState<string>('')
-    const[errorInput, setErrorInput] = React.useState<string>('')
+    const [errorInput, setErrorInput] = React.useState<string>('')
 
     const { fonts, colors } = useTheme()
 
     const submitInv = () => {
         if (invSelected.length === 0) {
             toast('Error', 'no has seleccionado nada de inventario', 'error')
+            return
+        }
+        console.log('id', id);
+        if (id) {
+            addItemsToEvent()
             return
         }
         dispatch(setInventaryRx(invSelected))
@@ -150,6 +157,16 @@ const Availability = ({
                 }
             </>
         )
+    }
+
+    const addItemsToEvent = async () => {
+        try {
+            const response = await eventsService.addItemsToEvent(Number(id), invSelected)
+            console.log(response);
+            navigation.goBack()
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (
@@ -286,7 +303,6 @@ const Availability = ({
                                 containerStyle={{ width: '50%', height: 30, paddingVertical: 1 }}
                                 textStyle={{ fontSize: 12, color: colors.black }}
                                 onPress={() => {
-
                                     let exist = false
                                     let localtotal = 0
                                     for (const inv of invSelected) {
