@@ -101,4 +101,16 @@ router.post('/additems', verifyToken, async function (req: any, res: any, next: 
     }
 }); 
 
+router.delete('/remove', verifyToken, async function (req: any, res: any, next: any) {
+    try {
+        let id = req.query.id
+
+        const response = await eventService.remove(id);
+        res.status(response);
+    } catch (err: any) {
+        console.error(`Error while getting enarm students info `, err.message);
+        next(err);
+    }
+}); 
+
 module.exports = router;

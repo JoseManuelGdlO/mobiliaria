@@ -46,6 +46,18 @@ router.post('/addWorker', verifyToken, async function (req: any, res: any, next:
 });
 
 
+router.put('/editWorker', verifyToken, async function (req: any, res: any, next: any) {
+    try {
+        let body = req.body;
+        const response = await workersService.editWorker(body)
+        res.status(response.code).json(response.data);
+    } catch (err: any) {
+        console.error(`Error while getting enarm students info `, err.message);
+        next(err);
+    }
+});
+
+
 router.delete('/remove', verifyToken, async function (req: any, res: any, next: any) {
     try {
         let id = req.query.id;

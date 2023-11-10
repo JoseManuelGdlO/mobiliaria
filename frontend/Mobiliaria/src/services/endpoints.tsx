@@ -13,12 +13,19 @@ export const CREATE_EVENT = API_EVENTS + '/add'
 export const ADD_OBS = API_EVENTS + '/observaciones'
 export const STATUS_DELIVERY = API_EVENTS + '/status'
 export const ADD_ITEMS = API_EVENTS + '/additems'
+export const REMOVE_EVENT = API_EVENTS + '/remove'
 
 export const LOGIN_PATH = API_AUTH + '/login'
 
 export const GET_INVENTARY = API_INVENTARY + '/getInventary'
+export const ADD_INVENTARY = API_INVENTARY + '/addInventary'
+export const UPDATE_INVENTARY = API_INVENTARY + '/updateInventary'
+export const REMOVE_INVENTARY = API_INVENTARY + '/removeInventary'
 
 export const GET_WORKERS = API_WORKERS + '/getWorkers'
+export const ADD_WORKER = API_WORKERS + '/addWorker'
+export const EDIT_WORKER = API_WORKERS + '/editWorker'
+export const ACTIVE_WORKER = API_WORKERS + '/active'
 export const GET_WORKERS_EVENTS = API_WORKERS + '/getEventsDay'
 
 export const GET_CLIENTS = API_CLIENTS + '/getClients'

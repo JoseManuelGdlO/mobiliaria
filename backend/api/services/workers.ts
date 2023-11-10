@@ -114,6 +114,29 @@ async function addWorker(body: any, id: number) {
     }
 }
 
+async function editWorker(body: any) {
+    let code = 200;
+
+    const rows = await db.query(
+        `UPDATE usuarios_mobiliaria SET nombre_comp = '${body.nombre_comp}', contrasena = '${body.contrasena}', usuario = '${body.usuario}', rol_usuario = '${body.rol_usuario}', fecha_creacion = '${body.fecha_creacion}', correo = '${body.correo}', active = 1
+                WHERE id_usuario = ${body.id_usuario}`
+    );
+
+    let data = helper.emptyOrRows(rows);
+    if (data.length === 0) {
+        code = 404;
+        return {
+            data,
+            code
+        }
+    }
+
+    return {
+        data,
+        code
+    }
+}
+
 async function active(type: number, id: number) {
     let code = 200;
 
@@ -136,6 +159,8 @@ async function active(type: number, id: number) {
         code
     }
 }
+
+
 
 async function remove(id: number) {
     let code = 200;
@@ -190,5 +215,6 @@ module.exports = {
     addWorker,
     remove,
     active,
-    generePass
+    generePass,
+    editWorker
 }

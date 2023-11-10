@@ -31,25 +31,50 @@ async function getPayments(id: number) {
 
 async function addPayment(body: any) {
     let code = 200;
+    const connection = await db.connection();
+    await connection.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
 
-    const rows = await db.query(
-        `INSERT INTO pagos_mob (id_evento, costo_total, saldo, anticipo, fecha, abono ) VALUE
+    await connection.beginTransaction();
+
+    try {
+        const rows = await connection.execute(
+            `INSERT INTO pagos_mob (id_evento, costo_total, saldo, anticipo, fecha, abono ) VALUE
             (${body.id_evento}, ${body.total}, ${body.saldo}, ${body.anticipo}, ${new Date().toISOString().split('T')[0]}, ${body.abono})`
-    );
+        );
 
-    let data = helper.emptyOrRows(rows);
-    if (data.length === 0) {
-        code = 404;
+        let data = helper.emptyOrRows(rows);
+        if (data.length === 0) {
+            code = 404;
+            return {
+                data,
+                code
+            }
+        }
+
+        if (body.saldo === 0) {
+            await connection.execute(
+                `UPDATE evento_mob SET status = '1' WHERE id_evento = ${body.id_evento}`
+            );
+        }
+
+        await connection.commit()
+
         return {
             data,
             code
         }
+
+
+    } catch (error) {
+        console.error(error);
+        connection.rollback();
+        console.info('Rollback successful');
+        return {
+            data: error,
+            code: 405
+        }
     }
 
-    return {
-        data,
-        code
-    }
 }
 
 module.exports = {
