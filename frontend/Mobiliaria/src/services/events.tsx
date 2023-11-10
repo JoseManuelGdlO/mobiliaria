@@ -1,5 +1,5 @@
 import useReduxUser from "@hooks/useReduxUser"
-import { ADD_ITEMS, ADD_OBS, CREATE_EVENT, GET_AVAILABLE_DAY_PATH, GET_DETAILS_EVENT_PATH, GET_EVENTS_DAY_PATH, GET_EVENTS_PATH, STATUS_DELIVERY } from "./endpoints"
+import { ADD_ITEMS, ADD_OBS, CREATE_EVENT, GET_AVAILABLE_DAY_PATH, GET_DETAILS_EVENT_PATH, GET_EVENTS_DAY_PATH, GET_EVENTS_PATH, REMOVE_EVENT, STATUS_DELIVERY } from "./endpoints"
 import axios from 'axios'
 import { getAccessTokenAsync } from "@utils/token"
 import { IAvailability } from "@interfaces/availability"
@@ -191,6 +191,31 @@ export const addItemsToEvent = async (id: number, items: IAvailability[]): Promi
         .then(async response => {
             console.log(response);
             
+            return response
+        })
+        .catch(async error => {
+            return await Promise.reject(error)
+        })
+}
+
+export const removeEvent = async (id: number): Promise<any> => {
+    const url = `${process.env.API_URL}${REMOVE_EVENT}?id=${id}`
+
+
+    const instance = axios.create({
+        baseURL: url,
+        headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${await getAccessTokenAsync()}`,
+            'content-Type': 'application/json',
+        }
+    })
+
+    return await instance
+        .delete(url)
+        .then(async response => {
+            console.log(response);
+
             return response
         })
         .catch(async error => {

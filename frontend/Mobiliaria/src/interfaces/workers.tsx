@@ -7,5 +7,6 @@ export interface IWorker {
     rol_usuario: string,
     fecha_creacion: string,
     correo: string,
-    admin: number
+    admin: number,
+    active: number
 }

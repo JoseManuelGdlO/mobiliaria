@@ -7,7 +7,7 @@ import Loading from "@components/loading";
 import LottieView from "lottie-react-native";
 import React from "react";
 import { useTheme } from "@hooks/useTheme";
-import { IEventDetail, IInventaryRent } from "@interfaces/event-details";
+import { IEventDetail, IInventaryRent, IPayment } from "@interfaces/event-details";
 import Toast from "react-native-toast-message";
 import * as paymentService from '../../services/payments';
 import AreYouSure from "@components/are-you-suere-modal";
@@ -22,7 +22,7 @@ const EventDetail = ({
     const [loading, setLoading] = useState<boolean>(true)
     const [abono, setAbono] = useState<string>('')
     const [obs, setObs] = useState<string>('')
-    const [openAlert, setOpenAlert] = useState<boolean>(false)
+    const [openAlert, setOpenAlert] = useState<number>(0)
 
     const animation = React.useRef(null);
 
@@ -113,6 +113,25 @@ const EventDetail = ({
         navigation.navigate('Available', { date: event?.event?.fecha_envio_evento.split('T')[0], id: event?.event?.id_evento })
     }
 
+    const removeEvent = async () => {
+        try {
+            setLoading(true)
+            await eventService.removeEvent(event?.event?.id_evento)
+            setLoading(false)
+            Toast.show({
+                type: 'success',
+                text1: 'Hecho',
+                text2: 'se ha eliminado el evento',
+                visibilityTime: 1000,
+                autoHide: true
+            })
+            navigation.navigate('Home', { refresh: false })
+        } catch (error) {
+            console.log(error);
+            setLoading(false)
+        }
+    }
+
     return (
         <>
             <ScrollView>
@@ -199,7 +218,7 @@ const EventDetail = ({
                                     {event?.event?.recolectado === 0 ? 'No recolectado' : 'Recolectado'}</Text>
                             </View>
                             <TouchableOpacity
-                                onPress={() => setOpenAlert(true)}
+                                onPress={() => setOpenAlert(1)}
                                 style={{ backgroundColor: '#488aff', borderRadius: 20, paddingHorizontal: 15, justifyContent: 'center' }}>
                                 <Text style={{ fontFamily: fonts.Roboto.Medium, fontSize: 10, color: colors.black }}>
                                         {event?.event?.entregado === 0 ? 'Entregar' : 'Recolectar'}
@@ -311,8 +330,8 @@ const EventDetail = ({
                                                 visibilityTime: 1000,
                                                 autoHide: true
                                             })
-                                            getDetails()
                                             
+                                        getDetails()
                                         } catch (error) {
                                             console.log(error);
                                             setLoading(false)
@@ -354,17 +373,23 @@ const EventDetail = ({
                 />
             </ScrollView>
             <TouchableOpacity onPress={() => {
+                setOpenAlert(2)
             }} style={{ width: '100%', height: 50, backgroundColor: 'red', justifyContent: 'center', alignItems: 'center', position: 'absolute', bottom: 0 }}>
                 <Text style={{ fontFamily: fonts.Roboto.Regular, color: 'white', fontSize: 20 }}>Eliminar evento</Text>
             </TouchableOpacity>
             <Loading loading={loading}></Loading>
             <Toast />
-            <AreYouSure open={openAlert} sure={() => {
-                changeStatus()
-                setOpenAlert(false)
+            <AreYouSure open={openAlert !== 0} sure={() => {
+                
+                if(openAlert === 1) {
+                    changeStatus()
+                } else {
+                    removeEvent()
+                }
+                setOpenAlert(0)
             }}
                 notsure={() => {
-                    setOpenAlert(false)
+                    setOpenAlert(0)
                 }}
             ></AreYouSure>
         </>
