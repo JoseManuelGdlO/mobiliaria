@@ -6,10 +6,11 @@ async function getPayments(id: number) {
 
     const rows = await db.query(
         `SELECT *
-        FROM evento_mob, pagos_mob
-        WHERE evento_mob.id_evento = pagos_mob.id_evento
-        AND fecha_envio_evento LIKE '%202%'
-        AND id_empresa = ${id}
+        FROM evento_mob
+        LEFT JOIN pagos_mob
+        ON evento_mob.id_evento = pagos_mob.id_evento
+        WHERE fecha_envio_evento LIKE '%202%'
+        AND evento_mob.id_empresa = ${id}
         ORDER BY evento_mob.fecha_envio_evento;`
     );
 

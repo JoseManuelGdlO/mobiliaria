@@ -15,6 +15,8 @@ import Workers from '@screens/workers'
 import Inventary from '@screens/inventary'
 import Home from '@screens/home'
 import BasicHeader from '@components/BasicHeader'
+import PackageIcon from '@assets/images/icons/PackagesIcon'
+import Packages from '@screens/packages'
 
 const Tab = createBottomTabNavigator()
 const Stack = createStackNavigator<NavigationScreens>()
@@ -42,6 +44,20 @@ const ExploreStak = (): JSX.Element => {
     </Stack.Navigator>
   )
 }
+
+
+const PackageStak = (): JSX.Element => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        options={{ title: 'Paquetes', headerShown: true, header: (props) => <BasicHeader color='#9E2EBE' hideBackArrow title='Paquetes 🎁' backgroundColor='white' /> }}
+        name='Package'
+        component={Packages}
+      />
+    </Stack.Navigator>
+  )
+}
+
 
 const WorkerStack = (): JSX.Element => {
   return (
@@ -159,6 +175,22 @@ export const FooterMenu = (): JSX.Element => {
         }}
         name='CatalogoCursosStack'
         component={ExploreStak}
+      />
+       <Tab.Screen
+        options={{
+          title: 'Paquetes',
+          headerShown: false,
+          tabBarIcon: ({ color, focused }) =>
+            <View
+              sentry-label='Footer Paquetes'
+              style={[styles.icon]}
+            >
+              <PackageIcon width={24} height={24} color={focused ? '#9E2EBE' : colors.darkBlack100} focused={focused} />
+            </View>,
+          tabBarLabel: ({ focused }) => <Text style={focused ? styles.labelStyleActive : styles.labelStyleInactive}>Paquetes</Text>
+        }}
+        name='CatalogoPaquetesStack'
+        component={PackageStak}
       />
       <Tab.Screen
         options={{
