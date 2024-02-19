@@ -19,10 +19,8 @@ import { IPackage } from "@interfaces/packages";
 import AreYouSure from "@components/are-you-suere-modal";
 import { IInventary } from "@interfaces/inventary";
 import CheckIcon from "@assets/images/icons/CheckIcon";
-import { set } from "react-native-reanimated";
 import { generateRandomColor } from "@utils/colors";
 import CancelIcon from "@assets/images/icons/CancelIcon";
-import PrimaryButton from "@components/PrimaryButton";
 import Toast from "react-native-toast-message";
 const height = Dimensions.get("window").height;
 
@@ -41,7 +39,7 @@ const Packages = (): JSX.Element => {
     productsBody: IInventary[]
   }>({ name: "", description: "", price: "", products: [], productsBody: []});
 
-  const [open, setOpen] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
 
   const { fonts, colors } = useTheme();
 
