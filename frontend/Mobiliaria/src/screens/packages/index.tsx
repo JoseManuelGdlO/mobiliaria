@@ -513,7 +513,6 @@ const Packages = (): JSX.Element => {
                   }
                   setOpen(false);
                   try {
-                    setLoading(true);
                     detailsPackage.products = detailsPackage.productsBody.map((item) => {
                       return {
                         id: item.id_mob,
@@ -521,12 +520,10 @@ const Packages = (): JSX.Element => {
                       }
                     })
                     packageService.addPackage(detailsPackage);
+                    setPackages([...packages, {id: 0, nombre: detailsPackage.name, descripcion: detailsPackage.description, precio: parseInt(detailsPackage.price), products: detailsPackage.productsBody}]);
                     getInit();
-
                   } catch (error) {
                     console.log(error);
-                  } finally {
-                    setLoading(false);
                   }
                 }}              
                 >

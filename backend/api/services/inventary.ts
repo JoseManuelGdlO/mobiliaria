@@ -79,9 +79,7 @@ async function removePackage(id: number) {
 }
 
 async function addPackage(id: number, body:any) {
-    let code = 201;
-    console.log(body);
-    
+    let code = 201;    
 
     const connection = await db.connection();
     await connection.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
