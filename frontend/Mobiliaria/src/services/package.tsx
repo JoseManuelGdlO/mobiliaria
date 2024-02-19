@@ -61,14 +61,13 @@ export const addPackage = async (body: any): Promise<any> => {
             Accept: 'application/json',
             Authorization: `Bearer ${await getAccessTokenAsync()}`,
             'content-Type': 'application/json',
-        },
-        data: body
+        }
     })
     console.log(body);
     
 
     return await instance
-        .post(url)
+        .post(url, body)
         .then(async response => {
             return response.data
         })

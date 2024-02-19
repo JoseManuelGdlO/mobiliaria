@@ -2,6 +2,7 @@ import { memo, useEffect } from "react"
 import { ActivityIndicator, Dimensions, FlatList, Modal, RefreshControl, Text, TextInput, TouchableOpacity, View } from "react-native"
 import { IAvailability } from "@interfaces/availability"
 import * as eventsService from '../../../services/events';
+import * as packageService from '../../../services/package';
 import Loading from "@components/loading";
 import React from "react";
 import { useTheme } from "@hooks/useTheme";
@@ -16,6 +17,7 @@ import { useDispatch } from "react-redux";
 import { setInventaryRx, setTotalRx } from "@redux/actions/eventActions";
 import Toast from "react-native-toast-message";
 import { toast } from "@utils/alertToast";
+import { IPackage } from "@interfaces/packages";
 
 const ITEMS_PEER_PAGE = 20
 const height = Dimensions.get('window').height
@@ -44,6 +46,7 @@ const Availability = ({
     const [itemSelected, setItemSelected] = React.useState<IAvailability>({} as IAvailability)
     const [ inputvalue, setInputValue ] = React.useState<string>('')
     const [errorInput, setErrorInput] = React.useState<string>('')
+    const [packages, setPackages] = React.useState<IPackage[]>([])
 
     const { fonts, colors } = useTheme()
 
@@ -96,9 +99,24 @@ const Availability = ({
 
     }
 
+    const getPackages = async () => {
+        try {
+            const response = await packageService.getPackages() as IPackage[]
+            setPackages(response)
+            
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setRefreshing(false);
+            setLoading(false)
+        }
+
+    }
+
     useEffect(() => {
         setLoading(true)
         getInventary()
+        getPackages();
     }, [])
 
     const keyExtractor = (item: (any), index: number): string => item.id_mob.toString() + index
@@ -175,37 +193,40 @@ const Availability = ({
 
             <FlatList
                 ListHeaderComponent={
-                    <View style={{ display: 'flex', flexDirection: 'row', padding: 16, backgroundColor: colors.black }}>
-                        <View style={{ paddingTop: 10 }}>
-                            <SearchIcon></SearchIcon>
+                    <View>
+                        <View style={{ display: 'flex', flexDirection: 'row', padding: 16, backgroundColor: colors.black }}>
+                            <View style={{ paddingTop: 10 }}>
+                                <SearchIcon></SearchIcon>
+                            </View>
+                            <TextInput
+                                style={{ width: '85%', height: 40, paddingVertical: 0, paddingHorizontal: 10, borderBottomWidth: 1 }}
+                                placeholder="Busqueda"
+                                onChangeText={(value: string) => {
+                                    setSearch(value)
+                                    if (value === '') {
+                                        setPage(1)
+                                        setInventary(totalInventary.slice(0, page * ITEMS_PEER_PAGE))
+                                    }
+                                    else if (value.length > 2) {
+
+                                        setPage(1)
+                                        const total = totalInventary.filter((item: IAvailability) => item.nombre_mob.toLocaleLowerCase().includes(value.toLocaleLowerCase()))
+                                        setInventary(total)
+                                    }
+
+                                }}
+                                value={search}
+                            />
+                            <TouchableOpacity onPress={() => {
+                                setSearch('')
+                                setInventary(totalInventary)
+                                setPage(1)
+                                setInventary(totalInventary.slice(0, page * ITEMS_PEER_PAGE))
+                            }} style={{ paddingTop: 10, borderBottomWidth: 1 }}>
+                                <CancelIcon></CancelIcon>
+                            </TouchableOpacity>
                         </View>
-                        <TextInput
-                            style={{ width: '85%', height: 40, paddingVertical: 0, paddingHorizontal: 10, borderBottomWidth: 1 }}
-                            placeholder="Busqueda"
-                            onChangeText={(value: string) => {
-                                setSearch(value)
-                                if (value === '') {
-                                    setPage(1)
-                                    setInventary(totalInventary.slice(0, page * ITEMS_PEER_PAGE))
-                                }
-                                else if (value.length > 2) {
 
-                                    setPage(1)
-                                    const total = totalInventary.filter((item: IAvailability) => item.nombre_mob.toLocaleLowerCase().includes(value.toLocaleLowerCase()))
-                                    setInventary(total)
-                                }
-
-                            }}
-                            value={search}
-                        />
-                        <TouchableOpacity onPress={() => {
-                            setSearch('')
-                            setInventary(totalInventary)
-                            setPage(1)
-                            setInventary(totalInventary.slice(0, page * ITEMS_PEER_PAGE))
-                        }} style={{ paddingTop: 10, borderBottomWidth: 1 }}>
-                            <CancelIcon></CancelIcon>
-                        </TouchableOpacity>
                     </View>
                 }
                 stickyHeaderIndices={[0]}
