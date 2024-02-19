@@ -121,13 +121,33 @@ async function availiable(id: number, date: string) {
     let code = 200;
 
     const rows = await db.query(
-        `SELECT a.id_mob as id_mob, a.cantidad_mob-IFNULL(b.ocupados,0) as cantidad_mob, a.nombre_mob as nombre_mob, a.costo_mob as costo_mob,
-		a.extra_mob as extra_mob, a.extra_mob_costo as extra_mob_costo, IFNULL(b.fecha_evento,0) as fecha_evento
-        FROM (SELECT * FROM inventario_mob WHERE eliminado=0 AND id_empresa = ${id}) a 
-        LEFT JOIN (SELECT id_mob, sum(ocupados) as ocupados, fecha_evento FROM inventario_disponibilidad_mob
-        WHERE fecha_evento='${date}' GROUP BY id_mob ) b
-        ON a.id_mob=b.id_mob
-        ORDER BY a.nombre_mob`
+        `
+        SELECT 
+            inv.id_mob,
+            inv.nombre_mob,
+            inv.cantidad_mob - COALESCE(SUM(dis.cantidad_rentada), 0) AS cantidad_mob,
+            inv.costo_mob as costo_mob,
+            inv.extra_mob as extra_mob,
+            inv.extra_mob_costo as extra_mob_costo
+        FROM 
+            inventario_mob inv
+        LEFT JOIN 
+            (
+                SELECT 
+                    id_mob,
+                    SUM(ocupados) AS cantidad_rentada
+                FROM 
+                    inventario_disponibilidad_mob
+                WHERE 
+                    DATE(fecha_evento) = '${date}'
+                GROUP BY 
+                    id_mob
+            ) dis ON inv.id_mob = dis.id_mob
+            WHERE inv.id_empresa = ${id} AND inv.eliminado = 0
+        GROUP BY 
+            inv.id_mob, inv.nombre_mob
+        ORDER BY 
+            inv.id_mob;`
     );
 
     let data = helper.emptyOrRows(rows);
@@ -138,7 +158,6 @@ async function availiable(id: number, date: string) {
             code
         }
     }
-
     return {
         data,
         code
