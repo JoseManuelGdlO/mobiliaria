@@ -8,4 +8,5 @@ export interface IInventary {
     extra_mob_costo?: number,
     ruta_imagen?: string
     eliminado?: number
+    cantidad?: number
 }

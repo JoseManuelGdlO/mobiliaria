@@ -23,6 +23,104 @@ async function getInventary(id: number) {
     }
 }
 
+async function getPackages(id: number) {
+    let code = 200;
+
+    const pkts = await db.query(
+        `SELECT * FROM paquetes WHERE fkid_empresa = ${id} AND eliminado = 0 order by fecha`
+    );
+
+    let data = helper.emptyOrRows(pkts);
+    if (data.length === 0) {
+        code = 404;
+        return {
+            data,
+            code
+        }
+    }
+
+    for(let pkt of pkts) {
+        const products = await db.query(
+            `SELECT * FROM paquete_inventario P
+            LEFT JOIN inventario_mob I
+            ON P.fkid_inventario = I.id_mob
+            WHERE fkid_paquete = ${pkt.id}`
+        );
+        
+        pkt.products = products;
+    }
+
+    return {
+        data: pkts,
+        code
+    }
+}
+
+async function removePackage(id: number) {
+    let code = 201;
+
+    try {
+        const pkts = await db.query(
+            `update paquetes set eliminado = 1
+             WHERE id = ${id}`
+        );
+
+        return {
+            data: pkts,
+            code
+        }
+    } catch (error) {
+        code = 500;
+        return {
+            code,
+            data: error
+        }
+    }
+}
+
+async function addPackage(id: number, body:any) {
+    let code = 201;
+    console.log(body);
+    
+
+    const connection = await db.connection();
+    await connection.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
+
+    await connection.beginTransaction();
+
+    try {
+        const [pkt,] = await connection.execute(
+        `INSERT INTO paquetes (nombre, precio, fkid_empresa, descripcion)
+            VALUES ('${body.name}', '${body.price}', ${id},'${body.description}')`
+        )
+
+        for (let i = 0; i < body.products.length; i++) {
+            await connection.execute(
+                `INSERT INTO paquete_inventario (fkid_paquete, fkid_inventario, cantidad)
+                    VALUES (${pkt.insertId}, ${body.products[i].id}, ${body.products[i].quantity})`
+            )
+        }
+
+
+        await connection.commit()
+        return {
+            data: pkt,
+            code
+        }
+    } catch (error) {
+        console.error(error);
+        connection.rollback();
+        console.info('Rollback successful');
+        
+        code = 500;
+        return {
+            code,
+            data: error
+        }
+    }
+
+}
+
 async function addInventary(body: any, id: number ) {
     let code = 200;
 
@@ -98,7 +196,10 @@ async function updateInventary (body: any) {
 
 module.exports = {
     getInventary,
+    getPackages,
+    removePackage,
     removeInventary,
     updateInventary,
+    addPackage,
     addInventary
 }

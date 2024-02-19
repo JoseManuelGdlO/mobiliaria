@@ -7,6 +7,7 @@ export type NavigationScreens =
         Inventary: undefined,
         Payments: undefined,
         Workers: undefined,
+        Package: undefined,
         ViewMore: undefined,
         Clients: undefined,
         EventDetail: {

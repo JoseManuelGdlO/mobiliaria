@@ -40,6 +40,21 @@ router.put('/updateInventary', verifyToken, async function (req: any, res: any, 
     }
 });
 
+
+
+router.get('/getPackages', verifyToken, async function (req: any, res: any, next: any) {
+    try {
+        const bearer: any = jwt_decode(req.headers['authorization']);
+        let id = bearer.data.id_empresa;       
+
+        const response = await inventaryService.getPackages(id)
+        res.status(response.code).json(response.data);
+    } catch (err: any) {
+        console.error(`Error while getting enarm students info `, err.message);
+        next(err);
+    }
+});
+
 router.post('/addInventary', verifyToken, async function (req: any, res: any, next: any) {
     try {
         const bearer: any = jwt_decode(req.headers['authorization']);
@@ -49,6 +64,37 @@ router.post('/addInventary', verifyToken, async function (req: any, res: any, ne
 
         const response = await inventaryService.addInventary(body, id)
         res.status(response.code).json(response.data);
+    } catch (err: any) {
+        console.error(`Error while getting enarm students info `, err.message);
+        next(err);
+    }
+});
+router.post('/addPackages', verifyToken, async function (req: any, res: any, next: any) {
+    try {
+        const bearer: any = jwt_decode(req.headers['authorization']);
+        let id = bearer.data.id_empresa;    
+        
+        let body = req.body;   
+
+        const response = await inventaryService.addPackage(id, body)
+        res.status(response.code).json(response.data);
+        
+    } catch (err: any) {
+        console.error(`Error while getting enarm students info `, err.message);
+        next(err);
+    }
+});
+
+
+router.delete('/removePackage', verifyToken, async function (req: any, res: any, next: any) {
+    try {
+        let id = req.query.id;    
+        
+        let body = req.body;   
+
+        const response = await inventaryService.removePackage(id, body)
+        res.status(response.code).json(response.data);
+        
     } catch (err: any) {
         console.error(`Error while getting enarm students info `, err.message);
         next(err);

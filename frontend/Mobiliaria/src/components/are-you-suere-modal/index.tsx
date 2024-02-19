@@ -6,6 +6,7 @@ const height = Dimensions.get('window').height
 
 interface Props {
     open: boolean
+    title?: string
     notsure: () => void
     sure: () => void
 }
@@ -15,7 +16,8 @@ export const headerHeight = 56
 const AreYouSure = ({
     open,
     notsure,
-    sure
+    sure,
+    title
 }: Props): JSX.Element => {
 
     const { fonts, colors } = useTheme()
@@ -34,7 +36,7 @@ const AreYouSure = ({
                                Alerta
                             </Text>
                             <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: colors.white, marginTop: 5, marginLeft: 16 }}>
-                                Estas seguro que no quieres continuar ?
+                                { title ? title : 'Estas seguro que no quieres continuar ?'}
                             </Text>
                         </ScrollView>
                         <View style={{ margin: 16, display: 'flex', flexDirection: 'row' }}>
