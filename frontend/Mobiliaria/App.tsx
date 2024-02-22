@@ -37,6 +37,7 @@ const MyStatusBar = ({ backgroundColor, barStyle, ...props }: { backgroundColor:
 
 const App = (): JSX.Element => {
   GlobalFont.applyGlobal('Inter')
+
   return (
     <>
       <GestureHandlerRootView style={{ flex: 1 }}>
