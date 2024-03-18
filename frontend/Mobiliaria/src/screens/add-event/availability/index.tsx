@@ -14,10 +14,11 @@ import PrimaryButton from "@components/PrimaryButton";
 import { generateRandomColor } from "@utils/colors";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
-import { setInventaryRx, setTotalRx } from "@redux/actions/eventActions";
+import { setInventaryRx, setPackagesRx, setTotalRx } from "@redux/actions/eventActions";
 import Toast from "react-native-toast-message";
 import { toast } from "@utils/alertToast";
 import { IPackage } from "@interfaces/packages";
+import { ScrollView } from "react-native-gesture-handler";
 
 const ITEMS_PEER_PAGE = 20
 const height = Dimensions.get('window').height
@@ -37,6 +38,7 @@ const Availability = ({
     const [inventary, setInventary] = React.useState<IAvailability[]>([])
     const [total, setTotal] = React.useState<number>(0)
     const [invSelected, setInvSelected] = React.useState<IAvailability[]>([])
+    const [pktSelected, setPktSelected] = React.useState<IPackage[]>([])
     const [totalInventary, setTotalInventary] = React.useState<IAvailability[]>([])
     const [refreshing, setRefreshing] = React.useState(false);
     const [loading, setLoading] = React.useState(false)
@@ -44,6 +46,7 @@ const Availability = ({
     const [page, setPage] = React.useState<number>(1)
     const [modalVisible, setModalVisible] = React.useState(false)
     const [itemSelected, setItemSelected] = React.useState<IAvailability>({} as IAvailability)
+    const [itemPackageSelected, setItemPackageSelected] = React.useState<IPackage>({} as IPackage)
     const [ inputvalue, setInputValue ] = React.useState<string>('')
     const [errorInput, setErrorInput] = React.useState<string>('')
     const [packages, setPackages] = React.useState<IPackage[]>([])
@@ -51,16 +54,17 @@ const Availability = ({
     const { fonts, colors } = useTheme()
 
     const submitInv = () => {
-        if (invSelected.length === 0) {
+        if (invSelected.length === 0 && pktSelected.length === 0) {
             toast('Error', 'no has seleccionado nada de inventario', 'error')
             return
         }
-        console.log('id', id);
         if (id) {
             addItemsToEvent()
             return
         }
+        
         dispatch(setInventaryRx(invSelected))
+        dispatch(setPackagesRx(pktSelected))
         dispatch(setTotalRx(total))
         navigation.navigate('AddEvent', { date })
 
@@ -87,23 +91,10 @@ const Availability = ({
         try {
             const response = await eventsService.getAvailableDay(date)
 
-            await setTotalInventary(response)
-            const inv = response.slice(0, page * ITEMS_PEER_PAGE)
+            await setTotalInventary(response.inventary)
+            setPackages(response.packages)
+            const inv = response.inventary.slice(0, page * ITEMS_PEER_PAGE)
             setInventary(inv)
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setRefreshing(false);
-            setLoading(false)
-        }
-
-    }
-
-    const getPackages = async () => {
-        try {
-            const response = await packageService.getPackages() as IPackage[]
-            setPackages(response)
-            
         } catch (error) {
             console.log(error);
         } finally {
@@ -116,7 +107,6 @@ const Availability = ({
     useEffect(() => {
         setLoading(true)
         getInventary()
-        getPackages();
     }, [])
 
     const keyExtractor = (item: (any), index: number): string => item.id_mob.toString() + index
@@ -226,7 +216,58 @@ const Availability = ({
                                 <CancelIcon></CancelIcon>
                             </TouchableOpacity>
                         </View>
-
+                        { packages.length !== 0 && <View>
+                            <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 15, color: colors.white, paddingHorizontal: 10 }}>
+                                Paquetes
+                            </Text>
+                            <ScrollView style={{maxHeight: 150, overflow: "scroll"}}>
+                                
+                                {packages.map(pack => {
+                                    return (
+                                        <TouchableOpacity onPress={() => {
+                                            setItemPackageSelected(pack)
+                                            setModalVisible(true)
+                                        }}
+                                        style={{ backgroundColor: colors.black, borderRadius: 5, marginHorizontal: 5 }}>
+                                            <View style={{
+                                                borderWidth: 1,
+                                                borderColor: colors.gray400,
+                                                borderRadius: 10,
+                                                paddingHorizontal: 26,
+                                                paddingTop: 10,
+                                                flexDirection: 'row',
+                                                justifyContent: 'space-between',
+                                                display: 'flex',
+                                                alignItems: "center",
+                                                marginTop: 5
+                                            }}>
+                                                <View style={{ width: '85%' }}>
+                                                    <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 14, color: '#9E2EBE' }}>
+                                                        {pack.nombre} 
+                                                    </Text>
+                                                    <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 10, color: '#488aff' }}>
+                                                        Disponible.- {pack.availiable} {"\n"}
+                                                        {pack.products.map(prod => {                                                    
+                                                            return (
+                                                                <Text style={{ fontFamily: fonts.Roboto.MediumItalic, fontSize: 10, color: colors.gray400, paddingTop: 2 }}>
+                                                                    {prod.nombre_mob} - {prod.cantidad} Piezas {"\n"}
+                                                                </Text>
+                                                            )
+                                                        })}
+                                                    </Text>
+                                                </View>
+                                                <View style={{ width: '15%' }}>
+                                                    <Text style={{ fontFamily: fonts.Roboto.BoldItalic, fontSize: 10 }}>
+                                                        ${pack.precio} c/u
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                        </TouchableOpacity>
+                                    )
+                                })}
+                            </ScrollView>
+                            <View style={{width: '100%', height: 1, backgroundColor: '#000', marginTop: 10}}></View>
+                        </View>}
                     </View>
                 }
                 stickyHeaderIndices={[0]}
@@ -250,6 +291,35 @@ const Availability = ({
                                     <TouchableOpacity onPress={() => {
                                         setTotal(total - (inv.costo_mob * Number(inv.cantidad)))
                                         setInvSelected(invSelected.filter(item => item.id_mob !== inv.id_mob))
+                                    
+                                    }} style={{ backgroundColor: color, position: 'absolute', marginLeft: -12 }}>
+                                        <CancelIcon size={10}></CancelIcon>
+                                    </TouchableOpacity>
+                                </Text>
+
+                            )
+                        })}
+                        {pktSelected.map(inv => {
+                            const color = generateRandomColor()
+                            return (
+                                <Text key={inv.id} style={{ fontSize: 10, color: colors.black, paddingHorizontal: 5, fontFamily: fonts.Roboto.Regular, borderRadius: 10, backgroundColor: color }}>
+                                    {inv.nombre} - {inv.cantidad}
+                                    <TouchableOpacity onPress={() => {
+
+                                        for(let pkt of inv.products) {
+                                            const item = totalInventary.find(inv => inv.id_mob === pkt.fkid_inventario)
+                                            if(item) {
+                                                const cantidad = Number(item.cantidad_mob) + Number(pkt.cantidad) * Number(inv.cantidad)
+                                                item.cantidad_mob = String(cantidad)
+                                            }
+                                            const itemInv = inventary.find(inv => inv.id_mob === pkt.id_mob) 
+                                            if(itemInv) {
+                                                const cantidad = Number(itemInv.cantidad_mob) + Number(pkt.cantidad) * Number(inv.cantidad)
+                                                itemInv.cantidad_mob = String(cantidad)
+                                            }
+                                        }
+                                        setTotal(total - (inv.precio * Number(inv.cantidad)))
+                                        setPktSelected(pktSelected.filter(item => item.id !== inv.id))
                                     
                                     }} style={{ backgroundColor: color, position: 'absolute', marginLeft: -12 }}>
                                         <CancelIcon size={10}></CancelIcon>
@@ -293,7 +363,7 @@ const Availability = ({
                         Selecciona cantidad
                     </Text>
                         <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: colors.white, marginTop: 5, marginLeft: 16 }}>
-                            {itemSelected.nombre_mob} - ${itemSelected.costo_mob} - Cantidad.-{itemSelected.cantidad_mob}
+                            {itemSelected.nombre_mob ? itemSelected.nombre_mob : itemPackageSelected.nombre } - ${itemSelected.costo_mob ? itemSelected.costo_mob : itemPackageSelected.precio} - Cantidad.-{itemSelected.cantidad_mob ? itemSelected.cantidad_mob : itemPackageSelected.availiable}
                         </Text>
                         <View style={{ paddingVertical: 10, paddingHorizontal: 15 }}>
                             <TextInput
@@ -303,14 +373,28 @@ const Availability = ({
                                 autoFocus
                                 onChangeText={(value: string) => {
                                     setErrorInput('')
-                                    if (Number(value) > Number(itemSelected.cantidad_mob)) { 
-                                        setErrorInput('No hay suficiente inventario')
+                                    
+                                    if(itemSelected.nombre_mob) {
+                                        if (Number(value) > Number(itemSelected.cantidad_mob)) { 
+                                            setErrorInput('No hay suficiente inventario')
+                                            setInputValue(value)
+                                            return
+                                        }
                                         setInputValue(value)
-                                        return
+                                        itemSelected.cantidad = Number(value)
+                                        setItemSelected(itemSelected)
+
+                                    } else {
+                                        
+                                        if (itemPackageSelected.availiable === 0 || Number(value) > Number(itemPackageSelected.availiable)) { 
+                                            setErrorInput('No hay suficiente inventario')
+                                            setInputValue(value)
+                                            return
+                                        }
+                                        setInputValue(value)
+                                        itemPackageSelected.cantidad = Number(value)
+                                        setItemPackageSelected(itemPackageSelected)
                                     }
-                                    setInputValue(value)
-                                    itemSelected.cantidad = Number(value)
-                                    setItemSelected(itemSelected)
                                 }}
                                 value={inputvalue}
                             />
@@ -325,30 +409,114 @@ const Availability = ({
                                 containerStyle={{ width: '50%', height: 30, paddingVertical: 1 }}
                                 textStyle={{ fontSize: 12, color: colors.black }}
                                 onPress={() => {
-                                    let exist = false
-                                    let localtotal = 0
-                                    for (const inv of invSelected) {
-                                        if (inv.id_mob === itemSelected.id_mob) {
-                                            inv.cantidad = itemSelected.cantidad
-                                            setInvSelected(invSelected)
-                                            setModalVisible(false)
-                                            exist = true
-                                            setInputValue('')
+                                    if(itemSelected.nombre_mob) {
+                                        let exist = false
+                                        let localtotal = 0
+                                        for (const inv of invSelected) {
+                                            if (inv.id_mob === itemSelected.id_mob) {
+                                                inv.cantidad = itemSelected.cantidad
+                                                setInvSelected(invSelected)
+                                                setModalVisible(false)
+                                                exist = true
+                                                setInputValue('')
+                                            }
+                                            localtotal += inv.costo_mob * Number(inv.cantidad)
+
                                         }
-                                        localtotal += inv.costo_mob * Number(inv.cantidad)
+
+                                        if(exist) {
+                                            setTotal(localtotal)
+                                            return
+                                        }
+                                        
+                                        setInvSelected([...invSelected, itemSelected])
+                                        const cantidad = Number(itemSelected.cantidad)
+                                        setTotal(total + itemSelected.costo_mob * cantidad)
+                                        setInputValue('')
+                                        setModalVisible(false)
+                                    } else {
+                                        const oldQnty = itemPackageSelected.cantidad? itemPackageSelected.cantidad : 0
+                                        let exist = false
+                                        let localtotal = 0
+                                        for (const pkt of pktSelected) {
+                                            if (pkt.id === itemPackageSelected.id) {
+                                                pkt.cantidad = itemPackageSelected.cantidad
+                                                setPktSelected(pktSelected)
+                                                setModalVisible(false)
+                                                exist = true
+                                                setInputValue('')
+                                            }
+                                            localtotal += pkt.precio * Number(pkt.cantidad)
+
+                                        }
+
+                                        if(exist) {
+
+                                            for(let pkt of itemPackageSelected.products) {
+                                                
+                                                const pktQuantity = itemPackageSelected?.cantidad ? itemPackageSelected.cantidad  : 0
+                                                const item = totalInventary.find(inv => inv.id_mob === pkt.fkid_inventario)
+
+                                                console.log('item', pkt, itemPackageSelected);
+                                                
+                                                const toRemove = pkt?.cantidad? pkt.cantidad * oldQnty  : 0
+                                                console.log('toremove', toRemove);
+                                                
+                                                const qtyPkt = pkt?.cantidad? pkt.cantidad * pktQuantity  : 0
+                                                if(item) {
+                                                    item.cantidad_mob = String(toRemove)
+                                                    const cantidad = Number(item.cantidad_mob) - qtyPkt
+                                                    item.cantidad_mob = String(cantidad)
+                                                }
+                                                
+                                                const itemInv = inventary.find(inv => inv.id_mob === pkt.id_mob) 
+                                                if(itemInv) {
+                                                    itemInv.cantidad_mob = String(toRemove)
+                                                    const cantidad = Number(itemInv.cantidad_mob) - qtyPkt
+                                                    itemInv.cantidad_mob = String(cantidad)
+                                                }
+                                                
+                                            }
+
+                                            setTotal(localtotal)
+                                            return
+                                        }
+
+                                        for(let pkt of itemPackageSelected.products) {
+                                            const pktQuantity = itemPackageSelected?.cantidad ? itemPackageSelected.cantidad  : 0
+                                            const item = totalInventary.find(inv => inv.id_mob === pkt.fkid_inventario)
+                                            
+                                            const qtyPkt = pkt?.cantidad? pkt.cantidad * pktQuantity  : 0 
+                                            if(item) {
+                                                const cantidad = Number(item.cantidad_mob) - qtyPkt
+                                                item.cantidad_mob = String(cantidad)
+                                            }
+                                            
+                                            const itemInv = inventary.find(inv => inv.id_mob === pkt.id_mob) 
+                                            if(itemInv) {
+                                                const cantidad = Number(itemInv.cantidad_mob) - qtyPkt
+                                                itemInv.cantidad_mob = String(cantidad)
+                                            }
+                                            
+                                        }
+                                        
+                                        setPktSelected([...pktSelected, itemPackageSelected])
+                                        const cantidad = Number(itemPackageSelected.cantidad)
+                                        setTotal(total + itemPackageSelected.precio * cantidad)
+                                        setInputValue('')
+                                        setModalVisible(false)
 
                                     }
-
-                                    if(exist) {
-                                        setTotal(localtotal)
-                                        return
-                                    }
-                                    
-                                    setInvSelected([...invSelected, itemSelected])
-                                    const cantidad = Number(itemSelected.cantidad)
-                                    setTotal(total + itemSelected.costo_mob * cantidad)
+                                    const aval = { cantidad: 0 } as IAvailability
+                                    setItemSelected(aval)
                                     setInputValue('')
                                     setModalVisible(false)
+                                    
+                                    const pkt = { cantidad: 0 } as IPackage
+                                    setItemPackageSelected(pkt)
+                                    setInputValue('')
+                                    setModalVisible(false)
+                                    
                                 }}
                                 disabled={errorInput.length !== 0}
                                 title='Agregar'
@@ -357,8 +525,13 @@ const Availability = ({
                                 containerStyle={{ width: '50%', height: 30, paddingVertical: 1 }}
                                 textStyle={{ fontSize: 12, color: colors.black}}
                                 onPress={() => {
-                                    itemSelected.cantidad = 0
-                                    setItemSelected(itemSelected)
+                                    const aval = { cantidad: 0 } as IAvailability
+                                    setItemSelected(aval)
+                                    setInputValue('')
+                                    setModalVisible(false)
+                                    
+                                    const pkt = { cantidad: 0 } as IPackage
+                                    setItemPackageSelected(pkt)
                                     setInputValue('')
                                     setModalVisible(false)
                                 }}

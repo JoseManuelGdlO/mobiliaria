@@ -7,6 +7,7 @@ const inventaryRouter = require("./routes/inventary");
 const workersRouter = require("./routes/workers");
 const clientsRouter = require("./routes/clients");
 const paymentsRouter = require("./routes/payments"); 
+const reportsRouter = require("./routes/reports");
 
 //For env File 
 dotenv.config();
@@ -30,7 +31,7 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-    res.json({ message: "ok" });
+    res.json({ message: "version: 0.0.1" });
 });
 
 app.use("/auth", authRouter);
@@ -39,6 +40,7 @@ app.use("/inventary", inventaryRouter);
 app.use("/workers", workersRouter);
 app.use("/clients", clientsRouter);
 app.use("/payments", paymentsRouter);
+app.use("/reports", reportsRouter);
 /* Error handler middleware */
 app.use((err: any, req: any, res: any, next: any) => {
     const statusCode = err.statusCode || 500;

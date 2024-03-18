@@ -18,7 +18,7 @@ export const GetOptionsMenu = (): Option[] => {
     {
       name: 'Clientes',
       icon: <ProfileIcon color='#9E2EBE' />,
-      navigate: 'Clients'
+      navigate: 'Clientes'
     },
     {
       name: 'Seguimiento a pagos',

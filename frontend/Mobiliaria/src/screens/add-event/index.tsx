@@ -15,6 +15,7 @@ import DatePickerComponent from "@components/datepicker";
 import Toast from "react-native-toast-message";
 import * as eventService from '@services/events'
 import AreYouSure from "@components/are-you-suere-modal";
+import { IPackage } from "@interfaces/packages";
 
 export enum ETypesPicker {
     Recolection = 1,
@@ -27,30 +28,33 @@ const AddEvent = ({
     route
 }: StackScreenProps<NavigationScreens, 'AddEvent'>): JSX.Element => {
     const date = route.params.date
+    const arrDate = date.split('-')
+    const formatDate = `${arrDate[2]}-${arrDate[1]}-${arrDate[0]}`
+    
     const navigation = useNavigation<StackNavigationProp<NavigationScreens>>()
     const [event, setEvent] = useState<IEventDetail>({} as IEventDetail)
     const [loading, setLoading] = useState<boolean>(false)
-    const { inventaryRx, totalRx, eventRx } = useReduxEvent()
+    const { inventaryRx, totalRx, eventRx, packagesRx } = useReduxEvent()
     const [total, setTotal] = useState<number>(totalRx)
     const [persentage, setPersentage] = useState<string>('')
-    const [ flete, setFlete ] = useState<string>('')
-    const [ iva, setIva ] = useState<boolean>(false)
-    const [ openModalPicker, setOpenModalPicker] = useState<boolean>(false)
+    const [flete, setFlete] = useState<string>('')
+    const [iva, setIva] = useState<boolean>(false)
+    const [openModalPicker, setOpenModalPicker] = useState<boolean>(false)
 
     const [typePicker, setTypePicker] = useState<{ type: number, mode: "date" | "time" | "datetime" }>({ type: ETypesPicker.Recolection, mode: 'date' })
-    const [ recolectedDay, setRecolectedDay] = useState<{date: string, hour: string}>({date: '', hour: ''})
+    const [recolectedDay, setRecolectedDay] = useState<{ date: string, hour: string }>({ date: '', hour: '' })
     const [deliveredDay, setDeliveredDay] = useState<{ date: string, hour: string }>({ date: '', hour: '' })
-    const [ anticipo, SetAnticipo ] = useState<string>('')
+    const [anticipo, SetAnticipo] = useState<string>('')
     const [detailsEvent, setDetailsEvent] = useState<{ titular: string, tipo: string, telefono: string, direccion: string, nombreEvento: string }>({ nombreEvento: '', titular: '', tipo: '', telefono: '', direccion: '' })
-    const [ openAlert, setOpenAlert ] = useState<boolean>(false)
+    const [openAlert, setOpenAlert] = useState<boolean>(false)
 
     const animation = React.useRef(null);
 
+
     const { fonts, colors } = useTheme()
 
-    const submit = async () => {    
-        setLoading(true)    
-        if (inventaryRx.length === 0) {
+    const submit = async () => {
+        if (inventaryRx.length === 0 && packagesRx.length === 0) {
             Toast.show({
                 type: 'error',
                 text1: 'Error',
@@ -63,7 +67,7 @@ const AddEvent = ({
             return
         }
 
-        if(detailsEvent.titular === '' || detailsEvent.tipo === '' || detailsEvent.telefono === '' || detailsEvent.direccion === '') {
+        if (detailsEvent.titular === '' || detailsEvent.tipo === '' || detailsEvent.telefono === '' || detailsEvent.direccion === '') {
             Toast.show({
                 type: 'error',
                 text1: 'Error',
@@ -75,11 +79,12 @@ const AddEvent = ({
             })
             return
         }
+        setLoading(true)
 
         const event: any = {
             nombre_evento: detailsEvent.nombreEvento,
             tipo_evento: detailsEvent.tipo,
-            fecha_envio_evento: date,
+            fecha_envio_evento: formatDate,
             hora_envio_evento: deliveredDay.hour,
             fecha_recoleccion_evento: recolectedDay.date,
             hora_recoleccion_evento: recolectedDay.hour,
@@ -97,7 +102,7 @@ const AddEvent = ({
 
         inventaryRx.forEach((item: IAvailability) => {
             mobiliario.push({
-                fecha_evento: date,
+                fecha_evento: formatDate,
                 hora_evento: deliveredDay.hour,
                 id_mob: item.id_mob,
                 ocupados: item.cantidad,
@@ -105,6 +110,25 @@ const AddEvent = ({
                 costo: item.costo_mob
             })
         })
+
+        packagesRx.forEach((item: IPackage) => {
+            const PktQty = item.cantidad? item.cantidad : 1
+            item.products.forEach((product) => {
+                
+                const prdQty = product.cantidad? product.cantidad : 1
+                mobiliario.push({
+                    fecha_evento: date,
+                    hora_evento: deliveredDay.hour,
+                    id_mob: product.fkid_inventario,
+                    ocupados: prdQty * PktQty,
+                    hora_recoleccion: recolectedDay.hour,
+                    costo: 0
+                })
+            }
+            )
+        }
+        )
+
 
         const costo = {
             costo_total: total,
@@ -121,21 +145,22 @@ const AddEvent = ({
         try {
             const response = await eventService.addEvent(body)
             console.log(response);
-            navigation.navigate('Home', { refresh: true })
             
+            navigation.navigate('Home', { refresh: true })
+
         } catch (error) {
             console.log(error);
         } finally {
             setLoading(false)
         }
     }
-        
+
 
     useEffect(() => {
     }, [])
 
 
-    const keyExtractor = (item: IAvailability, index: number): string => item.id_mob.toString() + index
+    const keyExtractor = (item: IAvailability, index: number): string => index.toString()
 
     const renderItem = ({
         item,
@@ -144,6 +169,7 @@ const AddEvent = ({
         item: IAvailability
         index: number
     }): JSX.Element => {
+
         return (
             <View style={{
                 flexDirection: 'row',
@@ -162,6 +188,37 @@ const AddEvent = ({
             </View>
         )
     }
+
+
+    const keyExtractorPkt = (item: IPackage, index: number): string => item.id.toString() + index
+
+    const renderItemPkt = ({
+        item,
+        index
+    }: {
+        item: IPackage
+        index: number
+    }): JSX.Element => {
+
+        return (
+            <View style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                width: '100%',
+                paddingHorizontal: 15,
+                paddingVertical: 5
+            }}>
+                <View>
+                    <Text style={{ color: '#9E2EBE', fontFamily: fonts.Roboto.Regular, fontSize: 15 }}>{item.nombre}</Text>
+                    <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12 }}>{item.cantidad} Rentado{item.cantidad !== 1 && 's'}</Text>
+                </View>
+                <TouchableOpacity>
+                    <Text style={{ fontFamily: fonts.Roboto.Medium, fontSize: 12, color: 'blue', paddingTop: 10 }}>${item.precio}</Text>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+
 
     return (
         <View style={{ flex: 1 }}>
@@ -196,9 +253,9 @@ const AddEvent = ({
                                     }}
                                         style={{ width: '70%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular }}></TextInput>
                                     <TextInput placeholder="Emilio lozada" onChangeText={(value: string) => {
-                                        setDetailsEvent({...detailsEvent, titular: value})
-                                    }} 
-                                    style={{ width: '70%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular }}></TextInput>
+                                        setDetailsEvent({ ...detailsEvent, titular: value })
+                                    }}
+                                        style={{ width: '70%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular }}></TextInput>
                                     <TextInput placeholder="Boda"
                                         onChangeText={(value: string) => {
                                             setDetailsEvent({ ...detailsEvent, tipo: value })
@@ -227,14 +284,19 @@ const AddEvent = ({
                         </View>
                         <View style={{ display: 'flex', flexDirection: 'row' }}>
                             <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12, paddingTop: 10 }}>Hora de entrega: </Text>
-                            <TouchableOpacity style={{ width: '75%', paddingTop: 11 }} onPress={() => {
+                            {/* <TouchableOpacity style={{ width: '75%', paddingTop: 11 }} onPress={() => {
                                 setTypePicker({ type: ETypesPicker.HourDelivery, mode: 'time' })
                                 setOpenModalPicker(true)
 
                             }}>
                                 <Text style={{ width: '100%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular, fontSize: 12 }} >{deliveredDay.hour}</Text>
-                            </TouchableOpacity>
-                            
+                            </TouchableOpacity> */}
+                             <TextInput placeholder="12" keyboardType="number-pad"
+                                        onChangeText={(value: string) => {
+                                            setDeliveredDay({ ...deliveredDay , hour: value })
+                                        }}
+                                        style={{ width: '65%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular }}></TextInput>
+
                         </View>
 
                         <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12, paddingTop: 10 }}>Fecha de recoleccion: </Text>
@@ -246,17 +308,22 @@ const AddEvent = ({
                             <Text style={{ width: '100%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular, fontSize: 12 }} >{recolectedDay.date}</Text>
 
                         </TouchableOpacity>
-                       
+
                         <View style={{ display: 'flex', flexDirection: 'row' }}>
                             <Text style={{ fontFamily: fonts.Roboto.Regular, marginLeft: 5, fontSize: 12, paddingTop: 10 }}>Hora de recoleccion: </Text>
+                            <TextInput placeholder="12" keyboardType="number-pad"
+                                        onChangeText={(value: string) => {
+                                            setRecolectedDay({ ...recolectedDay , hour: value })
+                                        }}
+                                        style={{ width: '65%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular }}></TextInput>
 
-                            <TouchableOpacity style={{ width: '65%', paddingTop: 11 }} onPress={() => {
-                                setTypePicker({ type: ETypesPicker.HourRecolection, mode: 'time' })
+                            {/* <TouchableOpacity style={{ width: '65%', paddingTop: 11 }} onPress={() => {
+                                setTypePicker({ type: ETypesPicker.HourRecolection, mode: 'datetime' })
                                 setOpenModalPicker(true)
 
                             }}>
                                 <Text style={{ width: '100%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular, fontSize: 12 }}>{recolectedDay.hour}</Text>
-                        </TouchableOpacity>
+                            </TouchableOpacity> */}
                         </View>
                     </View>
                     <View style={{ display: 'flex', flexDirection: 'row', paddingTop: 10 }}>
@@ -270,7 +337,7 @@ const AddEvent = ({
                                 borderTopRightRadius: 10,
                                 borderBottomRightRadius: 10
                             }}>
-                               IVA</Text>
+                                IVA</Text>
                         </View>
                         <View style={{ display: 'flex', flexDirection: 'row' }}>
                             <Text style={{
@@ -285,7 +352,7 @@ const AddEvent = ({
                             <TextInput
                                 onChangeText={setPersentage}
                                 value={persentage}
-                                keyboardType="numeric" 
+                                keyboardType="numeric"
                                 style={{ width: 50, backgroundColor: colors.gray400, height: 25, borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular, fontSize: 12 }} ></TextInput>
                         </View>
                         <View style={{ display: 'flex', flexDirection: 'row' }}>
@@ -298,7 +365,7 @@ const AddEvent = ({
                                 borderBottomRightRadius: 10
                             }}>
                                 Flete.-</Text>
-                            <TextInput 
+                            <TextInput
                                 keyboardType="numeric"
                                 value={flete}
                                 onChangeText={setFlete}
@@ -307,21 +374,21 @@ const AddEvent = ({
                     </View>
 
                     <TouchableOpacity onPress={() => {
-                        
+
                         setTotal(totalRx)
-                        if(flete !== '') {
+                        if (flete !== '') {
                             setTotal(total + parseInt(flete))
                         }
 
-                        if(persentage !== '') {
+                        if (persentage !== '') {
                             setTotal(total - (total * (parseInt(persentage) / 100)))
                         }
 
-                        if(iva) {
+                        if (iva) {
                             setTotal(total + (total * .16))
                         }
                     }}
-                    style={{ height: 30, width: '100%', backgroundColor: '#488aff', justifyContent: 'center', alignItems: 'center', borderRadius: 5, marginTop: 5 }}>
+                        style={{ height: 30, width: '100%', backgroundColor: '#488aff', justifyContent: 'center', alignItems: 'center', borderRadius: 5, marginTop: 5 }}>
                         <Text style={{ fontFamily: fonts.Roboto.Regular, color: 'white', fontSize: 12 }}>Confirmar Descuento, flete e IVA</Text>
                     </TouchableOpacity>
                     <View style={{
@@ -378,20 +445,40 @@ const AddEvent = ({
                     </View>
                 </View>
             }
-            <FlatList
-                style={{ paddingTop: 10 }}
-                ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: 'rgba(0, 0, 0, 0.12)' }}></View>}
-                data={inventaryRx}
-                renderItem={renderItem}
-                keyExtractor={keyExtractor}
-                ListFooterComponent={() => {
-                    return (
-                        <TouchableOpacity onPress={() => navigation.goBack()} style={{ justifyContent: 'center', alignItems: 'center' }}>
-                            <Text style={{ fontFamily: fonts.Roboto.Bold, color: '#488aff', fontSize: 16 }}>Agregar material</Text>
-                        </TouchableOpacity>
-                    )
-                }}
-            />
+            {inventaryRx.length !== 0 &&
+                <FlatList
+                    style={{ paddingTop: 10 }}
+                    ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: 'rgba(0, 0, 0, 0.12)' }}></View>}
+                    data={inventaryRx}
+                    renderItem={renderItem}
+                    keyExtractor={keyExtractor}
+                    ListFooterComponent={() => {
+                        return (
+                            <View>
+                                {packagesRx.length !== 0 ? <View style={{ height: 200 }} /> :
+                                    <TouchableOpacity onPress={() => navigation.goBack()} style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                        <Text style={{ fontFamily: fonts.Roboto.Bold, color: '#488aff', fontSize: 16 }}>Agregar material</Text>
+                                    </TouchableOpacity>
+                                }</View>
+                        )
+                    }}
+                />
+            }
+            {packagesRx.length !== 0 &&
+                <FlatList
+                    style={{ paddingTop: 10 }}
+                    ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: 'rgba(0, 0, 0, 0.12)' }}></View>}
+                    data={packagesRx}
+                    renderItem={renderItemPkt}
+                    keyExtractor={keyExtractorPkt}
+                    ListFooterComponent={() => {
+                        return (
+                            <TouchableOpacity onPress={() => navigation.goBack()} style={{ justifyContent: 'center', alignItems: 'center' }}>
+                                <Text style={{ fontFamily: fonts.Roboto.Bold, color: '#488aff', fontSize: 16 }}>Agregar material</Text>
+                            </TouchableOpacity>
+                        )
+                    }}
+                />}
             {/* <View style={{ height: 200 }} /> */}
             <View style={{ width: '100%', position: 'absolute', bottom: 0, paddingHorizontal: 10, paddingVertical: 5, backgroundColor: colors.gray400 }}>
                 <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignContent: 'center', marginTop: 5 }}>
@@ -417,10 +504,9 @@ const AddEvent = ({
                 </View>
             </View>
             <Loading loading={loading}></Loading>
-            <DatePickerComponent date={new Date(date)} mode={typePicker.mode} open={openModalPicker} onChangePicker={(date) => {
-                console.log(date);
+            <DatePickerComponent date={new Date(formatDate)} mode={typePicker.mode} open={openModalPicker} onChangePicker={(date) => {
                 setOpenModalPicker(false)
-                if(!date) return
+                if (!date) return
                 switch (typePicker.type) {
                     case ETypesPicker.Recolection:
                         setRecolectedDay({ date: date?.toISOString().split('T')[0], hour: '' })
@@ -436,7 +522,7 @@ const AddEvent = ({
                         break;
                     default:
                         break;
-                
+
                 }
             }
             }></DatePickerComponent>
@@ -444,9 +530,9 @@ const AddEvent = ({
                 setOpenAlert(false)
                 navigation.navigate('Home', { refresh: false })
             }}
-            notsure={() => {
-                setOpenAlert(false)
-            }}
+                notsure={() => {
+                    setOpenAlert(false)
+                }}
             ></AreYouSure>
             <Toast />
         </View>
