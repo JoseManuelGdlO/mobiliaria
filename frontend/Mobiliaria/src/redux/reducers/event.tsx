@@ -1,9 +1,10 @@
 import { IAvailability } from '@interfaces/availability'
-import { IInventary } from '@interfaces/inventary'
+import { IPackage } from '@interfaces/packages'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 
 const initialState: any = {
+    packages: [] as IPackage[],
     inventary: [] as IAvailability[],
     event: {},
     total: 0
@@ -14,6 +15,9 @@ export const userSlice = createSlice({
     reducers: {
         setInventaryRx: (state, action: PayloadAction<any>) => {
             state.inventary = action.payload
+        },
+        setPackagesRx: (state, action: PayloadAction<any>) => {
+            state.packages = action.payload
         },
         setTotalRx: (state, action: PayloadAction<any>) => {
             state.total = action.payload

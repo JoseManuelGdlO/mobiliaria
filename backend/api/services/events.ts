@@ -117,8 +117,12 @@ async function getEventsOfDay(id: number, date: string) {
     }
 }
 
-async function availiable(id: number, date: string) {
+async function availiable(id: number, dateArrive: string) {
     let code = 200;
+
+    const dateArray = dateArrive.split('-');
+
+    const date = `${dateArray[2]}-${dateArray[1]}-${dateArray[0]}`
 
     const rows = await db.query(
         `
@@ -158,20 +162,65 @@ async function availiable(id: number, date: string) {
             code
         }
     }
+
+    const packages = await getPackages(id);
+    
+    for (const pkt of packages) {
+        let up = 99999;
+        for (let product of pkt.products) {
+            const prd = data.find((item: any) => item.id_mob === product.fkid_inventario);
+            if (prd) {
+                const total = Math.trunc(prd.cantidad_mob / product.cantidad);                
+                up = total < up ? total : up;
+            }
+            
+            product.nombre_mob = prd.nombre_mob;
+            product.cantidad_mob = prd.cantidad_mob;
+        }
+        pkt.availiable = up;
+    }
+    
+
     return {
-        data,
+        data: {
+            inventary: data,
+            packages
+        },
         code
     }
+}
+
+async function getPackages(id: number) {
+
+    const rows = await db.query(
+        `SELECT * FROM paquetes WHERE fkid_empresa = ${id} AND eliminado = 0`
+    );
+
+    let data = helper.emptyOrRows(rows);
+    if (data.length === 0) {
+        return []
+    }
+
+    for (const pkt of data) {
+        const products = await db.query(
+            `SELECT * FROM paquete_inventario WHERE fkid_paquete = ${pkt.id}`
+        );
+
+        pkt.products = products;
+    }
+
+    return data
 }
 
 async function addEvent(body: any, id: number) {
 
     const connection = await db.connection();
     await connection.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
+console.log(body.evento.fecha_envio_evento);
 
     await connection.beginTransaction();
     try {
-
+        
         const [event,] = await connection.execute(
             `INSERT INTO evento_mob (nombre_evento, id_empresa, tipo_evento, fecha_envio_evento, hora_envio_evento, fecha_recoleccion_evento, hora_recoleccion_evento, pagado_evento, nombre_titular_evento, direccion_evento ,telefono_titular_evento, descuento, iva, flete)
             VALUES ('${body.evento.nombre_evento}',${id}, '${body.evento.tipo_evento}', '${body.evento.fecha_envio_evento}',

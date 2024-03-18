@@ -5,5 +5,7 @@ export interface IPackage {
     nombre: string,
     descripcion: string,
     precio: number,
+    availiable?: number,
     products: IInventary[]
+    cantidad?: number
 }

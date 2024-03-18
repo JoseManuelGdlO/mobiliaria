@@ -5,6 +5,9 @@ import LottieView from "lottie-react-native";
 import React, { useRef, useEffect } from "react";
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
 import * as paymentService from "../../services/payments";
+import { useNavigation } from "@react-navigation/native";
+import { NavigationScreens } from "@interfaces/navigation";
+import { StackNavigationProp } from "@react-navigation/stack";
 
 const Payments = (): JSX.Element => {
   const animation = useRef(null);
@@ -12,11 +15,14 @@ const Payments = (): JSX.Element => {
   const [loading, setLoading] = React.useState(false);
 
   const { fonts, colors } = useTheme();
+  
+  const navigation = useNavigation<StackNavigationProp<NavigationScreens>>()
 
   const getWorkers = async () => {
     setLoading(true);
     try {
       const workers = (await paymentService.getPayments()) as IPayments[];
+      
       setWorkers(workers);
     } catch (error) {
       console.log(error);
@@ -31,7 +37,7 @@ const Payments = (): JSX.Element => {
   }, []);
 
   const keyExtractor = (item: IPayments, index: number): string =>
-    item.id_pago.toString();
+    index.toString();
 
   const renderItem = ({
     item,
@@ -86,13 +92,13 @@ const Payments = (): JSX.Element => {
                 fontSize: 15,
               }}
             >
-              Saldo pendiente: ${item.saldo.toFixed(2)}
+              Saldo pendiente: ${item.saldo?.toFixed(2)}
             </Text>
             <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12 }}>
-              Pagado: ${item.anticipo.toFixed(2)}
+              Pagado: ${item.anticipo?.toFixed(2)}
             </Text>
             <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12 }}>
-              Costo total: ${item.costo_total.toFixed(2)}
+              Costo total: ${item.costo_total?.toFixed(2)}
             </Text>
           </View>
           <View
@@ -113,6 +119,9 @@ const Payments = (): JSX.Element => {
               </Text>
             </View>
             <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('EventDetail', { id: item.id_evento })
+              }}
               style={{
                 backgroundColor: "#488aff",
                 borderRadius: 20,

@@ -6,7 +6,8 @@ export interface IInventary {
     costo_mob: number,
     extra_mob?: string,
     extra_mob_costo?: number,
-    ruta_imagen?: string
-    eliminado?: number
+    ruta_imagen?: string,
+    eliminado?: number,
+    fkid_inventario?: number,
     cantidad?: number
 }
