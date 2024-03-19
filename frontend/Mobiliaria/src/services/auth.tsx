@@ -8,10 +8,6 @@ export const login = async (email: string, password: string): Promise<any> => {
 
     const instance = axios.create({
         baseURL: url,
-        data: {
-            email,
-            password
-        },
         headers: {
             Accept: 'application/json',
             'content-Type': 'application/json',
