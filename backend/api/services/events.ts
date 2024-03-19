@@ -216,7 +216,9 @@ async function addEvent(body: any, id: number) {
 
     const connection = await db.connection();
     await connection.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
-console.log(body.evento.fecha_envio_evento);
+    console.log(body.evento.fecha_envio_evento);
+    const dateArray = body.evento.fecha_envio_evento.split('-');
+    body.evento.fecha_envio_evento = `${dateArray[2]}-${dateArray[1]}-${dateArray[0]}`
 
     await connection.beginTransaction();
     try {
