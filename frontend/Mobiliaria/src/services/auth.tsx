@@ -4,6 +4,8 @@ import { LOGIN_PATH } from "./endpoints"
 export const login = async (email: string, password: string): Promise<any> => {
     const url = `${process.env.API_URL}${LOGIN_PATH}`
     console.log(url);
+    console.log(email, password);
+    
     
 
     const instance = axios.create({
@@ -20,6 +22,8 @@ export const login = async (email: string, password: string): Promise<any> => {
             return response.data
         })
         .catch(async error => {
+            console.log(error);
+            
             return await Promise.reject(error)
         })
 }

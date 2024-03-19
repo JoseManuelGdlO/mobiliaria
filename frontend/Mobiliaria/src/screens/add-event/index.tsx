@@ -16,6 +16,7 @@ import Toast from "react-native-toast-message";
 import * as eventService from '@services/events'
 import AreYouSure from "@components/are-you-suere-modal";
 import { IPackage } from "@interfaces/packages";
+import RNPickerSelect from 'react-native-picker-select';
 
 export enum ETypesPicker {
     Recolection = 1,
@@ -31,6 +32,7 @@ const AddEvent = ({
     const arrDate = date.split('-')
     const formatDate = `${arrDate[2]}-${arrDate[1]}-${arrDate[0]}`
     
+    
     const navigation = useNavigation<StackNavigationProp<NavigationScreens>>()
     const [event, setEvent] = useState<IEventDetail>({} as IEventDetail)
     const [loading, setLoading] = useState<boolean>(false)
@@ -42,10 +44,10 @@ const AddEvent = ({
     const [openModalPicker, setOpenModalPicker] = useState<boolean>(false)
 
     const [typePicker, setTypePicker] = useState<{ type: number, mode: "date" | "time" | "datetime" }>({ type: ETypesPicker.Recolection, mode: 'date' })
-    const [recolectedDay, setRecolectedDay] = useState<{ date: string, hour: string }>({ date: '', hour: '' })
-    const [deliveredDay, setDeliveredDay] = useState<{ date: string, hour: string }>({ date: '', hour: '' })
+    const [recolectedDay, setRecolectedDay] = useState<{ date: string, hour: string }>({ date: formatDate, hour: '9:00' })
+    const [deliveredDay, setDeliveredDay] = useState<{ date: string, hour: string }>({ date: '', hour: '9:00' })
     const [anticipo, SetAnticipo] = useState<string>('')
-    const [detailsEvent, setDetailsEvent] = useState<{ titular: string, tipo: string, telefono: string, direccion: string, nombreEvento: string }>({ nombreEvento: '', titular: '', tipo: '', telefono: '', direccion: '' })
+    const [detailsEvent, setDetailsEvent] = useState<{ titular: string, tipo: string, telefono: string, direccion: string, nombreEvento: string }>({ nombreEvento: 'otro', titular: '', tipo: '', telefono: '', direccion: '' })
     const [openAlert, setOpenAlert] = useState<boolean>(false)
 
     const animation = React.useRef(null);
@@ -81,12 +83,16 @@ const AddEvent = ({
         }
         setLoading(true)
 
+        const arrRec = recolectedDay.date.split('-')
+        const recolectedDate = `${arrRec[2]}-${arrRec[1]}-${arrRec[0]}`
+        
+
         const event: any = {
             nombre_evento: detailsEvent.nombreEvento,
             tipo_evento: detailsEvent.tipo,
-            fecha_envio_evento: formatDate,
+            fecha_envio_evento: date,
             hora_envio_evento: deliveredDay.hour,
-            fecha_recoleccion_evento: recolectedDay.date,
+            fecha_recoleccion_evento: recolectedDate,
             hora_recoleccion_evento: recolectedDay.hour,
             nombre_titular_evento: detailsEvent.titular,
             direccion_evento: detailsEvent.direccion,
@@ -99,10 +105,10 @@ const AddEvent = ({
         event.pagado_evento = Number(anticipo) === total ? 1 : 0
 
         const mobiliario: any = []
-
+        
         inventaryRx.forEach((item: IAvailability) => {
             mobiliario.push({
-                fecha_evento: formatDate,
+                fecha_evento: deliveredDay.date,
                 hora_evento: deliveredDay.hour,
                 id_mob: item.id_mob,
                 ocupados: item.cantidad,
@@ -117,7 +123,7 @@ const AddEvent = ({
                 
                 const prdQty = product.cantidad? product.cantidad : 1
                 mobiliario.push({
-                    fecha_evento: date,
+                    fecha_evento: deliveredDay.date,
                     hora_evento: deliveredDay.hour,
                     id_mob: product.fkid_inventario,
                     ocupados: prdQty * PktQty,
@@ -154,6 +160,15 @@ const AddEvent = ({
             setLoading(false)
         }
     }
+
+    const changeDate = (days: number) => {
+        const olddate = new Date(formatDate)
+        olddate.setDate(olddate.getDate() + days)
+        const arr = olddate.toISOString().split('T')[0]
+        const arrDate = arr.split('-')
+        return `${arrDate[2]}-${arrDate[1]}-${arrDate[0]}`
+        
+    } 
 
 
     useEffect(() => {
@@ -222,9 +237,9 @@ const AddEvent = ({
 
     return (
         <View style={{ flex: 1 }}>
-            <ScrollView style={{ padding: 10, height: '50%' }}>
+            <ScrollView style={{ padding: 10, height: '35%' }}>
                 <View style={{
-                    padding: 10, borderColor: '#9E2EBE', borderRadius: 5, borderWidth: 1, overflow: 'hidden', shadowRadius: 10, shadowOpacity: 1,
+                    padding: 10, borderColor: '#9E2EBE', borderRadius: 5, borderWidth: 1
                 }}>
                     <View style={{ display: 'flex', flexDirection: 'row' }}>
                         <LottieView
@@ -242,37 +257,32 @@ const AddEvent = ({
                         <View style={{ paddingTop: 20, width: '100%' }}>
                             <View style={{ display: 'flex', flexDirection: 'row' }}>
                                 <View style={{ width: '20%' }}>
-                                    <Text style={{ fontFamily: fonts.Roboto.Bold, color: '#488aff', paddingTop: 10 }}>Nombre.- </Text>
-                                    <Text style={{ fontFamily: fonts.Roboto.Bold, color: '#488aff', paddingTop: 10 }}>Titular.- </Text>
-                                    <Text style={{ fontFamily: fonts.Roboto.Bold, color: '#488aff', paddingTop: 2 }}>Tipo evento.- </Text>
-                                    <Text style={{ fontFamily: fonts.Roboto.Bold, color: '#488aff', paddingTop: 10 }}>Telefono.- </Text>
+                                    <Text style={{ fontFamily: fonts.Roboto.Bold, color: '#488aff', fontSize: 15, paddingTop: 10 }}>Titular.- </Text>
+                                    <Text style={{ fontFamily: fonts.Roboto.Bold, color: '#488aff', fontSize: 15, paddingTop: 2 }}>Tipo evento.- </Text>
+                                    <Text style={{ fontFamily: fonts.Roboto.Bold, color: '#488aff', fontSize: 15, paddingTop: 10 }}>Telefono.- </Text>
                                 </View>
                                 <View style={{ width: '80%', paddingEnd: 15 }}>
-                                    <TextInput placeholder="Club rotario" onChangeText={(value: string) => {
-                                        setDetailsEvent({ ...detailsEvent, nombreEvento: value })
-                                    }}
-                                        style={{ width: '70%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular }}></TextInput>
-                                    <TextInput placeholder="Emilio lozada" onChangeText={(value: string) => {
+                                    <TextInput onChangeText={(value: string) => {
                                         setDetailsEvent({ ...detailsEvent, titular: value })
                                     }}
-                                        style={{ width: '70%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular }}></TextInput>
-                                    <TextInput placeholder="Boda"
+                                        style={{ width: '70%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular, fontSize: 25 }}></TextInput>
+                                    <TextInput
                                         onChangeText={(value: string) => {
                                             setDetailsEvent({ ...detailsEvent, tipo: value })
                                         }}
-                                        style={{ width: '70%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular }}></TextInput>
-                                    <TextInput placeholder="5553 381 1233" keyboardType="number-pad"
+                                        style={{ width: '70%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular, fontSize: 25 }}></TextInput>
+                                    <TextInput keyboardType="number-pad"
                                         onChangeText={(value: string) => {
                                             setDetailsEvent({ ...detailsEvent, telefono: value })
                                         }}
-                                        style={{ width: '70%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular }}></TextInput>
+                                        style={{ width: '70%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular, fontSize: 25 }}></TextInput>
                                 </View>
                             </View>
                         </View>
                     </View>
                     <View style={{ paddingHorizontal: 10, paddingTop: 15 }}>
                         <Text style={{ color: '#9E2EBE', fontFamily: fonts.Roboto.Medium, fontSize: 15 }}>Direccion:</Text>
-                        <TextInput placeholder="Acalpa 121-173, Col del Bosque, 34108 Durango, Dgo."
+                        <TextInput placeholder=""
                             onChangeText={(value: string) => {
                                 setDetailsEvent({ ...detailsEvent, direccion: value })
                             }}
@@ -284,46 +294,78 @@ const AddEvent = ({
                         </View>
                         <View style={{ display: 'flex', flexDirection: 'row' }}>
                             <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12, paddingTop: 10 }}>Hora de entrega: </Text>
-                            {/* <TouchableOpacity style={{ width: '75%', paddingTop: 11 }} onPress={() => {
-                                setTypePicker({ type: ETypesPicker.HourDelivery, mode: 'time' })
-                                setOpenModalPicker(true)
+                            <View style={{width: '70%', paddingTop: 5, borderBottomColor: '#000', borderBottomWidth:1}}>       
 
-                            }}>
-                                <Text style={{ width: '100%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular, fontSize: 12 }} >{deliveredDay.hour}</Text>
-                            </TouchableOpacity> */}
-                             <TextInput placeholder="12" keyboardType="number-pad"
-                                        onChangeText={(value: string) => {
-                                            setDeliveredDay({ ...deliveredDay , hour: value })
-                                        }}
-                                        style={{ width: '65%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular }}></TextInput>
-
+                            <RNPickerSelect
+                                placeholder="Seleciona la hora"
+                                onValueChange={(value) => setDeliveredDay({ ...deliveredDay , hour: value })}
+                                items={[
+                                    { label: '9:00', value: '9:00' },
+                                    { label: '10:00', value: '10:00' },
+                                    { label: '11:00', value: '11:00' },
+                                    { label: '12:00', value: '12:00' },
+                                    { label: '13:00', value: '13:00' },
+                                    { label: '14:00', value: '14:00' },
+                                    { label: '15:00', value: '15:00' },
+                                    { label: '16:00', value: '16:00' },
+                                    { label: '17:00', value: '17:00' },
+                                    { label: '18:00', value: '18:00' },
+                                    { label: '19:00', value: '19:00' },
+                                    { label: '20:00', value: '20:00' },
+                                    { label: '21:00', value: '21:00' },
+                                    { label: '22:00', value: '22:00' },
+                                ]}
+                            />
+                            </View>
+                             
                         </View>
 
+                        <View style={{ display: 'flex', flexDirection: 'row' }}>
                         <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12, paddingTop: 10 }}>Fecha de recoleccion: </Text>
-                        <TouchableOpacity onPress={() => {
-                            setTypePicker({ type: ETypesPicker.Recolection, mode: 'date' })
-                            setOpenModalPicker(true)
 
-                        }}>
-                            <Text style={{ width: '100%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular, fontSize: 12 }} >{recolectedDay.date}</Text>
+                        <View style={{width: '100%', paddingTop: 5, borderBottomColor: '#000', borderBottomWidth:1}}>
+                            <RNPickerSelect
+                                placeholder="Seleciona la hora"
+                                onValueChange={(value) => {
+                                    setRecolectedDay({ ...recolectedDay , date: value })
+                                }
+                                } 
+                                items={[
+                                    { label: changeDate(0), value: changeDate(0) },
+                                    { label: changeDate(1), value: changeDate(1) },
+                                    { label: changeDate(2), value: changeDate(2) },
+                                    { label: changeDate(3), value: changeDate(3) },
+                                ]}
+                            />
 
-                        </TouchableOpacity>
+                            </View>
+                            </View>
 
                         <View style={{ display: 'flex', flexDirection: 'row' }}>
                             <Text style={{ fontFamily: fonts.Roboto.Regular, marginLeft: 5, fontSize: 12, paddingTop: 10 }}>Hora de recoleccion: </Text>
-                            <TextInput placeholder="12" keyboardType="number-pad"
-                                        onChangeText={(value: string) => {
-                                            setRecolectedDay({ ...recolectedDay , hour: value })
-                                        }}
-                                        style={{ width: '65%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular }}></TextInput>
+                            <View style={{width: '70%', paddingTop: 5, borderBottomColor: '#000', borderBottomWidth:1}}>
+                            <RNPickerSelect
+                                placeholder="Seleciona la hora"
+                                onValueChange={(value) => setRecolectedDay({ ...recolectedDay , hour: value })}
+                                items={[
+                                    { label: '9:00', value: '9:00' },
+                                    { label: '10:00', value: '10:00' },
+                                    { label: '11:00', value: '11:00' },
+                                    { label: '12:00', value: '12:00' },
+                                    { label: '13:00', value: '13:00' },
+                                    { label: '14:00', value: '14:00' },
+                                    { label: '15:00', value: '15:00' },
+                                    { label: '16:00', value: '16:00' },
+                                    { label: '17:00', value: '17:00' },
+                                    { label: '18:00', value: '18:00' },
+                                    { label: '19:00', value: '19:00' },
+                                    { label: '20:00', value: '20:00' },
+                                    { label: '21:00', value: '21:00' },
+                                    { label: '22:00', value: '22:00' },
+                                ]}
+                            />
 
-                            {/* <TouchableOpacity style={{ width: '65%', paddingTop: 11 }} onPress={() => {
-                                setTypePicker({ type: ETypesPicker.HourRecolection, mode: 'datetime' })
-                                setOpenModalPicker(true)
-
-                            }}>
-                                <Text style={{ width: '100%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular, fontSize: 12 }}>{recolectedDay.hour}</Text>
-                            </TouchableOpacity> */}
+                            </View>
                         </View>
                     </View>
                     <View style={{ display: 'flex', flexDirection: 'row', paddingTop: 10 }}>

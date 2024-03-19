@@ -119,6 +119,7 @@ const Home = ({
     }, []);
 
     useEffect(() => {
+        
         setLoading(true)
         getEvents()
         const date = new Date().toISOString().split('T')[0]
