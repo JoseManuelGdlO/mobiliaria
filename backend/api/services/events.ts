@@ -234,7 +234,7 @@ async function addEvent(body: any, id: number) {
         for (const mobiliario of body.mobiliario) {
             await connection.execute(
                 `INSERT INTO inventario_disponibilidad_mob (fecha_evento, hora_evento, id_mob, ocupados, id_evento, hora_recoleccion, costo)
-                VALUES (${mobiliario.fecha_evento}, '${mobiliario.hora_evento}', ${mobiliario.id_mob}, ${mobiliario.ocupados},${event.insertId}, '${mobiliario.hora_recoleccion}', ${mobiliario.costo})`
+                VALUES (${body.evento.fecha_envio_evento}, '${mobiliario.hora_evento}', ${mobiliario.id_mob}, ${mobiliario.ocupados},${event.insertId}, '${mobiliario.hora_recoleccion}', ${mobiliario.costo})`
             );
         }
 
