@@ -71,7 +71,6 @@ const Home = ({
     const getEvents = async () => {
         try {
             const response = await eventService.getEvents()
-            console.log(response.data);
             
             const dates: MarkedDates = {}
             for (const date of response.data) {
@@ -96,7 +95,6 @@ const Home = ({
         try {
 
             const response = await eventService.getEventsDay(date)
-            console.log(response.data, date);
 
             setEventsDay(response.data)
         } catch (error) {
@@ -118,8 +116,8 @@ const Home = ({
         getEvents()
     }, []);
 
-    useEffect(() => {
-        
+    useEffect(() => {      
+  
         setLoading(true)
         getEvents()
         const date = new Date().toISOString().split('T')[0]
@@ -134,6 +132,18 @@ const Home = ({
         setDateEvent(`${arrDate[2]} de ${monthToString(Number(arrDate[1]))}`)
         getEventsDay(date)
     }, [])
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            if (refresh) {
+                setLoading(true)
+                getEvents()
+            }
+          
+        });
+    
+        return unsubscribe;
+      }, [navigation]);
 
     const renderItem = ({
         item,

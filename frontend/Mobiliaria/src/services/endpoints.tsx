@@ -27,6 +27,7 @@ export const ADD_PACKAGES = API_INVENTARY + '/addPackages'
 
 export const GET_WORKERS = API_WORKERS + '/getWorkers'
 export const ADD_WORKER = API_WORKERS + '/addWorker'
+export const REMOVE_WORKER = API_WORKERS + '/remove'
 export const EDIT_WORKER = API_WORKERS + '/editWorker'
 export const ACTIVE_WORKER = API_WORKERS + '/active'
 export const GET_WORKERS_EVENTS = API_WORKERS + '/getEventsDay'

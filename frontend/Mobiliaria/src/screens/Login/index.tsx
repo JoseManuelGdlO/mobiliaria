@@ -210,8 +210,8 @@ const Login = (): JSX.Element => {
         </View>
 
         <Toast />
-        <Loading loading={loading}></Loading>
       </ScrollView>
+      <Loading loading={loading}></Loading>
     </View>
   );
 };

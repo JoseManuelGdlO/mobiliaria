@@ -216,9 +216,6 @@ async function addEvent(body: any, id: number) {
 
     const connection = await db.connection();
     await connection.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
-    console.log(body.evento.fecha_envio_evento);
-    const dateArray = body.evento.fecha_envio_evento.split('-');
-    body.evento.fecha_envio_evento = `${dateArray[2]}-${dateArray[1]}-${dateArray[0]}`
 
     await connection.beginTransaction();
     try {
@@ -234,7 +231,7 @@ async function addEvent(body: any, id: number) {
         for (const mobiliario of body.mobiliario) {
             await connection.execute(
                 `INSERT INTO inventario_disponibilidad_mob (fecha_evento, hora_evento, id_mob, ocupados, id_evento, hora_recoleccion, costo)
-                VALUES (${body.evento.fecha_envio_evento}, '${mobiliario.hora_evento}', ${mobiliario.id_mob}, ${mobiliario.ocupados},${event.insertId}, '${mobiliario.hora_recoleccion}', ${mobiliario.costo})`
+                VALUES ('${mobiliario.fecha_evento}', '${mobiliario.hora_evento}', ${mobiliario.id_mob}, ${mobiliario.ocupados},${event.insertId}, '${mobiliario.hora_recoleccion}', ${mobiliario.costo})`
             );
         }
 
@@ -243,7 +240,7 @@ async function addEvent(body: any, id: number) {
             VALUES (${event.insertId},${body.costo.costo_total},${body.costo.saldo},${body.costo.anticipo})`
         );
 
-        await connection.commit()
+        await connection.commit();
         return 201
 
     } catch (error) {

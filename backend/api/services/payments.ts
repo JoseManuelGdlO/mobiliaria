@@ -54,7 +54,7 @@ async function addPayment(body: any) {
 
         if (body.saldo === 0) {
             await connection.execute(
-                `UPDATE evento_mob SET status = '1' WHERE id_evento = ${body.id_evento}`
+                `UPDATE evento_mob SET pagado_evento = '1' WHERE id_evento = ${body.id_evento}`
             );
         }
 

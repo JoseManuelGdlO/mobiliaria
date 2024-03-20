@@ -100,7 +100,12 @@ const Workers = (): JSX.Element => {
                             style={{ backgroundColor: 'blue', borderRadius: 10, marginTop: 10, paddingHorizontal: 15, justifyContent: 'center', height: 20 }}>
                             <Text style={{ fontFamily: fonts.Roboto.Medium, fontSize: 12, color: 'white' }}>Detalles</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={{ marginLeft: 5, backgroundColor: 'red', borderRadius: 10, marginTop: 10, paddingHorizontal: 15, justifyContent: 'center', height: 20 }}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                setWorkerNew(item)
+                                setOpenAlert(2)
+                            }}
+                        style={{ marginLeft: 5, backgroundColor: 'red', borderRadius: 10, marginTop: 10, paddingHorizontal: 15, justifyContent: 'center', height: 20 }}>
                             <Text style={{ fontFamily: fonts.Roboto.Medium, fontSize: 12, color: 'white' }}>Eliminar</Text>
                         </TouchableOpacity>
                     </View>
@@ -373,7 +378,24 @@ const Workers = (): JSX.Element => {
                         onHide: () => { }
                     })
                 }else if(openAlert === 2){
-                    // TODO eliminar
+                    workersService.deleteWorker(workerNew.id_usuario)
+                    
+                    workers.find((item: IWorker, index: number) => {
+                        
+                        if (item && item.id_usuario === workerNew.id_usuario) {
+                            workers.splice(index, 1)
+                        }
+                    })
+                    setWorkerNew({ id_usuario: 0, active: 0, nombre_comp: '', usuario: '', correo: '', rol_usuario: '', fecha_creacion: '', id_empresa: 0, contrasena: '', admin: 0  })
+                    setVisible(false)
+                    Toast.show({
+                        type: 'success',
+                        text1: 'Exito',
+                        text2: 'Se elimino correctamente',
+                        visibilityTime: 3000,
+                        autoHide: true,
+                        onHide: () => { }
+                    })
                 }
 
                 setOpenAlert(0)
