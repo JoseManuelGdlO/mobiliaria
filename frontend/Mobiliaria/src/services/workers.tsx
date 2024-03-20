@@ -1,5 +1,5 @@
 import axios from "axios"
-import { ACTIVE_WORKER, ADD_WORKER, EDIT_WORKER, GET_WORKERS, GET_WORKERS_EVENTS } from "./endpoints"
+import { ACTIVE_WORKER, ADD_WORKER, EDIT_WORKER, GET_WORKERS, GET_WORKERS_EVENTS, REMOVE_WORKER } from "./endpoints"
 import { getAccessTokenAsync } from "@utils/token"
 
 export const getWorkers = async (): Promise<any> => {
@@ -104,6 +104,28 @@ export const active = async (active: 0 | 1, id: number): Promise<any> => {
 
     return await instance
         .put(url)
+        .then(async response => {
+            return response.data.data
+        })
+        .catch(async error => {
+            return await Promise.reject(error)
+        })
+}
+
+export const deleteWorker = async (id: number): Promise<any> => {
+    const url = `${process.env.API_URL}${REMOVE_WORKER}?id=${id}`
+
+    const instance = axios.create({
+        baseURL: url,
+        headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${await getAccessTokenAsync()}`,
+            'content-Type': 'application/json',
+        }
+    })
+
+    return await instance
+        .delete(url)
         .then(async response => {
             return response.data.data
         })

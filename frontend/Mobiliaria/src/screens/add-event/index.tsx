@@ -44,8 +44,8 @@ const AddEvent = ({
     const [openModalPicker, setOpenModalPicker] = useState<boolean>(false)
 
     const [typePicker, setTypePicker] = useState<{ type: number, mode: "date" | "time" | "datetime" }>({ type: ETypesPicker.Recolection, mode: 'date' })
-    const [recolectedDay, setRecolectedDay] = useState<{ date: string, hour: string }>({ date: formatDate, hour: '9:00' })
-    const [deliveredDay, setDeliveredDay] = useState<{ date: string, hour: string }>({ date: '', hour: '9:00' })
+    const [recolectedDay, setRecolectedDay] = useState<{ date: string, hour: string }>({ date: date, hour: '9:00' })
+    const [deliveredDay, setDeliveredDay] = useState<{ date: string, hour: string }>({ date: date, hour: '9:00' })
     const [anticipo, SetAnticipo] = useState<string>('')
     const [detailsEvent, setDetailsEvent] = useState<{ titular: string, tipo: string, telefono: string, direccion: string, nombreEvento: string }>({ nombreEvento: 'otro', titular: '', tipo: '', telefono: '', direccion: '' })
     const [openAlert, setOpenAlert] = useState<boolean>(false)
@@ -69,11 +69,11 @@ const AddEvent = ({
             return
         }
 
-        if (detailsEvent.titular === '' || detailsEvent.tipo === '' || detailsEvent.telefono === '' || detailsEvent.direccion === '') {
+        if (detailsEvent.titular === '') {
             Toast.show({
                 type: 'error',
                 text1: 'Error',
-                text2: 'Faltan campos por llenar',
+                text2: 'Faltan el nombre del titular',
                 visibilityTime: 1000,
                 autoHide: true,
                 onHide: () => {
@@ -83,20 +83,19 @@ const AddEvent = ({
         }
         setLoading(true)
 
-        const arrRec = recolectedDay.date.split('-')
-        const recolectedDate = `${arrRec[2]}-${arrRec[1]}-${arrRec[0]}`
+        let recDateArr = recolectedDay.date.split('-')
+        const recDate = `${recDateArr[2]}-${recDateArr[1]}-${recDateArr[0]}`
         
-
         const event: any = {
             nombre_evento: detailsEvent.nombreEvento,
-            tipo_evento: detailsEvent.tipo,
+            tipo_evento: detailsEvent.tipo.length === 0 ? 'otro' : detailsEvent.tipo,
             fecha_envio_evento: date,
-            hora_envio_evento: deliveredDay.hour,
-            fecha_recoleccion_evento: recolectedDate,
-            hora_recoleccion_evento: recolectedDay.hour,
+            hora_envio_evento: deliveredDay.hour ? deliveredDay.hour : '9:00',
+            fecha_recoleccion_evento: recolectedDay.date ? recDate : date,
+            hora_recoleccion_evento: recolectedDay.hour ? recolectedDay.hour : '9:00',
             nombre_titular_evento: detailsEvent.titular,
-            direccion_evento: detailsEvent.direccion,
-            telefono_titular_evento: detailsEvent.telefono,
+            direccion_evento: detailsEvent.direccion ? detailsEvent.direccion : 'Sin direccion',
+            telefono_titular_evento: detailsEvent.telefono.length === 0 ? '0000000000' : detailsEvent.telefono,
             descuento: persentage ? parseInt(persentage) : 0,
             ivavalor: iva ? 1 : 0,
             fletevalor: flete ? Number(flete) : 0
@@ -107,8 +106,9 @@ const AddEvent = ({
         const mobiliario: any = []
         
         inventaryRx.forEach((item: IAvailability) => {
+            
             mobiliario.push({
-                fecha_evento: deliveredDay.date,
+                fecha_evento: date,
                 hora_evento: deliveredDay.hour,
                 id_mob: item.id_mob,
                 ocupados: item.cantidad,
@@ -123,7 +123,7 @@ const AddEvent = ({
                 
                 const prdQty = product.cantidad? product.cantidad : 1
                 mobiliario.push({
-                    fecha_evento: deliveredDay.date,
+                    fecha_evento: date,
                     hora_evento: deliveredDay.hour,
                     id_mob: product.fkid_inventario,
                     ocupados: prdQty * PktQty,
@@ -135,11 +135,11 @@ const AddEvent = ({
         }
         )
 
-
+        const localAnticipo = anticipo ? Number(anticipo) : 0
         const costo = {
             costo_total: total,
-            anticipo: anticipo,
-            saldo: total - Number(anticipo)
+            anticipo: localAnticipo,
+            saldo: total - localAnticipo
         }
 
         const body = {
@@ -150,7 +150,6 @@ const AddEvent = ({
 
         try {
             const response = await eventService.addEvent(body)
-            console.log(response);
             
             navigation.navigate('Home', { refresh: true })
 
@@ -162,7 +161,8 @@ const AddEvent = ({
     }
 
     const changeDate = (days: number) => {
-        const olddate = new Date(formatDate)
+        
+        const olddate = new Date(date)
         olddate.setDate(olddate.getDate() + days)
         const arr = olddate.toISOString().split('T')[0]
         const arrDate = arr.split('-')

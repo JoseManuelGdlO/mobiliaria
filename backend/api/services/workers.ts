@@ -8,7 +8,7 @@ async function getWorkers(id: number) {
     console.log('id', id);
     
     const rows = await db.query(
-        `SELECT * FROM usuarios_mobiliaria WHERE id_empresa = ${id} AND admin is null order by nombre_comp`
+        `SELECT * FROM usuarios_mobiliaria WHERE id_empresa = ${id} AND admin is null AND delete_usuario is NULL order by nombre_comp`
     );
 
     let data = helper.emptyOrRows(rows);
@@ -208,6 +208,7 @@ async function generePass(id: number) {
         code
     }
 }
+
 
 module.exports = {
     getWorkers,
