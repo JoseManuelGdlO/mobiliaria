@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "813307329503",
+    "project_id": "eventivapp",
+    "storage_bucket": "eventivapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:813307329503:android:7a8dad3dc03de8fabc626a",
+        "android_client_info": {
+          "package_name": "com.eventivapp.jm.garcia"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDq5icb1qr-91HPd77fRM80TD4v_tBdnTY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

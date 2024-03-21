@@ -115,4 +115,18 @@ router.delete('/remove', verifyToken, async function (req: any, res: any, next: 
     }
 }); 
 
+router.delete('/removeitem', verifyToken, async function (req: any, res: any, next: any) {
+    try {
+        let id = req.query.id
+        const id_mob = req.query.id_mob
+
+        const response = await eventService.removeItem(id, id_mob);
+        
+        res.status(response).json();
+    } catch (err: any) {
+        console.error(`Error while getting enarm students info `, err.message);
+        next(err);
+    }
+});
+
 module.exports = router;

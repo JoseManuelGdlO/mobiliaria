@@ -19,6 +19,7 @@ const EventDetail = ({
     const navigation = useNavigation<StackNavigationProp<NavigationScreens>>()
     const id = route.params.id
     const [event, setEvent] = useState<IEventDetail>({} as IEventDetail)
+    const [itemRemove, setItemRemove] = useState<number>(0)
     const [loading, setLoading] = useState<boolean>(true)
     const [abono, setAbono] = useState<string>('')
     const [obs, setObs] = useState<string>('')
@@ -31,7 +32,6 @@ const EventDetail = ({
     const getDetails = async () => {
         try {
             const response = await eventService.getEventDetail(id) as IEventDetail
-            console.log(response);
             setObs(response?.event?.observaciones)
             
             setEvent(response)
@@ -68,7 +68,10 @@ const EventDetail = ({
                     <Text style={{ color: '#9E2EBE', fontFamily: fonts.Roboto.Regular, fontSize: 15 }}>{item.nombre_mob}</Text>
                     <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12 }}>{item.ocupados} Rentado{item.ocupados !== 1 && 's'}</Text>
                 </View>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => {                    
+                    setItemRemove(item.id_mob)
+                    setOpenAlert(3)
+                }}>
                     <Text style={{ fontFamily: fonts.Roboto.Medium, fontSize: 12, color: 'red', paddingTop: 10 }}>Eliminar</Text>
                 </TouchableOpacity>
             </View>
@@ -126,6 +129,25 @@ const EventDetail = ({
                 autoHide: true
             })
             navigation.navigate('Home', { refresh: false })
+        } catch (error) {
+            console.log(error);
+            setLoading(false)
+        }
+    }
+
+    const removeItem = async () => {
+        try {
+            setLoading(true)
+            await eventService.removeItem(event?.event?.id_evento, itemRemove)
+            Toast.show({
+                type: 'success',
+                text1: 'Hecho',
+                text2: 'Se ha eliminado',
+                visibilityTime: 2000,
+                autoHide: true
+            })
+            setLoading(false)
+            setEvent({ ...event, items: event?.items?.filter(item => item.id_mob !== itemRemove) })
         } catch (error) {
             console.log(error);
             setLoading(false)
@@ -383,12 +405,15 @@ const EventDetail = ({
                 
                 if(openAlert === 1) {
                     changeStatus()
-                } else {
+                } else if(openAlert === 2){
                     removeEvent()
+                } else {
+                    removeItem()
                 }
                 setOpenAlert(0)
             }}
                 notsure={() => {
+                    setItemRemove(0)
                     setOpenAlert(0)
                 }}
             ></AreYouSure>
