@@ -3,7 +3,7 @@ import { ADD_INVENTARY, GET_INVENTARY, REMOVE_INVENTARY, UPDATE_INVENTARY } from
 import { getAccessTokenAsync } from "@utils/token"
 
 export const getInventary = async (): Promise<any> => {
-    const url = `http://192.168.0.21:8000${GET_INVENTARY}`
+    const url = `${process.env.API_URL}${GET_INVENTARY}`
     
 
     const instance = axios.create({
@@ -26,7 +26,7 @@ export const getInventary = async (): Promise<any> => {
 }
 
 export const addInventary = async (body: any): Promise<any> => {
-    const url = `http://192.168.0.21:8000${ADD_INVENTARY}`
+    const url = `${process.env.API_URL}${ADD_INVENTARY}`
     const instance = axios.create({
         baseURL: url,
         headers: {
@@ -48,7 +48,7 @@ export const addInventary = async (body: any): Promise<any> => {
 
 
 export const updateInventary = async (body: any): Promise<any> => {
-    const url = `http://192.168.0.21:8000${UPDATE_INVENTARY}`
+    const url = `${process.env.API_URL}${UPDATE_INVENTARY}`
     const instance = axios.create({
         baseURL: url,
         headers: {
@@ -68,7 +68,7 @@ export const updateInventary = async (body: any): Promise<any> => {
 }
 
 export const remove = async (id: number): Promise<any> => {
-    const url = `http://192.168.0.21:8000${REMOVE_INVENTARY}?id=${id}`
+    const url = `${process.env.API_URL}${REMOVE_INVENTARY}?id=${id}`
     const instance = axios.create({
         baseURL: url,
         headers: {

@@ -3,7 +3,7 @@ import { ACTIVE_WORKER, ADD_WORKER, EDIT_WORKER, GET_WORKERS, GET_WORKERS_EVENTS
 import { getAccessTokenAsync } from "@utils/token"
 
 export const getWorkers = async (): Promise<any> => {
-    const url = `http://192.168.0.21:8000${GET_WORKERS}`
+    const url = `${process.env.API_URL}${GET_WORKERS}`
 
     const instance = axios.create({
         baseURL: url,
@@ -25,7 +25,7 @@ export const getWorkers = async (): Promise<any> => {
 }
 
 export const getEventsDelivery = async (date: string): Promise<any> => {
-    const url = `http://192.168.0.21:8000${GET_WORKERS_EVENTS}?date=${date}`
+    const url = `${process.env.API_URL}${GET_WORKERS_EVENTS}?date=${date}`
 
     const instance = axios.create({
         baseURL: url,
@@ -47,7 +47,7 @@ export const getEventsDelivery = async (date: string): Promise<any> => {
 }
 
 export const addWorker = async (body: any): Promise<any> => {
-    const url = `http://192.168.0.21:8000${ADD_WORKER}`
+    const url = `${process.env.API_URL}${ADD_WORKER}`
 
     const instance = axios.create({
         baseURL: url,
@@ -69,7 +69,7 @@ export const addWorker = async (body: any): Promise<any> => {
 }
 
 export const editWorker = async (body: any): Promise<any> => {
-    const url = `http://192.168.0.21:8000${EDIT_WORKER}`
+    const url = `${process.env.API_URL}${EDIT_WORKER}`
 
     const instance = axios.create({
         baseURL: url,
@@ -91,7 +91,7 @@ export const editWorker = async (body: any): Promise<any> => {
 }
 
 export const active = async (active: 0 | 1, id: number): Promise<any> => {
-    const url = `http://192.168.0.21:8000${ACTIVE_WORKER}?type=${active}&id=${id}`
+    const url = `${process.env.API_URL}${ACTIVE_WORKER}?type=${active}&id=${id}`
 
     const instance = axios.create({
         baseURL: url,
@@ -113,7 +113,7 @@ export const active = async (active: 0 | 1, id: number): Promise<any> => {
 }
 
 export const deleteWorker = async (id: number): Promise<any> => {
-    const url = `http://192.168.0.21:8000${REMOVE_WORKER}?id=${id}`
+    const url = `${process.env.API_URL}${REMOVE_WORKER}?id=${id}`
 
     const instance = axios.create({
         baseURL: url,
