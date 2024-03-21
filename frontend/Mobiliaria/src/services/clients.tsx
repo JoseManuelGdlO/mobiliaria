@@ -3,7 +3,7 @@ import { getAccessTokenAsync } from "@utils/token"
 import { GET_CLIENTS } from "./endpoints"
 
 export const getClients = async (): Promise<any> => {
-    const url = `${process.env.API_URL}${GET_CLIENTS}`
+    const url = `http://192.168.0.21:8000${GET_CLIENTS}`
 
     const instance = axios.create({
         baseURL: url,

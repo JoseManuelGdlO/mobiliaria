@@ -119,11 +119,7 @@ async function getEventsOfDay(id: number, date: string) {
 
 async function availiable(id: number, dateArrive: string) {
     let code = 200;
-
-    const dateArray = dateArrive.split('-');
-
-    const date = `${dateArray[2]}-${dateArray[1]}-${dateArray[0]}`
-
+ 
     const rows = await db.query(
         `
         SELECT 
@@ -143,7 +139,7 @@ async function availiable(id: number, dateArrive: string) {
                 FROM 
                     inventario_disponibilidad_mob
                 WHERE 
-                    DATE(fecha_evento) = '${date}'
+                    DATE(fecha_evento) = '${dateArrive}'
                 GROUP BY 
                     id_mob
             ) dis ON inv.id_mob = dis.id_mob
@@ -179,6 +175,7 @@ async function availiable(id: number, dateArrive: string) {
         }
         pkt.availiable = up;
     }
+    
     
 
     return {
@@ -264,7 +261,6 @@ async function addItems(body: any) {
             `SELECT * FROM evento_mob WHERE id_evento = ${body.id}`
         );
         event = event[0]
-        console.log(event);
         
 
         for (const mobiliario of body.items) {
@@ -360,6 +356,26 @@ async function remove(id: number) {
     }
 }
 
+async function removeItem(id: number, id_mob: number) {
+    const connection = await db.connection();
+    await connection.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
+
+    await connection.beginTransaction();
+    try {
+        let [event,] = await connection.execute(
+            `DELETE FROM inventario_disponibilidad_mob WHERE id_evento = ${id} AND id_mob = ${id_mob}`
+        );
+
+        connection.commit();
+        return 201
+    } catch (error) {
+        console.error(error);
+        connection.rollback();
+        console.info('Rollback successful');
+        return 405
+    }
+}
+
 
 module.exports = {
     getEvents,
@@ -370,5 +386,6 @@ module.exports = {
     getDetails,
     changeStatus,
     remove,
+    removeItem,
     addItems
 }

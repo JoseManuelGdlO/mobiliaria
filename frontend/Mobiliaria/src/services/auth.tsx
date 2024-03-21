@@ -2,7 +2,7 @@ import axios from "axios"
 import { LOGIN_PATH } from "./endpoints"
 
 export const login = async (email: string, password: string): Promise<any> => {
-    const url = `${process.env.API_URL}${LOGIN_PATH}`
+    const url = `http://192.168.0.21:8000${LOGIN_PATH}`
     console.log(url);
     console.log(email, password);
     
