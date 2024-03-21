@@ -4,7 +4,7 @@ import { IPackage } from "@interfaces/packages";
 import { getAccessTokenAsync } from "@utils/token";
 
 export const getPackages = async (): Promise<any> => {
-    const url = `http://192.168.0.21:8000${GET_PACKAGES}`
+    const url = `${process.env.API_URL}${GET_PACKAGES}`
 
     const instance = axios.create({
         baseURL: url,
@@ -27,7 +27,7 @@ export const getPackages = async (): Promise<any> => {
 
 
 export const removePackage = async (id: number): Promise<any> => {
-    const url = `http://192.168.0.21:8000${REMOVE_PACKAGES}?id=${id}`
+    const url = `${process.env.API_URL}${REMOVE_PACKAGES}?id=${id}`
     console.log(url);    
 
     const instance = axios.create({
@@ -52,7 +52,7 @@ export const removePackage = async (id: number): Promise<any> => {
 
 
 export const addPackage = async (body: any): Promise<any> => {
-    const url = `http://192.168.0.21:8000${ADD_PACKAGES}`
+    const url = `${process.env.API_URL}${ADD_PACKAGES}`
     console.log(url);    
 
     const instance = axios.create({
