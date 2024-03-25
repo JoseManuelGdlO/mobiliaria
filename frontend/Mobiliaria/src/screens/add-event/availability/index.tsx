@@ -170,11 +170,11 @@ const Availability = ({
     const addItemsToEvent = async () => {
         try {
             setLoading(true)
-            const response = await eventsService.addItemsToEvent(Number(id), invSelected)
-            console.log(response);
-            navigation.goBack()
+            await eventsService.addItemsToEvent(Number(id), invSelected)
+            navigation.navigate('EventDetail', { id: Number(id) })
         } catch (error) {
             console.log(error);
+            setLoading(false)
         }
     }
 

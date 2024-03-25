@@ -135,11 +135,8 @@ const Home = ({
 
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-            if (refresh) {
-                setLoading(true)
-                getEvents()
-            }
-          
+            setLoading(true)
+            getEvents();
         });
     
         return unsubscribe;

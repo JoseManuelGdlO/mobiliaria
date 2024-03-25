@@ -176,6 +176,8 @@ export const addItemsToEvent = async (id: number, items: IAvailability[]): Promi
         id,
         items
     }
+    console.log(url);
+    
 
     const instance = axios.create({
         baseURL: url,
@@ -189,8 +191,6 @@ export const addItemsToEvent = async (id: number, items: IAvailability[]): Promi
     return await instance
         .post(url, body)
         .then(async response => {
-            console.log(response);
-            
             return response
         })
         .catch(async error => {
