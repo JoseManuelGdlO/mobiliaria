@@ -16,6 +16,7 @@ import { useNavigation } from "@react-navigation/native";
 const EventDetail = ({
     route
 }: StackScreenProps<NavigationScreens, 'EventDetail'>): JSX.Element => {
+    
     const navigation = useNavigation<StackNavigationProp<NavigationScreens>>()
     const id = route.params.id
     const [event, setEvent] = useState<IEventDetail>({} as IEventDetail)
@@ -45,6 +46,15 @@ const EventDetail = ({
         setLoading(true)
         getDetails()
     }, [])
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            setLoading(true)
+            getDetails();
+          });
+      
+          return unsubscribe;
+        }, [navigation]);
 
 
     const keyExtractor = (item: IInventaryRent, index: number): string => item.id_mob.toString() + index
@@ -146,8 +156,8 @@ const EventDetail = ({
                 visibilityTime: 2000,
                 autoHide: true
             })
+            getDetails()
             setLoading(false)
-            setEvent({ ...event, items: event?.items?.filter(item => item.id_mob !== itemRemove) })
         } catch (error) {
             console.log(error);
             setLoading(false)
@@ -380,7 +390,7 @@ const EventDetail = ({
                     </View>
                 }
                 <FlatList
-                    style={{ paddingTop: 10 }}
+                    style={{ paddingTop: 10, paddingBottom: 70}}
                     ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: 'rgba(0, 0, 0, 0.12)' }}></View>}
                     data={event?.items}
                     renderItem={renderItem}

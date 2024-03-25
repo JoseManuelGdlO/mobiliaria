@@ -96,7 +96,8 @@ router.post('/additems', verifyToken, async function (req: any, res: any, next: 
         console.log(body);
         
         const response = await eventService.addItems(body);
-        res.status(response);
+        
+        res.status(response).json();
     } catch (err: any) {
         console.error(`Error while getting enarm students info `, err.message);
         next(err);

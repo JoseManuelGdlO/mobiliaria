@@ -120,6 +120,14 @@ async function getEventsOfDay(id: number, date: string) {
 async function availiable(id: number, dateArrive: string) {
     let code = 200;
  
+    console.log(dateArrive);
+
+    let date = dateArrive.split('-');
+
+    if(date[0].length === 2) {
+        dateArrive = `${date[2]}-${date[1]}-${date[0]}`;
+    }
+    
     const rows = await db.query(
         `
         SELECT 
@@ -215,6 +223,18 @@ async function addEvent(body: any, id: number) {
     await connection.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
 
     await connection.beginTransaction();
+
+    let dateEnv = body.evento.fecha_envio_evento.split('-');
+    if(dateEnv[0].length === 2) {
+        body.evento.fecha_envio_evento = `${dateEnv[2]}-${dateEnv[1]}-${dateEnv[0]}`;
+    }
+
+    
+    let dateRec = body.evento.fecha_recoleccion_evento.split('-');
+    if(dateRec[0].length === 2) {
+        body.evento.fecha_recoleccion_evento = `${dateRec[2]}-${dateRec[1]}-${dateRec[0]}`;
+    }
+
     try {
         
         const [event,] = await connection.execute(
@@ -261,14 +281,53 @@ async function addItems(body: any) {
             `SELECT * FROM evento_mob WHERE id_evento = ${body.id}`
         );
         event = event[0]
-        
 
+        let sumTotal = 0;
+        
         for (const mobiliario of body.items) {
-            await connection.execute(
-                `INSERT INTO inventario_disponibilidad_mob (fecha_evento, hora_evento, id_mob, ocupados, id_evento, hora_recoleccion, costo)
-                VALUES (${event.fecha_envio_evento.toISOString().split('T')[0]}, '${event.hora_envio_evento}', ${mobiliario.id_mob}, ${mobiliario.cantidad_mob}, ${body.id}, '${event.fecha_recoleccion_evento.toISOString().split('T')[0]}', ${mobiliario.costo_mob})`
+            sumTotal += mobiliario.cantidad * mobiliario.costo_mob;
+            
+            const mobEvent = await connection.execute(
+                `SELECT * FROM inventario_disponibilidad_mob WHERE id_evento = ${body.id} AND id_mob = ${mobiliario.id_mob}`
             );
+
+            if (mobEvent[0].length === 0) { 
+                console.log('to sabe', event.fecha_envio_evento.toISOString().split('T')[0]);
+                
+                await connection.execute(
+                `INSERT INTO inventario_disponibilidad_mob (fecha_evento, hora_evento, id_mob, ocupados, id_evento, hora_recoleccion, costo)
+                VALUES ('${event.fecha_envio_evento.toISOString().split('T')[0]}', '${event.hora_envio_evento}', ${mobiliario.id_mob}, ${mobiliario.cantidad}, ${body.id}, '${event.fecha_recoleccion_evento.toISOString().split('T')[0]}', ${mobiliario.costo_mob})`
+             );
+
+            } else {
+                
+                await connection.execute(
+                    `UPDATE inventario_disponibilidad_mob SET ocupados = ${mobEvent[0][0].ocupados + mobiliario.cantidad} WHERE id_evento = ${body.id} AND id_mob = ${mobiliario.id_mob}`
+                );
+                continue;
+            }
+            
+
         }
+
+        
+        let [payment,] = await connection.execute(
+            `SELECT * FROM pagos_mob WHERE id_evento = ${body.id}`
+        );
+        payment = payment[payment.length - 1]
+
+        let discount = event.descuento;
+
+        if(discount > 0) {
+            sumTotal = sumTotal - (sumTotal * discount / 100);
+        }
+
+        payment.costo_total += sumTotal;
+
+       await connection.execute(
+            `INSERT INTO pagos_mob (id_evento, costo_total, saldo, anticipo)
+            VALUES (${body.id},${payment.costo_total},${payment.saldo},${payment.anticipo})`
+        );
 
         await connection.commit()
         return 201
@@ -362,6 +421,32 @@ async function removeItem(id: number, id_mob: number) {
 
     await connection.beginTransaction();
     try {
+
+        let item = await connection.execute(
+            `SELECT * FROM inventario_disponibilidad_mob WHERE id_evento = ${id} AND id_mob = ${id_mob}`
+        );
+
+        item = item[0][0];
+        
+
+        let priceRemove = item.costo * item.ocupados;
+
+        let removePayment = await connection.execute(
+            `SELECT * FROM pagos_mob WHERE id_evento = ${id}`
+        );
+
+    
+        removePayment = removePayment[0][removePayment[0].length - 1]
+        
+
+        removePayment.costo_total -= priceRemove;
+        
+
+        await connection.execute(
+            `INSERT INTO pagos_mob (id_evento, costo_total, saldo, anticipo)
+            VALUES (${id},${removePayment.costo_total},${removePayment.saldo},${removePayment.anticipo})`
+        );
+
         let [event,] = await connection.execute(
             `DELETE FROM inventario_disponibilidad_mob WHERE id_evento = ${id} AND id_mob = ${id_mob}`
         );
