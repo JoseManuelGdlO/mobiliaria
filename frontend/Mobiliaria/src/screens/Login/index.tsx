@@ -35,6 +35,7 @@ const Login = (): JSX.Element => {
   const [loading, setLoading] = React.useState(false);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const [error, setError] = React.useState("");
   const [toggleSwitch, setToggleSwitch] = React.useState(false);
   const { colors, fonts } = useTheme();
   const styles = _styles();
@@ -60,6 +61,8 @@ const Login = (): JSX.Element => {
         });
       });
     } catch (error) {
+      console.log(error);
+      setError(String(error));
       toast("Error", "Usuario o contraseña incorrectos", "error");
     } finally {
       setLoading(false);
@@ -206,6 +209,20 @@ const Login = (): JSX.Element => {
                 ¿Tienes problemas?
               </Text>
             </TouchableOpacity>
+          </View>
+          <View>
+            <Text
+              style={{
+                fontFamily: fonts.Inter.SemiBold,
+                color: "#00bcbb",
+                fontSize: 20,
+                textAlign: "center",
+                marginTop: 20,
+              }}
+            >
+              {error}
+            </Text>
+           
           </View>
         </View>
 
