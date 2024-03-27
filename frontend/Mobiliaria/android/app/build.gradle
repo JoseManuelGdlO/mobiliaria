@@ -79,8 +79,8 @@ android {
         applicationId "com.eventivapp.jm.garcia"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 3
-        versionName "1.2"
+        versionCode 8
+        versionName "1.7"
     }
     signingConfigs {
         debug {

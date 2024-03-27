@@ -3,7 +3,7 @@ import { getAccessTokenAsync } from "@utils/token"
 import { ADD_PAYMENTS, GET_PAYMENTS } from "./endpoints"
 
 export const getPayments = async (): Promise<any> => {
-    const url = `${process.env.API_URL}${GET_PAYMENTS}`
+    const url = `http://3.218.160.237:8000${GET_PAYMENTS}`
 
     const instance = axios.create({
         baseURL: url,
@@ -25,7 +25,7 @@ export const getPayments = async (): Promise<any> => {
 }
 
 export const addPayment = async (body: any): Promise<any> => {
-    const url = `${process.env.API_URL}${ADD_PAYMENTS}`
+    const url = `http://3.218.160.237:8000${ADD_PAYMENTS}`
 
     const instance = axios.create({
         baseURL: url,
