@@ -6,6 +6,7 @@ export type NavigationScreens =
         },
         Inventary: undefined,
         Payments: undefined,
+        Charts: undefined,
         Workers: undefined,
         Package: undefined,
         ViewMore: undefined,
