@@ -1,4 +1,5 @@
 import BasicHeader from '@components/BasicHeader'
+import Charts from '@screens/charts'
 import Clients from '@screens/clients/clients'
 import Payments from '@screens/payments'
 import React from 'react'
@@ -25,6 +26,11 @@ const MenuScreens: screen[] = [
     name: 'Clientes',
     header: () => <BasicHeader title='Clientes' />,
     component: Clients
+  },
+  {
+    name: 'Estadisticas',
+    header: () => <BasicHeader title='Estadisticas' />,
+    component: Charts
   }
 
 ]
