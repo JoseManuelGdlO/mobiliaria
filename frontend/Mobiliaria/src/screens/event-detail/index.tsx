@@ -333,7 +333,8 @@ const EventDetail = ({
                                         style={{ width: '100%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular }}></TextInput>
                                     <TouchableOpacity disabled={abono.length === 0} onPress={ async () => {
                                         
-
+                                        console.log(event?.payments, abono);
+                                        
                                         if (Number(abono) > event?.payments[event?.payments.length-1]?.saldo) {
                                             Toast.show({
                                                 type: 'error',
@@ -354,7 +355,7 @@ const EventDetail = ({
                                         }
                                         
                                         try {
-                                            await paymentService.addPayment(body)
+                                            //await paymentService.addPayment(body)
                                             Toast.show({
                                                 type: 'success',
                                                 text1: 'Hecho',

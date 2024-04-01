@@ -171,9 +171,6 @@ const AddEvent = ({
     } 
 
 
-    useEffect(() => {
-    }, [])
-
 
     const keyExtractor = (item: IAvailability, index: number): string => index.toString()
 
@@ -297,6 +294,7 @@ const AddEvent = ({
                             <View style={{width: '70%', paddingTop: 5, borderBottomColor: '#000', borderBottomWidth:1}}>       
 
                             <RNPickerSelect
+                                key={1}
                                 placeholder="Seleciona la hora"
                                 onValueChange={(value) => setDeliveredDay({ ...deliveredDay , hour: value })}
                                 items={[
@@ -325,6 +323,7 @@ const AddEvent = ({
 
                         <View style={{width: '100%', paddingTop: 5, borderBottomColor: '#000', borderBottomWidth:1}}>
                             <RNPickerSelect
+                                key={2}
                                 placeholder="Seleciona la hora"
                                 onValueChange={(value) => {
                                     setRecolectedDay({ ...recolectedDay , date: value })
@@ -345,6 +344,7 @@ const AddEvent = ({
                             <Text style={{ fontFamily: fonts.Roboto.Regular, marginLeft: 5, fontSize: 12, paddingTop: 10 }}>Hora de recoleccion: </Text>
                             <View style={{width: '70%', paddingTop: 5, borderBottomColor: '#000', borderBottomWidth:1}}>
                             <RNPickerSelect
+                                key={3}
                                 placeholder="Seleciona la hora"
                                 onValueChange={(value) => setRecolectedDay({ ...recolectedDay , hour: value })}
                                 items={[

@@ -19,7 +19,8 @@ async function getReports(id: number, months: string) {
         GROUP BY
             i.id_mob, i.nombre_mob
         ORDER BY
-            veces_rentado DESC;`
+            veces_rentado DESC
+        LIMIT 10;`
     );
 
     let mostRent = helper.emptyOrRows(rows);
@@ -43,6 +44,14 @@ async function getReports(id: number, months: string) {
     
     let totalCost = helper.emptyOrRows(rows2);
 
+    let total = 0
+    let index = 0
+
+    for (const event of totalCost) {
+       total += event.costo_total_por_evento
+        index++
+    }
+
     const rows3 = await db.query(
         `SELECT 
             telefono_titular_evento,
@@ -56,7 +65,8 @@ async function getReports(id: number, months: string) {
         GROUP BY 
             nombre_titular_evento
         ORDER BY
-            veces_agrupado DESC;`
+            veces_agrupado DESC
+        LIMIT 10;`
     );
 
     let Quantity = helper.emptyOrRows(rows3);
@@ -64,7 +74,11 @@ async function getReports(id: number, months: string) {
     return {
         data : {
             mostRent,
-            totalCost,
+            eventos: {
+                total: total,
+                numero_eventos: index,
+                promedio: total/index
+            },
             Quantity      
         },
         code

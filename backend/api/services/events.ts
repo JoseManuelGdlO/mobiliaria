@@ -292,7 +292,7 @@ async function addItems(body: any) {
             );
 
             if (mobEvent[0].length === 0) { 
-                console.log('to sabe', event.fecha_envio_evento.toISOString().split('T')[0]);
+                console.log('to sabe', event);
                 
                 await connection.execute(
                 `INSERT INTO inventario_disponibilidad_mob (fecha_evento, hora_evento, id_mob, ocupados, id_evento, hora_recoleccion, costo)
@@ -323,12 +323,17 @@ async function addItems(body: any) {
         }
 
         payment.costo_total += sumTotal;
+        payment.saldo += sumTotal;
 
        await connection.execute(
             `INSERT INTO pagos_mob (id_evento, costo_total, saldo, anticipo)
             VALUES (${body.id},${payment.costo_total},${payment.saldo},${payment.anticipo})`
         );
 
+        await connection.execute(
+            `UPDATE evento_mob SET pagado_evento = 0 WHERE id_evento = ${body.id}`
+        );
+        
         await connection.commit()
         return 201
     } catch (error) {

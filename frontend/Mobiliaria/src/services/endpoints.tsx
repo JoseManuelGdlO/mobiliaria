@@ -4,6 +4,7 @@ export const API_INVENTARY = '/inventary'
 export const API_WORKERS = '/workers'
 export const API_CLIENTS = '/clients'
 export const API_PAYMENTS = '/payments'
+export const API_REPORTS = '/reports'
 
 export const GET_EVENTS_PATH = API_EVENTS + '/getEvents'
 export const GET_EVENTS_DAY_PATH = API_EVENTS + '/getEventsDay'
@@ -37,3 +38,5 @@ export const GET_CLIENTS = API_CLIENTS + '/getClients'
 
 export const GET_PAYMENTS = API_PAYMENTS + '/getPayments'
 export const ADD_PAYMENTS = API_PAYMENTS + '/addPayment'
+
+export const GET_REPORTS = API_REPORTS + '/getReports'
