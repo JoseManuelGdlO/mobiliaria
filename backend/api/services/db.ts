@@ -16,3 +16,20 @@ export module db {
     }
 
 }
+
+export module dbDurangeneidad {
+
+    export async function query(sql: any, params?: any) {
+
+        const connection = await mysql.createConnection(config.dbDurangeneidad);
+        const [results,] = await connection.execute(sql, params);
+        await connection.end();
+        return results;
+    }
+
+    export async function connection() {
+        return (await mysql.createConnection(config.db))
+    }
+
+}
+
