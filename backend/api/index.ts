@@ -8,6 +8,7 @@ const workersRouter = require("./routes/workers");
 const clientsRouter = require("./routes/clients");
 const paymentsRouter = require("./routes/payments"); 
 const reportsRouter = require("./routes/reports");
+const durangRouter = require("./routes/durangeneidad");
 
 //For env File 
 dotenv.config();
@@ -31,7 +32,7 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-    res.json({ message: "version: 0.0.6" });
+    res.json({ message: "version: 0.0.7" });
 });
 
 app.use("/auth", authRouter);
@@ -41,6 +42,9 @@ app.use("/workers", workersRouter);
 app.use("/clients", clientsRouter);
 app.use("/payments", paymentsRouter);
 app.use("/reports", reportsRouter);
+
+
+app.use("/durangeneidad", durangRouter);
 /* Error handler middleware */
 app.use((err: any, req: any, res: any, next: any) => {
     const statusCode = err.statusCode || 500;
