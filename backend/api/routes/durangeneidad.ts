@@ -22,7 +22,7 @@ routerD.post('/login', async function (req: any, res: any, next: any) {
     }
 });
 
-router.post('/add', verifyToken, async function (req: any, res: any, next: any) {
+routerD.post('/add', verifyToken, async function (req: any, res: any, next: any) {
     try {
         let body = req.body
         console.log(body);
