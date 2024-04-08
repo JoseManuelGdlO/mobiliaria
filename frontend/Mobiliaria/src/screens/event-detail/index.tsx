@@ -355,7 +355,7 @@ const EventDetail = ({
                                         }
                                         
                                         try {
-                                            //await paymentService.addPayment(body)
+                                            await paymentService.addPayment(body)
                                             Toast.show({
                                                 type: 'success',
                                                 text1: 'Hecho',
