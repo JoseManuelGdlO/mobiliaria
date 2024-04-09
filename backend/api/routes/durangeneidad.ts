@@ -27,7 +27,7 @@ routerD.post('/add', verifyToken, async function (req: any, res: any, next: any)
         let body = req.body
         console.log(body);
         
-        const response = await durangeneidadService.addItems(body);
+        const response = await durangeneidadService.addArticle(body);
         
         res.status(response).json();
     } catch (err: any) {

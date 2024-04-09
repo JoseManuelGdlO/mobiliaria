@@ -49,7 +49,7 @@ async function getTags() {
     }
 }
 
-async function addArticle(body: any, id: number) {
+async function addArticle(body: any) {
 
     const connection = await dbDurangeneidad.connection();
     await connection.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
