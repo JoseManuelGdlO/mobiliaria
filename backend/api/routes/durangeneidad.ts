@@ -47,6 +47,18 @@ routerD.get('/getTags', verifyToken, async function (req: any, res: any, next: a
     }
 });
 
+routerD.get('/getArts', verifyToken, async function (req: any, res: any, next: any) {
+    try {
+        
+        let filter = req.query.filter
+
+        res.status(201).json(await durangeneidadService.getArt(filter));
+    } catch (err: any) {
+        console.error(`Error while getting enarm students info `, err.message);
+        next(err);
+    }
+});
+
 
 module.exports = routerD;
 
