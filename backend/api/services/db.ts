@@ -28,7 +28,7 @@ export module dbDurangeneidad {
     }
 
     export async function connection() {
-        return (await mysql.createConnection(config.db))
+        return (await mysql.createConnection(config.dbDurangeneidad))
     }
 
 }
