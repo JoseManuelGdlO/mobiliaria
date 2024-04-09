@@ -49,6 +49,41 @@ async function getTags() {
     }
 }
 
+
+async function getArt(filter?: string) {
+    let code = 200;
+
+    let query = 'SELECT * FROM articulo'
+
+    if (filter) {
+        query = `SELECT *
+        FROM articulo
+        WHERE id IN (
+            SELECT fkid_articulo
+            FROM tags
+            WHERE label = '${filter}'
+        );`
+    }
+
+    const rows = await dbDurangeneidad.query(
+        query
+    );
+
+    let data = helper.emptyOrRows(rows);
+    if (data.length === 0) {
+        code = 404;
+        return {
+            data,
+            code
+        }
+    }
+
+    return {
+        data,
+        code
+    }
+}
+
 async function addArticle(body: any) {
 
     const connection = await dbDurangeneidad.connection();
@@ -89,5 +124,6 @@ async function addArticle(body: any) {
 module.exports = {
     login,
     getTags,
+    getArt,
     addArticle
 }
