@@ -1,4 +1,5 @@
 #import "AppDelegate.h"
+#import <GoogleMaps/GoogleMaps.h>
 
 #import <React/RCTBundleURLProvider.h>
 
@@ -11,7 +12,7 @@
   // They will be passed down to the ViewController used by React Native.
   self.initialProps = @{};
 
-
+  [GMSServices provideAPIKey:@"AIzaSyBDsf5kWejRnizKe-DQPb2e4eT-B6c-pfM"];
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
 
