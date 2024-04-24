@@ -17,6 +17,8 @@ import Home from '@screens/home'
 import BasicHeader from '@components/BasicHeader'
 import PackageIcon from '@assets/images/icons/PackagesIcon'
 import Packages from '@screens/packages'
+import DeliveryMap from '@screens/delivery-map'
+import PinIcon from '@assets/images/icons/PinIcon'
 
 const Tab = createBottomTabNavigator()
 const Stack = createStackNavigator<NavigationScreens>()
@@ -53,6 +55,18 @@ const PackageStak = (): JSX.Element => {
         options={{ title: 'Paquetes', headerShown: true, header: (props) => <BasicHeader color='#9E2EBE' hideBackArrow title='Paquetes 🎁' backgroundColor='white' /> }}
         name='Package'
         component={Packages}
+      />
+    </Stack.Navigator>
+  )
+}
+
+const DeliveryStak = (): JSX.Element => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        options={{ title: 'Repartidores', headerShown: true, header: (props) => <BasicHeader color='#9E2EBE' hideBackArrow title='Repartidores 🎁' backgroundColor='white' /> }}
+        name='Delivery'
+        component={DeliveryMap}
       />
     </Stack.Navigator>
   )
@@ -176,22 +190,38 @@ export const FooterMenu = (): JSX.Element => {
         name='CatalogoCursosStack'
         component={ExploreStak}
       />
-       <Tab.Screen
-        options={{
-          title: 'Paquetes',
-          headerShown: false,
-          tabBarIcon: ({ color, focused }) =>
-            <View
-              sentry-label='Footer Paquetes'
-              style={[styles.icon]}
-            >
-              <PackageIcon width={24} height={24} color={focused ? '#9E2EBE' : colors.darkBlack100} focused={focused} />
-            </View>,
-          tabBarLabel: ({ focused }) => <Text style={focused ? styles.labelStyleActive : styles.labelStyleInactive}>Paquetes</Text>
-        }}
-        name='CatalogoPaquetesStack'
-        component={PackageStak}
-      />
+      <Tab.Screen
+       options={{
+         title: 'Paquetes',
+         headerShown: false,
+         tabBarIcon: ({ color, focused }) =>
+           <View
+             sentry-label='Footer Paquetes'
+             style={[styles.icon]}
+           >
+             <PackageIcon width={24} height={24} color={focused ? '#9E2EBE' : colors.darkBlack100} focused={focused} />
+           </View>,
+         tabBarLabel: ({ focused }) => <Text style={focused ? styles.labelStyleActive : styles.labelStyleInactive}>Paquetes</Text>
+       }}
+       name='CatalogoPaquetesStack'
+       component={PackageStak}
+     />
+     <Tab.Screen
+      options={{
+        title: 'Repartidores',
+        headerShown: false,
+        tabBarIcon: ({ color, focused }) =>
+          <View
+            sentry-label='Footer Repartidores'
+            style={[styles.icon]}
+          >
+            <PinIcon width={24} height={24} color={focused ? '#9E2EBE' : colors.darkBlack100} />
+          </View>,
+        tabBarLabel: ({ focused }) => <Text style={focused ? styles.labelStyleActive : styles.labelStyleInactive}>Paquetes</Text>
+      }}
+      name='DeliveryMapStack'
+      component={DeliveryStak}
+    />
       <Tab.Screen
         options={{
           title: 'Trabajadores',
