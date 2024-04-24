@@ -38,9 +38,19 @@ routerD.post('/add', verifyToken, async function (req: any, res: any, next: any)
 
 routerD.get('/getTags', verifyToken, async function (req: any, res: any, next: any) {
     try {
-        const bearer: any = jwt_decode(req.headers['authorization']);
 
         res.status(201).json(await durangeneidadService.getTags());
+    } catch (err: any) {
+        console.error(`Error while getting enarm students info `, err.message);
+        next(err);
+    }
+});
+
+routerD.get('/getDetail', verifyToken, async function (req: any, res: any, next: any) {
+    try {
+        let id = req.query.id
+
+        res.status(201).json(await durangeneidadService.getDetail(id));
     } catch (err: any) {
         console.error(`Error while getting enarm students info `, err.message);
         next(err);

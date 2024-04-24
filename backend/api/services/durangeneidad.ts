@@ -84,6 +84,30 @@ async function getArt(filter?: string) {
     }
 }
 
+
+async function getDetail(id: number) {
+    let code = 200;
+
+    const rows = await dbDurangeneidad.query(
+        `SELECT * FROM articulo
+      WHERE id = ${id}`
+    );
+
+    let data = helper.emptyOrRows(rows);
+    if (data.length === 0) {
+        code = 404;
+        return {
+            data,
+            code
+        }
+    }
+
+    return {
+        data,
+        code
+    }
+}
+
 async function addArticle(body: any) {
 
     const connection = await dbDurangeneidad.connection();
@@ -125,5 +149,6 @@ module.exports = {
     login,
     getTags,
     getArt,
+    getDetail,
     addArticle
 }
