@@ -36,7 +36,7 @@ routerD.post('/add', verifyToken, async function (req: any, res: any, next: any)
     }
 }); 
 
-routerD.get('/getTags', verifyToken, async function (req: any, res: any, next: any) {
+routerD.get('/getTags', async function (req: any, res: any, next: any) {
     try {
 
         res.status(201).json(await durangeneidadService.getTags());
@@ -46,7 +46,7 @@ routerD.get('/getTags', verifyToken, async function (req: any, res: any, next: a
     }
 });
 
-routerD.get('/getDetail', verifyToken, async function (req: any, res: any, next: any) {
+routerD.get('/getDetail', async function (req: any, res: any, next: any) {
     try {
         let id = req.query.id
 
@@ -57,7 +57,7 @@ routerD.get('/getDetail', verifyToken, async function (req: any, res: any, next:
     }
 });
 
-routerD.get('/getArts', verifyToken, async function (req: any, res: any, next: any) {
+routerD.get('/getArts', async function (req: any, res: any, next: any) {
     try {
         
         let filter = req.query.filter
