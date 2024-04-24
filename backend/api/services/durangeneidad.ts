@@ -93,6 +93,11 @@ async function getDetail(id: number) {
       WHERE id = ${id}`
     );
 
+    const tags = await dbDurangeneidad.query(
+        `SELECT * FROM tags
+      WHERE fkid_articulo = ${id}`
+    );
+
     let data = helper.emptyOrRows(rows);
     if (data.length === 0) {
         code = 404;
@@ -104,6 +109,7 @@ async function getDetail(id: number) {
 
     return {
         data,
+        tags: helper.emptyOrRows(tags),
         code
     }
 }
