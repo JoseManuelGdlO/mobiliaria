@@ -124,8 +124,8 @@ async function addArticle(body: any) {
     try {
         
         const [article,] = await connection.execute(
-            `INSERT INTO articulo (creador, creacion, titulo, body, lugar)
-            VALUES ('${body.article.creador}', '${body.article.creacion}', '${body.article.titulo}', '${body.article.body}', '${body.article.lugar}')`
+            `INSERT INTO articulo (creador, creacion, titulo, body, lugar, descripcion, thumb)
+            VALUES ('${body.article.creador}', '${body.article.creacion}', '${body.article.titulo}', '${body.article.body}', '${body.article.lugar}, '${body.article.descripcion}', '${body.article.thumb})`
         );
 
         const articleId = article.insertId;
