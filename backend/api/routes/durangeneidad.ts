@@ -68,6 +68,19 @@ routerD.get('/getArts', async function (req: any, res: any, next: any) {
     }
 });
 
+routerD.post('/email', async function (req: any, res: any, next: any) {
+    try {
+        
+        let body = req.body
+
+        res.status(201).json(await durangeneidadService.email(body));
+    } catch (err: any) {
+        console.error(`Error while getting enarm students info `, err.message);
+        next(err);
+    }
+});
+
+
 
 module.exports = routerD;
 

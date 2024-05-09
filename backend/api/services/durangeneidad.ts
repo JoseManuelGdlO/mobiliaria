@@ -1,5 +1,6 @@
 import { dbDurangeneidad } from './db';
 import { helper } from '../helper';
+const nodemailer = require('nodemailer');
 
 async function login(body: any) {
     let code = 200;
@@ -149,11 +150,47 @@ async function addArticle(body: any) {
     }
 }
 
+async function email(body: any) {
+    // Configuración de nodemailer
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.hostinger.com', // Dirección del servidor SMTP de Hostinger
+        port: 465, // Puerto SMTP de Hostinger (puede variar, comprueba la documentación de Hostinger)
+        secure: true, // Enviar correos electrónicos de forma segura
+        auth: {
+          user: 'josedelaoholguin@durangeneidad.com', // Nombre de usuario SMTP de Hostinger
+          pass: 'Mexico1.' // Contraseña SMTP de Hostinger
+        }
+      });
+
+  const { nombre, correo, mensaje } = body;
+
+  // Configuración del correo electrónico
+  const mailOptions = {
+    from: 'josedelaoholguin@durangeneidad.com',
+    to: 'josedelaoholguin@durangeneidad.com', // Correo electrónico de destino
+    subject: `Mensaje a la pagina Durangueneidad de ${nombre} (${correo})`,
+    text: mensaje
+  };
+
+  // Envío del correo electrónico
+  transporter.sendMail(mailOptions, (error: any, info: any) => {
+    if (error) {
+      console.error('Error al enviar el correo:', error);
+      return 401
+    } else {
+      console.log('Correo enviado:', info.response);
+      return 201
+    }
+  });
+}
+
+
 
 module.exports = {
     login,
     getTags,
     getArt,
     getDetail,
+    email,
     addArticle
 }
