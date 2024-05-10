@@ -81,6 +81,7 @@ jobs:
             cd backend/api
             npm install
             sudo systemctl restart backend
+            pm2 restart all
             ls
             pwd
       - name: Revoke Runner IP Address on SG
