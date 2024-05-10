@@ -32,7 +32,6 @@ jobs:
           npm install pm2@latest -g
           pm2 -V
           pm2 list
-          pm2 reload all
 
   deploy:
     runs-on: ubuntu-latest
@@ -87,6 +86,7 @@ jobs:
             npm install
             sudo systemctl restart backend
             ls
+            pm2 reload all
             pwd
       - name: Revoke Runner IP Address on SG
         run: |
