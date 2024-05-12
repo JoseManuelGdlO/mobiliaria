@@ -27,11 +27,9 @@ jobs:
           cd backend/api
           npm install
           npm run build --if-present
-      - name: Run Pm2
+      - name: install Pm2
         run: |
           npm install pm2@latest -g
-          pm2 -V
-          pm2 list
 
   deploy:
     runs-on: ubuntu-latest
@@ -86,8 +84,8 @@ jobs:
             npm install
             sudo systemctl restart backend
             ls
-            pm2 reload all
             pwd
+            pm2 reload all
       - name: Revoke Runner IP Address on SG
         run: |
           aws ec2 revoke-security-group-ingress \

@@ -108,7 +108,7 @@ async function getDetail(id: number) {
     };
   } catch (error) {
     console.error(error);
-    return { code: 401, data: paso, error };
+    return { code: 401, data: paso, error, params: id};
   }
 }
 
