@@ -47,7 +47,7 @@ routerD.get('/getTags', async function (req: any, res: any, next: any) {
 
 routerD.get('/getDetail', async function (req: any, res: any, next: any) {
     try {
-        let id = req.query.id as number
+        let id = req.query.code
         const data = await durangeneidadService.getDetail(id)
         res.status(data.code).json(data);
     } catch (err: any) {
