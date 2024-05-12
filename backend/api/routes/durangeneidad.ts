@@ -49,7 +49,7 @@ routerD.get('/getDetail', async function (req: any, res: any, next: any) {
     try {
         let id = req.query.code
         const data = await durangeneidadService.getDetail(id)
-        res.status(data.code).json(data);
+        res.status(201).json(id);
     } catch (err: any) {
         console.error(`Error while getting enarm students info `, err.message);
         next(err);
