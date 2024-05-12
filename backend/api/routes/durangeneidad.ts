@@ -47,9 +47,9 @@ routerD.get('/getTags', async function (req: any, res: any, next: any) {
 
 routerD.get('/getDetail', async function (req: any, res: any, next: any) {
     try {
-        let id = req.query.code
-        const data = await durangeneidadService.getDetail(id)
-        res.status(201).json(id);
+        let idNumber = req.query.code
+        const data = await durangeneidadService.getDetail(idNumber)
+        res.status(201).json({param: idNumber});
     } catch (err: any) {
         console.error(`Error while getting enarm students info `, err.message);
         next(err);
