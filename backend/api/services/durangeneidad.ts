@@ -129,7 +129,7 @@ async function addArticle(body: any) {
     for (let tag of body.tags) {
       await connection.execute(
         `INSERT INTO tags (fkid_articulo, label)
-                VALUES ('${articleId}', '${tag.label}')`
+                VALUES ('${articleId}', '${tag.label.toUpperCase()}')`
       );
     }
 
