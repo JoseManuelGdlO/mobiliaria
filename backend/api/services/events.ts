@@ -119,8 +119,6 @@ async function getEventsOfDay(id: number, date: string) {
 
 async function availiable(id: number, dateArrive: string) {
     let code = 200;
- 
-    console.log(dateArrive);
 
     let date = dateArrive.split('-');
 
