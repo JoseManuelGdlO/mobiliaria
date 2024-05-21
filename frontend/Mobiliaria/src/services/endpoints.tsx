@@ -14,6 +14,7 @@ export const CREATE_EVENT = API_EVENTS + '/add'
 export const ADD_OBS = API_EVENTS + '/observaciones'
 export const STATUS_DELIVERY = API_EVENTS + '/status'
 export const ADD_ITEMS = API_EVENTS + '/additems'
+export const EDIT_EVENT = API_EVENTS + '/edit'
 export const REMOVE_EVENT = API_EVENTS + '/remove'
 export const REMOVE_ITEM = API_EVENTS + '/removeitem'
 

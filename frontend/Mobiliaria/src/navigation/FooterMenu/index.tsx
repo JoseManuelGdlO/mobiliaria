@@ -217,7 +217,7 @@ export const FooterMenu = (): JSX.Element => {
           >
             <PinIcon width={24} height={24} color={focused ? '#9E2EBE' : colors.darkBlack100} />
           </View>,
-        tabBarLabel: ({ focused }) => <Text style={focused ? styles.labelStyleActive : styles.labelStyleInactive}>Paquetes</Text>
+        tabBarLabel: ({ focused }) => <Text style={focused ? styles.labelStyleActive : styles.labelStyleInactive}>Entregas</Text>
       }}
       name='DeliveryMapStack'
       component={DeliveryStak}

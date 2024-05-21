@@ -59,7 +59,6 @@ router.post('/add', verifyToken, async function (req: any, res: any, next: any) 
         const bearer: any = jwt_decode(req.headers['authorization']);
         let id = bearer.data.id_empresa;
         const response = await eventService.addEvent(body, id)
-        console.log('here7', response);
         res.status(response).json();
     } catch (err: any) {
         console.error(`Error while getting enarm students info `, err.message);
@@ -93,11 +92,23 @@ router.put('/status', verifyToken, async function (req: any, res: any, next: any
 router.post('/additems', verifyToken, async function (req: any, res: any, next: any) {
     try {
         let body = req.body
-        console.log(body);
         
         const response = await eventService.addItems(body);
         
         res.status(response).json();
+    } catch (err: any) {
+        console.error(`Error while getting enarm students info `, err.message);
+        next(err);
+    }
+}); 
+
+router.post('/edit', verifyToken, async function (req: any, res: any, next: any) {
+    try {
+        let body = req.body
+        
+        const response = await eventService.editEvent(body);
+        
+        res.status(response.code).json(response);
     } catch (err: any) {
         console.error(`Error while getting enarm students info `, err.message);
         next(err);
