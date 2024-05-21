@@ -26,8 +26,6 @@ async function getEvents(id: number) {
 async function getDetails(id: number) {
     let code = 200;
     try {
-
-
     let rows = await db.query(
         `select * from evento_mob where id_evento = '${id}'`
     );
@@ -49,14 +47,6 @@ async function getDetails(id: number) {
     );
 
     let items = helper.emptyOrRows(rows);
-    if (items.length === 0) {
-        code = 404;
-        return {
-            details: 'No se encontraron los items',
-            items,
-            code
-        }
-    }
 
     rows = await db.query(
         `SELECT P.* 
@@ -114,6 +104,37 @@ async function getEventsOfDay(id: number, date: string) {
     return {
         data,
         code
+    }
+}
+
+async function editEvent(body: any) {
+    let code = 200;
+    try {
+
+        const rows = await db.query(
+            `UPDATE evento_mob SET telefono_titular_evento = '${body.telefono}', direccion_evento = '${body.direccion}', nombre_titular_evento = '${body.titular}' WHERE id_evento = ${body.id}`
+        );
+
+        let data = helper.emptyOrRows(rows);
+        if (data.length === 0) {
+            code = 404;
+            return {
+                data,
+                code
+            }
+        }
+        
+        return {
+            data,
+            code
+        }
+    }
+    catch (error) {
+        console.error(error);
+        return {
+            code: 500,
+            error: error
+        }
     }
 }
 
@@ -475,5 +496,6 @@ module.exports = {
     changeStatus,
     remove,
     removeItem,
+    editEvent,
     addItems
 }
