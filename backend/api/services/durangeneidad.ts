@@ -1,6 +1,7 @@
 import { dbDurangeneidad } from "./db";
 import { helper } from "../helper";
 import { ftpSend } from "../libs/fts-service";
+import path from 'path';
 const nodemailer = require("nodemailer");
 
 async function login(body: any) {
@@ -47,25 +48,27 @@ async function getTags() {
   };
 }
 
-async function getArt(filter?: string) {
+async function getArt(filter?: string, type?: string) {
   let code = 200;
-
-  let query = "SELECT * FROM articulo";
-
-  if (filter) {
+  let query = "";
+  if (type === "ALL") {
+    query = "SELECT * FROM articulo";
+  } else if (type === "TAGS") {
     query = `SELECT *
-        FROM articulo
-        WHERE id IN (
-            SELECT fkid_articulo
-            FROM tags
-            WHERE label = '${filter}'
-        );`;
+    FROM articulo
+    WHERE id IN (
+        SELECT fkid_articulo
+        FROM tags
+        WHERE label = '${filter}'
+    );`;
+  } else if (type === "CATEGORY") {
+    query = `SELECT *
+    FROM articulo
+    WHERE fkid_category = ${filter};`;
   }
-
 
   const rows = await dbDurangeneidad.query(query);
 
-  
   const tags = await dbDurangeneidad.query(`SELECT label, COUNT(*) AS count
   FROM tags
   GROUP BY label;`);
@@ -121,11 +124,12 @@ async function addArticle(body: any) {
   await connection.execute("SET TRANSACTION ISOLATION LEVEL READ COMMITTED");
 
   await connection.beginTransaction();
+  console.log(body.article.fkid_category, "id_fk");
 
   try {
     const [article] = await connection.execute(
-      `INSERT INTO articulo (creador, creacion, titulo, body, lugar, descripcion, thumb)
-            VALUES ('${body.article.creador}', '${body.article.creacion}', '${body.article.titulo}', '${body.article.body}', '${body.article.lugar}', '${body.article.descripcion}', '${body.article.thumb}')`
+      `INSERT INTO articulo (creador, creacion, titulo, body, lugar, descripcion, thumb, fkid_category)
+            VALUES ('${body.article.creador}', '${body.article.creacion}', '${body.article.titulo}', '${body.article.body}', '${body.article.lugar}', '${body.article.descripcion}', '${body.article.thumb}', ${body.article.fkid_category})`
     );
 
     const articleId = article.insertId;
@@ -154,7 +158,7 @@ async function email(body: any) {
     port: 465, // Puerto SMTP de Hostinger (puede variar, comprueba la documentación de Hostinger)
     secure: true, // Enviar correos electrónicos de forma segura
     auth: {
-      user: "josedelaoholguin@durangeneidad.com", // Nombre de usuario SMTP de Hostinger
+      user: "josedelaoholguin@durangueneidad.com", // Nombre de usuario SMTP de Hostinger
       pass: "Mexico1.", // Contraseña SMTP de Hostinger
     },
   });
@@ -163,8 +167,8 @@ async function email(body: any) {
 
   // Configuración del correo electrónico
   const mailOptions = {
-    from: "josedelaoholguin@durangeneidad.com",
-    to: "josedelaoholguin@durangeneidad.com", // Correo electrónico de destino
+    from: "josedelaoholguin@durangueneidad.com",
+    to: "josedelaoholguin@durangueneidad.com", // Correo electrónico de destino
     subject: `Mensaje a la pagina Durangueneidad de ${nombre} (${correo})`,
     text: mensaje,
   };
@@ -323,16 +327,34 @@ async function editBook(id: number, body: any) {
 async function editArticle(id: number, data: any) {
   let code = 200;
   const articuloId = id;
-  const { creador, creacion, titulo, body, lugar, thumb, descripcion } =
-    data.article;
+  const {
+    creador,
+    creacion,
+    titulo,
+    body,
+    lugar,
+    thumb,
+    descripcion,
+    fkid_category,
+  } = data.article;
   const tagsArr = data.tags;
   const tags = tagsArr.map((tag: any) => tag.label).join(", ");
 
   try {
     // Actualiza el libro en la base de datos
     const result = await dbDurangeneidad.query(
-      "UPDATE articulo SET creador=?, creacion=?, titulo=?, body=?, lugar=?, descripcion=?, thumb=? WHERE id=?",
-      [creador, creacion, titulo, body, lugar, descripcion, thumb, articuloId]
+      "UPDATE articulo SET creador=?, creacion=?, titulo=?, body=?, lugar=?, descripcion=?, thumb=?, fkid_category=? WHERE id=?",
+      [
+        creador,
+        creacion,
+        titulo,
+        body,
+        lugar,
+        descripcion,
+        thumb,
+        fkid_category,
+        articuloId,
+      ]
     );
 
     // Actualiza los tags asociados al libro
@@ -418,17 +440,260 @@ async function removeBook(id: number) {
   }
 }
 
+async function addAdvice(body: any) {
+  const connection = await dbDurangeneidad.connection();
+  await connection.execute("SET TRANSACTION ISOLATION LEVEL READ COMMITTED");
+
+  await connection.beginTransaction();
+
+  try {
+    if (body.id !== 0) {
+      await connection.execute(
+        `UPDATE avisos SET descripcion = '${body.descripcion}', autor = '${body.autor}', fecha = '${body.date}' WHERE id = ${body.id}`
+      );
+      await connection.commit();
+      return { code: 201 };
+    }
+
+    const [advice] = await connection.execute(
+      `INSERT INTO avisos (descripcion, autor, fecha)
+            VALUES ('${body.descripcion}', '${body.autor}', '${body.date}')`
+    );
+
+    await connection.commit();
+    return { code: 201, data: advice };
+  } catch (error) {
+    console.error(error);
+    connection.rollback();
+    console.info("Rollback successful");
+    return { code: 405 };
+  }
+}
+
+async function getAdvice(id?: number) {
+  let code = 200;
+  try {
+    const rows = await dbDurangeneidad.query(
+      `SELECT * FROM avisos ${id ? `WHERE id = ${id}` : ""}`
+    );
+    let data = helper.emptyOrRows(rows);
+    if (data.length === 0) {
+      code = 404;
+      return {
+        code,
+      };
+    }
+    return {
+      data,
+      code,
+    };
+  } catch (error) {
+    console.error(error);
+    return { code: 401, error };
+  }
+}
+
+async function createConfiguration(body: any) {
+  const connection = await dbDurangeneidad.connection();
+  await connection.execute("SET TRANSACTION ISOLATION LEVEL READ COMMITTED");
+
+  await connection.beginTransaction();
+
+  try {
+    if (body.id !== 0) {
+      await connection.execute(
+        `UPDATE configuraciones SET codigo = '${body.codigo}', valor = '${body.codigo}', descripcion = '${body.descripcion}' WHERE id = ${body.id}`
+      );
+      await connection.commit();
+      return { code: 201 };
+    }
+    const [config] = await connection.execute(
+      `INSERT INTO configuraciones (codigo, valor, descripcion)
+            VALUES ('${body.codigo}', '${body.valor}', '${body.descripcion}')`
+    );
+
+    await connection.commit();
+    return { code: 201, data: config };
+  } catch (error) {
+    console.error(error);
+    connection.rollback();
+    console.info("Rollback successful");
+    return 405;
+  }
+}
+
+async function getConfiguration(id?: number) {
+  let code = 200;
+  try {
+    const rows = await dbDurangeneidad.query(
+      `SELECT * FROM configuraciones ${id ? `WHERE id = ${id}` : ""}`
+    );
+    let data = helper.emptyOrRows(rows);
+    if (data.length === 0) {
+      code = 404;
+      return {
+        code,
+      };
+    }
+    return {
+      data,
+      code,
+    };
+  } catch (error) {
+    console.error(error);
+    return { code: 401, error };
+  }
+}
+
+async function getCategories() {
+  let code = 200;
+  try {
+    const rows = await dbDurangeneidad.query(`SELECT * FROM categories`);
+    let data = helper.emptyOrRows(rows);
+    if (data.length === 0) {
+      code = 404;
+      return {
+        code,
+      };
+    }
+    return {
+      data,
+      code,
+    };
+  } catch (error) {
+    console.error(error);
+    return { code: 401, error };
+  }
+}
+
+async function addCategory(body: any) {
+  let code = 200;
+  const connection = await dbDurangeneidad.connection();
+  await connection.execute("SET TRANSACTION ISOLATION LEVEL READ COMMITTED");
+
+  await connection.beginTransaction();
+  try {
+    console.log(body);
+
+    const [category] = await connection.execute(
+      `INSERT INTO categories (nombre, descripcion)
+            VALUES ('${body.nombre}', '${body.descripcion}')`
+    );
+
+    await connection.commit();
+    return { code: 201, data: category };
+  } catch (error) {
+    console.error(error);
+    return { code: 401, error };
+  }
+}
+
+async function updateCategory(body: any) {
+  let code = 200;
+  const connection = await dbDurangeneidad.connection();
+  await connection.execute("SET TRANSACTION ISOLATION LEVEL READ COMMITTED");
+
+  await connection.beginTransaction();
+  try {
+    const [category] = await connection.execute(
+      `UPDATE categories SET nombre = '${body.nombre}', descripcion = '${body.descripcion}' WHERE id = ${body.id}`
+    );
+
+    await connection.commit();
+    return { code: 201, data: category };
+  } catch (error) {
+    console.error(error);
+    return { code: 401, error };
+  }
+}
+
+
+async function uploadBio(body: any, files: any) {
+  let code = 201;
+  const { biografia } = body;
+  // Inicia la transacción
+  const connection = await dbDurangeneidad.connection();
+  await connection.beginTransaction();
+
+  try {
+    console.log(files);
+    let fileNameImage = ''
+    if(files.length > 0){
+      const extension = path.extname(files["imagen_perfil"][0].originalname);
+      fileNameImage = `biografia${extension}`;
+      // Guarda el archivo PDF en el servidor FTP
+      await ftpSend(fileNameImage, files["imagen_perfil"][0]); // Reemplaza con la lógica para guardar en FTP
+      await connection.execute(
+        "UPDATE biografia SET imagen = ? where id = 1",
+        [
+          fileNameImage
+        ]
+      );
+    }
+
+    // Guarda el libro en la base de datos
+    await connection.execute(
+      "UPDATE biografia SET  biografia = ? where id = 1",
+      [
+        biografia,
+      ]
+    );
+
+    // Confirma la transacción
+    await connection.commit();
+
+    // Envía una respuesta de éxito
+    return { code, message: "Biografia Actualizada" };
+  } catch (error) {
+    // Si ocurre un error, hace un rollback de la transacción
+    await connection.rollback();
+    code = 405;
+    console.error("Error al actualizar", error);
+    return { code, error };
+  }
+}
+
+async function getBio() {
+  let code = 200;
+  try {
+    const rows = await dbDurangeneidad.query(`SELECT * FROM biografia`);
+    let data = helper.emptyOrRows(rows);
+    if (data.length === 0) {
+      code = 404;
+      return {
+        code,
+      };
+    }
+    return {
+      data,
+      code,
+    };
+  } catch (error) {
+    console.error(error);
+    return { code: 401, error };
+  }
+}
+
 module.exports = {
   login,
+  getBio,
   getTags,
   getArt,
   getDetail,
+  uploadBio,
   email,
   addArticle,
+  updateCategory,
   addBook,
   getBooks,
   editBook,
   editArticle,
   removeArticle,
+  addCategory,
   removeBook,
+  addAdvice,
+  getAdvice,
+  createConfiguration,
+  getConfiguration,
+  getCategories,
 };
