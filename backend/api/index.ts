@@ -32,7 +32,7 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-    res.json({ message: "version: 0.1.0" });
+    res.json({ message: "version: 0.1.1" });
 });
 
 app.use("/auth", authRouter);
