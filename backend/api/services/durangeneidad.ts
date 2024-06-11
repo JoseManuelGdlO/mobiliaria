@@ -1,7 +1,7 @@
 import { dbDurangeneidad } from "./db";
 import { helper } from "../helper";
 import { ftpSend } from "../libs/fts-service";
-import path from 'path';
+import path from "path";
 const nodemailer = require("nodemailer");
 
 async function login(body: any) {
@@ -168,7 +168,7 @@ async function email(body: any) {
   // Configuración del correo electrónico
   const mailOptions = {
     from: "josedelaoholguin@durangueneidad.com",
-    to: "josedelaoholguin@durangueneidad.com", // Correo electrónico de destino
+    to: "delao_holguin@hotmail.com", // Correo electrónico de destino
     subject: `Mensaje a la pagina Durangueneidad de ${nombre} (${correo})`,
     text: mensaje,
   };
@@ -499,17 +499,56 @@ async function createConfiguration(body: any) {
 
   await connection.beginTransaction();
 
+  console.log(body);
+
   try {
     if (body.id !== 0) {
       await connection.execute(
-        `UPDATE configuraciones SET codigo = '${body.codigo}', valor = '${body.codigo}', descripcion = '${body.descripcion}' WHERE id = ${body.id}`
+        `UPDATE configuraciones SET codigo = '${body.codigo}', valor = '${body.valor}', descripcion = '${body.descripcion}', type = ${body.tipo} WHERE id = ${body.id}`
       );
       await connection.commit();
       return { code: 201 };
     }
     const [config] = await connection.execute(
-      `INSERT INTO configuraciones (codigo, valor, descripcion)
-            VALUES ('${body.codigo}', '${body.valor}', '${body.descripcion}')`
+      `INSERT INTO configuraciones (codigo, valor, descripcion, type)
+            VALUES ('${body.codigo}', '${body.valor}', '${body.descripcion}', '${body.tipe}')`
+    );
+
+    await connection.commit();
+    return { code: 201, data: config };
+  } catch (error) {
+    console.error(error);
+    connection.rollback();
+    console.info("Rollback successful");
+    return 405;
+  }
+}
+
+async function createConfigurationImage(body: any, files: any) {
+  const connection = await dbDurangeneidad.connection();
+  await connection.execute("SET TRANSACTION ISOLATION LEVEL READ COMMITTED");
+
+  await connection.beginTransaction();
+
+  try {
+    let fileNameImage = "";
+    console.log(body, files);
+    
+    const extension = path.extname(files["imagen"][0].originalname);
+    fileNameImage = `${body.codigo}${extension}`;
+    // Guarda el archivo PDF en el servidor FTP
+    await ftpSend(fileNameImage, files["imagen"][0]); // Reemplaza con la lógica para guardar en FTP
+
+    if (Number(body.id) !== 0) {
+      await connection.execute(
+        `UPDATE configuraciones SET codigo = '${body.codigo}', valor = '${fileNameImage}', descripcion = '${body.descripcion}', type = ${body.tipo} WHERE id = ${body.id}`
+      );
+      await connection.commit();
+      return { code: 201 };
+    }
+    const [config] = await connection.execute(
+      `INSERT INTO configuraciones (codigo, valor, descripcion, type)
+            VALUES ('${body.codigo}', '${fileNameImage}', '${body.descripcion}', '${body.tipo}')`
     );
 
     await connection.commit();
@@ -607,7 +646,6 @@ async function updateCategory(body: any) {
   }
 }
 
-
 async function uploadBio(body: any, files: any) {
   let code = 201;
   const { biografia } = body;
@@ -616,27 +654,21 @@ async function uploadBio(body: any, files: any) {
   await connection.beginTransaction();
 
   try {
-    console.log(files);
-    let fileNameImage = ''
-    if(files.length > 0){
+    let fileNameImage = "";
+    if (files.length > 0) {
       const extension = path.extname(files["imagen_perfil"][0].originalname);
       fileNameImage = `biografia${extension}`;
       // Guarda el archivo PDF en el servidor FTP
       await ftpSend(fileNameImage, files["imagen_perfil"][0]); // Reemplaza con la lógica para guardar en FTP
-      await connection.execute(
-        "UPDATE biografia SET imagen = ? where id = 1",
-        [
-          fileNameImage
-        ]
-      );
+      await connection.execute("UPDATE biografia SET imagen = ? where id = 1", [
+        fileNameImage,
+      ]);
     }
 
     // Guarda el libro en la base de datos
     await connection.execute(
       "UPDATE biografia SET  biografia = ? where id = 1",
-      [
-        biografia,
-      ]
+      [biografia]
     );
 
     // Confirma la transacción
@@ -694,6 +726,7 @@ module.exports = {
   addAdvice,
   getAdvice,
   createConfiguration,
+  createConfigurationImage,
   getConfiguration,
   getCategories,
 };
