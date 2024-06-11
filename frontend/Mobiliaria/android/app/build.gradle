@@ -76,7 +76,7 @@ android {
 
     namespace "com.mobiliaria"
     defaultConfig {
-        applicationId "com.eventivapp.jm.garcia"
+        applicationId "com.eventivapp.jm.delao"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 8

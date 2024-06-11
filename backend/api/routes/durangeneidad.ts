@@ -195,6 +195,19 @@ routerD.post('/configuraciones', verifyToken, async function (req: any, res: any
     }
 });
 
+const uploadConf = multer({ storage: storage }).fields([
+    { name: 'imagen', maxCount: 1 } // Campo para la imagen
+  ]);
+routerD.post('/configuracionesImagen', verifyToken, uploadConf, async function (req: any, res: any, next: any) {
+    try {
+        const response = await durangeneidadService.createConfigurationImage(req.body, req.files)
+        res.status(response.code).json(response);
+    } catch (err: any) {
+        console.error(`Error while getting enarm students info `, err.message);
+        next(err);
+    }
+});
+
 routerD.get('/configuraciones', async function (req: any, res: any, next: any) {
     try {
         const idNumber = req.query.id 
