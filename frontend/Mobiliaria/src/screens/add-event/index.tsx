@@ -17,6 +17,8 @@ import * as eventService from '@services/events'
 import AreYouSure from "@components/are-you-suere-modal";
 import { IPackage } from "@interfaces/packages";
 import RNPickerSelect from 'react-native-picker-select';
+import SelectStreetMap from "@components/select-street-map";
+import { Linking } from "react-native";
 
 export enum ETypesPicker {
     Recolection = 1,
@@ -31,10 +33,12 @@ const AddEvent = ({
     const date = route.params.date
     const arrDate = date.split('-')
     const formatDate = `${arrDate[2]}-${arrDate[1]}-${arrDate[0]}`
-    
-    
+
+
     const navigation = useNavigation<StackNavigationProp<NavigationScreens>>()
     const [event, setEvent] = useState<IEventDetail>({} as IEventDetail)
+    const [openAddress, setOpenAddress] = useState<boolean>(false)
+    const [latlon, setLatLon] = useState<any>({url: ''})
     const [loading, setLoading] = useState<boolean>(false)
     const { inventaryRx, totalRx, eventRx, packagesRx } = useReduxEvent()
     const [total, setTotal] = useState<number>(totalRx)
@@ -85,7 +89,7 @@ const AddEvent = ({
 
         let recDateArr = recolectedDay.date.split('-')
         const recDate = `${recDateArr[2]}-${recDateArr[1]}-${recDateArr[0]}`
-        
+
         const event: any = {
             nombre_evento: detailsEvent.nombreEvento,
             tipo_evento: detailsEvent.tipo.length === 0 ? 'otro' : detailsEvent.tipo,
@@ -98,15 +102,16 @@ const AddEvent = ({
             telefono_titular_evento: detailsEvent.telefono.length === 0 ? '0000000000' : detailsEvent.telefono,
             descuento: persentage ? parseInt(persentage) : 0,
             ivavalor: iva ? 1 : 0,
-            fletevalor: flete ? Number(flete) : 0
+            fletevalor: flete ? Number(flete) : 0,
+            maps: latlon
         }
 
         event.pagado_evento = Number(anticipo) === total ? 1 : 0
 
         const mobiliario: any = []
-        
+
         inventaryRx.forEach((item: IAvailability) => {
-            
+
             mobiliario.push({
                 fecha_evento: date,
                 hora_evento: deliveredDay.hour,
@@ -118,10 +123,10 @@ const AddEvent = ({
         })
 
         packagesRx.forEach((item: IPackage) => {
-            const PktQty = item.cantidad? item.cantidad : 1
+            const PktQty = item.cantidad ? item.cantidad : 1
             item.products.forEach((product) => {
-                
-                const prdQty = product.cantidad? product.cantidad : 1
+
+                const prdQty = product.cantidad ? product.cantidad : 1
                 mobiliario.push({
                     fecha_evento: date,
                     hora_evento: deliveredDay.hour,
@@ -150,7 +155,7 @@ const AddEvent = ({
 
         try {
             const response = await eventService.addEvent(body)
-            
+
             navigation.navigate('Home', { refresh: true })
 
         } catch (error) {
@@ -161,14 +166,18 @@ const AddEvent = ({
     }
 
     const changeDate = (days: number) => {
-        
-        const olddate = new Date(date)
+        let localDate = date
+        if (date.split('-')[0].length === 2) {
+            const dateEnv = date.split('-')
+            localDate = `${dateEnv[2]}-${dateEnv[1]}-${dateEnv[0]}`
+        }
+        const olddate = new Date(localDate)        
         olddate.setDate(olddate.getDate() + days)
         const arr = olddate.toISOString().split('T')[0]
         const arrDate = arr.split('-')
         return `${arrDate[2]}-${arrDate[1]}-${arrDate[0]}`
-        
-    } 
+
+    }
 
 
 
@@ -254,25 +263,25 @@ const AddEvent = ({
                         <View style={{ paddingTop: 20, width: '100%' }}>
                             <View style={{ display: 'flex', flexDirection: 'row' }}>
                                 <View style={{ width: '20%' }}>
-                                    <Text style={{ fontFamily: fonts.Roboto.Bold, color: '#488aff', fontSize: 15, paddingTop: 10 }}>Titular.- </Text>
-                                    <Text style={{ fontFamily: fonts.Roboto.Bold, color: '#488aff', fontSize: 15, paddingTop: 2 }}>Tipo evento.- </Text>
-                                    <Text style={{ fontFamily: fonts.Roboto.Bold, color: '#488aff', fontSize: 15, paddingTop: 10 }}>Telefono.- </Text>
+                                    <Text style={{ fontFamily: fonts.Roboto.Bold, color: '#488aff', fontSize: 10, paddingTop: 15 }}>Titular.- </Text>
+                                    <Text style={{ fontFamily: fonts.Roboto.Bold, color: '#488aff', fontSize: 10, paddingTop: 15 }}>Tipo evento.- </Text>
+                                    <Text style={{ fontFamily: fonts.Roboto.Bold, color: '#488aff', fontSize: 10, paddingTop: 15 }}>Telefono.- </Text>
                                 </View>
                                 <View style={{ width: '80%', paddingEnd: 15 }}>
                                     <TextInput onChangeText={(value: string) => {
                                         setDetailsEvent({ ...detailsEvent, titular: value })
                                     }}
-                                        style={{ width: '70%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular, fontSize: 25 }}></TextInput>
+                                        style={{ width: '70%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular, fontSize: 10 }}></TextInput>
                                     <TextInput
                                         onChangeText={(value: string) => {
                                             setDetailsEvent({ ...detailsEvent, tipo: value })
                                         }}
-                                        style={{ width: '70%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular, fontSize: 25 }}></TextInput>
+                                        style={{ width: '70%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular, fontSize: 10 }}></TextInput>
                                     <TextInput keyboardType="number-pad"
                                         onChangeText={(value: string) => {
                                             setDetailsEvent({ ...detailsEvent, telefono: value })
                                         }}
-                                        style={{ width: '70%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular, fontSize: 25 }}></TextInput>
+                                        style={{ width: '70%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular, fontSize: 10 }}></TextInput>
                                 </View>
                             </View>
                         </View>
@@ -284,86 +293,98 @@ const AddEvent = ({
                                 setDetailsEvent({ ...detailsEvent, direccion: value })
                             }}
                             style={{ width: '100%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular }}></TextInput>
+                        <TouchableOpacity onPress={() => {
+                            setOpenAddress(true)
+
+                        }}
+                            style={{ height: 30, width: '100%', backgroundColor: '#488aff', justifyContent: 'center', alignItems: 'center', borderRadius: 5, marginTop: 5 }}>
+                            <Text style={{ fontFamily: fonts.Roboto.Regular, color: 'white', fontSize: 12 }}>Agregar en el mapa</Text>
+                        </TouchableOpacity>
+                        { latlon.url.lenght !== 0 && <TouchableOpacity onPress={() => {
+                            Linking.openURL(latlon.url);
+                        }}>
+                            <Text style={{ fontFamily: fonts.Roboto.Regular, color: 'blue', fontSize: 8, fontStyle: "italic"}}>{latlon.url}</Text>
+                        </TouchableOpacity>}
                         <View style={{ display: 'flex', flexDirection: 'row', marginTop: 20 }}>
                             <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12, paddingTop: 10 }}>Fecha: </Text>
                             <TextInput editable={false} value={date} style={{ width: '90%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular, fontSize: 12 }} ></TextInput>
 
                         </View>
                         <View style={{ display: 'flex', flexDirection: 'row' }}>
-                            <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12, paddingTop: 10 }}>Hora de entrega: </Text>
-                            <View style={{width: '70%', paddingTop: 5, borderBottomColor: '#000', borderBottomWidth:1}}>       
+                            <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12, paddingTop: 20 }}>Hora de entrega: </Text>
+                            <View style={{ width: '70%', paddingTop: 0, borderBottomColor: '#000', borderBottomWidth: 1 }}>
 
-                            <RNPickerSelect
-                                key={1}
-                                placeholder="Seleciona la hora"
-                                onValueChange={(value) => setDeliveredDay({ ...deliveredDay , hour: value })}
-                                items={[
-                                    { label: '9:00', value: '9:00' },
-                                    { label: '10:00', value: '10:00' },
-                                    { label: '11:00', value: '11:00' },
-                                    { label: '12:00', value: '12:00' },
-                                    { label: '13:00', value: '13:00' },
-                                    { label: '14:00', value: '14:00' },
-                                    { label: '15:00', value: '15:00' },
-                                    { label: '16:00', value: '16:00' },
-                                    { label: '17:00', value: '17:00' },
-                                    { label: '18:00', value: '18:00' },
-                                    { label: '19:00', value: '19:00' },
-                                    { label: '20:00', value: '20:00' },
-                                    { label: '21:00', value: '21:00' },
-                                    { label: '22:00', value: '22:00' },
-                                ]}
-                            />
+                                <RNPickerSelect
+                                    key={1}
+                                    placeholder="Seleciona la hora"
+                                    onValueChange={(value) => setDeliveredDay({ ...deliveredDay, hour: value })}
+                                    items={[
+                                        { label: '9:00', value: '9:00' },
+                                        { label: '10:00', value: '10:00' },
+                                        { label: '11:00', value: '11:00' },
+                                        { label: '12:00', value: '12:00' },
+                                        { label: '13:00', value: '13:00' },
+                                        { label: '14:00', value: '14:00' },
+                                        { label: '15:00', value: '15:00' },
+                                        { label: '16:00', value: '16:00' },
+                                        { label: '17:00', value: '17:00' },
+                                        { label: '18:00', value: '18:00' },
+                                        { label: '19:00', value: '19:00' },
+                                        { label: '20:00', value: '20:00' },
+                                        { label: '21:00', value: '21:00' },
+                                        { label: '22:00', value: '22:00' },
+                                    ]}
+                                />
                             </View>
-                             
+
                         </View>
 
                         <View style={{ display: 'flex', flexDirection: 'row' }}>
-                        <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12, paddingTop: 10 }}>Fecha de recoleccion: </Text>
+                            <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12, paddingTop: 20 }}>Fecha de recoleccion: </Text>
 
-                        <View style={{width: '100%', paddingTop: 5, borderBottomColor: '#000', borderBottomWidth:1}}>
-                            <RNPickerSelect
-                                key={2}
-                                placeholder="Seleciona la hora"
-                                onValueChange={(value) => {
-                                    setRecolectedDay({ ...recolectedDay , date: value })
-                                }
-                                } 
-                                items={[
-                                    { label: changeDate(0), value: changeDate(0) },
-                                    { label: changeDate(1), value: changeDate(1) },
-                                    { label: changeDate(2), value: changeDate(2) },
-                                    { label: changeDate(3), value: changeDate(3) },
-                                ]}
-                            />
+                            <View style={{ width: '100%', paddingTop: 0, borderBottomColor: '#000', borderBottomWidth: 1 }}>
+                                <RNPickerSelect
+                                    key={2}
+                                    placeholder="Seleciona la hora"
+                                    onValueChange={(value) => {
+                                        setRecolectedDay({ ...recolectedDay, date: value })
+                                    }
+                                    }
+                                    items={[
+                                        { label: changeDate(0), value: changeDate(0) },
+                                        { label: changeDate(1), value: changeDate(1) },
+                                        { label: changeDate(2), value: changeDate(2) },
+                                        { label: changeDate(3), value: changeDate(3) },
+                                    ]}
+                                />
 
                             </View>
-                            </View>
+                        </View>
 
                         <View style={{ display: 'flex', flexDirection: 'row' }}>
-                            <Text style={{ fontFamily: fonts.Roboto.Regular, marginLeft: 5, fontSize: 12, paddingTop: 10 }}>Hora de recoleccion: </Text>
-                            <View style={{width: '70%', paddingTop: 5, borderBottomColor: '#000', borderBottomWidth:1}}>
-                            <RNPickerSelect
-                                key={3}
-                                placeholder="Seleciona la hora"
-                                onValueChange={(value) => setRecolectedDay({ ...recolectedDay , hour: value })}
-                                items={[
-                                    { label: '9:00', value: '9:00' },
-                                    { label: '10:00', value: '10:00' },
-                                    { label: '11:00', value: '11:00' },
-                                    { label: '12:00', value: '12:00' },
-                                    { label: '13:00', value: '13:00' },
-                                    { label: '14:00', value: '14:00' },
-                                    { label: '15:00', value: '15:00' },
-                                    { label: '16:00', value: '16:00' },
-                                    { label: '17:00', value: '17:00' },
-                                    { label: '18:00', value: '18:00' },
-                                    { label: '19:00', value: '19:00' },
-                                    { label: '20:00', value: '20:00' },
-                                    { label: '21:00', value: '21:00' },
-                                    { label: '22:00', value: '22:00' },
-                                ]}
-                            />
+                            <Text style={{ fontFamily: fonts.Roboto.Regular, marginLeft: 5, fontSize: 12, paddingTop: 20 }}>Hora de recoleccion: </Text>
+                            <View style={{ width: '70%', paddingTop: 0, borderBottomColor: '#000', borderBottomWidth: 1 }}>
+                                <RNPickerSelect
+                                    key={3}
+                                    placeholder="Seleciona la hora"
+                                    onValueChange={(value) => setRecolectedDay({ ...recolectedDay, hour: value })}
+                                    items={[
+                                        { label: '9:00', value: '9:00' },
+                                        { label: '10:00', value: '10:00' },
+                                        { label: '11:00', value: '11:00' },
+                                        { label: '12:00', value: '12:00' },
+                                        { label: '13:00', value: '13:00' },
+                                        { label: '14:00', value: '14:00' },
+                                        { label: '15:00', value: '15:00' },
+                                        { label: '16:00', value: '16:00' },
+                                        { label: '17:00', value: '17:00' },
+                                        { label: '18:00', value: '18:00' },
+                                        { label: '19:00', value: '19:00' },
+                                        { label: '20:00', value: '20:00' },
+                                        { label: '21:00', value: '21:00' },
+                                        { label: '22:00', value: '22:00' },
+                                    ]}
+                                />
 
                             </View>
                         </View>
@@ -467,7 +488,7 @@ const AddEvent = ({
                                 <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12 }}>{event?.payments.map(item => item.abono)} </Text>
 
                                 <TouchableOpacity style={{ backgroundColor: '#488aff', alignItems: 'center', marginTop: 10, borderRadius: 20, paddingHorizontal: 15, paddingVertical: 3 }}>
-                                    <Text style={{ fontFamily: fonts.Roboto.MediumItalic, fontSize: 12, color: colors.black }}>Agregar abono</Text>
+                                    <Text style={{ fontFamily: fonts.Roboto.MediumItalic, fontSize: 12, color: '#FFF' }}>Agregar abono</Text>
                                 </TouchableOpacity>
 
                             </View>
@@ -524,11 +545,11 @@ const AddEvent = ({
             {/* <View style={{ height: 200 }} /> */}
             <View style={{ width: '100%', position: 'absolute', bottom: 0, paddingHorizontal: 10, paddingVertical: 5, backgroundColor: colors.gray400 }}>
                 <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignContent: 'center', marginTop: 5 }}>
-                    <View style={{ height: 25, width: '30%', backgroundColor: colors.black, marginHorizontal: 5, justifyContent: 'center', alignItems: 'center' }}>
+                    <View style={{ height: 25, width: '30%', backgroundColor: '#FFF', marginHorizontal: 5, justifyContent: 'center', alignItems: 'center' }}>
                         <Text style={{ fontSize: 12, fontFamily: fonts.Roboto.Regular }}>Total
                         </Text>
                     </View>
-                    <View style={{ height: 25, width: '30%', backgroundColor: colors.black, marginHorizontal: 5, justifyContent: 'center', alignItems: 'center' }}>
+                    <View style={{ height: 25, width: '30%', backgroundColor: '#FFF', marginHorizontal: 5, justifyContent: 'center', alignItems: 'center' }}>
                         <Text style={{ fontSize: 12, fontFamily: fonts.Roboto.Bold, color: '#488aff' }}>${total}</Text>
                     </View>
                 </View>
@@ -568,6 +589,12 @@ const AddEvent = ({
                 }
             }
             }></DatePickerComponent>
+
+            <SelectStreetMap open={openAddress} props={(p: any) => {
+                console.log(p)
+                setLatLon(p)
+                setOpenAddress(false)
+            }}></SelectStreetMap>
             <AreYouSure open={openAlert} sure={() => {
                 setOpenAlert(false)
                 navigation.navigate('Home', { refresh: false })

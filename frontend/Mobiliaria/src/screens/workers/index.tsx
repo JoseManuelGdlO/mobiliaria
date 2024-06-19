@@ -121,7 +121,7 @@ const Workers = (): JSX.Element => {
                 <View style={{ paddingHorizontal: 10 }}>
                     <PrimaryButton
                         containerStyle={{ width: '100%', paddingVertical: 5, marginBottom: 5 }}
-                        textStyle={{ fontSize: 12, fontFamily: fonts.Roboto.Regular, color: colors.black }}
+                        textStyle={{ fontSize: 12, fontFamily: fonts.Roboto.Regular, color: '#FFF' }}
                         backgroundButton="#9E2EBE"
                         onPress={() => {
                             setVisible(true)
@@ -145,11 +145,11 @@ const Workers = (): JSX.Element => {
             <Loading loading={loading} />
             <Modal visible={visible} transparent>
                 <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center' }}>
-                    <View style={{ backgroundColor: colors.black, borderRadius: 10, margin: 20, maxHeight: height - 100 }}>
+                    <View style={{ backgroundColor: '#fff', borderRadius: 10, margin: 20, maxHeight: height - 100 }}>
                         <Text style={{ fontFamily: fonts.Inter.Bold, fontWeight: 'bold', fontSize: 16, color: '#9E2EBE', marginTop: 16, marginLeft: 16 }}>
                             Usuario
                         </Text>
-                        <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: colors.white, marginTop: 5, marginLeft: 16 }}>
+                        <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: '#000', marginTop: 5, marginLeft: 16 }}>
                             {workerNew.correo === '' ? 'Agregar usuario' : 'Modificar usuario'}
                         </Text>
                         <ScrollView style={{ margin: 20 }} showsVerticalScrollIndicator={false}>
@@ -167,7 +167,7 @@ const Workers = (): JSX.Element => {
                                         })
                                     
                                     }}
-                                    style={{ width: '100%', height: 30, paddingVertical: 0, paddingHorizontal: 10, borderBottomWidth: 1, color: colors.white }}
+                                    style={{ width: '100%', height: 30, paddingVertical: 0, paddingHorizontal: 10, borderBottomWidth: 1, color: '#000' }}
                                 />
                             </View>
                             <View style={{ marginTop: 10 }}>
@@ -184,7 +184,7 @@ const Workers = (): JSX.Element => {
                                         })
 
                                     }}
-                                    style={{ width: '100%', height: 30, paddingVertical: 0, paddingHorizontal: 10, borderBottomWidth: 1, color: colors.white }}
+                                    style={{ width: '100%', height: 30, paddingVertical: 0, paddingHorizontal: 10, borderBottomWidth: 1, color: '#000' }}
                                 />
                             </View>
                             <View style={{ marginTop: 10 }}>
@@ -201,7 +201,7 @@ const Workers = (): JSX.Element => {
                                         })
 
                                     }}
-                                    style={{ width: '100%', height: 30, paddingVertical: 0, paddingHorizontal: 10, borderBottomWidth: 1, color: colors.white }}
+                                    style={{ width: '100%', height: 30, paddingVertical: 0, paddingHorizontal: 10, borderBottomWidth: 1, color: '#000' }}
                                 />
                             </View>
                             <View style={{ marginTop: 10 }}>
@@ -242,7 +242,7 @@ const Workers = (): JSX.Element => {
                                         })
 
                                     }}
-                                    style={{ width: '100%', height: 30, paddingVertical: 0, paddingHorizontal: 10, borderBottomWidth: 1, color: colors.white }}
+                                    style={{ width: '100%', height: 30, paddingVertical: 0, paddingHorizontal: 10, borderBottomWidth: 1, color: '#000' }}
                                 />
                             </View>
 

@@ -26,7 +26,7 @@ const styles = (): StyleTypes => {
       marginLeft: 16,
       fontFamily: fonts.Inter.Regular,
       fontSize: 16,
-      color: colors.white
+      color: '#000'
     },
     line: {
       height: 1,

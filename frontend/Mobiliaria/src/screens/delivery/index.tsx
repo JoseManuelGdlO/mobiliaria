@@ -172,8 +172,8 @@ const Delivery = (): JSX.Element => {
                         borderWidth: item.selected ? 0 : 1,
                         borderColor: '#9E2EBE'
                     }}>
-                    <Text style={{ fontFamily: fonts.Roboto.Bold, color: item.selected ? colors.black : 'rgb(111 96 129)', fontSize: 20 }}>{item.letter}</Text>
-                    <Text style={{ fontFamily: fonts.Roboto.Regular, paddingTop: 5, color: item.selected ? colors.black : 'rgb(111 96 129)', fontSize: 16 }}>{item.dayNumber}</Text>
+                    <Text style={{ fontFamily: fonts.Roboto.Bold, color: item.selected ? '#fff' : 'rgb(111 96 129)', fontSize: 20 }}>{item.letter}</Text>
+                    <Text style={{ fontFamily: fonts.Roboto.Regular, paddingTop: 5, color: item.selected ? '#fff' : 'rgb(111 96 129)', fontSize: 16 }}>{item.dayNumber}</Text>
                 </TouchableOpacity>
             </>
         )

@@ -133,7 +133,7 @@ const Payments = (): JSX.Element => {
                 style={{
                   fontFamily: fonts.Roboto.Black,
                   fontSize: 12,
-                  color: colors.black,
+                  color: '#fff',
                 }}
               >
                 Detalle

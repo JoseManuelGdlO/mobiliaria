@@ -70,7 +70,7 @@ const Clients = (): JSX.Element => {
                             <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12, color: '#488aff' }}>{item.correo_cliente}</Text>
                         </View>
                         <TouchableOpacity style={{ backgroundColor: 'red', borderRadius: 20, paddingHorizontal: 30, justifyContent: 'center' }}>
-                            <Text style={{ fontFamily: fonts.Roboto.Black, fontSize: 12, color: colors.black }}>Eliminar</Text>
+                            <Text style={{ fontFamily: fonts.Roboto.Black, fontSize: 12, color: '#fff' }}>Eliminar</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

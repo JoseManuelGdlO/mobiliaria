@@ -32,7 +32,7 @@ const DatePickerComponent = ({
         <View> 
             <Modal visible={open} transparent>
             <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center' }}>
-                <View style={{ backgroundColor: colors.black, borderRadius: 10, margin: 20, maxHeight: height - 100 }}>
+                <View style={{ backgroundColor: '#FFF', borderRadius: 10, margin: 20, maxHeight: height - 100 }}>
                     <ScrollView style={{ margin: 20 }} showsVerticalScrollIndicator={false}>
                         <DatePicker
                             date={date}

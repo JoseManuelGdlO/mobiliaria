@@ -20,7 +20,7 @@ const styles = (): StyleTypes => {
     },
     title: {
       fontSize: 16,
-      color: colors.black,
+      color: '#FFF',
       textAlign: 'center',
       fontFamily: fonts.Inter.Bold,
       fontWeight: 'bold'

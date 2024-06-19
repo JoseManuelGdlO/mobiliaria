@@ -184,7 +184,7 @@ const Availability = ({
             <FlatList
                 ListHeaderComponent={
                     <View>
-                        <View style={{ display: 'flex', flexDirection: 'row', padding: 16, backgroundColor: colors.black }}>
+                        <View style={{ display: 'flex', flexDirection: 'row', padding: 16, backgroundColor: '#FFF' }}>
                             <View style={{ paddingTop: 10 }}>
                                 <SearchIcon></SearchIcon>
                             </View>
@@ -217,7 +217,7 @@ const Availability = ({
                             </TouchableOpacity>
                         </View>
                         { packages.length !== 0 && <View>
-                            <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 15, color: colors.white, paddingHorizontal: 10 }}>
+                            <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 15, color: '#000', paddingHorizontal: 10 }}>
                                 Paquetes
                             </Text>
                             <ScrollView style={{maxHeight: 150, overflow: "scroll"}}>
@@ -228,7 +228,7 @@ const Availability = ({
                                             setItemPackageSelected(pack)
                                             setModalVisible(true)
                                         }}
-                                        style={{ backgroundColor: colors.black, borderRadius: 5, marginHorizontal: 5 }}>
+                                        style={{ backgroundColor: '#FFF', borderRadius: 5, marginHorizontal: 5 }}>
                                             <View style={{
                                                 borderWidth: 1,
                                                 borderColor: colors.gray400,
@@ -266,7 +266,7 @@ const Availability = ({
                                     )
                                 })}
                             </ScrollView>
-                            <View style={{width: '100%', height: 1, backgroundColor: '#000', marginTop: 10}}></View>
+                            <View style={{width: '100%', height: 1, backgroundColor: '#FFF', marginTop: 10}}></View>
                         </View>}
                     </View>
                 }
@@ -286,7 +286,7 @@ const Availability = ({
                         {invSelected.map(inv => {
                             const color = generateRandomColor()
                             return (
-                                <Text key={inv.id_mob} style={{ fontSize: 10, color: colors.black, paddingHorizontal: 5, fontFamily: fonts.Roboto.Regular, borderRadius: 10, backgroundColor: color }}>
+                                <Text key={inv.id_mob} style={{ fontSize: 10, color: '#FFF', paddingHorizontal: 5, fontFamily: fonts.Roboto.Regular, borderRadius: 10, backgroundColor: color }}>
                                     {inv.nombre_mob} - {inv.cantidad}
                                     <TouchableOpacity onPress={() => {
                                         setTotal(total - (inv.costo_mob * Number(inv.cantidad)))
@@ -302,7 +302,7 @@ const Availability = ({
                         {pktSelected.map(inv => {
                             const color = generateRandomColor()
                             return (
-                                <Text key={inv.id} style={{ fontSize: 10, color: colors.black, paddingHorizontal: 5, fontFamily: fonts.Roboto.Regular, borderRadius: 10, backgroundColor: color }}>
+                                <Text key={inv.id} style={{ fontSize: 10, color: '#FFF', paddingHorizontal: 5, fontFamily: fonts.Roboto.Regular, borderRadius: 10, backgroundColor: color }}>
                                     {inv.nombre} - {inv.cantidad}
                                     <TouchableOpacity onPress={() => {
 
@@ -331,14 +331,14 @@ const Availability = ({
                     </Text>
                 </View>
                 <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignContent: 'center', marginTop:5 }}>
-                    <View style={{ height: 25, width: '30%', backgroundColor: colors.black, marginHorizontal: 5, justifyContent: 'center', alignItems: 'center' }}>
+                    <View style={{ height: 25, width: '30%', backgroundColor: '#FFF', marginHorizontal: 5, justifyContent: 'center', alignItems: 'center' }}>
                         <Text style={{ fontSize: 12, fontFamily: fonts.Roboto.Regular }}>Subtotal
                             <Text style={{ fontSize: 12, fontFamily: fonts.Roboto.Bold, color: '#488aff', paddingLeft: 5 }}>
                                 ${total}
                             </Text>
                         </Text>
                     </View>
-                    <View style={{ height: 25, width: '30%', backgroundColor: colors.black, marginHorizontal: 5, justifyContent: 'center', alignItems: 'center' }}>
+                    <View style={{ height: 25, width: '30%', backgroundColor: '#FFF', marginHorizontal: 5, justifyContent: 'center', alignItems: 'center' }}>
                         <Text style={{ fontSize: 12, fontFamily: fonts.Roboto.Bold, color: '#488aff' }}>+ IVA {total + (total * .16)}</Text>
                     </View>
                 </View>
@@ -359,10 +359,10 @@ const Availability = ({
             <Toast />
             <Modal visible={modalVisible} transparent>
                 <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center' }}>
-                    <View style={{ backgroundColor: colors.black, borderRadius: 10, margin: 20, maxHeight: height - 100 }}><Text style={{ fontFamily: fonts.Inter.Bold, fontWeight: 'bold', fontSize: 16, color: colors.white, marginTop: 16, marginLeft: 16 }}>
+                    <View style={{ backgroundColor: '#FFF', borderRadius: 10, margin: 20, maxHeight: height - 100 }}><Text style={{ fontFamily: fonts.Inter.Bold, fontWeight: 'bold', fontSize: 16, color: '#fff', marginTop: 16, marginLeft: 16 }}>
                         Selecciona cantidad
                     </Text>
-                        <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: colors.white, marginTop: 5, marginLeft: 16 }}>
+                        <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: '#000', marginTop: 5, marginLeft: 16 }}>
                             {itemSelected.nombre_mob ? itemSelected.nombre_mob : itemPackageSelected.nombre } - ${itemSelected.costo_mob ? itemSelected.costo_mob : itemPackageSelected.precio} - Cantidad.-{itemSelected.cantidad_mob ? itemSelected.cantidad_mob : itemPackageSelected.availiable}
                         </Text>
                         <View style={{ paddingVertical: 10, paddingHorizontal: 15 }}>
@@ -407,7 +407,7 @@ const Availability = ({
                         <View style={{ margin: 16, display: 'flex', flexDirection: 'row' }}>
                             <PrimaryButton
                                 containerStyle={{ width: '50%', height: 30, paddingVertical: 1 }}
-                                textStyle={{ fontSize: 12, color: colors.black }}
+                                textStyle={{ fontSize: 12, color: '#FFF' }}
                                 onPress={() => {
                                     if(itemSelected.nombre_mob) {
                                         let exist = false
@@ -523,7 +523,7 @@ const Availability = ({
                             />
                             <PrimaryButton
                                 containerStyle={{ width: '50%', height: 30, paddingVertical: 1 }}
-                                textStyle={{ fontSize: 12, color: colors.black}}
+                                textStyle={{ fontSize: 12, color: '#FFF'}}
                                 onPress={() => {
                                     const aval = { cantidad: 0 } as IAvailability
                                     setItemSelected(aval)

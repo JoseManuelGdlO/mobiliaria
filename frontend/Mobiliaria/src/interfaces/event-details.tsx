@@ -17,6 +17,7 @@ export interface IEvent {
     pagado_evento: number,
     nombre_titular_evento: string,
     direccion_evento: string,
+    url:string,
     telefono_titular_evento: string,
     observaciones: string,
     entregado: number,

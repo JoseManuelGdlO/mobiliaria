@@ -88,6 +88,30 @@ router.put('/status', verifyToken, async function (req: any, res: any, next: any
         next(err);
     }
 });
+router.put('/ubication', verifyToken, async function (req: any, res: any, next: any) {
+    try {
+        let id = req.query.id
+        let body = req.body
+        console.log('body', body, 'id', id);
+        
+        const response = await eventService.addUrltoEvent(body, id);
+        res.status(response).json(response);
+    } catch (err: any) {
+        console.error(`Error while getting enarm students info `, err.message);
+        next(err);
+    }
+});
+router.put('/flete', verifyToken, async function (req: any, res: any, next: any) {
+    try {
+        let id = req.query.id
+        let body = req.body
+        const response = await eventService.addFlete(body, id);
+        res.status(response).json(response);
+    } catch (err: any) {
+        console.error(`Error while getting enarm students info `, err.message);
+        next(err);
+    }
+});
 
 router.post('/additems', verifyToken, async function (req: any, res: any, next: any) {
     try {

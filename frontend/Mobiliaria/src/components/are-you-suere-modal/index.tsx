@@ -30,12 +30,12 @@ const AreYouSure = ({
         <View>
             <Modal visible={open} transparent>
                 <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center' }}>
-                    <View style={{ backgroundColor: colors.black, borderRadius: 10, margin: 20, maxHeight: height - 100 }}>
+                    <View style={{ backgroundColor: '#FFF', borderRadius: 10, margin: 20, maxHeight: height - 100 }}>
                         <ScrollView style={{ margin: 20 }} showsVerticalScrollIndicator={false}>
-                            <Text style={{ fontFamily: fonts.Inter.Bold, fontWeight: 'bold', fontSize: 16, color: colors.white, marginTop: 16, marginLeft: 16 }}>
+                            <Text style={{ fontFamily: fonts.Inter.Bold, fontWeight: 'bold', fontSize: 16, color: '#000', marginTop: 16, marginLeft: 16 }}>
                                Alerta
                             </Text>
-                            <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: colors.white, marginTop: 5, marginLeft: 16 }}>
+                            <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: '#000', marginTop: 5, marginLeft: 16 }}>
                                 { title ? title : 'Estas seguro que no quieres continuar ?'}
                             </Text>
                         </ScrollView>
