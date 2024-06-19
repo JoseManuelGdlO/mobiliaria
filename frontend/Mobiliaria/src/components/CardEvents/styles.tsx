@@ -20,7 +20,7 @@ const styles = (): StyleTypes => {
     },
     container: {
       borderRadius: 8,
-      backgroundColor: colors.black,
+      backgroundColor: '#fff',
       overflow: 'hidden'
     },
     titleContainer: {
@@ -47,7 +47,7 @@ const styles = (): StyleTypes => {
     description: {
       fontFamily: fonts.Inter.Regular,
       fontSize: 12,
-      color: colors.white,
+      color: '#000',
       marginBottom: 8,
       marginLeft: 8
     }

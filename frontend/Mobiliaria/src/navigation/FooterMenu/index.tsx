@@ -114,7 +114,7 @@ export const FooterMenu = (): JSX.Element => {
 
   const styles = StyleSheet.create({
     tabBarStyle: {
-      backgroundColor: colors.black,
+      backgroundColor: '#FFF',
       height: Platform.select({
         ios: hasNotch() ? 82 : 66,
         android: 66

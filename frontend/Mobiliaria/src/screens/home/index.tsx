@@ -14,6 +14,8 @@ import PrimaryButton from "@components/PrimaryButton";
 import { NavigationScreens } from "@interfaces/navigation";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
+import SelectStreetMap from "@components/select-street-map";
+import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 
 LocaleConfig.locales['es'] = {
     monthNames: [
@@ -196,12 +198,12 @@ const Home = ({
                         ListHeaderComponent={() => {
                             return (
                                 <View>
-                                    <Text style={{ backgroundColor: 'rgba(148, 167, 244, 0.79)', color: colors.white, fontSize: 15, fontWeight: '100', marginVertical: 8, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8, fontFamily: fonts.Roboto.Regular }}>
+                                    <Text style={{ backgroundColor: 'rgba(148, 167, 244, 0.79)', color: '#000', fontSize: 15, fontWeight: '100', marginVertical: 8, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8, fontFamily: fonts.Roboto.Regular }}>
                                         Eventos del dia <Text style={{ fontWeight: '500', color: '#153acb', fontFamily: fonts.Roboto.BlackItalic, fontStyle: 'italic' }}>{dateEvent}</Text>
                                     </Text>
                                     <PrimaryButton
                                         containerStyle={{ width: '100%', paddingVertical: 5, marginBottom: 5 }}
-                                        textStyle={{ fontSize: 12, fontFamily: fonts.Roboto.Regular, color: colors.black }}
+                                        textStyle={{ fontSize: 12, fontFamily: fonts.Roboto.Regular, color: '#000' }}
                                         backgroundButton="#9E2EBE"
                                         onPress={addEvent}
                                         title='Crear nuevo evento'
@@ -212,7 +214,7 @@ const Home = ({
                         ListEmptyComponent={() => {
                             return (
                                 <View style={{ backgroundColor: 'rgba(148, 167, 244, 0.79)', paddingVertical: 20, height: 150, alignItems: 'center', justifyContent: 'center', flex: 1, marginTop: 50 }}>
-                                    <Text style={{ color: colors.white, fontSize: 15, fontWeight: '100', marginVertical: 8, paddingHorizontal: 5, fontFamily: fonts.Roboto.Regular }}>
+                                    <Text style={{ color: '#000', fontSize: 15, fontWeight: '100', marginVertical: 8, paddingHorizontal: 5, fontFamily: fonts.Roboto.Regular }}>
                                         No hay eventos para este dia 😪
                                     </Text>
                                 </View>

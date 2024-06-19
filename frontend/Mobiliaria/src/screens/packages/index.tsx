@@ -156,7 +156,7 @@ const Packages = (): JSX.Element => {
                 style={{
                   fontFamily: fonts.Roboto.Black,
                   fontSize: 12,
-                  color: colors.black,
+                  color: '#fff',
                 }}
               >
                 X
@@ -204,7 +204,7 @@ const Packages = (): JSX.Element => {
               style={{
                 fontFamily: fonts.Roboto.Regular,
                 fontSize: 12,
-                color: colors.black,
+                color: '#fff',
               }}
             >
               Agregar paquete
@@ -278,7 +278,7 @@ const Packages = (): JSX.Element => {
         >
           <View
             style={{
-              backgroundColor: colors.black,
+              backgroundColor: '#fff',
               borderRadius: 10,
               margin: 20,
               maxHeight: height - 100,

@@ -3,6 +3,7 @@ import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 import { useEffect, useState } from "react";
 import { Dimensions, FlatList, Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native"
 import * as eventService from '../../services/events';
+import { Linking } from "react-native";
 import Loading from "@components/loading";
 import LottieView from "lottie-react-native";
 import React from "react";
@@ -14,6 +15,7 @@ import AreYouSure from "@components/are-you-suere-modal";
 import { useNavigation } from "@react-navigation/native";
 import EditIcon from "@assets/images/icons/EditIcon";
 import PrimaryButton from "@components/PrimaryButton";
+import SelectStreetMap from "@components/select-street-map";
 const height = Dimensions.get('window').height
 
 const EventDetail = ({
@@ -26,12 +28,16 @@ const EventDetail = ({
     const [itemRemove, setItemRemove] = useState<number>(0)
     const [loading, setLoading] = useState<boolean>(true)
     const [abono, setAbono] = useState<string>('')
+    const [flete, setFlete] = useState<string>('')
     const [obs, setObs] = useState<string>('')
     const [openAlert, setOpenAlert] = useState<number>(0)
     const [openEdit, setOpenEdit] = useState<boolean>(false)
     const [titular, SetTitular] = useState<string>('')
     const [telefono, SetTelefono] = useState<string>('')
     const [direccion, SetDireccion] = useState<string>('')
+    const [openMap, setOpenMap] = useState<boolean>(false)
+    const [latLon, setLatLon] = useState<any>({})
+    const [url, SetURL] = useState<string>('')
 
     const animation = React.useRef(null);
 
@@ -40,10 +46,13 @@ const EventDetail = ({
     const getDetails = async () => {
         try {
             const response = await eventService.getEventDetail(id) as IEventDetail
+            console.log(response);
 
             SetTitular(response?.event?.nombre_titular_evento)
             SetTelefono(response?.event?.telefono_titular_evento)
             SetDireccion(response?.event?.direccion_evento)
+            SetURL(response?.event?.url)
+            setFlete(response?.event?.flete.toString())
 
             setObs(response?.event?.observaciones)
 
@@ -54,6 +63,23 @@ const EventDetail = ({
             setLoading(false);
         }
     }
+
+    const submitDirection = async () => {
+
+        try {
+            const body = {
+                url: latLon.url,
+                lat: latLon.lat,
+                lng: latLon.lng
+            }
+            eventService.addDirection(event?.event?.id_evento, body)
+
+        } catch (error) {
+            console.log(error);
+        }
+       
+    }
+
     useEffect(() => {
         setLoading(true)
         getDetails()
@@ -205,7 +231,7 @@ const EventDetail = ({
                                 <TouchableOpacity
                                     onPress={() => setOpenEdit(true)}
                                     style={{ backgroundColor: '#488aff', borderRadius: 20, justifyContent: 'center', paddingVertical: 5 }}>
-                                    <Text style={{ fontFamily: fonts.Roboto.Medium, fontSize: 10, color: colors.black, textAlign: 'center' }}>
+                                    <Text style={{ fontFamily: fonts.Roboto.Medium, fontSize: 10, color: '#fff', textAlign: 'center' }}>
                                         Editar evento <EditIcon></EditIcon>
                                     </Text>
                                 </TouchableOpacity>
@@ -213,6 +239,14 @@ const EventDetail = ({
                         </View>
                         <View style={{ paddingHorizontal: 10 }}>
                             <Text style={{ color: '#9E2EBE', fontFamily: fonts.Roboto.Medium, fontSize: 15 }}>Direccion: {event?.event?.direccion_evento}</Text>
+                            {event?.event?.url &&
+                                <TouchableOpacity onPress={() => {
+                                    Linking.openURL(event?.event?.url);
+                                }}>
+                                    <Text style={{ color: 'blue', fontFamily: fonts.Roboto.Medium, fontSize: 10 }}>Mapa: {event?.event?.url}</Text>
+                                </TouchableOpacity>}
+                               
+
                             <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12 }}>Fecha y Hora: {event?.event?.fecha_envio_evento.split('T')[0]} a las {event?.event?.hora_envio_evento}</Text>
                         </View>
                         <View style={{ display: 'flex', flexDirection: 'row', paddingTop: 10 }}>
@@ -273,7 +307,7 @@ const EventDetail = ({
                             <TouchableOpacity
                                 onPress={() => setOpenAlert(1)}
                                 style={{ backgroundColor: '#488aff', borderRadius: 20, paddingHorizontal: 15, justifyContent: 'center' }}>
-                                <Text style={{ fontFamily: fonts.Roboto.Medium, fontSize: 10, color: colors.black }}>
+                                <Text style={{ fontFamily: fonts.Roboto.Medium, fontSize: 10, color: '#fff' }}>
                                     {event?.event?.entregado === 0 ? 'Entregar' : 'Recolectar'}
                                 </Text>
                             </TouchableOpacity>
@@ -318,7 +352,7 @@ const EventDetail = ({
 
                                 }}
                                 style={{ backgroundColor: '#488aff', alignItems: 'center', borderRadius: 20, paddingHorizontal: 15, paddingVertical: 3 }}>
-                                <Text style={{ fontFamily: fonts.Roboto.MediumItalic, fontSize: 12, color: colors.black }}>Agregar Obs</Text>
+                                <Text style={{ fontFamily: fonts.Roboto.MediumItalic, fontSize: 12, color: '#fff' }}>Agregar Obs</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={{ backgroundColor: 'rgba(0, 0, 0, 0.12)', width: '100%', minHeight: 30, borderRadius: 8, marginTop: 5, paddingHorizontal: 10, paddingBottom: 8 }}>
@@ -392,7 +426,7 @@ const EventDetail = ({
                                         }
 
                                     }} style={{ backgroundColor: abono.length !== 0 ? '#488aff' : colors.gray500, alignItems: 'center', marginTop: 10, borderRadius: 20, paddingHorizontal: 15, paddingVertical: 3 }}>
-                                        <Text style={{ fontFamily: fonts.Roboto.MediumItalic, fontSize: 12, color: colors.black }}>Agregar abono</Text>
+                                        <Text style={{ fontFamily: fonts.Roboto.MediumItalic, fontSize: 12, color: '#fff' }}>Agregar abono</Text>
                                     </TouchableOpacity>
 
                                 </View>
@@ -408,6 +442,34 @@ const EventDetail = ({
                                     source={require('../../assets/images/lottie/followpayment.json')}
                                 />
                             </View>
+                        <TextInput placeholder="Ingrese Flete" onChangeText={setFlete}
+                                        style={{ width: '100%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular }}></TextInput>
+                                    <TouchableOpacity disabled={flete.length === 0} onPress={async () => {
+                                        try {
+                                            setLoading(true)
+                                            const body = {
+                                                flete: Number(flete)
+                                            }
+                                            await paymentService.addFlete(body, event?.event?.id_evento)
+                                            Toast.show({
+                                                type: 'success',
+                                                text1: 'Hecho',
+                                                text2: 'se ha agregado el flete',
+                                                visibilityTime: 1000,
+                                                autoHide: true
+                                            })
+                                            getDetails()
+                                        } catch (error) {
+                                            console.log(error);
+                                        } finally
+                                        {
+                                            setLoading(false)
+                                        }
+
+
+                                    }} style={{ backgroundColor: flete.length !== 0 ? '#488aff' : colors.gray500, alignItems: 'center', marginTop: 10, borderRadius: 20, paddingHorizontal: 15, paddingVertical: 3 }}>
+                                        <Text style={{ fontFamily: fonts.Roboto.MediumItalic, fontSize: 12, color: '#fff' }}>Agregar flete</Text>
+                                    </TouchableOpacity>
                         </View>
                     </View>
                 }
@@ -453,12 +515,12 @@ const EventDetail = ({
             <View>
                 <Modal visible={openEdit} transparent>
                     <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center' }}>
-                        <View style={{ backgroundColor: colors.black, borderRadius: 10, margin: 20, maxHeight: height - 100 }}>
+                        <View style={{ backgroundColor: '#FFF', borderRadius: 10, margin: 20, maxHeight: height - 100 }}>
                             <ScrollView style={{ margin: 20 }} showsVerticalScrollIndicator={false}>
-                                <Text style={{ fontFamily: fonts.Inter.Bold, fontWeight: 'bold', fontSize: 16, color: colors.white, marginTop: 16, marginLeft: 16 }}>
+                                <Text style={{ fontFamily: fonts.Inter.Bold, fontWeight: 'bold', fontSize: 16, color: '#000', marginTop: 16, marginLeft: 16 }}>
                                     Editar evento
                                 </Text>
-                                <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 14, color: colors.white, marginTop: 5, marginLeft: 16 }}>
+                                <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 14, color: '#000', marginTop: 5, marginLeft: 16 }}>
                                     Titular
                                 </Text>
                                 <View style={{ backgroundColor: 'rgba(0, 0, 0, 0.12)', width: '100%', borderRadius: 8, marginTop: 5, paddingHorizontal: 10 }}>
@@ -467,7 +529,7 @@ const EventDetail = ({
                                         onChangeText={SetTitular}
                                         style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12 }}></TextInput>
                                 </View>
-                                <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 14, color: colors.white, marginTop: 5, marginLeft: 16 }}>
+                                <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 14, color: '#000', marginTop: 5, marginLeft: 16 }}>
                                     Telefono
                                 </Text>
                                 <View style={{ backgroundColor: 'rgba(0, 0, 0, 0.12)', width: '100%', borderRadius: 8, marginTop: 5, paddingHorizontal: 10 }}>
@@ -476,7 +538,7 @@ const EventDetail = ({
                                         onChangeText={SetTelefono}
                                         style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12 }}></TextInput>
                                 </View>
-                                <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 14, color: colors.white, marginTop: 5, marginLeft: 16 }}>
+                                <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 14, color: '#000', marginTop: 5, marginLeft: 16 }}>
                                     Direccion
                                 </Text>
                                 <View style={{ backgroundColor: 'rgba(0, 0, 0, 0.12)', width: '100%', borderRadius: 8, marginTop: 5, paddingHorizontal: 10 }}>
@@ -485,6 +547,14 @@ const EventDetail = ({
                                         onChangeText={SetDireccion}
                                         style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12 }}></TextInput>
                                 </View>
+                                
+                                <TouchableOpacity
+                                        onPress={() => setOpenMap(true)}
+                                        style={{ backgroundColor: '#488aff', borderRadius: 5, height: 20, justifyContent: 'center', width: '100%' }}>
+                                        <Text style={{ fontFamily: fonts.Roboto.Medium, fontSize: 10, color: '#fff', textAlign: 'center' }}>
+                                            modificar mapa {latLon.lat && '✅ listo'}
+                                        </Text>
+                                    </TouchableOpacity>
                             </ScrollView>
                             <View style={{ margin: 16, display: 'flex', flexDirection: 'row' }}>
                                 <PrimaryButton
@@ -492,15 +562,16 @@ const EventDetail = ({
                                     onPress={() => {
                                         setLoading(true)
                                         setOpenEdit(false)
+                                        submitDirection()
                                         eventService.editEvent(event?.event?.id_evento, titular, telefono, direccion)
-                                        .then(() => {
-                                            getDetails()
-                                            setOpenEdit(false)
-                                        })
-                                        .catch(error => {
-                                            console.log(error);
-                                            setLoading(false)
-                                        })
+                                            .then(() => {
+                                                getDetails()
+                                                setOpenEdit(false)
+                                            })
+                                            .catch(error => {
+                                                console.log(error);
+                                                setLoading(false)
+                                            })
                                     }}
                                     title='Guardar'
                                 />
@@ -517,6 +588,12 @@ const EventDetail = ({
                     </View>
                 </Modal>
             </View>
+            <SelectStreetMap open={openMap} props={(p: any) => {
+                console.log(p)
+                setLatLon(p)
+                SetDireccion(p.description)
+                setOpenMap(false)
+            }}></SelectStreetMap>
         </>
     )
 }

@@ -13,7 +13,7 @@ const styles = (headerHeight: number, backgroundColor: string | undefined, hideB
   return StyleSheet.create({
     container: {
       height: headerHeight,
-      backgroundColor: backgroundColor ?? colors.white,
+      backgroundColor: backgroundColor ?? '#000',
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
@@ -21,7 +21,7 @@ const styles = (headerHeight: number, backgroundColor: string | undefined, hideB
     },
     containerIcon: {
       height: headerHeight,
-      backgroundColor: colors.white,
+      backgroundColor: '#000',
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
@@ -35,7 +35,7 @@ const styles = (headerHeight: number, backgroundColor: string | undefined, hideB
       fontFamily: fonts.Inter.Bold,
       flexGrow: 1,
       fontSize: 20,
-      color: colors.black,
+      color: '#FFF',
       alignSelf: 'center',
       textAlign: 'left',
       marginRight: (!hideBackArrow) ? 315 : 0,

@@ -22,11 +22,11 @@ const Inventary = (): JSX.Element => {
     const [search, setSearch] = React.useState('')
     const [page, setPage] = React.useState<number>(1)
     const [visible, setVisible] = React.useState(false)
-    const [ inventaryNew, setInventaryNew ] = React.useState<IInventary>({ nombre_mob: '', cantidad_mob: 0, costo_mob: 0 })
-    const [ nombre, setNombre ] = React.useState<string>('')
-    const [ cantidad, setCantidad ] = React.useState<string>('')
-    const [ costo, setCosto ] = React.useState<string>('')
-    const [ openAlert, setOpenAlert ] = React.useState(false)
+    const [inventaryNew, setInventaryNew] = React.useState<IInventary>({ nombre_mob: '', cantidad_mob: 0, costo_mob: 0 })
+    const [nombre, setNombre] = React.useState<string>('')
+    const [cantidad, setCantidad] = React.useState<string>('')
+    const [costo, setCosto] = React.useState<string>('')
+    const [openAlert, setOpenAlert] = React.useState(false)
 
     const { fonts, colors } = useTheme()
 
@@ -109,17 +109,17 @@ const Inventary = (): JSX.Element => {
     const renderFooter = () => {
         return (
             <>
-                <View style={{ paddingHorizontal: 10 }}>
+                {/* <View style={{ paddingHorizontal: 10 }}>
                     <PrimaryButton
                         containerStyle={{ width: '100%', paddingVertical: 5, marginBottom: 5 }}
-                        textStyle={{ fontSize: 12, fontFamily: fonts.Roboto.Regular, color: colors.black }}
+                        textStyle={{ fontSize: 12, fontFamily: fonts.Roboto.Regular, color: '#fff' }}
                         backgroundButton="#9E2EBE"
                         onPress={() => {
                             setVisible(true)
                         }}
                         title='Agregar inventario'
                     />
-                </View>
+                </View> */}
                 {search.length < 3 && inventary.length > 10 &&
                     <View style={{ height: 30 }}>
                         <ActivityIndicator></ActivityIndicator>
@@ -134,38 +134,54 @@ const Inventary = (): JSX.Element => {
 
             <FlatList
                 ListHeaderComponent={
-                    <View style={{ display: 'flex', flexDirection: 'row', padding: 16, backgroundColor: colors.black }}>
-                        <View style={{ paddingTop: 10 }}>
-                            <SearchIcon></SearchIcon>
+                    <View>
+                        
+                        <View style={{ display: 'flex', flexDirection: 'row', padding: 16, backgroundColor: '#fff' }}>
+                            <View style={{ paddingTop: 10 }}>
+                                <SearchIcon></SearchIcon>
+                            </View>
+                            <TextInput
+                                style={{ width: '85%', height: 40, paddingVertical: 0, paddingHorizontal: 10, borderBottomWidth: 1 }}
+                                placeholder="Busqueda"
+                                onChangeText={(value: string) => {
+                                    setSearch(value)
+                                    if (value === '') {
+                                        setPage(1)
+                                        setInventary(totalInventary.slice(0, page * ITEMS_PEER_PAGE))
+                                    }
+                                    else if (value.length > 2) {
+
+                                        setPage(1)
+                                        const total = totalInventary.filter((item: IInventary) => item.nombre_mob.toLocaleLowerCase().includes(value.toLocaleLowerCase()))
+                                        setInventary(total)
+                                    }
+
+                                }}
+                                value={search}
+                            />
+                            <TouchableOpacity onPress={() => {
+                                setSearch('')
+                                setInventary(totalInventary)
+                                setPage(1)
+                                setInventary(totalInventary.slice(0, page * ITEMS_PEER_PAGE))
+                            }} style={{ paddingTop: 10, borderBottomWidth: 1 }}>
+                                <CancelIcon></CancelIcon>
+                            </TouchableOpacity>
+
                         </View>
-                        <TextInput
-                            style={{ width: '85%', height: 40, paddingVertical: 0, paddingHorizontal: 10, borderBottomWidth: 1 }}
-                            placeholder="Busqueda"
-                            onChangeText={(value: string) => {
-                                setSearch(value)
-                                if (value === '') {
-                                    setPage(1)
-                                    setInventary(totalInventary.slice(0, page * ITEMS_PEER_PAGE))
-                                }
-                                else if (value.length > 2) {
-
-                                    setPage(1)
-                                    const total = totalInventary.filter((item: IInventary) => item.nombre_mob.toLocaleLowerCase().includes(value.toLocaleLowerCase()))
-                                    setInventary(total)
-                                }
-
-                            }}
-                            value={search}
-                        />
-                        <TouchableOpacity onPress={() => {
-                            setSearch('')
-                            setInventary(totalInventary)
-                            setPage(1)
-                            setInventary(totalInventary.slice(0, page * ITEMS_PEER_PAGE))
-                        }} style={{ paddingTop: 10, borderBottomWidth: 1 }}>
-                            <CancelIcon></CancelIcon>
-                        </TouchableOpacity>
+                        <View style={{ paddingHorizontal: 10 }}>
+                            <PrimaryButton
+                                containerStyle={{ width: '100%', paddingVertical: 5, marginBottom: 5 }}
+                                textStyle={{ fontSize: 12, fontFamily: fonts.Roboto.Regular, color: '#fff' }}
+                                backgroundButton="#9E2EBE"
+                                onPress={() => {
+                                    setVisible(true)
+                                }}
+                                title='Agregar inventario'
+                            />
+                        </View>
                     </View>
+
                 }
                 stickyHeaderIndices={[0]}
                 initialNumToRender={10}
@@ -180,28 +196,28 @@ const Inventary = (): JSX.Element => {
             <Loading loading={loading} />
             <Modal visible={visible} transparent>
                 <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center' }}>
-                    <View style={{ backgroundColor: colors.black, borderRadius: 10, margin: 20, maxHeight: height - 100 }}>
-                        <Text style={{ fontFamily: fonts.Inter.Bold, fontWeight: 'bold', fontSize: 16, color: colors.white, marginTop: 16, marginLeft: 16 }}>
+                    <View style={{ backgroundColor: '#000', borderRadius: 10, margin: 20, maxHeight: height - 100 }}>
+                        <Text style={{ fontFamily: fonts.Inter.Bold, fontWeight: 'bold', fontSize: 16, color: '#000', marginTop: 16, marginLeft: 16 }}>
                             Inventario
                         </Text>
-                        <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: colors.white, marginTop: 5, marginLeft: 16 }}>
+                        <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: '#000', marginTop: 5, marginLeft: 16 }}>
                             {inventaryNew.nombre_mob === '' ? 'Agregar' : 'Modificar'}
                         </Text>
                         <ScrollView style={{ margin: 20 }} showsVerticalScrollIndicator={false}>
                             <View>
-                                <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: colors.white, marginTop: 5 }}>
+                                <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: '#000', marginTop: 5 }}>
                                     Nombre
                                 </Text>
                                 <TextInput
                                     autoCapitalize="none"
                                     value={nombre}
                                     onChangeText={setNombre}
-                                    style={{ width: '100%', height: 30, paddingVertical: 0, paddingHorizontal: 10, borderBottomWidth: 1, color: colors.white }}
+                                    style={{ width: '100%', height: 30, paddingVertical: 0, paddingHorizontal: 10, borderBottomWidth: 1, color: '#000' }}
                                 />
                             </View>
                             <View style={{ display: 'flex', flexDirection: 'row', paddingTop: 20 }}>
                                 <View style={{ width: '50%', paddingRight: 10 }}>
-                                    <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: colors.white, marginTop: 5 }}>
+                                    <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: '#000', marginTop: 5 }}>
                                         Cantidad
                                     </Text>
                                     <TextInput
@@ -209,11 +225,11 @@ const Inventary = (): JSX.Element => {
                                         onChangeText={(value: string) => setCantidad(value)}
                                         keyboardType="number-pad"
                                         autoCapitalize="none"
-                                        style={{ width: '100%', height: 30, paddingVertical: 0, paddingHorizontal: 10, borderBottomWidth: 1, color: colors.white }}
+                                        style={{ width: '100%', height: 30, paddingVertical: 0, paddingHorizontal: 10, borderBottomWidth: 1, color: '#000' }}
                                     />
                                 </View>
                                 <View style={{ width: '50%' }}>
-                                    <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: colors.white, marginTop: 5 }}>
+                                    <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: '#000', marginTop: 5 }}>
                                         Precio
                                     </Text>
                                     <TextInput
@@ -221,12 +237,12 @@ const Inventary = (): JSX.Element => {
                                         value={costo}
                                         onChangeText={(value: string) => setCosto(value)}
                                         autoCapitalize="none"
-                                        style={{ width: '100%', height: 30, paddingVertical: 0, paddingHorizontal: 10, borderBottomWidth: 1, color: colors.white }}
+                                        style={{ width: '100%', height: 30, paddingVertical: 0, paddingHorizontal: 10, borderBottomWidth: 1, color: '#000' }}
                                     />
                                 </View>
 
                             </View>
-                          
+
                         </ScrollView>
                         <View style={{ margin: 16, display: 'flex', flexDirection: 'row' }}>
                             <PrimaryButton
@@ -234,19 +250,19 @@ const Inventary = (): JSX.Element => {
                                 textStyle={{ fontSize: 12, fontFamily: fonts.Roboto.Regular, color: 'white' }}
                                 onPress={() => {
 
-                                    if(inventaryNew.nombre_mob === ''){
-                                        if(nombre.length === 0 || cantidad.length === 0 || costo.length === 0){
+                                    if (inventaryNew.nombre_mob === '') {
+                                        if (nombre.length === 0 || cantidad.length === 0 || costo.length === 0) {
                                             Toast.show({
                                                 type: 'error',
                                                 text1: 'Error',
                                                 text2: 'Todos los campos son obligatorios',
                                                 visibilityTime: 3000,
                                                 autoHide: true,
-                                                onHide: () => {}
+                                                onHide: () => { }
                                             })
                                             return
                                         }
-                                        
+
                                         const body = {
                                             name: nombre,
                                             quantity: parseInt(cantidad),
@@ -254,9 +270,9 @@ const Inventary = (): JSX.Element => {
                                         }
 
                                         try {
-                                            
+
                                             inventaryService.addInventary(body)
-                                            const last = totalInventary[totalInventary.length-1].id_mob
+                                            const last = totalInventary[totalInventary.length - 1].id_mob
                                             const inv: IInventary = { id_mob: last ? last + 1 : 9999, nombre_mob: body.name, cantidad_mob: body.quantity, costo_mob: parseInt(body.price) }
                                             setTotalInventary([...totalInventary, inv])
                                             setInventary([...inventary, inv])
@@ -267,21 +283,21 @@ const Inventary = (): JSX.Element => {
                                                 text2: 'Se agrego correctamente',
                                                 visibilityTime: 3000,
                                                 autoHide: true,
-                                                onHide: () => {}
+                                                onHide: () => { }
                                             })
                                         } catch (error) {
-                                         console.log(error);
-                                            
+                                            console.log(error);
+
                                         }
                                     } else {
-                                        if((nombre.length === 0 && inventaryNew.nombre_mob === nombre) || (cantidad.length === 0 && inventaryNew.cantidad_mob === parseInt(cantidad)) || (costo.length === 0 && inventaryNew.costo_mob === parseInt(costo))){
+                                        if ((nombre.length === 0 && inventaryNew.nombre_mob === nombre) || (cantidad.length === 0 && inventaryNew.cantidad_mob === parseInt(cantidad)) || (costo.length === 0 && inventaryNew.costo_mob === parseInt(costo))) {
                                             Toast.show({
                                                 type: 'error',
                                                 text1: 'Error',
                                                 text2: 'No se puede modificar el mismo elemento',
                                                 visibilityTime: 3000,
                                                 autoHide: true,
-                                                onHide: () => {}
+                                                onHide: () => { }
                                             })
                                             return
                                         }
@@ -298,21 +314,21 @@ const Inventary = (): JSX.Element => {
                                             inventaryNew.nombre_mob = body.name
                                             inventaryNew.cantidad_mob = body.quantity
                                             inventaryNew.costo_mob = parseInt(body.price)
-                                            
+
                                             inventary.find((item: IInventary, index: number) => {
-                                                if(item.id_mob === inventaryNew.id_mob){
+                                                if (item.id_mob === inventaryNew.id_mob) {
                                                     inventary[index] = inventaryNew
                                                 }
                                             })
 
                                             totalInventary.find((item: IInventary, index: number) => {
-                                                if(item.id_mob === inventaryNew.id_mob){
+                                                if (item.id_mob === inventaryNew.id_mob) {
                                                     totalInventary[index] = inventaryNew
                                                 }
                                             })
 
                                             setInventaryNew({ nombre_mob: '', cantidad_mob: 0, costo_mob: 0 })
-                                            
+
                                             setVisible(false)
                                             Toast.show({
                                                 type: 'success',
@@ -331,7 +347,7 @@ const Inventary = (): JSX.Element => {
                                     setNombre('')
                                     setCantidad('')
                                     setCosto('')
-                                    
+
                                 }}
                                 title={inventaryNew.nombre_mob === '' ? 'Agregar' : 'Modificar'}
                             />
@@ -356,7 +372,7 @@ const Inventary = (): JSX.Element => {
             <AreYouSure open={openAlert} sure={() => {
 
                 try {
-                    inventaryService.remove(inventaryNew.id_mob? inventaryNew.id_mob : 0)
+                    inventaryService.remove(inventaryNew.id_mob ? inventaryNew.id_mob : 0)
                     const inv = totalInventary.filter((item: IInventary) => item.id_mob !== inventaryNew.id_mob)
                     setTotalInventary(inv)
                     setInventary(inv.slice(0, page * ITEMS_PEER_PAGE))
