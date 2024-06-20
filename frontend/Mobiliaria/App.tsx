@@ -5,7 +5,7 @@
  * @format
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import type { ReactElement } from 'react';
 export { type RootState } from './src/redux/reducers'
 import {
@@ -27,6 +27,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 // @ts-expect-error
 import GlobalFont from 'react-native-global-font'
+
 
 const MyStatusBar = ({ backgroundColor, barStyle, ...props }: { backgroundColor: string, barStyle: StatusBarStyle }): ReactElement => (
   <View style={{ height: StatusBar.currentHeight, backgroundColor }}>

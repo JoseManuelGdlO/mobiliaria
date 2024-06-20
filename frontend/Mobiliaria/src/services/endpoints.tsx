@@ -20,6 +20,7 @@ export const REMOVE_EVENT = API_EVENTS + '/remove'
 export const REMOVE_ITEM = API_EVENTS + '/removeitem'
 
 export const LOGIN_PATH = API_AUTH + '/login'
+export const LOGIN_TOKEN_PATH = API_AUTH + '/token'
 
 export const GET_INVENTARY = API_INVENTARY + '/getInventary'
 export const ADD_INVENTARY = API_INVENTARY + '/addInventary'

@@ -20,9 +20,9 @@ router.post('/login', async function (req: any, res: any, next: any) {
     }
 });
 
-router.post('/login-id', async function (req: any, res: any, next: any) {
-    try {
-        const response = await authService.loginForId(req.body)
+router.post('/token', async function (req: any, res: any, next: any) {
+    try {        
+        const response = await authService.token(req.body)
         if (response.code === 200) {
             jwt.sign( response, 'secretkey', (err: any, token: any) => {
                 res.status(response.code).json({ data: response.data, token });
@@ -30,6 +30,16 @@ router.post('/login-id', async function (req: any, res: any, next: any) {
         } else {
             res.status(response.code).json(response);
         }
+    } catch (err: any) {
+        console.error(`Error while getting enarm students info `, err.message);
+        next(err);
+    }
+});
+
+router.post('/login-id', async function (req: any, res: any, next: any) {
+    try {
+        const response = await authService.loginForId(req.body)
+        res.status(201).json(response);
     } catch (err: any) {
         console.error(`Error while getting enarm students info `, err.message);
         next(err);
