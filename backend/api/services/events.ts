@@ -279,70 +279,65 @@ async function addEvent(body: any, id: number) {
 }
 
 async function addUrltoEvent(body: any, id: number) {
-    const connection = await db.connection();
-    await connection.execute("SET TRANSACTION ISOLATION LEVEL READ COMMITTED");
-  
-    await connection.beginTransaction();
-  
-    
-    try {
-      const [event] = await connection.execute(
-        ` UPDATE evento_mob SET url = '${body.url}', lat = '${body.lat}', lng = '${body.lng}' WHERE id_evento = ${id}`
-      );
-  
-  
-      await connection.commit();
-      return 201;
-    } catch (error) {
-      console.error(error);
-      connection.rollback();
-      console.info("Rollback successful");
-      return 405;
-    }
+  const connection = await db.connection();
+  await connection.execute("SET TRANSACTION ISOLATION LEVEL READ COMMITTED");
+
+  await connection.beginTransaction();
+
+
+  try {
+    const [event] = await connection.execute(
+      ` UPDATE evento_mob SET url = '${body.url}', lat = '${body.lat}', lng = '${body.lng}' WHERE id_evento = ${id}`
+    );
+
+
+    await connection.commit();
+    return 201;
+  } catch (error) {
+    console.error(error);
+    connection.rollback();
+    console.info("Rollback successful");
+    return 405;
+  }
 }
 
 async function addFlete(body: any, id: number) {
-    const connection = await db.connection();
-    await connection.execute("SET TRANSACTION ISOLATION LEVEL READ COMMITTED");
-  
-    await connection.beginTransaction();
-  
-    
-    try {
+  const connection = await db.connection();
+  await connection.execute("SET TRANSACTION ISOLATION LEVEL READ COMMITTED");
 
-        const lastEvent = await connection.execute(
-            `SELECT * FROM evento_mob WHERE id_evento = ${id}`
-          );
+  await connection.beginTransaction();
 
-          
 
-        body.flete = body.flete - lastEvent[0][0].flete;
+  try {
+    await connection.execute(
+      `SELECT * FROM evento_mob WHERE id_evento = ${id}`
+    );
 
-      const [event] = await connection.execute(
-        ` UPDATE evento_mob SET flete = ${body.flete} WHERE id_evento = ${id}`
-      );
+    await connection.execute(
+      ` UPDATE evento_mob SET flete = ${body.flete} WHERE id_evento = ${id}`
+    );
 
-        const [payment] = await connection.execute(
-            `SELECT * FROM pagos_mob WHERE id_evento = ${id}`
-        );
+    const [payment] = await connection.execute(
+      `SELECT * FROM pagos_mob WHERE id_evento = ${id}`
+    );
 
-        const costoTotal = payment[0][payment[0].length - 1].costo_total + body.flete;
-        const saldo = payment[0][payment[0].length - 1].saldo + body.flete;
+    const costoTotal = payment[payment.length - 1].costo_total + body.flete;
+    const saldo = payment[payment.length - 1].saldo + body.flete;
 
-        await connection.execute(
-            `INSERT INTO pagos_mob (id_evento, costo_total, saldo, anticipo)
-            VALUES (${id},${costoTotal},${saldo},${payment[0][payment[0].length - 1].anticipo})`
-        );
-  
-  
-      await connection.commit();
-      return 201;
-    } catch (error) {
-      console.error(error);
-      connection.rollback();
-      console.info("Rollback successful");
-      return 405;
-    }
+    await connection.execute(
+      `INSERT INTO pagos_mob (id_evento, costo_total, saldo, anticipo)
+            VALUES (${id},${costoTotal},${saldo},${payment[payment.length - 1].anticipo})`
+    );
+
+
+    await connection.commit();
+    return 201;
+  } catch (error) {
+    console.error(error);
+    connection.rollback();
+    console.info("Rollback successful");
+    return 405;
+  }
 }
 
 async function addItems(body: any) {
@@ -370,18 +365,14 @@ async function addItems(body: any) {
 
         await connection.execute(
           `INSERT INTO inventario_disponibilidad_mob (fecha_evento, hora_evento, id_mob, ocupados, id_evento, hora_recoleccion, costo)
-                VALUES ('${
-                  event.fecha_envio_evento.toISOString().split("T")[0]
-                }', '${event.hora_envio_evento}', ${mobiliario.id_mob}, ${
-            mobiliario.cantidad
-          }, ${body.id}, '${
-            event.fecha_recoleccion_evento.toISOString().split("T")[0]
+                VALUES ('${event.fecha_envio_evento.toISOString().split("T")[0]
+          }', '${event.hora_envio_evento}', ${mobiliario.id_mob}, ${mobiliario.cantidad
+          }, ${body.id}, '${event.fecha_recoleccion_evento.toISOString().split("T")[0]
           }', ${mobiliario.costo_mob})`
         );
       } else {
         await connection.execute(
-          `UPDATE inventario_disponibilidad_mob SET ocupados = ${
-            mobEvent[0][0].ocupados + mobiliario.cantidad
+          `UPDATE inventario_disponibilidad_mob SET ocupados = ${mobEvent[0][0].ocupados + mobiliario.cantidad
           } WHERE id_evento = ${body.id} AND id_mob = ${mobiliario.id_mob}`
         );
         continue;
