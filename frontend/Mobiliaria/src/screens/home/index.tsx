@@ -4,6 +4,7 @@ import { CalendarList } from 'react-native-calendars'
 import { LocaleConfig } from 'react-native-calendars';
 import { Dimensions } from 'react-native';
 import * as eventService from '../../services/events';
+import * as authService from '../../services/auth';
 import { MarkedDates } from "react-native-calendars/src/types";
 import { useTheme } from "@hooks/useTheme";
 import CardEvents from "@components/CardEvents";
@@ -16,6 +17,12 @@ import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 import SelectStreetMap from "@components/select-street-map";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import messaging from '@react-native-firebase/messaging';
+import {PermissionsAndroid} from 'react-native';
+import useReduxUser from "@hooks/useReduxUser";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import Toast from "react-native-toast-message";
+PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
 
 LocaleConfig.locales['es'] = {
     monthNames: [
@@ -53,6 +60,51 @@ const Home = ({
     const [ requestDate, setRequestDate ] = React.useState<string>('');
 
     const { colors, fonts } = useTheme();
+
+    const { user } = useReduxUser()
+
+    const requestUserPermissions = async () => {
+        const authStatus = await messaging().requestPermission();
+        const enabled =
+        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+        if (enabled) {
+            console.log('Authorization status:', authStatus);
+            getToken();
+        }
+    }
+
+    const getToken = async () => {
+        try {
+            const token = await messaging().getToken();
+            await messaging().subscribeToTopic(`company${user.id_empresa}`)
+            const response = await authService.tokenUser(user.id_usuario, token)
+            
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const subscribeNotifications = async () => {
+        messaging().onMessage(async remoteMessage => {
+            const not = remoteMessage
+            console.log('not', not);
+            const title = `${not?.data?.nombre} agregó un nuevo evento`
+            Toast.show({
+                type: 'success',
+                text1: title,
+                text2: not.notification?.body,
+                visibilityTime: 3000,
+                autoHide: true
+            })
+        });
+
+        messaging().setBackgroundMessageHandler(async remoteMessage => {
+            console.log('Message handled in the background!', remoteMessage);
+        });
+    }   
+
 
     const addEvent = () => { 
         navigation.navigate('Available', { date: requestDate })
@@ -118,7 +170,10 @@ const Home = ({
         getEvents()
     }, []);
 
-    useEffect(() => {      
+    useEffect(() => {   
+        requestUserPermissions()
+        subscribeNotifications()
+       
   
         setLoading(true)
         getEvents()
@@ -203,7 +258,7 @@ const Home = ({
                                     </Text>
                                     <PrimaryButton
                                         containerStyle={{ width: '100%', paddingVertical: 5, marginBottom: 5 }}
-                                        textStyle={{ fontSize: 12, fontFamily: fonts.Roboto.Regular, color: '#000' }}
+                                        textStyle={{ fontSize: 12, fontFamily: fonts.Roboto.Regular, color: '#FFF' }}
                                         backgroundButton="#9E2EBE"
                                         onPress={addEvent}
                                         title='Crear nuevo evento'
@@ -236,6 +291,7 @@ const Home = ({
                     />
                 </View>}
             <Loading loading={loading}></Loading>
+            <Toast />
         </View>
     )
 }

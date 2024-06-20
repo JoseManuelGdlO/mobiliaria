@@ -58,7 +58,8 @@ router.post('/add', verifyToken, async function (req: any, res: any, next: any) 
         const body = req.body;
         const bearer: any = jwt_decode(req.headers['authorization']);
         let id = bearer.data.id_empresa;
-        const response = await eventService.addEvent(body, id)
+        let idUsuario = bearer.data.id_usuario;
+        const response = await eventService.addEvent(body, id, idUsuario)
         res.status(response).json();
     } catch (err: any) {
         console.error(`Error while getting enarm students info `, err.message);
@@ -157,6 +158,22 @@ router.delete('/removeitem', verifyToken, async function (req: any, res: any, ne
         const id_mob = req.query.id_mob
 
         const response = await eventService.removeItem(id, id_mob);
+        
+        res.status(response).json();
+    } catch (err: any) {
+        console.error(`Error while getting enarm students info `, err.message);
+        next(err);
+    }
+});
+
+router.get('/not', verifyToken, async function (req: any, res: any, next: any) {
+    try {
+        let message = req.query.message
+        const title = req.query.title
+        const idCompany = req.query.idCompany
+        const id = req.query.idUsuario
+
+        const response = await eventService.sendNotification(message, title, idCompany, id);
         
         res.status(response).json();
     } catch (err: any) {
