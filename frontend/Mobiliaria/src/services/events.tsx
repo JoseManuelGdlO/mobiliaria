@@ -28,6 +28,8 @@ export const getEvents = async (): Promise<any> => {
 
 export const getEventsDay = async (date: string): Promise<any> => {
     const url = `http://3.218.160.237:8000${GET_EVENTS_DAY_PATH}?id=1&date=${date}`
+    console.log('url', url);
+    
 
     const instance = axios.create({
         baseURL: url,
