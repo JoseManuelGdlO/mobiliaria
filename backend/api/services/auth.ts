@@ -56,6 +56,31 @@ async function login(body: any) {
     }
 }
 
+async function token(body: any) {
+    let code = 200;
+    
+    const rows = await db.query(
+        `UPDATE usuarios_mobiliaria SET token = '${body.token}' WHERE id_usuario = ${body.id};`
+    );
+
+    let data = helper.emptyOrRows(rows);
+    if (data.length === 0) {
+        code = 404;
+        return {
+            data,
+            code
+        }
+    }
+
+    data = data[0]
+
+
+    return {
+        data,
+        code
+    }
+}
+
 async function loginForId(body: any) {
     let code = 200;
     const finds = await db.query(
@@ -123,6 +148,7 @@ async function resetPassword(id: number) {
 module.exports = {
     register,
     login,
+    token,
     loginForId,
     resetPassword,
     changeAccountStatus

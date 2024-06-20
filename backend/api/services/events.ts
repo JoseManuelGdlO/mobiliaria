@@ -1,5 +1,8 @@
 import { db } from "./db";
 import { helper } from "../helper";
+const { google } = require("googleapis");
+const SCOPES = "https://www.googleapis.com/auth/firebase.messaging";
+const axios = require("axios");
 
 async function getEvents(id: number) {
   let code = 200;
@@ -231,7 +234,7 @@ async function getPackages(id: number) {
   return data;
 }
 
-async function addEvent(body: any, id: number) {
+async function addEvent(body: any, id: number, idUsuario: number) {
   const connection = await db.connection();
   await connection.execute("SET TRANSACTION ISOLATION LEVEL READ COMMITTED");
 
@@ -249,11 +252,11 @@ async function addEvent(body: any, id: number) {
 
   try {
     const [event] = await connection.execute(
-      `INSERT INTO evento_mob (nombre_evento, id_empresa, tipo_evento, fecha_envio_evento, hora_envio_evento, fecha_recoleccion_evento, hora_recoleccion_evento, pagado_evento, nombre_titular_evento, direccion_evento ,telefono_titular_evento, descuento, iva, flete, lat, lng, url)
+      `INSERT INTO evento_mob (nombre_evento, id_empresa, tipo_evento, fecha_envio_evento, hora_envio_evento, fecha_recoleccion_evento, hora_recoleccion_evento, pagado_evento, nombre_titular_evento, direccion_evento ,telefono_titular_evento, descuento, iva, flete, lat, lng, url, id_creador)
             VALUES ('${body.evento.nombre_evento}',${id}, '${body.evento.tipo_evento}', '${body.evento.fecha_envio_evento}',
                  	'${body.evento.hora_envio_evento}', '${body.evento.fecha_recoleccion_evento}', '${body.evento.hora_recoleccion_evento}',
                  		'${body.evento.pagado_evento}', '${body.evento.nombre_titular_evento}', '${body.evento.direccion_evento}', '${body.evento.telefono_titular_evento}',
-                 		${body.evento.descuento}, ${body.evento.ivavalor}, ${body.evento.fletevalor}, '${body.evento.maps.lat}', '${body.evento.maps.lng}', '${body.evento.maps.url}')`
+                 		${body.evento.descuento}, ${body.evento.ivavalor}, ${body.evento.fletevalor}, '${body.evento.maps.lat}', '${body.evento.maps.lng}', '${body.evento.maps.url}', ${idUsuario})`
     );
 
     for (const mobiliario of body.mobiliario) {
@@ -267,7 +270,7 @@ async function addEvent(body: any, id: number) {
       `INSERT INTO pagos_mob (id_evento, costo_total, saldo, anticipo)
             VALUES (${event.insertId},${body.costo.costo_total},${body.costo.saldo},${body.costo.anticipo})`
     );
-
+    sendNotification(`el dia ${body.evento.fecha_envio_evento}, ${body.mobiliario.length} items rentados`, "Nuevo evento", id, idUsuario);
     await connection.commit();
     return 201;
   } catch (error) {
@@ -277,6 +280,147 @@ async function addEvent(body: any, id: number) {
     return 405;
   }
 }
+
+async function getAccessToken(): Promise<string> {
+  return new Promise(function (resolve, reject) {
+    const key = require("../assets/eventivakey.json");
+    const jwtClient = new google.auth.JWT(
+      key.client_email,
+      null,
+      key.private_key,
+      SCOPES,
+      null
+    );
+
+    jwtClient.authorize(function (err: any, tokens: any) {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve(tokens.access_token);
+    });
+  });
+};
+
+
+async function AxiosConfig(token: string, notification: any) {
+  try {
+    let config = {
+      method: "post",
+      url: "https://fcm.googleapis.com/v1/projects/eventivapp/messages:send",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      data: notification,
+    };
+
+    const response = await axios(config);
+
+    return response;
+  } catch (error: any) {
+    console.error("Error sending notification:", error.message);
+    throw error;
+  }
+};
+
+
+async function sendNotification(message: string, title: string, idCompany: number, idUsuario: number) {
+
+  try {
+    const rows = await db.query(
+      `SELECT token FROM usuarios_mobiliaria WHERE id_empresa = ${idCompany} AND token IS NOT NULL`
+    );
+
+    const rowsUser = await db.query(
+      `SELECT nombre_comp FROM usuarios_mobiliaria WHERE id_usuario = ${idUsuario}`
+    );
+
+    if (rows.length === 0) {
+      return 404;
+    }
+
+    const access_token = await getAccessToken();
+    if (!access_token) {
+      return 404;
+    }
+
+    helper.emptyOrRows(rows).forEach(async (element: any) => {
+      const notification = JSON.stringify({
+        message: {
+          token: element.token, // this is the fcm token of user which you want to send notification
+          notification: {
+            body: message,
+            title: title,
+          },
+          apns: {
+            headers: {
+              "apns-priority": "10",
+            },
+            payload: {
+              aps: {
+                sound: "default",
+              },
+            },
+          },
+          data: {
+            nombre: rowsUser[0].nombre_comp, // here you can send addition data along with notification 
+          },
+        },
+      });
+      AxiosConfig(access_token, notification);
+    });
+
+    return 201
+  } catch (error: any) {
+    console.log("error", error.message);
+    return 405
+  }
+
+}
+
+// Función para enviar notificaciones push
+async function send(message: string, title: string, idCompany: number) {
+  const axios = require('axios');
+  var admin = require("firebase-admin");
+
+  var serviceAccount = require("assets/eventivakey.json");
+
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount)
+  });
+
+  const rows = await db.query(
+    `SELECT token FROM usuarios_mobiliaria WHERE id_empresa = ${idCompany} AND token IS NOT NULL`
+  );
+
+  let tokens: any = []
+  helper.emptyOrRows(rows).forEach((element: any) => {
+    tokens.push(element.token)
+  });
+
+  console.log(tokens);
+
+  if (tokens.length === 0) {
+    return;
+  }
+
+  const payload = {
+    registration_ids: tokens,
+    notification: {
+      title: title,
+      body: message
+    }
+  };
+
+  axios.post('https://fcm.googleapis.com/v1/projects/eventivapp/messages:send', payload, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${getAccessToken()}`
+    }
+  });
+}
+
 
 async function addUrltoEvent(body: any, id: number) {
   const connection = await db.connection();
@@ -539,5 +683,6 @@ module.exports = {
   editEvent,
   addItems,
   addUrltoEvent,
-  addFlete
+  addFlete,
+  sendNotification
 };
