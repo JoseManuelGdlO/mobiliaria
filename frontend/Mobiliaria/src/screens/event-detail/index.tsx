@@ -52,6 +52,7 @@ const EventDetail = ({
             SetTelefono(response?.event?.telefono_titular_evento)
             SetDireccion(response?.event?.direccion_evento)
             SetURL(response?.event?.url)
+            
             setFlete(response?.event?.flete.toString())
 
             setObs(response?.event?.observaciones)
@@ -442,7 +443,7 @@ const EventDetail = ({
                                     source={require('../../assets/images/lottie/followpayment.json')}
                                 />
                             </View>
-                        <TextInput placeholder="Ingrese Flete" onChangeText={setFlete}
+                        <TextInput placeholder="Ingrese Flete" onChangeText={setFlete} value={flete}
                                         style={{ width: '100%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular }}></TextInput>
                                     <TouchableOpacity disabled={flete.length === 0} onPress={async () => {
                                         try {
