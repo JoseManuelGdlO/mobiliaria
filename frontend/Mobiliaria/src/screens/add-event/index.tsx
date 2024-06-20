@@ -554,7 +554,7 @@ const AddEvent = ({
                     </View>
                 </View>
                 <View style={{ display: 'flex', flexDirection: 'row' }}>
-                    <TouchableOpacity onPress={submit} style={{ height: 40, width: '80%', backgroundColor: '#488aff', justifyContent: 'center', alignItems: 'center', borderRadius: 5, marginTop: 10 }}>
+                    <TouchableOpacity disabled={loading} onPress={submit} style={{ height: 40, width: '80%', backgroundColor: '#488aff', justifyContent: 'center', alignItems: 'center', borderRadius: 5, marginTop: 10 }}>
                         <Text style={{ fontFamily: fonts.Roboto.Regular, color: 'white', fontSize: 15 }}>Continuar</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => {
