@@ -74,7 +74,7 @@ const Home = ({
 
     const getToken = async () => {
         try {
-            const token = await messaging().getToken();
+            const token = await messaging().getAPNSToken;
             await messaging().subscribeToTopic(`company${user.id_empresa}`)
             const response = await authService.tokenUser(user.id_usuario, token)
             
