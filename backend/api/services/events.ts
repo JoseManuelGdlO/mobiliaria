@@ -284,6 +284,7 @@ async function addEvent(body: any, id: number, idUsuario: number) {
 async function getAccessToken(): Promise<string> {
   return new Promise(function (resolve, reject) {
     const key = require("../assets/eventivakey.json");
+    
     const jwtClient = new google.auth.JWT(
       key.client_email,
       null,
@@ -304,6 +305,8 @@ async function getAccessToken(): Promise<string> {
 
 
 async function AxiosConfig(token: string, notification: any) {
+  
+  
   try {
     let config = {
       method: "post",
@@ -319,13 +322,14 @@ async function AxiosConfig(token: string, notification: any) {
 
     return response;
   } catch (error: any) {
-    console.error("Error sending notification:", error.message);
+    console.error("Error sending notification:", error);
     throw error;
   }
 };
 
 
 async function sendNotification(message: string, title: string, idCompany: number, idUsuario: number) {
+  
 
   try {
     const rows = await db.query(
@@ -399,7 +403,6 @@ async function send(message: string, title: string, idCompany: number) {
     tokens.push(element.token)
   });
 
-  console.log(tokens);
 
   if (tokens.length === 0) {
     return;
@@ -505,7 +508,6 @@ async function addItems(body: any) {
       );
 
       if (mobEvent[0].length === 0) {
-        console.log("to sabe", event);
 
         await connection.execute(
           `INSERT INTO inventario_disponibilidad_mob (fecha_evento, hora_evento, id_mob, ocupados, id_evento, hora_recoleccion, costo)
@@ -581,7 +583,6 @@ async function updateObvs(body: any) {
 
 async function changeStatus(id: number, delivered: number, recolected: number) {
   let code = 200;
-  console.log(id, delivered, recolected);
 
   const rows = await db.query(
     `UPDATE evento_mob SET entregado = '${delivered}', recolectado = '${recolected}'
@@ -612,12 +613,12 @@ async function remove(id: number) {
     let [event] = await connection.execute(
       `DELETE FROM evento_mob WHERE id_evento = ${id}`
     );
-    console.log(event);
+    
 
     let [disponility] = await connection.execute(
       `DELETE FROM inventario_disponibilidad_mob WHERE id_evento = ${id}`
     );
-    console.log(disponility);
+    
 
     await connection.commit();
     return 201;
