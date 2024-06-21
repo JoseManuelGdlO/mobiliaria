@@ -51,7 +51,7 @@ export const getEventsDay = async (date: string): Promise<any> => {
 }
 
 export const addDirection = async (id: number, body: any): Promise<any> => {
-    const url = `http://192.168.0.21:8000${ADD_DIRECTIONS_EVENT_PATH}?id=${id}`
+    const url = `http://3.218.160.237:8000${ADD_DIRECTIONS_EVENT_PATH}?id=${id}`
     console.log('url', url);
     
     const instance = axios.create({
@@ -118,7 +118,7 @@ export const getAvailableDay = async (date: string): Promise<any> => {
 }
 
 export const addEvent = async (body: any): Promise<any> => {
-    const url = `http://192.168.0.21:8000${CREATE_EVENT}`
+    const url = `http://3.218.160.237:8000${CREATE_EVENT}`
 console.log('url', url);
 
     const instance = axios.create({

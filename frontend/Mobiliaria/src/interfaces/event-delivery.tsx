@@ -18,6 +18,7 @@ export interface IEventDelivery {
     iva: number,
     flete: number,
     fecha_creacion: string,
+    url: string,
     inventario: IInvDelivery[]
 }
 

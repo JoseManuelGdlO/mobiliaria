@@ -8,6 +8,14 @@ import { Dimensions } from 'react-native';
 import { IEventDelivery, IInvDelivery } from "@interfaces/event-delivery"
 import PrimaryButton from "@components/PrimaryButton"
 const windowWidth = Dimensions.get('window').width;
+import messaging from '@react-native-firebase/messaging';
+import {PermissionsAndroid} from 'react-native';
+import useReduxUser from "@hooks/useReduxUser";
+import Toast from "react-native-toast-message";
+PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+import * as authService from '../../services/auth';
+import { Linking } from "react-native";
+
 
 export interface IDays {
     date: string
@@ -25,6 +33,48 @@ const Delivery = (): JSX.Element => {
     const [loading, setLoading] = React.useState<boolean>(true)
 
     const { fonts, colors } = useTheme()
+    const { user } = useReduxUser()
+
+    const requestUserPermissions = async () => {
+        const authStatus = await messaging().requestPermission();
+        const enabled =
+        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+        if (enabled) {
+            console.log('Authorization status:', authStatus);
+            getToken();
+        }
+    }
+
+    const getToken = async () => {
+        try {
+            const token = await messaging().getToken();
+            await messaging().subscribeToTopic(`company${user.id_empresa}`)
+            const response = await authService.tokenUser(user.id_usuario, token)
+            
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const subscribeNotifications = async () => {
+        messaging().onMessage(async remoteMessage => {
+            const not = remoteMessage
+            const title = `${not?.data?.nombre} agregó un nuevo evento`
+            Toast.show({
+                type: 'success',
+                text1: title,
+                text2: not.notification?.body,
+                visibilityTime: 3000,
+                autoHide: true
+            })
+        });
+
+        messaging().setBackgroundMessageHandler(async remoteMessage => {
+            console.log('Message handled in the background!', remoteMessage);
+        });
+    }   
 
     const getDates = () => {
         const days: IDays[] = []
@@ -207,6 +257,11 @@ const Delivery = (): JSX.Element => {
                     <View>
                         <Text style={{ color: '#488aff', paddingTop: 10, fontFamily: fonts.Roboto.Regular, fontSize: 14, width: 300 }}>Envio</Text>
                         <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12 }}>Direccion.- {item.direccion_evento}</Text>
+                        <TouchableOpacity onPress={() => {
+                            Linking.openURL(item?.url)
+                        }}>
+                            <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: 'blue' }}>url.- {item.url}</Text>
+                        </TouchableOpacity>
                         <Text style={{ fontFamily: fonts.Inter.Bold, fontSize: 12 }}>Hora de {item.tipo_evento === 'recoleccion' ? 'recoleccion.- ' + item.hora_recoleccion_evento : 'envio.- ' + item.hora_envio_evento}</Text>
                     </View>
                     <View>
@@ -252,6 +307,9 @@ const Delivery = (): JSX.Element => {
     }
 
     useEffect(() => {
+        requestUserPermissions()
+        subscribeNotifications()
+       
         getDates()
 
     }, [])

@@ -10,6 +10,7 @@ import DatePicker from "react-native-date-picker";
 import PrimaryButton from "@components/PrimaryButton";
 import ArrowRight from "@assets/images/icons/ArrowRight";
 const height = Dimensions.get('window').height
+import { Linking } from "react-native";
 
 
 const DeliveryMap = (): JSX.Element => {
@@ -21,6 +22,7 @@ const DeliveryMap = (): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(true)
   const [flagPost, setFlagPost] = useState<boolean>(false)
   const mapRef = useRef(null)
+  const [ url, setUrl ] = useState<string>('')
 
   const [events, setEvents] = useState<any>([])
 
@@ -48,7 +50,6 @@ const DeliveryMap = (): JSX.Element => {
   const { fonts, colors } = useTheme()
 
   Geolocation.getCurrentPosition(info => {
-    console.log('info', info.coords.latitude, info.coords.longitude);
     
     if (flagPost) return
     moveToLocation(24.0035672, -104.641382)
@@ -59,9 +60,6 @@ const DeliveryMap = (): JSX.Element => {
 
     if (!mapRef.current) return
 
-
-    console.log('latitude', latitude, 'longitude', longitude, 'mapRef', mapRef.current);
-    
     mapRef.current.animateToRegion({
       latitude,
       longitude,
@@ -86,21 +84,13 @@ const DeliveryMap = (): JSX.Element => {
       for (const item of response.data) {
 
         if (item.lng && item.lng !== 'none') {
-          console.log('item', item.lng, item.lat, item.nombre_titular_evento);
-
           localEvents.push(item)
         }
       }
       setEvents(localEvents)
       if (localEvents.length !== 0) {
-        console.log('localEvents', localEvents[0].lng);
-        
         moveToLocation(localEvents[0].lat, localEvents[0].lng)
       }
-
-      console.log('events', events);
-      
-
 
     } catch (error) {
       console.log(error);
@@ -125,8 +115,15 @@ const DeliveryMap = (): JSX.Element => {
           <ArrowRight color="#000"></ArrowRight>
         </View>
       </TouchableOpacity>
+      { url !== '' && 
+      <TouchableOpacity
+        onPress={() => {
+          Linking.openURL(url)
+        }}
+        style={{height:20, width: '100%', paddingHorizontal: 10, backgroundColor: '#FFF', position: 'absolute', zIndex: 99, top: 25}}>
+        <Text style={{ color: 'blue' }}>{url}</Text>
+      </TouchableOpacity> }
       <View style={styles.container}>
-        <Loading loading={loading}></Loading>
         <MapView
           ref={mapRef}
           customMapStyle={mapStyle}
@@ -140,9 +137,11 @@ const DeliveryMap = (): JSX.Element => {
                         <Marker
                           key={index}
                           coordinate={{ latitude: parseFloat(item.lat), longitude: parseFloat(item.lng) }}
-                          title={item.description}
-                          
-                          description={item.url}
+                          title={item.nombre_titular_evento}
+                          description={item.direccion_evento}
+                          onPress={() => {
+                            setUrl(item.url)
+                          }}
                         />
                       ))
                     }
@@ -164,6 +163,7 @@ const DeliveryMap = (): JSX.Element => {
                   locale='es'
                   mode='date'
                   onDateChange={(date) => {
+                    setUrl('')
                     setProvitionalDate(date)
                   }}
                 />
@@ -185,6 +185,8 @@ const DeliveryMap = (): JSX.Element => {
           </View>
         </Modal>
       </View>
+      
+      <Loading loading={loading}></Loading>
     </>
 
   )

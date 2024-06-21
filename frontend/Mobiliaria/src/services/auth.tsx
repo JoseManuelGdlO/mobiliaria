@@ -29,7 +29,7 @@ export const login = async (email: string, password: string): Promise<any> => {
 }
 
 export const tokenUser = async (id: number, token: string): Promise<any> => {
-    const url = `http://192.168.0.21:8000${LOGIN_TOKEN_PATH}`
+    const url = `http://3.218.160.237:8000${LOGIN_TOKEN_PATH}`
 
     const instance = axios.create({
         baseURL: url,

@@ -15,12 +15,9 @@ import PrimaryButton from "@components/PrimaryButton";
 import { NavigationScreens } from "@interfaces/navigation";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
-import SelectStreetMap from "@components/select-street-map";
-import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import messaging from '@react-native-firebase/messaging';
 import {PermissionsAndroid} from 'react-native';
 import useReduxUser from "@hooks/useReduxUser";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import Toast from "react-native-toast-message";
 PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
 
