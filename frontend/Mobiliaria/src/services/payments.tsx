@@ -47,7 +47,7 @@ export const addPayment = async (body: any): Promise<any> => {
 }
 
 export const addFlete = async (body: any, id: number): Promise<any> => {
-    const url = `http://192.168.0.21:8000${ADD_FLETE}?id=${id}`
+    const url = `http://3.218.160.237:8000${ADD_FLETE}?id=${id}`
 
     const instance = axios.create({
         baseURL: url,
