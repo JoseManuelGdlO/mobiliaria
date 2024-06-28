@@ -175,7 +175,7 @@ router.get('/not', verifyToken, async function (req: any, res: any, next: any) {
 
         const response = await eventService.sendNotification(message, title, idCompany, id);
         
-        res.status(response).json();
+        res.status(response.code).json(response);
     } catch (err: any) {
         console.error(`Error while getting enarm students info `, err.message);
         next(err);
