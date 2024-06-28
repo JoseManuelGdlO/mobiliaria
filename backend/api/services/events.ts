@@ -349,7 +349,7 @@ async function sendNotification(message: string, title: string, idCompany: numbe
       return 404;
     }
 
-    helper.emptyOrRows(rows).forEach(async (element: any) => {
+    helper.emptyOrRows(rows).forEach((element: any) => {
       const notification = JSON.stringify({
         message: {
           token: element.token, // this is the fcm token of user which you want to send notification
@@ -375,10 +375,10 @@ async function sendNotification(message: string, title: string, idCompany: numbe
       AxiosConfig(access_token, notification);
     });
 
-    return 201
+    return {code: 201, message: "Notificaciónes enviada"};
   } catch (error: any) {
     console.log("error", error.message);
-    return 405
+    return {code: 201, message: error.message};
   }
 
 }
@@ -403,6 +403,7 @@ async function send(message: string, title: string, idCompany: number) {
     tokens.push(element.token)
   });
 
+  console.log(tokens);
 
   if (tokens.length === 0) {
     return;
