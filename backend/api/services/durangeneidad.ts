@@ -541,7 +541,7 @@ async function createConfigurationImage(body: any, files: any) {
 
     if (Number(body.id) !== 0) {
       await connection.execute(
-        `UPDATE configuraciones SET codigo = '${body.codigo}', valor = '${fileNameImage}', descripcion = '${body.descripcion}', type = ${body.tipo} WHERE id = ${body.id}`
+        `UPDATE configuraciones SET codigo = '${body.codigo}', valor = '${fileNameImage}', descripcion = '${body.descripcion}', type = '${body.tipo}' WHERE id = ${body.id}`
       );
       await connection.commit();
       return { code: 201 };
@@ -655,9 +655,9 @@ async function uploadBio(body: any, files: any) {
 
   try {
     let fileNameImage = "";
-    console.log(files);
+    console.log(files.imagen_perfil);
     
-    if (files.length > 0) {
+    if (files.imagen_perfil.length > 0) {
       const extension = path.extname(files["imagen_perfil"][0].originalname);
       fileNameImage = `biografia${extension}`;
       // Guarda el archivo PDF en el servidor FTP
@@ -665,8 +665,8 @@ async function uploadBio(body: any, files: any) {
       await connection.execute("UPDATE biografia SET imagen = ? where id = 1", [
         fileNameImage,
       ]);
-    }
 
+    }
     // Guarda el libro en la base de datos
     await connection.execute(
       "UPDATE biografia SET  biografia = ? where id = 1",
