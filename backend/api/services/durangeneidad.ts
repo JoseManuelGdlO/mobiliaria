@@ -504,7 +504,7 @@ async function createConfiguration(body: any) {
   try {
     if (body.id !== 0) {
       await connection.execute(
-        `UPDATE configuraciones SET codigo = '${body.codigo}', valor = '${body.valor}', descripcion = '${body.descripcion}', type = ${body.tipo} WHERE id = ${body.id}`
+        `UPDATE configuraciones SET codigo = '${body.codigo}', valor = '${body.valor}', descripcion = '${body.descripcion}', type = '${body.tipo}' WHERE id = ${body.id}`
       );
       await connection.commit();
       return { code: 201 };
@@ -655,6 +655,8 @@ async function uploadBio(body: any, files: any) {
 
   try {
     let fileNameImage = "";
+    console.log(files);
+    
     if (files.length > 0) {
       const extension = path.extname(files["imagen_perfil"][0].originalname);
       fileNameImage = `biografia${extension}`;
