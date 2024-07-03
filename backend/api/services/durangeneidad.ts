@@ -535,7 +535,7 @@ async function createConfigurationImage(body: any, files: any) {
     console.log(body, files);
     
     const extension = path.extname(files["imagen"][0].originalname);
-    fileNameImage = `${body.codigo}${extension}`;
+    fileNameImage = `${body.codigo}${Math.floor(Math.random()*90000) + 10000}${extension}`;
     // Guarda el archivo PDF en el servidor FTP
     await ftpSend(fileNameImage, files["imagen"][0]); // Reemplaza con la lógica para guardar en FTP
 
@@ -657,7 +657,7 @@ async function uploadBio(body: any, files: any) {
     let fileNameImage = "";
     if (files.length > 0) {
       const extension = path.extname(files["imagen_perfil"][0].originalname);
-      fileNameImage = `biografia${extension}`;
+      fileNameImage = `biografia${Math.floor(Math.random()*90000) + 10000}${extension}`;
       // Guarda el archivo PDF en el servidor FTP
       await ftpSend(fileNameImage, files["imagen_perfil"][0]); // Reemplaza con la lógica para guardar en FTP
       await connection.execute("UPDATE biografia SET imagen = ? where id = 1", [
