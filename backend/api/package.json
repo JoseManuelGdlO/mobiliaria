@@ -1,6 +1,6 @@
 {
-  "name": "Mobiliaria API",
-  "version": "0.1.1",
+  "name": "MobiliariaAPI",
+  "version": "0.2.3",
   "description": "",
   "main": "index.js",
   "scripts": {
