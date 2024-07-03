@@ -388,7 +388,7 @@ async function send(message: string, title: string, idCompany: number) {
   const axios = require('axios');
   var admin = require("firebase-admin");
 
-  var serviceAccount = require("assets/eventivakey.json");
+  var serviceAccount = require("https://extra.durangueneidad.com/eventivakey.json");
 
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)

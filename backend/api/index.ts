@@ -22,7 +22,6 @@ const corsOptions = {
     optionSuccessStatus: 200
 }
 app.use(cors());
-
 app.use(express.json({ limit: '25mb' }));
 app.use(
     express.urlencoded({
@@ -32,7 +31,7 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-    res.json({ message: "version: 0.2.3" });
+    res.json({ message: "version: 0.2.4" });
 });
 
 app.use("/auth", authRouter);
