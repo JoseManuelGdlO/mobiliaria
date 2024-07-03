@@ -283,7 +283,7 @@ async function addEvent(body: any, id: number, idUsuario: number) {
 
 async function getAccessToken(): Promise<string> {
   return new Promise(function (resolve, reject) {
-    const key = require("https://extra.durangueneidad.com/eventivakey.json");
+    const key = require("../assets/eventivakey.json");
     
     const jwtClient = new google.auth.JWT(
       key.client_email,
@@ -388,7 +388,7 @@ async function send(message: string, title: string, idCompany: number) {
   const axios = require('axios');
   var admin = require("firebase-admin");
 
-  var serviceAccount = require("https://extra.durangueneidad.com/eventivakey.json");
+  var serviceAccount = require("../assets/eventivakey.json");
 
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
