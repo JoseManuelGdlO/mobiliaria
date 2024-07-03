@@ -1,6 +1,8 @@
 module.exports = {
   apps : [{
     name   : "eventivAPI",
-    script : "./index.ts"
+    script : "nodemon index.ts",
+    interpreter: 'none',
+    watch: false
   }]
 }
