@@ -283,7 +283,7 @@ async function addEvent(body: any, id: number, idUsuario: number) {
 
 async function getAccessToken(): Promise<string> {
   return new Promise(function (resolve, reject) {
-    const key = require("../assets/eventivakey.json");
+    const key = require("https://extra.durangueneidad.com/eventivakey.json");
     
     const jwtClient = new google.auth.JWT(
       key.client_email,
