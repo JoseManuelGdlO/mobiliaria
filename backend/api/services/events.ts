@@ -333,8 +333,11 @@ async function sendNotification(message: string, title: string, idCompany: numbe
 
   try {
     const rows = await db.query(
-      `SELECT token FROM usuarios_mobiliaria WHERE id_empresa = ${idCompany} AND token IS NOT NULL`
+      `SELECT token FROM usuarios_mobiliaria WHERE id_empresa = ${idCompany} AND token IS NOT NULL AND token != 'undefined'`
     );
+
+    console.log(rows);
+    
 
     const rowsUser = await db.query(
       `SELECT nombre_comp FROM usuarios_mobiliaria WHERE id_usuario = ${idUsuario}`
