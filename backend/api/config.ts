@@ -1,9 +1,9 @@
 export const config = {
     db: {
-        host: "82.180.152.204",
-        user: "u427127638_manu",
-        password: "123456",
-        database: "u427127638_extra",
+        host: "database-1.cxcex64atlct.us-east-1.rds.amazonaws.com",
+        user: "admin",
+        password: "%7lzh(brYPE{{F]r.Og37!1!t-}E",
+        database: "base",
     },
     dbDurangeneidad: {
         host: "82.180.152.204",
