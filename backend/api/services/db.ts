@@ -5,10 +5,20 @@ export module db {
 
     export async function query(sql: any, params?: any) {
 
-        const connection = await mysql.createConnection(config.db);
-        const [results,] = await connection.execute(sql, params);
-        await connection.end();
-        return results;
+        try {
+            console.log('sql', sql);
+            
+            const connection = await mysql.createConnection(config.db);
+            console.log('connection', connection);
+            
+            const [results,] = await connection.execute(sql, params);
+            console.log('results', results);
+            
+            await connection.end();
+            return results;
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     export async function connection() {
