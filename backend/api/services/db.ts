@@ -6,13 +6,10 @@ export module db {
     export async function query(sql: any, params?: any) {
 
         try {
-            console.log('sql', sql);
             
             const connection = await mysql.createConnection(config.db);
-            console.log('connection', connection);
             
             const [results,] = await connection.execute(sql, params);
-            console.log('results', results);
             
             await connection.end();
             return results;
