@@ -1,7 +1,7 @@
 import { NavigationScreens } from "@interfaces/navigation";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 import { useEffect, useState } from "react";
-import { FlatList, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { FlatList, ScrollView, Switch, Text, TextInput, TouchableOpacity, View } from "react-native"
 import CheckBox from '@react-native-community/checkbox';
 import Loading from "@components/loading";
 import LottieView from "lottie-react-native";
@@ -19,6 +19,7 @@ import { IPackage } from "@interfaces/packages";
 import RNPickerSelect from 'react-native-picker-select';
 import SelectStreetMap from "@components/select-street-map";
 import { Linking } from "react-native";
+import MultiSelect from "react-native-multiple-select";
 
 export enum ETypesPicker {
     Recolection = 1,
@@ -46,6 +47,8 @@ const AddEvent = ({
     const [flete, setFlete] = useState<string>('')
     const [iva, setIva] = useState<boolean>(false)
     const [openModalPicker, setOpenModalPicker] = useState<boolean>(false)
+    const [toggleSwitch, setToggleSwitch] = useState<boolean>(false)
+    const [togglePaymenthSwitch, setTogglePaymenthSwitch] = useState<boolean>(false)
 
     const [typePicker, setTypePicker] = useState<{ type: number, mode: "date" | "time" | "datetime" }>({ type: ETypesPicker.Recolection, mode: 'date' })
     const [recolectedDay, setRecolectedDay] = useState<{ date: string, hour: string }>({ date: date, hour: '9:00' })
@@ -53,6 +56,8 @@ const AddEvent = ({
     const [anticipo, SetAnticipo] = useState<string>('')
     const [detailsEvent, setDetailsEvent] = useState<{ titular: string, tipo: string, telefono: string, direccion: string, nombreEvento: string }>({ nombreEvento: 'otro', titular: '', tipo: '', telefono: '', direccion: '' })
     const [openAlert, setOpenAlert] = useState<boolean>(false)
+    const [selectedItems, setSelectedItems] = useState([])
+    const [recTime, setRecTime] = useState<number>(0)
 
     const animation = React.useRef(null);
 
@@ -154,7 +159,10 @@ const AddEvent = ({
         }
 
         try {
-            const response = await eventService.addEvent(body)
+            await eventService.addEvent(body)
+            if(toggleSwitch) {
+                eventService.addRecurrentEvent(body, recTime, selectedItems,  parseDateString(date), togglePaymenthSwitch)
+            }
 
             navigation.navigate('Home', { refresh: true })
 
@@ -164,6 +172,11 @@ const AddEvent = ({
             setLoading(false)
         }
     }
+
+    const parseDateString =(dateString: string) => {
+        const [day, month, year] = dateString.split('-').map(Number);
+        return new Date(year, month - 1, day); // El mes se resta por 1 porque los meses en Date van de 0 a 11
+      }
 
     const changeDate = (days: number) => {
         let localDate = date
@@ -178,6 +191,11 @@ const AddEvent = ({
         return `${arrDate[2]}-${arrDate[1]}-${arrDate[0]}`
 
     }
+
+    const onSelectedItemsChange = (selectedItems: any) => {
+        
+        setSelectedItems(selectedItems);
+    };
 
 
 
@@ -305,6 +323,113 @@ const AddEvent = ({
                         }}>
                             <Text style={{ fontFamily: fonts.Roboto.Regular, color: 'blue', fontSize: 8, fontStyle: "italic"}}>{latlon.url}</Text>
                         </TouchableOpacity>}
+                        <TouchableOpacity style={{ display: "flex", flexDirection: "row", width: '100%'}}>
+                            <Switch
+                                style={{ paddingTop: 7 }}
+                                trackColor={{ false: "#767577", true: "#00bcbb" }}
+                                thumbColor={toggleSwitch ? "#488aff" : "#f4f3f4"}
+                                ios_backgroundColor="#3e3e3e"
+                                onValueChange={setToggleSwitch}
+                                value={toggleSwitch}
+                            />
+                            <Text
+                                style={{
+                                paddingTop: 5,
+                                paddingLeft: 5,
+                                fontFamily: fonts.Roboto.Regular,
+                                color: toggleSwitch ? "#00bcbb" : "#767577",
+                                fontSize: 18,
+                                textAlign: "center",
+                                }}
+                            >
+                                 Evento Recurrente
+                            </Text>
+                        </TouchableOpacity>
+                        {toggleSwitch &&
+                        <View>
+                            <ScrollView>
+                                <MultiSelect
+                                    items={[
+                                        {
+                                            id: 1,
+                                            name: 'Lunes'
+                                          },{
+                                            id: 2,
+                                            name: 'Martes'
+                                          },{
+                                            id: 3,
+                                            name: 'Miercoles'
+                                          },{
+                                            id: 4,
+                                            name: 'Jueves'
+                                          },{
+                                            id: 5,
+                                            name: 'Viernes'
+                                          },{
+                                            id: 6,
+                                            name: 'Sabado'
+                                          },{
+                                            id: 0,
+                                            name: 'Domingo'
+                                          },
+                                    ]}
+                                    uniqueKey="id"
+                                    onSelectedItemsChange={onSelectedItemsChange}
+                                    selectedItems={selectedItems}
+                                    selectText="Dias que se repite"
+                                    searchInputPlaceholderText="dias"
+                                    submitButtonText="Aceptar"
+                                    submitButtonColor="#488aff"
+                                />
+                                
+                                <Text style={{width: '100%'}}>Tiempo de recurrencia</Text>
+                                <RNPickerSelect
+                                    key={5}
+                                    placeholder="Selecciona el tiempo de recurrencia"
+                                    value={recTime}
+                                    onValueChange={(value) => setRecTime(value)}
+                                    items={[
+                                        { label: 'nada', value: 0 },
+                                        { label: '1 mes', value: 1 },
+                                        { label: '2 meses', value: 2 },
+                                        { label: '3 meses', value: 3 },
+                                        { label: '4 meses', value: 4 },
+                                        { label: '5 meses', value: 5 },
+                                        { label: '6 meses', value: 6 },
+                                        { label: '7 meses', value: 7 },
+                                        { label: '8 meses', value: 8 },
+                                        { label: '9 meses', value: 9 },
+                                        { label: '10 meses', value: 10 },
+                                        { label: '11 meses', value: 11 },
+                                        { label: '12 meses', value: 12 },
+                                        { label: '13 meses', value: 13 },
+                                        { label: '14 meses', value: 14 },
+                                    ]}
+                                />
+                                <TouchableOpacity style={{ display: "flex", flexDirection: "row", width: '100%'}}>
+                                    <Switch
+                                        style={{ paddingTop: 7 }}
+                                        trackColor={{ false: "#767577", true: "#00bcbb" }}
+                                        thumbColor={togglePaymenthSwitch ? "#488aff" : "#f4f3f4"}
+                                        ios_backgroundColor="#3e3e3e"
+                                        onValueChange={setTogglePaymenthSwitch}
+                                        value={togglePaymenthSwitch}
+                                    />
+                                    <Text
+                                        style={{
+                                        paddingTop: 5,
+                                        paddingLeft: 5,
+                                        fontFamily: fonts.Roboto.Regular,
+                                        color: togglePaymenthSwitch ? "#00bcbb" : "#767577",
+                                        fontSize: 12,
+                                        textAlign: "center",
+                                        }}
+                                    >
+                                        Evento pagado
+                                    </Text>
+                                </TouchableOpacity>
+                            </ScrollView>
+                        </View>}
                         <View style={{ display: 'flex', flexDirection: 'row', marginTop: 20 }}>
                             <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12, paddingTop: 10 }}>Fecha: </Text>
                             <TextInput editable={false} value={date} style={{ width: '90%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular, fontSize: 12 }} ></TextInput>
@@ -592,6 +717,7 @@ const AddEvent = ({
 
             <SelectStreetMap open={openAddress} props={(p: any) => {
                 console.log(p)
+                if (!p) return setOpenAddress(false)
                 setLatLon(p)
                 setOpenAddress(false)
             }}></SelectStreetMap>
