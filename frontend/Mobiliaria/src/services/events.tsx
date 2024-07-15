@@ -3,6 +3,7 @@ import { ADD_DIRECTIONS_EVENT_PATH, ADD_ITEMS, ADD_OBS, CREATE_EVENT, EDIT_EVENT
 import axios from 'axios'
 import { getAccessTokenAsync } from "@utils/token"
 import { IAvailability } from "@interfaces/availability"
+import { formatDateString } from "@utils/dateFormat"
 
 export const getEvents = async (): Promise<any> => {
     const url = `http://3.218.160.237:8000${GET_EVENTS_PATH}?id=1`
@@ -119,7 +120,6 @@ export const getAvailableDay = async (date: string): Promise<any> => {
 
 export const addEvent = async (body: any): Promise<any> => {
     const url = `http://3.218.160.237:8000${CREATE_EVENT}`
-console.log('url', url);
 
     const instance = axios.create({
         baseURL: url,
@@ -140,6 +140,46 @@ console.log('url', url);
             
             return await Promise.reject(error)
         })
+}
+
+export const addRecurrentEvent = async (body: any, recTime: number, weekDays: any[], firstDate: Date, paymentFlag: boolean): Promise<any> => {
+    
+    const result: Date[] = [];
+    const currentMonth = firstDate.getMonth();
+    const currentYear = firstDate.getFullYear();
+    const startDay = firstDate.getDate();
+
+    for (let i = 0; i < recTime; i++) {
+      const month = currentMonth + i;
+      const year = currentYear + Math.floor(month / 12);
+      const adjustedMonth = month % 12;
+
+      const daysInMonth = new Date(year, adjustedMonth + 1, 0).getDate();
+
+      const dayStart = (i === 0) ? startDay+ 1 : 1;
+
+      for (let day = dayStart; day <= daysInMonth; day++) {
+        const date = new Date(year, adjustedMonth, day);
+        if (weekDays.includes(date.getDay())) {
+          result.push(date);
+        }
+      }
+    }
+
+    body.evento.nombre_evento = `${body.evento.nombre_evento} (recurrente)`
+    for (let date of result) {
+        const newDate = formatDateString(date.toString())
+        body.evento.fecha_envio_evento = newDate
+        body.evento.fecha_recoleccion_evento = newDate
+        if(!paymentFlag){
+            body.evento.pago = 0
+            body.costo.anticipo = 0
+            body.costo.saldo = body.costo.costo_total
+        }
+        addEvent(body)
+    }
+    
+
 }
 
 

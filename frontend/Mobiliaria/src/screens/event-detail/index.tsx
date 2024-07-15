@@ -553,7 +553,7 @@ const EventDetail = ({
                                         onPress={() => setOpenMap(true)}
                                         style={{ backgroundColor: '#488aff', borderRadius: 5, height: 20, justifyContent: 'center', width: '100%' }}>
                                         <Text style={{ fontFamily: fonts.Roboto.Medium, fontSize: 10, color: '#fff', textAlign: 'center' }}>
-                                            modificar mapa {latLon.lat && '✅ listo'}
+                                            modificar mapa {latLon && latLon.lat && '✅ listo'}
                                         </Text>
                                     </TouchableOpacity>
                             </ScrollView>
@@ -591,6 +591,7 @@ const EventDetail = ({
             </View>
             <SelectStreetMap open={openMap} props={(p: any) => {
                 console.log(p)
+                if(!p) return setOpenMap(false)
                 setLatLon(p)
                 SetDireccion(p.description)
                 setOpenMap(false)

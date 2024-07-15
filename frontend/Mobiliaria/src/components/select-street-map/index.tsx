@@ -28,8 +28,8 @@ const SelectStreetMap = ({
 
     const [optsMaps, setOptsMaps] = React.useState<any>(
         {
-            latitude: 41.3995345,
-            longitude: 2.1909796,
+            latitude: 24.0248,
+            longitude: -104.6608,
             latitudeDelta: 0.008,
             longitudeDelta: 0.008
         })
@@ -37,6 +37,7 @@ const SelectStreetMap = ({
     const { fonts, colors } = useTheme()
 
     Geolocation.getCurrentPosition(info => {
+        
         if(flagPost) return
         moveToLocation(info.coords.latitude, info.coords.longitude)
         setFlagPost(true)
@@ -44,7 +45,9 @@ const SelectStreetMap = ({
     });
 
     const moveToLocation = (latitude:any, longitude: any) => {
+        
         if(!mapRef.current) return
+        
         mapRef.current.animateToRegion({
             latitude,
             longitude,
@@ -62,6 +65,7 @@ const SelectStreetMap = ({
             <Modal visible={open}>
                 <View style={{ zIndex: 1, flex: 0.5 }}>
                     <GooglePlacesAutocomplete
+                    
                         placeholder='Buscar'
                         fetchDetails={true}
                         onPress={(data, details = null) => {
@@ -90,6 +94,19 @@ const SelectStreetMap = ({
                         <MapView
                            ref={mapRef}
                            customMapStyle={mapStyle}
+                           onLongPress={(e) => {
+                            console.log(e.nativeEvent);
+                            
+                                 setLatlng({
+                                      lat: e.nativeEvent.coordinate.latitude,
+                                      lng: e.nativeEvent.coordinate.longitude,
+                                      url: `https://maps.google.com/?q=${e.nativeEvent.coordinate.latitude},${e.nativeEvent.coordinate.longitude}`,
+                                      description: latlng.description
+                                 })
+                                    moveToLocation(e.nativeEvent.coordinate.latitude, e.nativeEvent.coordinate.longitude)
+
+
+                           }}
                            id='9c40e61721b52d42'
                            provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : PROVIDER_DEFAULT}
                            style={styles.mapStyle}
@@ -123,6 +140,8 @@ const SelectStreetMap = ({
                     }}>
                         <Text style={{backgroundColor: '#0000007a', color: '#fff', textAlign: 'center'}}>Arrastra el pin para recolocar la ubicacion</Text>
                         <TouchableOpacity disabled={latlng.lat ? false : true} onPress={() => {
+                            console.log(latlng);
+                            
                             props(latlng)
                         }}
                             style={{ height: 40, width: '100%', backgroundColor: latlng.lat ? '#35b00a' : '#c2c6c0', justifyContent: 'center', alignItems: 'center', borderRadius: 5 }}>
