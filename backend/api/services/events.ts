@@ -1,5 +1,6 @@
 import { db } from "./db";
 import { helper } from "../helper";
+import { saveHistorical } from "../libs/historical";
 const { google } = require("googleapis");
 const SCOPES = "https://www.googleapis.com/auth/firebase.messaging";
 const axios = require("axios");
@@ -45,8 +46,8 @@ async function getDetails(id: number) {
 
     rows = await db.query(
       `select a.nombre_mob, a.costo_mob, b.id_mob, b.ocupados, b.id_evento, b.id_fecha,
-		b.fecha_evento
-		from inventario_mob a, inventario_disponibilidad_mob b where b.id_mob = a.id_mob and id_evento='${id}'`
+      b.fecha_evento
+      from inventario_mob a, inventario_disponibilidad_mob b where b.id_mob = a.id_mob and id_evento='${id}'`
     );
 
     let items = helper.emptyOrRows(rows);
@@ -69,11 +70,28 @@ async function getDetails(id: number) {
       };
     }
 
+    const historial = await db.query(
+      `SELECT 
+          h.id, 
+          h.date, 
+          h.description, 
+          h.obs, 
+          h.fkid_user,
+          u.nombre_comp
+      FROM 
+          historical h
+      JOIN 
+          usuarios_mobiliaria u ON h.fkid_user = u.id_usuario
+      AND
+          h.fkid_event = ${id}`
+    );
+
     return {
       event: {
         event: event[0],
         payments,
         items,
+        historial
       },
       code,
     };
@@ -89,7 +107,24 @@ async function getEventsOfDay(id: number, date: string) {
   let code = 200;
 
   const rows = await db.query(
-    `SELECT * FROM evento_mob WHERE id_empresa = ${id} AND fecha_envio_evento='${date}'`
+    `SELECT 
+        e.*,
+        p.id_pago, 
+        p.costo_total
+    FROM 
+        evento_mob e
+    LEFT JOIN 
+        pagos_mob p ON e.id_evento = p.id_evento
+    WHERE 
+        p.id_pago = (
+            SELECT MAX(p2.id_pago)
+            FROM pagos_mob p2
+            WHERE p2.id_evento = e.id_evento
+        )
+    AND
+      e.id_empresa = ${id}
+    AND
+      e.fecha_envio_evento = '${date}';`
   );
 
   let data = helper.emptyOrRows(rows);
@@ -102,15 +137,50 @@ async function getEventsOfDay(id: number, date: string) {
     };
   }
 
+  let total = 0
+  for(const event of data) {
+    total += event.costo_total
+  }
+
   return {
     data,
+    total,
     code,
   };
 }
 
-async function editEvent(body: any) {
+async function editEvent(body: any, idUser: number) {
   let code = 200;
   try {
+    const event = await db.query(
+      `SELECT * FROM evento_mob WHERE id_evento = ${body.id}`
+    );
+
+    if(event[0].length !== 0) {
+      let change = ''
+      
+      if(event[0].nombre_titular_evento !== body.titular) {
+        change = `titular: ${event[0].nombre_titular_evento} a ${body.titular}, `
+      }
+
+      if(event[0].telefono_titular_evento !== body.telefono) {
+        change = change + `telefono: ${event[0].telefono_titular_evento} a ${body.telefono}, `
+      }
+      
+      if(body.url && event[0].url !== body.url) {
+        change = change + `url = ${body.url}, `
+      }
+
+      if(event[0].direccion_evento !== body.direccion) {
+        change = change + `direccion: ${event[0].direccion_evento} a ${body.direccion}, `
+      }
+
+      if(change !== '') {
+        change = change.slice(0, -2)
+        saveHistorical(body.id, idUser, `Modificación`, change)
+      }
+    }
+
     const rows = await db.query(
       `UPDATE evento_mob SET telefono_titular_evento = '${body.telefono}', direccion_evento = '${body.direccion}', nombre_titular_evento = '${body.titular}' WHERE id_evento = ${body.id}`
     );
@@ -270,6 +340,9 @@ async function addEvent(body: any, id: number, idUsuario: number) {
       `INSERT INTO pagos_mob (id_evento, costo_total, saldo, anticipo)
             VALUES (${event.insertId},${body.costo.costo_total},${body.costo.saldo},${body.costo.anticipo})`
     );
+
+    saveHistorical(event.insertId, idUsuario, "Creación");
+
     sendNotification(`el dia ${body.evento.fecha_envio_evento}, ${body.mobiliario.length} items rentados`, "Nuevo evento", id, idUsuario);
     await connection.commit();
     return 201;
@@ -429,7 +502,7 @@ async function send(message: string, title: string, idCompany: number) {
 }
 
 
-async function addUrltoEvent(body: any, id: number) {
+async function addUrltoEvent(body: any, id: number, idUsuario: number) {
   const connection = await db.connection();
   await connection.execute("SET TRANSACTION ISOLATION LEVEL READ COMMITTED");
 
@@ -440,6 +513,8 @@ async function addUrltoEvent(body: any, id: number) {
     const [event] = await connection.execute(
       ` UPDATE evento_mob SET url = '${body.url}', lat = '${body.lat}', lng = '${body.lng}' WHERE id_evento = ${id}`
     );
+
+    saveHistorical(id, idUsuario, "Modificación", `Se actualizo la url ${body.url}`);
 
 
     await connection.commit();
@@ -452,7 +527,7 @@ async function addUrltoEvent(body: any, id: number) {
   }
 }
 
-async function addFlete(body: any, id: number) {
+async function addFlete(body: any, id: number, idUsuario: number) {
   const connection = await db.connection();
   await connection.execute("SET TRANSACTION ISOLATION LEVEL READ COMMITTED");
 
@@ -480,7 +555,7 @@ async function addFlete(body: any, id: number) {
             VALUES (${id},${costoTotal},${saldo},${payment[payment.length - 1].anticipo})`
     );
 
-
+    saveHistorical(id, idUsuario, "Modificación", `Se actualizo el flete a ${body.flete}`);
     await connection.commit();
     return 201;
   } catch (error) {
@@ -491,7 +566,7 @@ async function addFlete(body: any, id: number) {
   }
 }
 
-async function addItems(body: any) {
+async function addItems(body: any, idUsuario: number) {
   const connection = await db.connection();
   await connection.execute("SET TRANSACTION ISOLATION LEVEL READ COMMITTED");
 
@@ -520,11 +595,13 @@ async function addItems(body: any) {
           }, ${body.id}, '${event.fecha_recoleccion_evento.toISOString().split("T")[0]
           }', ${mobiliario.costo_mob})`
         );
+        saveHistorical(body.id, idUsuario, "Modificación", `Se agregó ${mobiliario.cantidad} ${mobiliario.nombre_mob}`);
       } else {
         await connection.execute(
           `UPDATE inventario_disponibilidad_mob SET ocupados = ${mobEvent[0][0].ocupados + mobiliario.cantidad
           } WHERE id_evento = ${body.id} AND id_mob = ${mobiliario.id_mob}`
         );
+        saveHistorical(body.id, idUsuario, "Modificación", `Se actualizo a ${mobiliario.cantidad} ${mobiliario.nombre_mob}`);
         continue;
       }
     }
@@ -585,7 +662,7 @@ async function updateObvs(body: any) {
   };
 }
 
-async function changeStatus(id: number, delivered: number, recolected: number) {
+async function changeStatus(id: number, delivered: number, recolected: number, idUsuario: number) {
   let code = 200;
 
   const rows = await db.query(
@@ -601,6 +678,8 @@ async function changeStatus(id: number, delivered: number, recolected: number) {
       code,
     };
   }
+
+  saveHistorical(id, idUsuario, "Modificación", `Se actualizó el estado a entregado: ${delivered} y recolectado: ${recolected}`);
 
   return {
     data,
@@ -664,7 +743,7 @@ async function removeItem(id: number, id_mob: number) {
     let [event] = await connection.execute(
       `DELETE FROM inventario_disponibilidad_mob WHERE id_evento = ${id} AND id_mob = ${id_mob}`
     );
-
+    saveHistorical(id, 1, "Modificación", `Se eliminó ${item.ocupados} ${item.nombre_mob}`);
     connection.commit();
     return 201;
   } catch (error) {

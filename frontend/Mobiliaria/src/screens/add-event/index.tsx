@@ -65,6 +65,21 @@ const AddEvent = ({
     const { fonts, colors } = useTheme()
 
     const submit = async () => {
+
+        if(toggleSwitch && recTime === 0 || toggleSwitch && selectedItems.length === 0) {
+
+            Toast.show({
+                type: 'error',
+                text1: 'Error',
+                text2: 'Faltan datos para el evento recurrente',
+                visibilityTime: 1000,
+                autoHide: true,
+                onHide: () => {
+                }
+            })
+            return
+        }
+        
         if (inventaryRx.length === 0 && packagesRx.length === 0) {
             Toast.show({
                 type: 'error',

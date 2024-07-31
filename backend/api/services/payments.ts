@@ -1,5 +1,6 @@
 import { db } from './db';
 import { helper } from '../helper';
+import { saveHistorical } from '../libs/historical';
 
 async function getPayments(id: number) {
     let code = 200;
@@ -30,7 +31,7 @@ async function getPayments(id: number) {
 }
 
 
-async function addPayment(body: any) {
+async function addPayment(body: any, idUsuario: number) {
     let code = 200;
     const connection = await db.connection();
     await connection.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
@@ -42,6 +43,8 @@ async function addPayment(body: any) {
             `INSERT INTO pagos_mob (id_evento, costo_total, saldo, anticipo, fecha, abono ) VALUE
             (${body.id_evento}, ${body.total}, ${body.saldo}, ${body.anticipo}, ${new Date().toISOString().split('T')[0]}, ${body.abono})`
         );
+
+        saveHistorical(body.id_evento, idUsuario, 'Abono', body.abono);
 
         let data = helper.emptyOrRows(rows);
         if (data.length === 0) {

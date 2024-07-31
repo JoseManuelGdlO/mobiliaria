@@ -53,6 +53,7 @@ const Home = ({
     const [eventsDay, setEventsDay] = React.useState<any>([]);
     const [refreshing, setRefreshing] = React.useState(false);
     const [dateEvent, setDateEvent] = React.useState('');
+    const [total, setTotal] = React.useState('0');
     const [loading, setLoading] = React.useState<boolean>(false);
     const [ requestDate, setRequestDate ] = React.useState<string>('');
 
@@ -74,7 +75,7 @@ const Home = ({
 
     const getToken = async () => {
         try {
-            const token = await messaging().getAPNSToken;
+            const token: any = await messaging().getAPNSToken;
             await messaging().subscribeToTopic(`company${user.id_empresa}`)
             const response = await authService.tokenUser(user.id_usuario, token)
             
@@ -144,8 +145,11 @@ const Home = ({
 
     const getEventsDay = async (date: string) => {
         try {
-
+            setTotal('0')
             const response = await eventService.getEventsDay(date)
+            if(response.data.length !== 0){
+                setTotal(formatCurrency(response.total.toString()))
+            }
 
             setEventsDay(response.data)
         } catch (error) {
@@ -155,6 +159,13 @@ const Home = ({
         }
 
     }
+
+    const formatCurrency = (value: any) => {
+        return new Intl.NumberFormat('es-MX', {
+          style: 'currency',
+          currency: 'MXN',
+        }).format(value);
+      };
 
 
     const keyExtractor = (item: (any), index: number): string => index.toString()
@@ -250,9 +261,12 @@ const Home = ({
                         ListHeaderComponent={() => {
                             return (
                                 <View>
-                                    <Text style={{ backgroundColor: 'rgba(148, 167, 244, 0.79)', color: '#000', fontSize: 15, fontWeight: '100', marginVertical: 8, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 8, fontFamily: fonts.Roboto.Regular }}>
+                                    <Text style={{ backgroundColor: 'rgba(148, 167, 244, 0.79)', color: '#000', fontSize: 15, fontWeight: '100', marginTop: 8, paddingHorizontal: 10, paddingVertical: 5, borderTopRightRadius:8, borderTopLeftRadius:8, fontFamily: fonts.Roboto.Regular }}>
                                         Eventos del dia <Text style={{ fontWeight: '500', color: '#153acb', fontFamily: fonts.Roboto.BlackItalic, fontStyle: 'italic' }}>{dateEvent}</Text>
                                     </Text>
+                                    { total !== '0' && <Text style={{ backgroundColor: 'rgba(148, 167, 244, 0.79)', color: '#000', fontSize: 10, fontWeight: '100', marginBottom: 8, paddingHorizontal: 10, paddingBottom: 5, borderBottomLeftRadius:8, borderBottomRightRadius:8, fontFamily: fonts.Roboto.Regular }}>
+                                        Corte diario <Text style={{ fontWeight: '500', color: '#153acb', fontFamily: fonts.Roboto.BlackItalic, fontStyle: 'italic' }}>{total}</Text>
+                                    </Text>}
                                     <PrimaryButton
                                         containerStyle={{ width: '100%', paddingVertical: 5, marginBottom: 5 }}
                                         textStyle={{ fontSize: 12, fontFamily: fonts.Roboto.Regular, color: '#FFF' }}

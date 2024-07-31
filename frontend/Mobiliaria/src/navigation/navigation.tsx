@@ -60,7 +60,7 @@ export default function Navigation(): JSX.Element {
                 }
 
             </Stack.Navigator>
-            <NewEventFab activeRouteName={activeRouteName} />
+            {/* <NewEventFab activeRouteName={activeRouteName} /> */}
         </View>
     )
 }

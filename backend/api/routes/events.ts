@@ -82,7 +82,9 @@ router.put('/status', verifyToken, async function (req: any, res: any, next: any
         let id = req.query.id
         let delivered = req.query.delivered
         let recolected = req.query.recolected
-        const response = await eventService.changeStatus(id, delivered, recolected);
+        const bearer: any = jwt_decode(req.headers['authorization']);
+        let idUsuario = bearer.data.id_usuario;
+        const response = await eventService.changeStatus(id, delivered, recolected, idUsuario);
         res.status(response.code).json(response.data);
     } catch (err: any) {
         console.error(`Error while getting enarm students info `, err.message);
@@ -91,11 +93,13 @@ router.put('/status', verifyToken, async function (req: any, res: any, next: any
 });
 router.put('/ubication', verifyToken, async function (req: any, res: any, next: any) {
     try {
+        const bearer: any = jwt_decode(req.headers['authorization']);
+        let idUsuario = bearer.data.id_usuario;
         let id = req.query.id
         let body = req.body
         console.log('body', body, 'id', id);
         
-        const response = await eventService.addUrltoEvent(body, id);
+        const response = await eventService.addUrltoEvent(body, id, idUsuario);
         res.status(response).json(response);
     } catch (err: any) {
         console.error(`Error while getting enarm students info `, err.message);
@@ -104,9 +108,11 @@ router.put('/ubication', verifyToken, async function (req: any, res: any, next: 
 });
 router.put('/flete', verifyToken, async function (req: any, res: any, next: any) {
     try {
+        const bearer: any = jwt_decode(req.headers['authorization']);
+        let idUsuario = bearer.data.id_usuario;
         let id = req.query.id
         let body = req.body
-        const response = await eventService.addFlete(body, id);
+        const response = await eventService.addFlete(body, id, idUsuario);
         res.status(response).json(response);
     } catch (err: any) {
         console.error(`Error while getting enarm students info `, err.message);
@@ -117,8 +123,10 @@ router.put('/flete', verifyToken, async function (req: any, res: any, next: any)
 router.post('/additems', verifyToken, async function (req: any, res: any, next: any) {
     try {
         let body = req.body
+        const bearer: any = jwt_decode(req.headers['authorization']);
+        let idUsuario = bearer.data.id_usuario;
         
-        const response = await eventService.addItems(body);
+        const response = await eventService.addItems(body, idUsuario);
         
         res.status(response).json();
     } catch (err: any) {
@@ -129,9 +137,12 @@ router.post('/additems', verifyToken, async function (req: any, res: any, next: 
 
 router.post('/edit', verifyToken, async function (req: any, res: any, next: any) {
     try {
+        
+        const bearer: any = jwt_decode(req.headers['authorization']);
+        let idUsuario = bearer.data.id_usuario;
         let body = req.body
         
-        const response = await eventService.editEvent(body);
+        const response = await eventService.editEvent(body, idUsuario);
         
         res.status(response.code).json(response);
     } catch (err: any) {
@@ -156,8 +167,10 @@ router.delete('/removeitem', verifyToken, async function (req: any, res: any, ne
     try {
         let id = req.query.id
         const id_mob = req.query.id_mob
+        const bearer: any = jwt_decode(req.headers['authorization']);
+        let idUsuario = bearer.data.id_usuario;
 
-        const response = await eventService.removeItem(id, id_mob);
+        const response = await eventService.removeItem(id, id_mob, idUsuario);
         
         res.status(response).json();
     } catch (err: any) {
