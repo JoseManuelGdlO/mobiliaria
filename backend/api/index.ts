@@ -1,6 +1,8 @@
 import express, { Express, Request, Response, Application } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors'
+const http = require('http');
+const WebSocket = require('ws');
 const authRouter = require("./routes/auth");
 const eventsRouter = require("./routes/events");
 const inventaryRouter = require("./routes/inventary");
@@ -15,6 +17,39 @@ dotenv.config();
 
 const app: Application = express();
 const port = process.env.PORT || 8000;
+
+
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
+
+let workers: any = [];
+
+wss.on('connection', (ws: any) => {
+    ws.on('message', (message: any) => {
+      const location = JSON.parse(message);
+      // Aquí puedes asignar un ID único para cada trabajador si no lo tienen.
+      ws.id = ws.id || `${Date.now()}-${Math.random()}`;
+      
+      // Actualizar la ubicación del trabajador en la lista
+      const workerIndex = workers.findIndex((worker: any) => worker.id === ws.id);
+      if (workerIndex !== -1) {
+        workers[workerIndex] = { id: ws.id, ...location };
+      } else {
+        workers.push({ id: ws.id, ...location });
+      }
+  
+      // Enviar la lista actualizada de trabajadores a todos los clientes
+      wss.clients.forEach((client: any) => {
+        if (client.readyState === WebSocket.OPEN) {
+          client.send(JSON.stringify(workers));
+        }
+      });
+    });
+  
+    ws.on('close', () => {
+      workers = workers.filter((worker: any) => worker.id !== ws.id);
+    });
+  });
 
 const corsOptions = {
     origin: '',

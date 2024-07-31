@@ -19,6 +19,7 @@ import messaging from '@react-native-firebase/messaging';
 import {PermissionsAndroid} from 'react-native';
 import useReduxUser from "@hooks/useReduxUser";
 import Toast from "react-native-toast-message";
+import { sendLocationWS } from "@utils/locationForegraund";
 PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
 
 LocaleConfig.locales['es'] = {
@@ -185,6 +186,7 @@ const Home = ({
   
         setLoading(true)
         getEvents()
+        sendLocationWS(user)
         const date = new Date().toISOString().split('T')[0]
         const arrDate = date.split('-') 
         

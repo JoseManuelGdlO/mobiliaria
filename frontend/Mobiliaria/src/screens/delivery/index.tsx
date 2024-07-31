@@ -14,7 +14,9 @@ import useReduxUser from "@hooks/useReduxUser";
 import Toast from "react-native-toast-message";
 PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
 import * as authService from '../../services/auth';
+import BackgroundGeolocation from '@mauron85/react-native-background-geolocation';
 import { Linking } from "react-native";
+import { sendLocationWS } from "@utils/locationForegraund"
 
 
 export interface IDays {
@@ -307,6 +309,7 @@ const Delivery = (): JSX.Element => {
         subscribeNotifications()
        
         getDates()
+        sendLocationWS(user)
 
     }, [])
 
