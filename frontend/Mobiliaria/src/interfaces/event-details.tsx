@@ -3,8 +3,18 @@ export interface IEventDetail {
     event: IEvent,
     payments: IPayment[]
     items: IInventaryRent[]
+    historial: IHistorical[]
 }
 
+export interface IHistorical {
+    id: number,
+    date: string,
+    description: string,
+    obs: string,
+    fkid_user: number,
+    fkid_event: number,
+    nombre_comp?: string
+}
 export interface IEvent {
     id_evento: number,
     id_empresa: number,

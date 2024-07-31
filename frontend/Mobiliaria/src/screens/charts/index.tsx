@@ -6,7 +6,6 @@ import * as reportsService from '@services/reports'
 import Loading from "@components/loading";
 import { useTheme } from "@hooks/useTheme";
 import { currencyFormat } from "@utils/dateFormat";
-import { ScrollView } from "react-native-gesture-handler";
 
 const Charts = (): JSX.Element => {
     const animation = useRef(null);
@@ -18,14 +17,18 @@ const Charts = (): JSX.Element => {
     
     useEffect(() => {
 
-        getReports()
+        getReports(1)
 
     }, [])
 
-    const getReports = async () => {
+    const getReports = async (value: number) => {
         try {
+            
+            setIntervalMonth(value)
             setLoading(true)
-            const response = await reportsService.getReports(intervalMonth)
+            const response = await reportsService.getReports(value)
+            console.log(value, 'response', intervalMonth);
+            
             setReports(response)
             setLoading(false)
         } catch (error) {
@@ -60,8 +63,11 @@ const Charts = (): JSX.Element => {
     }
     
     return (
-        <ScrollView>
-            <View style={{  display: 'flex', flexDirection: 'row'  }}>
+        <View>
+            <FlatList
+                data={[{}]}
+                renderItem={() => <>
+                <View style={{  display: 'flex', flexDirection: 'row'  }}>
                 <LottieView
                         ref={animation}
                         autoPlay
@@ -84,11 +90,9 @@ const Charts = (): JSX.Element => {
                     <View style={{ borderBottomColor: '#CCCC', borderBottomWidth: 1, width: '50%' }}>
                         <RNPickerSelect
                                 key={1}
-                                placeholder="Seleciona los meses a consultar"
                                 value={intervalMonth}
                                 onValueChange={(value) => {
-                                    setIntervalMonth(value)
-                                    getReports()
+                                    getReports(value)
                                 }}
                                 items={[
                                     { label: '1 mes atras', value: 1 },
@@ -157,8 +161,11 @@ const Charts = (): JSX.Element => {
                         />
                 </View>
             </View>
+                </>}
+            />
+           
             <Loading loading={loading}></Loading>
-        </ScrollView>
+        </View>
     )
 }
 

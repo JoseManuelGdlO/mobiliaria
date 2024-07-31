@@ -18,8 +18,10 @@ router.get('/getPayments', verifyToken, async function (req: any, res: any, next
 
 router.put('/addPayment', verifyToken, async function (req: any, res: any, next: any) {
     try {
+        const bearer: any = jwt_decode(req.headers['authorization']);
+        let idUsuario = bearer.data.id_usuario;
         const body = req.body;
-        res.status(201).json(await paymentsService.addPayment(body));
+        res.status(201).json(await paymentsService.addPayment(body, idUsuario));
     } catch (err: any) {
         console.error(`Error while getting enarm students info `, err.message);
         next(err);

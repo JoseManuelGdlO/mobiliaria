@@ -16,6 +16,7 @@ import { useNavigation } from "@react-navigation/native";
 import EditIcon from "@assets/images/icons/EditIcon";
 import PrimaryButton from "@components/PrimaryButton";
 import SelectStreetMap from "@components/select-street-map";
+import HistoryEvent from "@components/history";
 const height = Dimensions.get('window').height
 
 const EventDetail = ({
@@ -36,6 +37,7 @@ const EventDetail = ({
     const [telefono, SetTelefono] = useState<string>('')
     const [direccion, SetDireccion] = useState<string>('')
     const [openMap, setOpenMap] = useState<boolean>(false)
+    const [seeHistory, setSeeHistory] = useState<boolean>(false)
     const [latLon, setLatLon] = useState<any>({})
     const [url, SetURL] = useState<string>('')
 
@@ -46,8 +48,7 @@ const EventDetail = ({
     const getDetails = async () => {
         try {
             const response = await eventService.getEventDetail(id) as IEventDetail
-            console.log(response);
-
+            
             SetTitular(response?.event?.nombre_titular_evento)
             SetTelefono(response?.event?.telefono_titular_evento)
             SetDireccion(response?.event?.direccion_evento)
@@ -319,8 +320,8 @@ const EventDetail = ({
                             width: '100%',
                             marginTop: 10
                         }}>
-                            <Text style={{ fontFamily: fonts.Roboto.MediumItalic, fontSize: 12, paddingTop: 5 }}>Observaciones </Text>
-                            <TouchableOpacity
+                            <Text style={{ fontFamily: fonts.Roboto.MediumItalic, fontSize: 12, paddingTop: 5 }}>{ seeHistory ? 'Historial' : 'Observaciones'} </Text>
+                            { !seeHistory && <TouchableOpacity
                                 onPress={async () => {
 
                                     if (obs === event.event.observaciones) {
@@ -354,11 +355,25 @@ const EventDetail = ({
                                 }}
                                 style={{ backgroundColor: '#488aff', alignItems: 'center', borderRadius: 20, paddingHorizontal: 15, paddingVertical: 3 }}>
                                 <Text style={{ fontFamily: fonts.Roboto.MediumItalic, fontSize: 12, color: '#fff' }}>Agregar Obs</Text>
+                            </TouchableOpacity>}
+                            <TouchableOpacity
+                                onPress={async () => {                                    
+                                    setSeeHistory(!seeHistory)
+                                }}
+                                style={{ backgroundColor: '#9E2EBE', alignItems: 'center', borderRadius: 20, paddingHorizontal: 15, paddingVertical: 3 }}>
+                                <Text style={{ fontFamily: fonts.Roboto.MediumItalic, fontSize: 12, color: '#fff' }}>{ seeHistory ? 'Ver Observaciones' : 'Historial'}</Text>
                             </TouchableOpacity>
                         </View>
+                        { !seeHistory ?
                         <View style={{ backgroundColor: 'rgba(0, 0, 0, 0.12)', width: '100%', minHeight: 30, borderRadius: 8, marginTop: 5, paddingHorizontal: 10, paddingBottom: 8 }}>
                             <TextInput placeholder="agrega aqui si tienes observaciones" onChangeText={setObs} value={obs} style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12, paddingTop: 5 }}></TextInput>
                         </View>
+                         :
+                         <View>
+                            <HistoryEvent historial={event.historial}></HistoryEvent>
+                         </View>
+                        
+                        }
                     </View>
                 </View>
                 {event && event.payments &&
@@ -389,7 +404,6 @@ const EventDetail = ({
                                         style={{ width: '100%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular }}></TextInput>
                                     <TouchableOpacity disabled={abono.length === 0} onPress={async () => {
 
-                                        console.log(event?.payments, abono);
 
                                         if (Number(abono) > event?.payments[event?.payments.length - 1]?.saldo) {
                                             Toast.show({
@@ -590,7 +604,7 @@ const EventDetail = ({
                 </Modal>
             </View>
             <SelectStreetMap open={openMap} props={(p: any) => {
-                console.log(p)
+
                 if(!p) return setOpenMap(false)
                 setLatLon(p)
                 SetDireccion(p.description)

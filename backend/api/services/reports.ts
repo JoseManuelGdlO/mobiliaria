@@ -3,6 +3,8 @@ import { helper } from '../helper';
 
 async function getReports(id: number, months: string) {
     let code = 200;
+    console.log('moths', months);
+    
 
     const rows = await db.query(
         `SELECT 
@@ -27,20 +29,35 @@ async function getReports(id: number, months: string) {
 
 
     const rows2 = await db.query(
-        `SELECT 
-            em.id_evento,
-            em.nombre_evento,
-            SUM(pm.costo_total) AS costo_total_por_evento
+        `WITH CTE AS (
+    SELECT 
+        id_evento, 
+        costo_total,
+        fecha,
+        ROW_NUMBER() OVER (PARTITION BY id_evento ORDER BY id_pago DESC) AS rn
+    FROM 
+        pagos_mob
+)
+
+SELECT 
+    id_evento, 
+    costo_total
+FROM 
+    CTE 
+WHERE 
+    rn = 1 AND
+    id_evento IN (
+        SELECT 
+            id_evento
         FROM 
-            evento_mob AS em
-        LEFT JOIN 
-            pagos_mob AS pm ON em.id_evento = pm.id_evento
+            evento_mob
         WHERE
-            em.id_empresa = ${id} AND
-            em.fecha_envio_evento >= DATE_SUB(CURDATE(), INTERVAL ${months} MONTH)
-        GROUP BY 
-            em.id_evento, em.nombre_evento;`
+            id_empresa = ${id} AND
+            fecha_envio_evento >= DATE_SUB(CURDATE(), INTERVAL ${months} MONTH)
     );
+`
+    );
+    console.log('rows2', rows2.length, rows2);
     
     let totalCost = helper.emptyOrRows(rows2);
 
@@ -48,9 +65,12 @@ async function getReports(id: number, months: string) {
     let index = 0
 
     for (const event of totalCost) {
-       total += event.costo_total_por_evento
+       total += event.costo_total
         index++
     }
+
+    console.log(total, index);
+    
 
     const rows3 = await db.query(
         `SELECT 
@@ -60,8 +80,8 @@ async function getReports(id: number, months: string) {
         FROM 
             evento_mob
         WHERE
-            id_empresa = 1 AND
-            fecha_envio_evento >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)
+            id_empresa = ${id} AND
+            fecha_envio_evento >= DATE_SUB(CURDATE(), INTERVAL ${months} MONTH)
         GROUP BY 
             nombre_titular_evento
         ORDER BY
