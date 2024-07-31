@@ -121,7 +121,6 @@ export default StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
-    shadowColor: 'rgb(63 63 68 / 5%)',
     marginVertical: 10
   },
   borderGreen: {

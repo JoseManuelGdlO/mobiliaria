@@ -63,7 +63,7 @@ const Workers = (): JSX.Element => {
         return (
             <View style={{ padding: 10 }}>
                 <View style={{
-                    padding: 10, borderColor: '#9E2EBE', borderRadius: 5, borderWidth: 1, overflow: 'hidden', shadowColor: 'yourchoice', shadowRadius: 10, shadowOpacity: 1,
+                    padding: 10, borderColor: '#9E2EBE', borderRadius: 5, borderWidth: 1, overflow: 'hidden'
                 }}>
                     <View style={{ display: 'flex', flexDirection: 'row' }}>
                         <LottieView

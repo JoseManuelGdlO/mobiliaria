@@ -612,7 +612,7 @@ const AddEvent = ({
             {event && event.payments &&
                 <View style={{ paddingHorizontal: 10, paddingVertical: 5 }}>
                     <View style={{
-                        padding: 10, borderColor: '#9E2EBE', borderRadius: 5, borderWidth: 1, overflow: 'hidden', shadowRadius: 10, shadowOpacity: 1,
+                        padding: 10, borderColor: '#9E2EBE', borderRadius: 5, borderWidth: 1, overflow: 'hidden'
                     }}>
                         <Text style={{ fontFamily: fonts.Roboto.Bold, color: '#488aff' }}>Seguimiento al pago del evento</Text>
                         <View style={{

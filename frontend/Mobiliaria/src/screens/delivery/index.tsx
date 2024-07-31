@@ -239,10 +239,6 @@ const Delivery = (): JSX.Element => {
         return (
             <View style={{ paddingHorizontal: 10, paddingBottom: 10 }}>
                 <View style={{
-                    shadowColor: '#171717',
-                    shadowOffset: { width: -2, height: 4 },
-                    shadowOpacity: 0.2,
-                    shadowRadius: 3,
                     backgroundColor: 'white',
                     borderRadius: 8,
                     paddingVertical: 10,
