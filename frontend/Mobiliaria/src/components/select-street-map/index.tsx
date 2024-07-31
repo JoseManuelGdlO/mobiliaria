@@ -63,7 +63,7 @@ const SelectStreetMap = ({
     return (
         <View>
             <Modal visible={open}>
-                <View style={{ zIndex: 1, flex: 0.5 }}>
+                <View style={{ zIndex: 1, flex: 0.5, paddingTop: 80 }}>
                     <GooglePlacesAutocomplete
                     
                         placeholder='Buscar'

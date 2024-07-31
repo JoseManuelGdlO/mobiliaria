@@ -55,9 +55,6 @@ const Payments = (): JSX.Element => {
             borderRadius: 5,
             borderWidth: 1,
             overflow: "hidden",
-            shadowColor: "yourchoice",
-            shadowRadius: 10,
-            shadowOpacity: 1,
           }}
         >
           <View style={{ display: "flex", flexDirection: "row" }}>

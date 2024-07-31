@@ -48,12 +48,12 @@ const EventDetail = ({
     const getDetails = async () => {
         try {
             const response = await eventService.getEventDetail(id) as IEventDetail
-            
+
             SetTitular(response?.event?.nombre_titular_evento)
             SetTelefono(response?.event?.telefono_titular_evento)
             SetDireccion(response?.event?.direccion_evento)
             SetURL(response?.event?.url)
-            
+
             setFlete(response?.event?.flete.toString())
 
             setObs(response?.event?.observaciones)
@@ -79,7 +79,7 @@ const EventDetail = ({
         } catch (error) {
             console.log(error);
         }
-       
+
     }
 
     useEffect(() => {
@@ -209,7 +209,7 @@ const EventDetail = ({
             <ScrollView>
                 <View style={{ padding: 10 }}>
                     <View style={{
-                        padding: 10, borderColor: '#9E2EBE', borderRadius: 5, borderWidth: 1, overflow: 'hidden', shadowRadius: 10, shadowOpacity: 1,
+                        padding: 10, borderColor: '#9E2EBE', borderRadius: 5, borderWidth: 1, overflow: 'hidden'
                     }}>
                         <View style={{ display: 'flex', flexDirection: 'row' }}>
                             <View>
@@ -247,7 +247,7 @@ const EventDetail = ({
                                 }}>
                                     <Text style={{ color: 'blue', fontFamily: fonts.Roboto.Medium, fontSize: 10 }}>Mapa: {event?.event?.url}</Text>
                                 </TouchableOpacity>}
-                               
+
 
                             <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12 }}>Fecha y Hora: {event?.event?.fecha_envio_evento.split('T')[0]} a las {event?.event?.hora_envio_evento}</Text>
                         </View>
@@ -320,8 +320,8 @@ const EventDetail = ({
                             width: '100%',
                             marginTop: 10
                         }}>
-                            <Text style={{ fontFamily: fonts.Roboto.MediumItalic, fontSize: 12, paddingTop: 5 }}>{ seeHistory ? 'Historial' : 'Observaciones'} </Text>
-                            { !seeHistory && <TouchableOpacity
+                            <Text style={{ fontFamily: fonts.Roboto.MediumItalic, fontSize: 12, paddingTop: 5 }}>{seeHistory ? 'Historial' : 'Observaciones'} </Text>
+                            {!seeHistory && <TouchableOpacity
                                 onPress={async () => {
 
                                     if (obs === event.event.observaciones) {
@@ -357,29 +357,29 @@ const EventDetail = ({
                                 <Text style={{ fontFamily: fonts.Roboto.MediumItalic, fontSize: 12, color: '#fff' }}>Agregar Obs</Text>
                             </TouchableOpacity>}
                             <TouchableOpacity
-                                onPress={async () => {                                    
+                                onPress={async () => {
                                     setSeeHistory(!seeHistory)
                                 }}
                                 style={{ backgroundColor: '#9E2EBE', alignItems: 'center', borderRadius: 20, paddingHorizontal: 15, paddingVertical: 3 }}>
-                                <Text style={{ fontFamily: fonts.Roboto.MediumItalic, fontSize: 12, color: '#fff' }}>{ seeHistory ? 'Ver Observaciones' : 'Historial'}</Text>
+                                <Text style={{ fontFamily: fonts.Roboto.MediumItalic, fontSize: 12, color: '#fff' }}>{seeHistory ? 'Ver Observaciones' : 'Historial'}</Text>
                             </TouchableOpacity>
                         </View>
-                        { !seeHistory ?
-                        <View style={{ backgroundColor: 'rgba(0, 0, 0, 0.12)', width: '100%', minHeight: 30, borderRadius: 8, marginTop: 5, paddingHorizontal: 10, paddingBottom: 8 }}>
-                            <TextInput placeholder="agrega aqui si tienes observaciones" onChangeText={setObs} value={obs} style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12, paddingTop: 5 }}></TextInput>
-                        </View>
-                         :
-                         <View>
-                            <HistoryEvent historial={event.historial}></HistoryEvent>
-                         </View>
-                        
+                        {!seeHistory ?
+                            <View style={{ backgroundColor: 'rgba(0, 0, 0, 0.12)', width: '100%', minHeight: 30, borderRadius: 8, marginTop: 5, paddingHorizontal: 10, paddingBottom: 8 }}>
+                                <TextInput placeholder="agrega aqui si tienes observaciones" onChangeText={setObs} value={obs} style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12, paddingTop: 5 }}></TextInput>
+                            </View>
+                            :
+                            <View>
+                                <HistoryEvent historial={event.historial}></HistoryEvent>
+                            </View>
+
                         }
                     </View>
                 </View>
                 {event && event.payments &&
                     <View style={{ paddingHorizontal: 10, paddingVertical: 5 }}>
                         <View style={{
-                            padding: 10, borderColor: '#9E2EBE', borderRadius: 5, borderWidth: 1, overflow: 'hidden', shadowRadius: 10, shadowOpacity: 1,
+                            padding: 10, borderColor: '#9E2EBE', borderRadius: 5, borderWidth: 1, overflow: 'hidden', shadowRadius: 10
                         }}>
                             <Text style={{ fontFamily: fonts.Roboto.Bold, color: '#488aff' }}>Seguimiento al pago del evento</Text>
                             <View style={{
@@ -457,34 +457,33 @@ const EventDetail = ({
                                     source={require('../../assets/images/lottie/followpayment.json')}
                                 />
                             </View>
-                        <TextInput placeholder="Ingrese Flete" onChangeText={setFlete} value={flete}
-                                        style={{ width: '100%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular }}></TextInput>
-                                    <TouchableOpacity disabled={flete.length === 0} onPress={async () => {
-                                        try {
-                                            setLoading(true)
-                                            const body = {
-                                                flete: Number(flete)
-                                            }
-                                            await paymentService.addFlete(body, event?.event?.id_evento)
-                                            Toast.show({
-                                                type: 'success',
-                                                text1: 'Hecho',
-                                                text2: 'se ha agregado el flete',
-                                                visibilityTime: 1000,
-                                                autoHide: true
-                                            })
-                                            getDetails()
-                                        } catch (error) {
-                                            console.log(error);
-                                        } finally
-                                        {
-                                            setLoading(false)
-                                        }
+                            <TextInput placeholder="Ingrese Flete" onChangeText={setFlete} value={flete}
+                                style={{ width: '100%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular }}></TextInput>
+                            <TouchableOpacity disabled={flete.length === 0} onPress={async () => {
+                                try {
+                                    setLoading(true)
+                                    const body = {
+                                        flete: Number(flete)
+                                    }
+                                    await paymentService.addFlete(body, event?.event?.id_evento)
+                                    Toast.show({
+                                        type: 'success',
+                                        text1: 'Hecho',
+                                        text2: 'se ha agregado el flete',
+                                        visibilityTime: 1000,
+                                        autoHide: true
+                                    })
+                                    getDetails()
+                                } catch (error) {
+                                    console.log(error);
+                                } finally {
+                                    setLoading(false)
+                                }
 
 
-                                    }} style={{ backgroundColor: flete.length !== 0 ? '#488aff' : colors.gray500, alignItems: 'center', marginTop: 10, borderRadius: 20, paddingHorizontal: 15, paddingVertical: 3 }}>
-                                        <Text style={{ fontFamily: fonts.Roboto.MediumItalic, fontSize: 12, color: '#fff' }}>Agregar flete</Text>
-                                    </TouchableOpacity>
+                            }} style={{ backgroundColor: flete.length !== 0 ? '#488aff' : colors.gray500, alignItems: 'center', marginTop: 10, borderRadius: 20, paddingHorizontal: 15, paddingVertical: 3 }}>
+                                <Text style={{ fontFamily: fonts.Roboto.MediumItalic, fontSize: 12, color: '#fff' }}>Agregar flete</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 }
@@ -526,7 +525,23 @@ const EventDetail = ({
                     setOpenAlert(0)
                 }}
             ></AreYouSure>
+            <View style={{ flex: 1 }}>
+                <SelectStreetMap open={openMap} props={(p: any) => {
+                    console.log('p', p);
+                    
+                if (!p) {
+                    setOpenEdit(true);
+                    setOpenMap(false)
+                    return 
+                } 
+                setLatLon(p)
+                if (p.direccion) SetDireccion(p.description)
+                
+                setOpenMap(false)
+                setOpenEdit(true)
+                }}></SelectStreetMap>
 
+            </View>
             <View>
                 <Modal visible={openEdit} transparent>
                     <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center' }}>
@@ -562,14 +577,17 @@ const EventDetail = ({
                                         onChangeText={SetDireccion}
                                         style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12 }}></TextInput>
                                 </View>
-                                
+
                                 <TouchableOpacity
-                                        onPress={() => setOpenMap(true)}
-                                        style={{ backgroundColor: '#488aff', borderRadius: 5, height: 20, justifyContent: 'center', width: '100%' }}>
-                                        <Text style={{ fontFamily: fonts.Roboto.Medium, fontSize: 10, color: '#fff', textAlign: 'center' }}>
-                                            modificar mapa {latLon && latLon.lat && '✅ listo'}
-                                        </Text>
-                                    </TouchableOpacity>
+                                    onPress={() => {
+                                        setOpenEdit(false)
+                                        setOpenMap(!openMap)
+                                    }}
+                                    style={{ backgroundColor: '#488aff', borderRadius: 5, height: 20, justifyContent: 'center', width: '100%' }}>
+                                    <Text style={{ fontFamily: fonts.Roboto.Medium, fontSize: 10, color: '#fff', textAlign: 'center' }}>
+                                        modificar mapa {latLon && latLon.lat && '✅ listo'}
+                                    </Text>
+                                </TouchableOpacity>
                             </ScrollView>
                             <View style={{ margin: 16, display: 'flex', flexDirection: 'row' }}>
                                 <PrimaryButton
@@ -602,14 +620,8 @@ const EventDetail = ({
                         </View>
                     </View>
                 </Modal>
-            </View>
-            <SelectStreetMap open={openMap} props={(p: any) => {
 
-                if(!p) return setOpenMap(false)
-                setLatLon(p)
-                SetDireccion(p.description)
-                setOpenMap(false)
-            }}></SelectStreetMap>
+            </View> 
         </>
     )
 }
