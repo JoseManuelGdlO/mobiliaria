@@ -130,6 +130,11 @@ export const currencyFormat = (num: number) => {
 }
 
 export const formatDateString = (dateString: string) => {
+
+  let dateEnv = dateString.split("-");
+  if (dateEnv[0].length === 2) {
+      return `${dateEnv[2]}-${dateEnv[1]}-${dateEnv[0]}`;
+  }
   const date = new Date(dateString);
   const day = date.getDate().toString().padStart(2, '0');
   const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Los meses en JavaScript van de 0 a 11

@@ -27,14 +27,14 @@ const wss = new WebSocket.Server({ server });
 let workers: any = [];
 
 wss.on('connection', (ws: any) => {
-  console.log('New WebSocket connection');
+  // console.log('New WebSocket connection');
 
   ws.on('message', (message: any) => {
     const location: any = JSON.parse(message);
-    console.log('Location received:', location);
+    // console.log('Location received:', location);
     
     // Aquí puedes asignar un ID único para cada trabajador si no lo tienen.
-    ws.id = ws.id || `${location.user.id}`;
+    ws.id = ws.id || `${location.user.id_usuario}`;
     
     // Actualizar la ubicación del trabajador en la lista
     const workerIndex = workers.findIndex((worker: any) => worker.id === ws.id);
@@ -47,7 +47,10 @@ wss.on('connection', (ws: any) => {
     // Enviar la lista actualizada de trabajadores a todos los clientes
     wss.clients.forEach((client: any) => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify(workers));
+        let data = JSON.stringify(workers)
+        // console.log('data', data);
+        
+        client.send(data);
       }
     });
   });
@@ -80,7 +83,7 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-    res.json({ message: "version: 0.3.0" });
+    res.json({ message: "version: 0.3.1" });
 });
 
 app.use("/auth", authRouter);
