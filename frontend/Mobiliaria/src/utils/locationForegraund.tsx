@@ -13,7 +13,7 @@ Geolocation.setRNConfiguration({
 
 export const sendLocationWS = async (user: IUser) => {
   let location: any = null;
-  const socket = io('http://192.168.0.21:3000');
+  const socket = io('http://3.218.160.237:3000');
   
   socket.on('connect', function () { 
     console.log('Websocket Connected with App');
@@ -34,13 +34,15 @@ export const sendLocationWS = async (user: IUser) => {
     await new Promise(async (resolve) => {
       for (let i = 0; BackgroundService.isRunning(); i++) {        
         if (location) {
-          location.coords.longitude = '-104.6608'
-          location.coords.latitude = '24.0248'
+          // location.coords.longitude = '-104.6608'
+          // location.coords.latitude = '24.0248'
+          // user.id_usuario = 1
           socket.emit('location',{
             type: 'location',
             user: user,
             location: location
           });
+
         }
         await sleep(delay);
       }
