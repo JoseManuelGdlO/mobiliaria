@@ -689,6 +689,7 @@ async function changeStatus(id: number, delivered: number, recolected: number, i
 
 async function remove(id: number) {
   const connection = await db.connection();
+  
   await connection.execute("SET TRANSACTION ISOLATION LEVEL READ COMMITTED");
 
   await connection.beginTransaction();

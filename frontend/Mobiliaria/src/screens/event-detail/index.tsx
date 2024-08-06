@@ -510,10 +510,12 @@ const EventDetail = ({
             <Loading loading={loading}></Loading>
             <Toast />
             <AreYouSure open={openAlert !== 0} sure={() => {
-
+                console.log('openAlert', openAlert);
+                
                 if (openAlert === 1) {
                     changeStatus()
                 } else if (openAlert === 2) {
+
                     removeEvent()
                 } else {
                     removeItem()
