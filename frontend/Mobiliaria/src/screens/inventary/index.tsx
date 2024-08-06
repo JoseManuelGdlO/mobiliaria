@@ -196,7 +196,7 @@ const Inventary = (): JSX.Element => {
             <Loading loading={loading} />
             <Modal visible={visible} transparent>
                 <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center' }}>
-                    <View style={{ backgroundColor: '#000', borderRadius: 10, margin: 20, maxHeight: height - 100 }}>
+                    <View style={{ backgroundColor: '#FFF', borderRadius: 10, margin: 20, maxHeight: height - 100 }}>
                         <Text style={{ fontFamily: fonts.Inter.Bold, fontWeight: 'bold', fontSize: 16, color: '#000', marginTop: 16, marginLeft: 16 }}>
                             Inventario
                         </Text>

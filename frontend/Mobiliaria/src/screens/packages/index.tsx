@@ -333,6 +333,7 @@ const Packages = (): JSX.Element => {
                   paddingHorizontal: 10,
                   marginTop: 10,
                 }}
+                keyboardType = 'numeric'
                 onChangeText={(value: string) => {
                   setDetailsPackage({ ...detailsPackage, price: value });
                 }}
@@ -358,9 +359,10 @@ const Packages = (): JSX.Element => {
                         const newProducts = detailsPackage.products.filter(
                           (element) => element.id_mob !== item.id_mob
                         );
+                        
                         setDetailsPackage({
                           ...detailsPackage,
-                          products: newProducts,
+                          productsBody: newProducts.length > 0 ? newProducts : [],
                         });
                       }}
                       style={{
@@ -432,9 +434,10 @@ const Packages = (): JSX.Element => {
                         style={{
                           fontFamily: fonts.Roboto.Regular,
                           fontSize: 14,
+                          width: "70%",
                           color: "#000",
                           marginTop: 10,
-                          textAlign: "center",
+                          textAlign: "left",
                         }}
                       >
                         {item.nombre_mob}, QTY. {item.cantidad_mob}
@@ -443,6 +446,7 @@ const Packages = (): JSX.Element => {
                         style={{
                           flexDirection: "row",
                           justifyContent: "center",
+                          width: "30%",
                         }}
                       >
                         <TextInput
@@ -450,6 +454,9 @@ const Packages = (): JSX.Element => {
                             borderBottomWidth: 1,
                             borderColor: "#9E2EBE",
                             paddingVertical: 1,
+                            textAlign: "center",
+                            fontSize: 25,
+                            width: "60%",
                             margin: 0,
                           }}
                           onChangeText={(value: string) => {
@@ -459,7 +466,7 @@ const Packages = (): JSX.Element => {
                           placeholder="10"
                         ></TextInput>
                         <TouchableOpacity
-                          style={{ paddingTop: 5 }}
+                          style={{ marginTop: 5, width: "40%" }}
                           onPress={() => {
                             if (item.cantidad) {
                               const inv = detailsPackage.productsBody.find(

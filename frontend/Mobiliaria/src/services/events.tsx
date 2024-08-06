@@ -261,7 +261,7 @@ export const addItemsToEvent = async (id: number, items: IAvailability[]): Promi
 }
 
 export const removeEvent = async (id: number): Promise<any> => {
-    const url = `http://3.218.160.237:8000${REMOVE_EVENT}?id=${id}`
+    const url = `http://192.168.0.21:8000${REMOVE_EVENT}?id=${id}`
 
 
     const instance = axios.create({
@@ -276,7 +276,8 @@ export const removeEvent = async (id: number): Promise<any> => {
     return await instance
         .delete(url)
         .then(async response => {
-
+            console.log('response', response);
+            
             return response
         })
         .catch(async error => {

@@ -174,12 +174,14 @@ const AddEvent = ({
         }
 
         try {
-            await eventService.addEvent(body)
-            if(toggleSwitch) {
-                eventService.addRecurrentEvent(body, recTime, selectedItems,  parseDateString(date), togglePaymenthSwitch)
-            }
+            console.log(body);
+            
+            // await eventService.addEvent(body)
+            // if(toggleSwitch) {
+            //     eventService.addRecurrentEvent(body, recTime, selectedItems,  parseDateString(date), togglePaymenthSwitch)
+            // }
 
-            navigation.navigate('Home', { refresh: true })
+            // navigation.navigate('Home', { refresh: true })
 
         } catch (error) {
             console.log(error);

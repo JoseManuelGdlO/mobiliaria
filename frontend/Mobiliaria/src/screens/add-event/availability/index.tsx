@@ -224,7 +224,7 @@ const Availability = ({
                                 
                                 {packages.map(pack => {
                                     return (
-                                        <TouchableOpacity onPress={() => {
+                                        <TouchableOpacity onPress={() => {                                            
                                             setItemPackageSelected(pack)
                                             setModalVisible(true)
                                         }}
@@ -409,7 +409,11 @@ const Availability = ({
                                 containerStyle={{ width: '50%', height: 30, paddingVertical: 1 }}
                                 textStyle={{ fontSize: 12, color: '#FFF' }}
                                 onPress={() => {
+                                    console.log('packages', itemPackageSelected);
+                                    
+                                        console.log('itemSelected', itemSelected);
                                     if(itemSelected.nombre_mob) {
+                                        
                                         let exist = false
                                         let localtotal = 0
                                         for (const inv of invSelected) {
@@ -456,11 +460,8 @@ const Availability = ({
                                                 
                                                 const pktQuantity = itemPackageSelected?.cantidad ? itemPackageSelected.cantidad  : 0
                                                 const item = totalInventary.find(inv => inv.id_mob === pkt.fkid_inventario)
-
-                                                console.log('item', pkt, itemPackageSelected);
                                                 
                                                 const toRemove = pkt?.cantidad? pkt.cantidad * oldQnty  : 0
-                                                console.log('toremove', toRemove);
                                                 
                                                 const qtyPkt = pkt?.cantidad? pkt.cantidad * pktQuantity  : 0
                                                 if(item) {

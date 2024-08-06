@@ -154,9 +154,11 @@ router.post('/edit', verifyToken, async function (req: any, res: any, next: any)
 router.delete('/remove', verifyToken, async function (req: any, res: any, next: any) {
     try {
         let id = req.query.id
+        console.log('id', id);
+        
 
         const response = await eventService.remove(id);
-        res.status(response);
+        res.status(response).json(response);
     } catch (err: any) {
         console.error(`Error while getting enarm students info `, err.message);
         next(err);
