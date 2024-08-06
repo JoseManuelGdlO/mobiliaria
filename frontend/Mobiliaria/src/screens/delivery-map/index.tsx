@@ -11,6 +11,8 @@ import PrimaryButton from "@components/PrimaryButton";
 import ArrowRight from "@assets/images/icons/ArrowRight";
 const height = Dimensions.get('window').height
 import { Linking } from "react-native";
+import TruckPin from "@assets/images/icons/TruckPin";
+import LottieView from "lottie-react-native";
 
 
 const DeliveryMap = (): JSX.Element => {
@@ -26,6 +28,18 @@ const DeliveryMap = (): JSX.Element => {
 
   const [events, setEvents] = useState<any>([])
 
+  const [driversMarker, setDriversMarker] = useState<any>([])
+
+  const wSRecibed = () => {
+    const websocket = new WebSocket('ws://192.168.0.21:3000');
+
+    websocket.onmessage = (message) => {
+      let data: any = JSON.parse(message.data)
+      
+      setDriversMarker(data)
+      
+    }
+  }
 
   const closeModal = (): void => {
     setVisible(false)
@@ -102,7 +116,8 @@ const DeliveryMap = (): JSX.Element => {
 
   useEffect(() => {
     const date = new Date().toISOString().split('T')[0]
-    getEventsDay(date)
+    getEventsDay(date),
+    wSRecibed()
   }, [])
 
   return (
@@ -143,6 +158,32 @@ const DeliveryMap = (): JSX.Element => {
                             setUrl(item.url)
                           }}
                         />
+                      ))
+                    }
+                    </>}
+                    {driversMarker.length !== 0 &&
+                    <>
+                    {
+                      driversMarker.map((item: any, index: number) => (
+                        <Marker
+                          key={index}
+                          coordinate={{ latitude: parseFloat(item.location.coords.latitude), longitude: parseFloat(item.location.coords.longitude) }}
+                          title={item.nombre_titular_evento}
+                          description={item.direccion_evento}
+                        >
+                          <LottieView
+                                          ref={animation}
+                                          autoPlay
+                                          loop={false}
+                                          style={{
+                                            width: 120,
+                                            height: 120,
+                                            backgroundColor: 'transparent',
+                                          }}
+                                          // Find more Lottie files at https://lottiefiles.com/featured
+                                          source={require('../../assets/images/lottie/truck.json')}
+                                        />
+                          </Marker>
                       ))
                     }
                     </>}

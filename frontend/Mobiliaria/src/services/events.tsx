@@ -119,7 +119,7 @@ export const getAvailableDay = async (date: string): Promise<any> => {
 }
 
 export const addEvent = async (body: any): Promise<any> => {
-    const url = `http://3.218.160.237:8000${CREATE_EVENT}`
+    const url = `http://192.168.0.21:8000${CREATE_EVENT}`
 
     const instance = axios.create({
         baseURL: url,
@@ -148,7 +148,9 @@ export const addRecurrentEvent = async (body: any, recTime: number, weekDays: an
     const currentMonth = firstDate.getMonth();
     const currentYear = firstDate.getFullYear();
     const startDay = firstDate.getDate();
-
+    const promises = []
+    
+    
     for (let i = 0; i < recTime; i++) {
       const month = currentMonth + i;
       const year = currentYear + Math.floor(month / 12);
@@ -157,17 +159,19 @@ export const addRecurrentEvent = async (body: any, recTime: number, weekDays: an
       const daysInMonth = new Date(year, adjustedMonth + 1, 0).getDate();
 
       const dayStart = (i === 0) ? startDay+ 1 : 1;
-
+        
       for (let day = dayStart; day <= daysInMonth; day++) {
+        
         const date = new Date(year, adjustedMonth, day);
         if (weekDays.includes(date.getDay())) {
           result.push(date);
         }
       }
     }
-
+    
     body.evento.nombre_evento = `${body.evento.nombre_evento} (recurrente)`
     for (let date of result) {
+       
         const newDate = formatDateString(date.toString())
         body.evento.fecha_envio_evento = newDate
         body.evento.fecha_recoleccion_evento = newDate
@@ -176,7 +180,13 @@ export const addRecurrentEvent = async (body: any, recTime: number, weekDays: an
             body.costo.anticipo = 0
             body.costo.saldo = body.costo.costo_total
         }
-        addEvent(body)
+
+        body.mobiliario.forEach((mob: any) => {
+            mob.fecha_evento = newDate
+            mob.fecha_recoleccion = newDate
+        })
+        console.log('body', body.evento.fecha_envio_evento);
+        await addEvent(body)
     }
     
 

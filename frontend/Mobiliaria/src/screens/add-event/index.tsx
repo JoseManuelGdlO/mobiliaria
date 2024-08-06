@@ -173,15 +173,22 @@ const AddEvent = ({
             costo
         }
 
-        try {
-            console.log(body);
-            
-            // await eventService.addEvent(body)
-            // if(toggleSwitch) {
-            //     eventService.addRecurrentEvent(body, recTime, selectedItems,  parseDateString(date), togglePaymenthSwitch)
-            // }
+        try {            
+            await eventService.addEvent(body)
+            if(toggleSwitch) {
+                Toast.show({
+                    type: 'info',
+                    text1: 'Estamos preparando tus eventos recurrentes',
+                    text2: 'ten paciencia, esto nos puede tomar mas tiempo',
+                    visibilityTime: 15000,
+                    autoHide: true,
+                    onHide: () => {
+                    }
+                })
+                await eventService.addRecurrentEvent(body, recTime, selectedItems,  parseDateString(date), togglePaymenthSwitch)
+            }
 
-            // navigation.navigate('Home', { refresh: true })
+            navigation.navigate('Home', { refresh: true })
 
         } catch (error) {
             console.log(error);
@@ -191,7 +198,18 @@ const AddEvent = ({
     }
 
     const parseDateString =(dateString: string) => {
-        const [day, month, year] = dateString.split('-').map(Number);
+        let day, month, year;
+        let dateArr = dateString.split('-');
+        if(dateArr[0].length === 2) {
+            day = Number(dateArr[0]);
+            month = Number(dateArr[1]);
+            year = Number(dateArr[2]);
+        } else {
+            day = Number(dateArr[2]);
+            month = Number(dateArr[1]);
+            year = Number(dateArr[0]);
+        }
+        
         return new Date(year, month - 1, day); // El mes se resta por 1 porque los meses en Date van de 0 a 11
       }
 
