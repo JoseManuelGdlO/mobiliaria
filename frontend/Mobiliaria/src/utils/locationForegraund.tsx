@@ -2,6 +2,7 @@ import { IUser } from '@interfaces/user';
 import Geolocation from '@react-native-community/geolocation';
 import { useState } from 'react';
 import BackgroundService from 'react-native-background-actions';
+import { io } from 'socket.io-client';
 
 Geolocation.setRNConfiguration({
   authorizationLevel: 'always', // Request "always" location permission
@@ -11,20 +12,15 @@ Geolocation.setRNConfiguration({
 });
 
 export const sendLocationWS = async (user: IUser) => {
-  const websocket = new WebSocket('ws://192.168.0.21:3000');
- let location: any = null
+  let location: any = null;
+  const socket = io('http://192.168.0.21:3000');
+  
+  socket.on('connect', function () { 
+    console.log('Websocket Connected with App');
+  });
 
-  websocket.onopen = () => {
-    console.log('Conectado al servidor WebSocket');
-  };
+  socket.on('event', (msg) => { console.log('msg',msg)});
 
-  websocket.onerror = (error) => {
-    console.error('WebSocket error:', error);
-  };
-
-  websocket.onclose = () => {
-    console.log('Desconectado del servidor WebSocket');
-  };
 
   const sleep = (time: any) => new Promise((resolve) => setTimeout(() => resolve(), time));
 
@@ -38,13 +34,13 @@ export const sendLocationWS = async (user: IUser) => {
     await new Promise(async (resolve) => {
       for (let i = 0; BackgroundService.isRunning(); i++) {        
         if (location) {
-          // location.coords.longitude = '-104.6608'
-          // location.coords.latitude = '24.0248'
-          websocket.send(JSON.stringify({
+          location.coords.longitude = '-104.6608'
+          location.coords.latitude = '24.0248'
+          socket.emit('location',{
             type: 'location',
             user: user,
             location: location
-          }));
+          });
         }
         await sleep(delay);
       }
@@ -74,6 +70,6 @@ export const sendLocationWS = async (user: IUser) => {
   await BackgroundService.start(veryIntensiveTask, options);
 
   return () => {
-    websocket.close();
+    socket.close();
   };
 }

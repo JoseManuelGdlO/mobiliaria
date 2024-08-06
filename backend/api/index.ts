@@ -1,8 +1,6 @@
 import express, { Express, Request, Response, Application } from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors'
-import { WebSocketExpress } from 'websocket-express';
-const http = require('http');
 const WebSocket = require('ws');
 const eventsRouter = require("./routes/events");
 const inventaryRouter = require("./routes/inventary");
@@ -20,51 +18,31 @@ const app: Application = express();
 const port = process.env.PORT || 8000;
 
 
-const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
 
 
 let workers: any = [];
 
-wss.on('connection', (ws: any) => {
-  // console.log('New WebSocket connection');
+io.on('connect', (socket: any) => {
 
-  ws.on('message', (message: any) => {
-    const location: any = JSON.parse(message);
-    // console.log('Location received:', location);
+  socket.on("location", (arg: any) => {
+    const location: any = arg;
+    console.log('Location received:', location);
     
-    // Aquí puedes asignar un ID único para cada trabajador si no lo tienen.
-    ws.id = ws.id || `${location.user.id_usuario}`;
-    
-    // Actualizar la ubicación del trabajador en la lista
-    const workerIndex = workers.findIndex((worker: any) => worker.id === ws.id);
+     const workerIndex = workers.findIndex((worker: any) => worker.id === location.user.id_usuario);
     if (workerIndex !== -1) {
-      workers[workerIndex] = { id: ws.id, ...location };
+      workers[workerIndex] = { id: location.user.id_usuario, ...location };
     } else {
-      workers.push({ id: ws.id, ...location });
+      workers.push({ id: location.user.id_usuario, ...location });
     }
 
-    // Enviar la lista actualizada de trabajadores a todos los clientes
-    wss.clients.forEach((client: any) => {
-      if (client.readyState === WebSocket.OPEN) {
-        let data = JSON.stringify(workers)
-        // console.log('data', data);
-        
-        client.send(data);
-      }
-    });
-  });
+    socket.broadcast.emit('admin', workers)
 
-  ws.on('close', () => {
-    console.log('WebSocket connection closed');
-  });
-
-  ws.on('error', (error: any) => {
-    console.error('WebSocket error:', error);
   });
 });
 
-server.listen(3000, () => {
+http.listen(3000, () => {
   console.log('Server is listening on port 3000');
 });
 
@@ -83,7 +61,7 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-    res.json({ message: "version: 0.3.1" });
+    res.json({ message: "version: 0.3.2" });
 });
 
 app.use("/auth", authRouter);

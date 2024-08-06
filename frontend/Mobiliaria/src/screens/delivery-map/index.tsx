@@ -13,6 +13,7 @@ const height = Dimensions.get('window').height
 import { Linking } from "react-native";
 import TruckPin from "@assets/images/icons/TruckPin";
 import LottieView from "lottie-react-native";
+import { io } from "socket.io-client";
 
 
 const DeliveryMap = (): JSX.Element => {
@@ -24,21 +25,24 @@ const DeliveryMap = (): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(true)
   const [flagPost, setFlagPost] = useState<boolean>(false)
   const mapRef = useRef(null)
-  const [ url, setUrl ] = useState<string>('')
+  const [url, setUrl] = useState<string>('')
 
   const [events, setEvents] = useState<any>([])
 
   const [driversMarker, setDriversMarker] = useState<any>([])
 
   const wSRecibed = () => {
-    const websocket = new WebSocket('ws://192.168.0.21:3000');
+    const socket = io('http://192.168.0.21:3000');
 
-    websocket.onmessage = (message) => {
-      let data: any = JSON.parse(message.data)
-      
-      setDriversMarker(data)
-      
-    }
+    socket.on('connect', function () {
+      console.log('Websocket Connected with App');
+    });
+
+    socket.on('admin', (msg) => {
+
+      setDriversMarker(msg)
+    });
+
   }
 
   const closeModal = (): void => {
@@ -64,7 +68,7 @@ const DeliveryMap = (): JSX.Element => {
   const { fonts, colors } = useTheme()
 
   Geolocation.getCurrentPosition(info => {
-    
+
     if (flagPost) return
     moveToLocation(24.0035672, -104.641382)
     setFlagPost(true)
@@ -117,7 +121,7 @@ const DeliveryMap = (): JSX.Element => {
   useEffect(() => {
     const date = new Date().toISOString().split('T')[0]
     getEventsDay(date),
-    wSRecibed()
+      wSRecibed()
   }, [])
 
   return (
@@ -130,14 +134,14 @@ const DeliveryMap = (): JSX.Element => {
           <ArrowRight color="#000"></ArrowRight>
         </View>
       </TouchableOpacity>
-      { url !== '' && 
-      <TouchableOpacity
-        onPress={() => {
-          Linking.openURL(url)
-        }}
-        style={{height:20, width: '100%', paddingHorizontal: 10, backgroundColor: '#FFF', position: 'absolute', zIndex: 99, top: 25}}>
-        <Text style={{ color: 'blue' }}>{url}</Text>
-      </TouchableOpacity> }
+      {url !== '' &&
+        <TouchableOpacity
+          onPress={() => {
+            Linking.openURL(url)
+          }}
+          style={{ height: 20, width: '100%', paddingHorizontal: 10, backgroundColor: '#FFF', position: 'absolute', zIndex: 99, top: 25 }}>
+          <Text style={{ color: 'blue' }}>{url}</Text>
+        </TouchableOpacity>}
       <View style={styles.container}>
         <MapView
           ref={mapRef}
@@ -146,47 +150,47 @@ const DeliveryMap = (): JSX.Element => {
           style={styles.mapStyle}
           initialRegion={optsMaps}>
           {events.length !== 0 &&
-                    <>
-                    {
-                      events.map((item: any, index: number) => (
-                        <Marker
-                          key={index}
-                          coordinate={{ latitude: parseFloat(item.lat), longitude: parseFloat(item.lng) }}
-                          title={item.nombre_titular_evento}
-                          description={item.direccion_evento}
-                          onPress={() => {
-                            setUrl(item.url)
-                          }}
-                        />
-                      ))
-                    }
-                    </>}
-                    {driversMarker.length !== 0 &&
-                    <>
-                    {
-                      driversMarker.map((item: any, index: number) => (
-                        <Marker
-                          key={index}
-                          coordinate={{ latitude: parseFloat(item.location.coords.latitude), longitude: parseFloat(item.location.coords.longitude) }}
-                          title={item.nombre_titular_evento}
-                          description={item.direccion_evento}
-                        >
-                          <LottieView
-                                          ref={animation}
-                                          autoPlay
-                                          loop={false}
-                                          style={{
-                                            width: 120,
-                                            height: 120,
-                                            backgroundColor: 'transparent',
-                                          }}
-                                          // Find more Lottie files at https://lottiefiles.com/featured
-                                          source={require('../../assets/images/lottie/truck.json')}
-                                        />
-                          </Marker>
-                      ))
-                    }
-                    </>}
+            <>
+              {
+                events.map((item: any, index: number) => (
+                  <Marker
+                    key={index}
+                    coordinate={{ latitude: parseFloat(item.lat), longitude: parseFloat(item.lng) }}
+                    title={item.nombre_titular_evento}
+                    description={item.direccion_evento}
+                    onPress={() => {
+                      setUrl(item.url)
+                    }}
+                  />
+                ))
+              }
+            </>}
+          {driversMarker.length !== 0 &&
+            <>
+              {
+                driversMarker.map((item: any, index: number) => (
+                  <Marker
+                    key={index}
+                    coordinate={{ latitude: parseFloat(item.location.coords.latitude), longitude: parseFloat(item.location.coords.longitude) }}
+                    title={item.nombre_titular_evento}
+                    description={item.direccion_evento}
+                  >
+                    <LottieView
+                      ref={animation}
+                      autoPlay
+                      loop={false}
+                      style={{
+                        width: 120,
+                        height: 120,
+                        backgroundColor: 'transparent',
+                      }}
+                      // Find more Lottie files at https://lottiefiles.com/featured
+                      source={require('../../assets/images/lottie/truck.json')}
+                    />
+                  </Marker>
+                ))
+              }
+            </>}
         </MapView>
         <Modal visible={visible} transparent>
           <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center' }}>
@@ -226,7 +230,7 @@ const DeliveryMap = (): JSX.Element => {
           </View>
         </Modal>
       </View>
-      
+
       <Loading loading={loading}></Loading>
     </>
 
