@@ -28,16 +28,26 @@ io.on('connect', (socket: any) => {
 
   socket.on("location", (arg: any) => {
     const location: any = arg;
-    console.log('Location received:', location);
+    console.log('Location received:', location.user.id_usuario);
+
+    if(location.user.rol_usuario !== 'Repartidor') return
     
-     const workerIndex = workers.findIndex((worker: any) => worker.id === location.user.id_usuario);
+    const workerIndex = workers.findIndex((worker: any) => worker.id === location.user.id_usuario);
     if (workerIndex !== -1) {
       workers[workerIndex] = { id: location.user.id_usuario, ...location };
     } else {
       workers.push({ id: location.user.id_usuario, ...location });
     }
 
-    socket.broadcast.emit('admin', workers)
+    const groupedObjects = workers.reduce((result: any, obj: any) => {
+      (result[obj.id_empresa] = result[obj.id_empresa] || []).push(obj);
+      return result;
+    }, {});
+
+    Object.values(groupedObjects).forEach((item: any) => { 
+      socket.broadcast.emit('empresa_'+ item[0].user.id_empresa, item)
+    });
+
 
   });
 });
@@ -61,7 +71,7 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-    res.json({ message: "version: 0.3.2" });
+    res.json({ message: "version: 0.3.3" });
 });
 
 app.use("/auth", authRouter);
