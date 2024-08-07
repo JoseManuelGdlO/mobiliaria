@@ -119,7 +119,7 @@ export const getAvailableDay = async (date: string): Promise<any> => {
 }
 
 export const addEvent = async (body: any): Promise<any> => {
-    const url = `http://192.168.0.21:8000${CREATE_EVENT}`
+    const url = `http://http://3.218.160.237:8000${CREATE_EVENT}`
 
     const instance = axios.create({
         baseURL: url,
@@ -271,7 +271,7 @@ export const addItemsToEvent = async (id: number, items: IAvailability[]): Promi
 }
 
 export const removeEvent = async (id: number): Promise<any> => {
-    const url = `http://192.168.0.21:8000${REMOVE_EVENT}?id=${id}`
+    const url = `http://3.218.160.237:8000${REMOVE_EVENT}?id=${id}`
 
 
     const instance = axios.create({
