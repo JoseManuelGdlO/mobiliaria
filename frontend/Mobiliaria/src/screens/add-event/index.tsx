@@ -324,17 +324,17 @@ const AddEvent = ({
                                     <TextInput onChangeText={(value: string) => {
                                         setDetailsEvent({ ...detailsEvent, titular: value })
                                     }}
-                                        style={{ width: '70%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular, fontSize: 10 }}></TextInput>
+                                        style={{ width: '70%', borderBottomWidth: 1, paddingVertical: 5, fontFamily: fonts.Roboto.Regular, fontSize: 15 }}></TextInput>
                                     <TextInput
                                         onChangeText={(value: string) => {
                                             setDetailsEvent({ ...detailsEvent, tipo: value })
                                         }}
-                                        style={{ width: '70%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular, fontSize: 10 }}></TextInput>
+                                        style={{ width: '70%', borderBottomWidth: 1, paddingVertical: 5, fontFamily: fonts.Roboto.Regular, fontSize: 15 }}></TextInput>
                                     <TextInput keyboardType="number-pad"
                                         onChangeText={(value: string) => {
                                             setDetailsEvent({ ...detailsEvent, telefono: value })
                                         }}
-                                        style={{ width: '70%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular, fontSize: 10 }}></TextInput>
+                                        style={{ width: '70%', borderBottomWidth: 1, paddingVertical: 5, fontFamily: fonts.Roboto.Regular, fontSize: 15 }}></TextInput>
                                 </View>
                             </View>
                         </View>
@@ -472,9 +472,10 @@ const AddEvent = ({
                         </View>
                         <View style={{ display: 'flex', flexDirection: 'row' }}>
                             <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12, paddingTop: 20 }}>Hora de entrega: </Text>
-                            <View style={{ width: '70%', paddingTop: 0, borderBottomColor: '#000', borderBottomWidth: 1 }}>
+                            <View style={{ width: '70%', paddingTop: 0, borderBottomColor: '#000', borderBottomWidth: 1}}>
 
                                 <RNPickerSelect
+                                    style={{inputIOS: { height: 35, paddingTop: 10, paddingLeft: 5 }}}
                                     key={1}
                                     placeholder="Seleciona la hora"
                                     onValueChange={(value) => setDeliveredDay({ ...deliveredDay, hour: value })}
@@ -506,6 +507,7 @@ const AddEvent = ({
                                 <RNPickerSelect
                                     key={2}
                                     placeholder="Seleciona la hora"
+                                    style={{inputIOS: { height: 35, paddingTop: 10, paddingLeft: 5 }}}
                                     onValueChange={(value) => {
                                         setRecolectedDay({ ...recolectedDay, date: value })
                                     }
@@ -527,6 +529,7 @@ const AddEvent = ({
                                 <RNPickerSelect
                                     key={3}
                                     placeholder="Seleciona la hora"
+                                    style={{inputIOS: { height: 35, paddingTop: 10, paddingLeft: 5 }}}
                                     onValueChange={(value) => setRecolectedDay({ ...recolectedDay, hour: value })}
                                     items={[
                                         { label: '9:00', value: '9:00' },

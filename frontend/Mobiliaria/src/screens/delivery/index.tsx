@@ -1,7 +1,7 @@
 import { useTheme } from "@hooks/useTheme"
 import { convertirEspLetra, mesEspanol } from "@utils/dateFormat"
 import React, { useEffect } from "react"
-import { FlatList, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { FlatList, Platform, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import * as workersService from '@services/workers'
 import Loading from "@components/loading"
 import { Dimensions } from 'react-native';
@@ -12,9 +12,7 @@ import messaging from '@react-native-firebase/messaging';
 import {PermissionsAndroid} from 'react-native';
 import useReduxUser from "@hooks/useReduxUser";
 import Toast from "react-native-toast-message";
-PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
 import * as authService from '../../services/auth';
-import BackgroundGeolocation from '@mauron85/react-native-background-geolocation';
 import { Linking } from "react-native";
 import { sendLocationWS } from "@utils/locationForegraund"
 
@@ -38,6 +36,10 @@ const Delivery = (): JSX.Element => {
     const { user } = useReduxUser()
 
     const requestUserPermissions = async () => {
+
+        if(Platform.OS === 'android') {
+            PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+        }
         const authStatus = await messaging().requestPermission();
         const enabled =
         authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
@@ -52,6 +54,7 @@ const Delivery = (): JSX.Element => {
     const getToken = async () => {
         try {
             const token = await messaging().getToken();
+            
             await messaging().subscribeToTopic(`company${user.id_empresa}`)
             const response = await authService.tokenUser(user.id_usuario, token)
             

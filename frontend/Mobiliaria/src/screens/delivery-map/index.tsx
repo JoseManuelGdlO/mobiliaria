@@ -14,9 +14,11 @@ import { Linking } from "react-native";
 import TruckPin from "@assets/images/icons/TruckPin";
 import LottieView from "lottie-react-native";
 import { io } from "socket.io-client";
+import useReduxUser from "@hooks/useReduxUser";
 
 
 const DeliveryMap = (): JSX.Element => {
+  const { user } = useReduxUser()
   const [visible, setVisible] = useState(false)
   const [date, setDate] = useState(new Date())
   const [provitionalDate, setProvitionalDate] = useState(new Date())
@@ -32,13 +34,13 @@ const DeliveryMap = (): JSX.Element => {
   const [driversMarker, setDriversMarker] = useState<any>([])
 
   const wSRecibed = () => {
-    const socket = io('http://3.218.160.237:3000');
+    const socket = io('http://192.168.1.70:3000');
 
     socket.on('connect', function () {
       console.log('Websocket Connected with App');
     });
 
-    socket.on('admin', (msg) => {
+    socket.on('empresa_' + user.id_empresa, (msg) => {
 
       setDriversMarker(msg)
     });

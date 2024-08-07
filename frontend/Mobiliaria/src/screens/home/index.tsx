@@ -1,5 +1,5 @@
 import React, { useEffect } from "react"
-import { FlatList, RefreshControl, ScrollView, Text, View } from "react-native";
+import { FlatList, Platform, RefreshControl, ScrollView, Text, View } from "react-native";
 import { CalendarList } from 'react-native-calendars'
 import { LocaleConfig } from 'react-native-calendars';
 import { Dimensions } from 'react-native';
@@ -20,7 +20,6 @@ import {PermissionsAndroid} from 'react-native';
 import useReduxUser from "@hooks/useReduxUser";
 import Toast from "react-native-toast-message";
 import { sendLocationWS } from "@utils/locationForegraund";
-PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
 
 LocaleConfig.locales['es'] = {
     monthNames: [
@@ -63,20 +62,24 @@ const Home = ({
     const { user } = useReduxUser()
 
     const requestUserPermissions = async () => {
+
+        if(Platform.OS === 'android') {
+            PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+        }
         const authStatus = await messaging().requestPermission();
         const enabled =
         authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
         authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
         if (enabled) {
-            console.log('Authorization status:', authStatus);
             getToken();
         }
     }
 
     const getToken = async () => {
         try {
-            const token: any = await messaging().getAPNSToken;
+            const token = await messaging().getToken();
+            
             await messaging().subscribeToTopic(`company${user.id_empresa}`)
             const response = await authService.tokenUser(user.id_usuario, token)
             
@@ -186,7 +189,7 @@ const Home = ({
   
         setLoading(true)
         getEvents()
-        // sendLocationWS(user)
+        sendLocationWS(user)
         const date = new Date().toISOString().split('T')[0]
         const arrDate = date.split('-') 
         
