@@ -13,11 +13,17 @@ Geolocation.setRNConfiguration({
 
 export const sendLocationWS = async (user: IUser) => {
   let location: any = null;
-  const socket = io('http://3.218.160.237:3000');
+  let lastLocation: any = null
+  const socket = io('http://192.168.1.70:3000');
   
   socket.on('connect', function () { 
     console.log('Websocket Connected with App');
   });
+
+  socket.on('error', function (error: any) {
+    console.log('error socket' , error);
+    
+  })
 
   socket.on('event', (msg) => { console.log('msg',msg)});
 
@@ -32,10 +38,13 @@ export const sendLocationWS = async (user: IUser) => {
     // Example of an infinite loop task
     const { delay } = taskDataArguments;
     await new Promise(async (resolve) => {
-      for (let i = 0; BackgroundService.isRunning(); i++) {        
+      for (let i = 0; BackgroundService.isRunning(); i++) {    
+        console.log(location, 'location');
+            
         if (location) {
-          // location.coords.longitude = '-104.6608'
-          // location.coords.latitude = '24.0248'
+          lastLocation = location;
+          location.coords.longitude = '-104.6608'
+          location.coords.latitude = '24.0248'
           // user.id_usuario = 1
           socket.emit('location',{
             type: 'location',

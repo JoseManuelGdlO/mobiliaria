@@ -45,6 +45,8 @@ io.on('connect', (socket: any) => {
     }, {});
 
     Object.values(groupedObjects).forEach((item: any) => { 
+      console.log('id empresa', item[0].user.id_empresa, item);
+      
       socket.broadcast.emit('empresa_'+ item[0].user.id_empresa, item)
     });
 
@@ -71,7 +73,7 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-    res.json({ message: "version: 0.3.3" });
+    res.json({ message: "version: 0.3.4" });
 });
 
 app.use("/auth", authRouter);
