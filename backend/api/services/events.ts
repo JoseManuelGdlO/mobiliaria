@@ -344,7 +344,9 @@ console.log(body.evento.fecha_envio_evento);
 
     saveHistorical(event.insertId, idUsuario, "Creación");
 
-    // sendNotification(`el dia ${body.evento.fecha_envio_evento}, ${body.mobiliario.length} items rentados`, "Nuevo evento", id, idUsuario);
+    if(body.rec && !body.rec) {
+     sendNotification(`el dia ${body.evento.fecha_envio_evento}, ${body.mobiliario.length} items rentados`, "Nuevo evento", id, idUsuario);
+    }
     await connection.commit();
     return 201;
   } catch (error) {

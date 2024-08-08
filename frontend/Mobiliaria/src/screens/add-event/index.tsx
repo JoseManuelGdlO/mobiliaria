@@ -170,7 +170,8 @@ const AddEvent = ({
         const body = {
             evento: event,
             mobiliario: mobiliario,
-            costo
+            costo,
+            rec: false
         }
 
         try {            
