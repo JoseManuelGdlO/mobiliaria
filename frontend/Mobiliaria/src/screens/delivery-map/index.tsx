@@ -34,7 +34,7 @@ const DeliveryMap = (): JSX.Element => {
   const [driversMarker, setDriversMarker] = useState<any>([])
 
   const wSRecibed = () => {
-    const socket = io('http://192.168.1.70:3000');
+    const socket = io('http://192.168.0.21:3000');
 
     socket.on('connect', function () {
       console.log('Websocket Connected with App');

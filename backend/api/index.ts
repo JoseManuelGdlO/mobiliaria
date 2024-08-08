@@ -45,7 +45,7 @@ io.on('connect', (socket: any) => {
     }, {});
 
     Object.values(groupedObjects).forEach((item: any) => { 
-      console.log('id empresa', item[0].user.id_empresa, item);
+      // console.log('id empresa', item[0].user.id_empresa, item);
       
       socket.broadcast.emit('empresa_'+ item[0].user.id_empresa, item)
     });

@@ -175,6 +175,7 @@ export const addRecurrentEvent = async (body: any, recTime: number, weekDays: an
         const newDate = formatDateString(date.toString())
         body.evento.fecha_envio_evento = newDate
         body.evento.fecha_recoleccion_evento = newDate
+        body.rec = true
         if(!paymentFlag){
             body.evento.pago = 0
             body.costo.anticipo = 0
