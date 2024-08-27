@@ -349,11 +349,16 @@ async function addEvent(body: any, id: number, idUsuario: number) {
       );
     }
 
+    if(
+      body.paquetes
+    ) {
     for (const paquete of body.paquetes) {
       await connection.execute(
         `INSERT INTO inventario_disponibilidad_mob (fecha_evento, hora_evento, id_mob, ocupados, id_evento, hora_recoleccion, costo, package)
                 VALUES ('${body.evento.fecha_envio_evento}', '${body.evento.hora_envio_evento}', ${paquete.id}, ${paquete.cantidad},${event.insertId}, '${body.evento.hora_recoleccion_evento}', ${paquete.precio}, 1)`
       );
+    }
+
     }
 
     const [paymenth] = await connection.execute(
