@@ -3,7 +3,7 @@ import axios from "axios"
 import { GET_REPORTS } from "./endpoints"
 
 export const getReports = async (months: number): Promise<any> => {
-    const url = `http://3.218.160.237:8000${GET_REPORTS}?months=${months}`
+    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${GET_REPORTS}?months=${months}`
 
     const instance = axios.create({
         baseURL: url,

@@ -115,7 +115,9 @@ const EventDetail = ({
                 paddingVertical: 5
             }}>
                 <View>
-                    <Text style={{ color: '#9E2EBE', fontFamily: fonts.Roboto.Regular, fontSize: 15 }}>{item.nombre_mob}</Text>
+                    <Text style={{ color: '#9E2EBE', fontFamily: fonts.Roboto.Regular, fontSize: 15 }}>{item.nombre_mob ? item.nombre_mob : item.nombre}
+                        { item.package === 1 && <Text style={{ color: 'gray', fontFamily: fonts.Roboto.BlackItalic, fontSize: 10 }}> paquete</Text> }
+                    </Text>
                     <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12 }}>{item.ocupados} Rentado{item.ocupados !== 1 && 's'}</Text>
                 </View>
                 <TouchableOpacity onPress={() => {
@@ -388,6 +390,12 @@ const EventDetail = ({
                                 width: '100%',
                             }}>
                                 <View style={{ paddingTop: 10 }}>
+                                    <Text style={{ fontFamily: fonts.Roboto.Bold, fontSize: 12 }}>
+                                        <Text style={{fontFamily: fonts.Roboto.MediumItalic, color: '#488aff'}}>IVA.-</Text> {event?.event?.iva === 1 ? 'Si ' : 'No ' } 
+                                        <Text style={{fontFamily: fonts.Roboto.MediumItalic, color: '#488aff'}}>Descuento.-</Text>{ ' ' + event?.event?.descuento +  ' '}
+                                        <Text style={{fontFamily: fonts.Roboto.MediumItalic, color: '#488aff'}}>flete.-</Text> { event?.event?.flete +  ' ' }
+                                    </Text>
+                                 
                                     <Text style={{ fontFamily: fonts.Roboto.Medium, fontSize: 12 }}>Costo del evento.- {event?.payments[event?.payments.length - 1]?.costo_total.toFixed(2)} </Text>
                                     <Text style={{ fontFamily: fonts.Roboto.Medium, fontSize: 12 }}>Anticipo.- {event?.payments[event?.payments.length - 1]?.anticipo} </Text>
                                     <Text style={{ fontFamily: fonts.Roboto.Medium, fontSize: 12 }}>Saldo al corte.- {event?.payments[event?.payments.length - 1]?.saldo.toFixed(2)} </Text>

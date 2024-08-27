@@ -1,3 +1,4 @@
+import { IPackage } from "./packages"
 
 export interface IEventDetail {
     event: IEvent,
@@ -48,7 +49,7 @@ export interface IPayment {
     abono: any
 }
 
-export interface IInventaryRent {
+export interface IInventaryRent extends IPackage {
     nombre_mob: string,
     costo_mob: number,
     id_mob: number,

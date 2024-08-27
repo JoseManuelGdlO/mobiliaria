@@ -8,4 +8,8 @@ export interface IPackage {
     availiable?: number,
     products: IInventary[]
     cantidad?: number
+    package?: number
+    fecha_evento?: string,
+    hora_evento?: string,
+    hora_recoleccion?: string,
 }

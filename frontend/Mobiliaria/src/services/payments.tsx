@@ -3,7 +3,7 @@ import { getAccessTokenAsync } from "@utils/token"
 import { ADD_FLETE, ADD_PAYMENTS, GET_PAYMENTS } from "./endpoints"
 
 export const getPayments = async (): Promise<any> => {
-    const url = `http://3.218.160.237:8000${GET_PAYMENTS}`
+    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${GET_PAYMENTS}`
 
     const instance = axios.create({
         baseURL: url,
@@ -25,7 +25,7 @@ export const getPayments = async (): Promise<any> => {
 }
 
 export const addPayment = async (body: any): Promise<any> => {
-    const url = `http://3.218.160.237:8000${ADD_PAYMENTS}`
+    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${ADD_PAYMENTS}`
 
     const instance = axios.create({
         baseURL: url,
@@ -47,7 +47,7 @@ export const addPayment = async (body: any): Promise<any> => {
 }
 
 export const addFlete = async (body: any, id: number): Promise<any> => {
-    const url = `http://3.218.160.237:8000${ADD_FLETE}?id=${id}`
+    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${ADD_FLETE}?id=${id}`
 
     const instance = axios.create({
         baseURL: url,
