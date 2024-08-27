@@ -1,9 +1,7 @@
 import { db } from "./db";
 import { helper } from "../helper";
 import { saveHistorical } from "../libs/historical";
-const { google } = require("googleapis");
-const SCOPES = "https://www.googleapis.com/auth/firebase.messaging";
-const axios = require("axios");
+import { getAccessToken, sendNotification } from "../libs/notifications";
 
 async function getEvents(id: number) {
   let code = 200;
@@ -45,19 +43,27 @@ async function getDetails(id: number) {
     }
 
     rows = await db.query(
-      `select a.nombre_mob, a.costo_mob, b.id_mob, b.ocupados, b.id_evento, b.id_fecha,
-      b.fecha_evento
-      from inventario_mob a, inventario_disponibilidad_mob b where b.id_mob = a.id_mob and id_evento='${id}'`
+      `select a.nombre_mob, b.costo, b.id_mob, b.ocupados, b.id_evento, b.id_fecha,
+      b.fecha_evento, b.package
+      from inventario_mob a, inventario_disponibilidad_mob b where b.id_mob = a.id_mob and id_evento='${id}' AND  b.package IS NULL`
     );
-
     let items = helper.emptyOrRows(rows);
 
+    rows = await db.query(
+      `select a.nombre, b.costo, b.id_mob, b.ocupados, b.id_evento, b.id_fecha,
+      b.fecha_evento, b.package
+      from paquetes a, inventario_disponibilidad_mob b where b.id_mob = a.id and id_evento='${id}' AND  b.package = 1`
+    );
+
+    let packages = helper.emptyOrRows(rows);
+
+    items = [...items, ...packages];
     rows = await db.query(
       `SELECT P.* 
         FROM pagos_mob P
         LEFT JOIN evento_mob E
         ON P.id_evento = E.id_evento
-        WHERE P.id_evento ='${id}'`
+        WHERE P.id_evento =${id}`
     );
 
     let payments = helper.emptyOrRows(rows);
@@ -323,17 +329,24 @@ console.log(body.evento.fecha_envio_evento);
 
   try {
     const [event] = await connection.execute(
-      `INSERT INTO evento_mob (nombre_evento, id_empresa, tipo_evento, fecha_envio_evento, hora_envio_evento, fecha_recoleccion_evento, hora_recoleccion_evento, pagado_evento, nombre_titular_evento, direccion_evento ,telefono_titular_evento, descuento, iva, flete, lat, lng, url, id_creador)
+      `INSERT INTO evento_mob (nombre_evento, id_empresa, tipo_evento, fecha_envio_evento, hora_envio_evento, fecha_recoleccion_evento, hora_recoleccion_evento, pagado_evento, nombre_titular_evento, direccion_evento ,telefono_titular_evento, descuento, iva, flete, lat, lng, url, id_creador, notificacion_envio, notificacion_recoleccion)
             VALUES ('${body.evento.nombre_evento}',${id}, '${body.evento.tipo_evento}', '${body.evento.fecha_envio_evento}',
                  	'${body.evento.hora_envio_evento}', '${body.evento.fecha_recoleccion_evento}', '${body.evento.hora_recoleccion_evento}',
                  		'${body.evento.pagado_evento}', '${body.evento.nombre_titular_evento}', '${body.evento.direccion_evento}', '${body.evento.telefono_titular_evento}',
-                 		${body.evento.descuento}, ${body.evento.ivavalor}, ${body.evento.fletevalor}, '${body.evento.maps.lat}', '${body.evento.maps.lng}', '${body.evento.maps.url}', ${idUsuario})`
+                 		${body.evento.descuento}, ${body.evento.ivavalor}, ${body.evento.fletevalor}, '${body.evento.maps.lat}', '${body.evento.maps.lng}', '${body.evento.maps.url}', ${idUsuario}, '${body.notifications.send}', '${body.notifications.recolected}')`
     );
 
     for (const mobiliario of body.mobiliario) {
       await connection.execute(
         `INSERT INTO inventario_disponibilidad_mob (fecha_evento, hora_evento, id_mob, ocupados, id_evento, hora_recoleccion, costo)
                 VALUES ('${mobiliario.fecha_evento}', '${mobiliario.hora_evento}', ${mobiliario.id_mob}, ${mobiliario.ocupados},${event.insertId}, '${mobiliario.hora_recoleccion}', ${mobiliario.costo})`
+      );
+    }
+
+    for (const paquete of body.paquetes) {
+      await connection.execute(
+        `INSERT INTO inventario_disponibilidad_mob (fecha_evento, hora_evento, id_mob, ocupados, id_evento, hora_recoleccion, costo, package)
+                VALUES ('${body.evento.fecha_envio_evento}', '${body.evento.hora_envio_evento}', ${paquete.id}, ${paquete.cantidad},${event.insertId}, '${body.evento.hora_recoleccion_evento}', ${paquete.precio}, 1)`
       );
     }
 
@@ -355,111 +368,6 @@ console.log(body.evento.fecha_envio_evento);
     console.info("Rollback successful");
     return 405;
   }
-}
-
-async function getAccessToken(): Promise<string> {
-  return new Promise(function (resolve, reject) {
-    const key = require("../assets/eventivakey.json");
-    
-    const jwtClient = new google.auth.JWT(
-      'firebase-adminsdk-ls7d0@eventivapp.iam.gserviceaccount.com',
-      "../assets/eventivakey.json",
-      "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCPN8Pj1AwGe/Ok\nN7bhpuvXxY4YiQjBdRjh29MW7J24D0PyQH+x0G7Mar+c3j443GupzTUPgIqmTXNe\n1Psfi/8hJU4KgWrGIoU4mI43mTGkjbTjRfRYy3Y/jCriNmDUoxCXjsrO2BVHGXu7\nQtVAD2SRgEF17TO+y5oea8aP06JvRYYmcVn8hejQjf31VEht9FiJVhEylYVI2riZ\nxGkD0Tfi73w0deWv7KH53zDq5tmkydMGmSvicZaybzYMXmfmLaKOPXfka325Mbnn\nsIMjEqKprXQfmKAQ50EQ9Jgb0bkkuhpdMgbiCLN2lqvMKRmQ1zpsitRFLPMoKqTi\nnPRmW5/vAgMBAAECggEAETecWRtOMXQH9PSttlr20gMcngkmAFEveJeQvO9ygS90\nn6mZWwBlEYtpFawHbEEzaupnN+yKvotjv0F4ycYZbxv+Ucz/z79T/LB6Xby7ob4C\nF6slQOIqM7bfa5UrTDoo7c9rb4pn+cWFK8dRE65wt1KP4WQZaxUsUKlBlFuA6kIS\nCuAXDSLZWL9KQPDkINPjIoXipYnBqYsyquqJ8UUaW78lmypimt/6WJ1CTrpMKacM\n+OF6Anbb3XuxSzoOnY9G6VMe9PAGArTJIq3apM1hEQhlIfjhYdQSvn6fcflOg5qn\nz+KRb1HMa8frHmmzoOqn0Ys6TZDnmbvZ2NpxuKcqwQKBgQDBMtg/HMLVKnyH3P7I\ntyYIsyAbznnqlMccNTOO8bjld6lzYI+/O58SenFfc7RYiqMxNswOUJy8lKB4lEnU\nkM2vtud84KOB/gEQErdK0tgm+u6DzV1/8hVgFjWLn1aC6kJ/8OAnVk6L53NNjDeU\nKUErXHe4PbujCl3VZNZDx7a6pwKBgQC9xbxO0p3TBdYYz8BM7RcNu6na2jH8P3bm\n7XkVII2GVitYr1WFdzVYoXNxKEj7aB2qWUZI5TORlNUP0b0Ab2TqX5wRtuooF7mz\nmN98ayzRmhOF4m8BRcOQOivQowPWzMbcfvVViqtCdIa+yTWwjoDZghckwTJ/uujl\n3ebs/79BeQKBgHCuhxHIZJqPvTJA4xmOONC6KPAO7Wy0ea0qGng04/JyaJKyrySK\nUa0lXRqfEYDS23vIyhtPSRt0VGP/mVAxZMYnl7xuCO+4hkYppF4vu4KAuLyG+xG0\n0GLKkVBuDrcsiry0cQiAfi97PvTr4z63ERuJQwpidx4Q3cmolo/R2/HhAoGAFpDZ\nyIGw9LPf9olVs5AJyr9C/lwtz3H4gJNCb6m0SoIam2wV/k3jkQt5v73rl8GUrXn6\nKpben/QTtdLZ56BXXqtJ0q1ugJ/5nAqUoKXZ6X6pzaTUUFFsZM0WArQvs64cA4Ix\nSB+6J6fVkgA5GyqG1dZrTBqRF7ExGoxddlce9fkCgYAOGhsAgpvVdM6IlTxkjqI1\nKEv8ivgz02Vau90T3Ph2TcmHIHUZ14F1+UkgOqWKHEG885iqyrEtvJAAoMaDag8+\nZ02UrUQuMHNbGBeJrwEK3Fsoogool9TXKUfwkp9SvDehNT3mNgHOZ4wQtJ/+ktY3\ntjnsPUUrJwMgVnGD+7H2KA==\n-----END PRIVATE KEY-----\n",
-      SCOPES,
-      null
-    );
-
-    jwtClient.authorize(function (err: any, tokens: any) {
-      if (err) {
-        reject(err);
-        return;
-      }
-      resolve(tokens.access_token);
-    });
-  });
-};
-
-
-async function AxiosConfig(token: string, notification: any) {
-  
-  
-  try {
-    let config = {
-      method: "post",
-      url: "https://fcm.googleapis.com/v1/projects/eventivapp/messages:send",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      data: notification,
-    };
-
-    const response = await axios(config);
-
-    return response;
-  } catch (error: any) {
-    console.error("Error sending notification:", error);
-    throw error;
-  }
-};
-
-
-async function sendNotification(message: string, title: string, idCompany: number, idUsuario: number) {
-  
-
-  try {
-    const rows = await db.query(
-      `SELECT token FROM usuarios_mobiliaria WHERE id_empresa = ${idCompany} AND token IS NOT NULL AND token != 'undefined'`
-    );
-
-    console.log(rows);
-    
-
-    const rowsUser = await db.query(
-      `SELECT nombre_comp FROM usuarios_mobiliaria WHERE id_usuario = ${idUsuario}`
-    );
-
-    if (rows.length === 0) {
-      return 404;
-    }
-
-    const access_token = await getAccessToken();
-    if (!access_token) {
-      return 404;
-    }
-
-    helper.emptyOrRows(rows).forEach((element: any) => {
-      const notification = JSON.stringify({
-        message: {
-          token: element.token, // this is the fcm token of user which you want to send notification
-          notification: {
-            body: message,
-            title: title,
-          },
-          apns: {
-            headers: {
-              "apns-priority": "10",
-            },
-            payload: {
-              aps: {
-                sound: "default",
-              },
-            },
-          },
-          data: {
-            nombre: rowsUser[0].nombre_comp, // here you can send addition data along with notification 
-          },
-        },
-      });
-      AxiosConfig(access_token, notification);
-    });
-
-    return {code: 201, message: "Notificaciónes enviada"};
-  } catch (error: any) {
-    console.log("error", error.message);
-    return {code: 201, message: error.message};
-  }
-
 }
 
 // Función para enviar notificaciones push
@@ -615,9 +523,14 @@ async function addItems(body: any, idUsuario: number) {
     payment = payment[payment.length - 1];
 
     let discount = event.descuento;
+    let ivavalor = event.iva;
 
     if (discount > 0) {
       sumTotal = sumTotal - (sumTotal * discount) / 100;
+    }
+
+    if(ivavalor === 1) {
+      sumTotal = sumTotal + (sumTotal * 16) / 100;
     }
 
     payment.costo_total += sumTotal;
@@ -727,6 +640,13 @@ async function removeItem(id: number, id_mob: number) {
       `SELECT * FROM inventario_disponibilidad_mob WHERE id_evento = ${id} AND id_mob = ${id_mob}`
     );
 
+    ///function for obtains discont of event
+    let event = await connection.execute(
+      `SELECT descuento, iva FROM evento_mob WHERE id_evento = ${id}`
+    );
+
+    let discount = event[0][0].descuento;
+    let iva = event[0][0].iva;
     item = item[0][0];
 
     let priceRemove = item.costo * item.ocupados;
@@ -737,17 +657,25 @@ async function removeItem(id: number, id_mob: number) {
 
     removePayment = removePayment[0][removePayment[0].length - 1];
 
+    if(discount > 0) {
+      priceRemove = priceRemove - (priceRemove * discount) / 100;
+    }
+    if(iva === 1) {
+      priceRemove = priceRemove + (priceRemove * 16) / 100;
+    }
+
     removePayment.costo_total -= priceRemove;
+    removePayment.saldo -= priceRemove;
 
     await connection.execute(
       `INSERT INTO pagos_mob (id_evento, costo_total, saldo, anticipo)
             VALUES (${id},${removePayment.costo_total},${removePayment.saldo},${removePayment.anticipo})`
     );
 
-    let [event] = await connection.execute(
+    await connection.execute(
       `DELETE FROM inventario_disponibilidad_mob WHERE id_evento = ${id} AND id_mob = ${id_mob}`
     );
-    saveHistorical(id, 1, "Modificación", `Se eliminó ${item.ocupados} ${item.nombre_mob}`);
+    await saveHistorical(id, 1, "Modificación", `Se eliminó ${item.ocupados} ${item.nombre_mob ? item.nombre_mob : item.nombre}`);
     connection.commit();
     return 201;
   } catch (error) {

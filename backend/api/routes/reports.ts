@@ -3,7 +3,14 @@ import express from 'express';
 import jwt_decode from "jwt-decode";
 const clientsService = require('../services/clients');
 const reportService = require('../services/reports');
+const cron = require('node-cron')
 const router = express.Router();
+
+
+// revisa cada hora si hay algun evio por hacerse y envia una notificacion
+const reviewNotifications = () => {
+    reportService.runCron()
+}
 
 router.get('/clients', verifyToken, async function (req: any, res: any, next: any) {
     try {
@@ -30,5 +37,7 @@ router.get('/getReports', verifyToken, async function (req: any, res: any, next:
         next(err);
     }
 });
+
+cron.schedule('*/1 * * * *', reviewNotifications)
 
 module.exports = router;

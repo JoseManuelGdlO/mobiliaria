@@ -39,12 +39,12 @@ const AddEvent = ({
     const navigation = useNavigation<StackNavigationProp<NavigationScreens>>()
     const [event, setEvent] = useState<IEventDetail>({} as IEventDetail)
     const [openAddress, setOpenAddress] = useState<boolean>(false)
-    const [latlon, setLatLon] = useState<any>({url: '', lat: 'none', lng: 'none'})
+    const [latlon, setLatLon] = useState<any>({ url: '', lat: 'none', lng: 'none' })
     const [loading, setLoading] = useState<boolean>(false)
     const { inventaryRx, totalRx, eventRx, packagesRx } = useReduxEvent()
     const [total, setTotal] = useState<number>(totalRx)
-    const [persentage, setPersentage] = useState<string>('')
-    const [flete, setFlete] = useState<string>('')
+    const [persentage, setPersentage] = useState<string>('0')
+    const [flete, setFlete] = useState<string>('0')
     const [iva, setIva] = useState<boolean>(false)
     const [openModalPicker, setOpenModalPicker] = useState<boolean>(false)
     const [toggleSwitch, setToggleSwitch] = useState<boolean>(false)
@@ -53,6 +53,8 @@ const AddEvent = ({
     const [typePicker, setTypePicker] = useState<{ type: number, mode: "date" | "time" | "datetime" }>({ type: ETypesPicker.Recolection, mode: 'date' })
     const [recolectedDay, setRecolectedDay] = useState<{ date: string, hour: string }>({ date: date, hour: '9:00' })
     const [deliveredDay, setDeliveredDay] = useState<{ date: string, hour: string }>({ date: date, hour: '9:00' })
+    const [notificationRecolection, setNotificationRecolection] = useState<string>('0')
+    const [notificationSend, setNotificationSend] = useState<string>('0')
     const [anticipo, SetAnticipo] = useState<string>('')
     const [detailsEvent, setDetailsEvent] = useState<{ titular: string, tipo: string, telefono: string, direccion: string, nombreEvento: string }>({ nombreEvento: 'otro', titular: '', tipo: '', telefono: '', direccion: '' })
     const [openAlert, setOpenAlert] = useState<boolean>(false)
@@ -66,7 +68,7 @@ const AddEvent = ({
 
     const submit = async () => {
 
-        if(toggleSwitch && recTime === 0 || toggleSwitch && selectedItems.length === 0) {
+        if (toggleSwitch && recTime === 0 || toggleSwitch && selectedItems.length === 0) {
 
             Toast.show({
                 type: 'error',
@@ -79,7 +81,7 @@ const AddEvent = ({
             })
             return
         }
-        
+
         if (inventaryRx.length === 0 && packagesRx.length === 0) {
             Toast.show({
                 type: 'error',
@@ -142,24 +144,6 @@ const AddEvent = ({
             })
         })
 
-        packagesRx.forEach((item: IPackage) => {
-            const PktQty = item.cantidad ? item.cantidad : 1
-            item.products.forEach((product) => {
-
-                const prdQty = product.cantidad ? product.cantidad : 1
-                mobiliario.push({
-                    fecha_evento: date,
-                    hora_evento: deliveredDay.hour,
-                    id_mob: product.fkid_inventario,
-                    ocupados: prdQty * PktQty,
-                    hora_recoleccion: recolectedDay.hour,
-                    costo: 0
-                })
-            }
-            )
-        }
-        )
-
         const localAnticipo = anticipo ? Number(anticipo) : 0
         const costo = {
             costo_total: total,
@@ -170,23 +154,27 @@ const AddEvent = ({
         const body = {
             evento: event,
             mobiliario: mobiliario,
+            paquetes: packagesRx,
             costo,
-            rec: false
+            rec: false,
+            notifications: {
+                send: notificationSend,
+                recolected: notificationRecolection
+            }
         }
 
-        try {            
+        try {
+
             await eventService.addEvent(body)
-            if(toggleSwitch) {
+            if (toggleSwitch) {
                 Toast.show({
                     type: 'info',
                     text1: 'Estamos preparando tus eventos recurrentes',
                     text2: 'ten paciencia, esto nos puede tomar mas tiempo',
                     visibilityTime: 15000,
-                    autoHide: true,
-                    onHide: () => {
-                    }
+                    autoHide: true
                 })
-                await eventService.addRecurrentEvent(body, recTime, selectedItems,  parseDateString(date), togglePaymenthSwitch)
+                await eventService.addRecurrentEvent(body, recTime, selectedItems, parseDateString(date), togglePaymenthSwitch)
             }
 
             navigation.navigate('Home', { refresh: true })
@@ -198,10 +186,10 @@ const AddEvent = ({
         }
     }
 
-    const parseDateString =(dateString: string) => {
+    const parseDateString = (dateString: string) => {
         let day, month, year;
         let dateArr = dateString.split('-');
-        if(dateArr[0].length === 2) {
+        if (dateArr[0].length === 2) {
             day = Number(dateArr[0]);
             month = Number(dateArr[1]);
             year = Number(dateArr[2]);
@@ -210,9 +198,9 @@ const AddEvent = ({
             month = Number(dateArr[1]);
             year = Number(dateArr[0]);
         }
-        
+
         return new Date(year, month - 1, day); // El mes se resta por 1 porque los meses en Date van de 0 a 11
-      }
+    }
 
     const changeDate = (days: number) => {
         let localDate = date
@@ -220,7 +208,7 @@ const AddEvent = ({
             const dateEnv = date.split('-')
             localDate = `${dateEnv[2]}-${dateEnv[1]}-${dateEnv[0]}`
         }
-        const olddate = new Date(localDate)        
+        const olddate = new Date(localDate)
         olddate.setDate(olddate.getDate() + days)
         const arr = olddate.toISOString().split('T')[0]
         const arrDate = arr.split('-')
@@ -229,7 +217,7 @@ const AddEvent = ({
     }
 
     const onSelectedItemsChange = (selectedItems: any) => {
-        
+
         setSelectedItems(selectedItems);
     };
 
@@ -354,12 +342,12 @@ const AddEvent = ({
                             style={{ height: 30, width: '100%', backgroundColor: '#488aff', justifyContent: 'center', alignItems: 'center', borderRadius: 5, marginTop: 5 }}>
                             <Text style={{ fontFamily: fonts.Roboto.Regular, color: 'white', fontSize: 12 }}>Agregar en el mapa</Text>
                         </TouchableOpacity>
-                        { latlon.url.lenght !== 0 && <TouchableOpacity onPress={() => {
+                        {latlon.url.lenght !== 0 && <TouchableOpacity onPress={() => {
                             Linking.openURL(latlon.url);
                         }}>
-                            <Text style={{ fontFamily: fonts.Roboto.Regular, color: 'blue', fontSize: 8, fontStyle: "italic"}}>{latlon.url}</Text>
+                            <Text style={{ fontFamily: fonts.Roboto.Regular, color: 'blue', fontSize: 8, fontStyle: "italic" }}>{latlon.url}</Text>
                         </TouchableOpacity>}
-                        <TouchableOpacity style={{ display: "flex", flexDirection: "row", width: '100%'}}>
+                        <TouchableOpacity style={{ display: "flex", flexDirection: "row", width: '100%' }}>
                             <Switch
                                 style={{ paddingTop: 7 }}
                                 trackColor={{ false: "#767577", true: "#00bcbb" }}
@@ -370,102 +358,102 @@ const AddEvent = ({
                             />
                             <Text
                                 style={{
-                                paddingTop: 5,
-                                paddingLeft: 5,
-                                fontFamily: fonts.Roboto.Regular,
-                                color: toggleSwitch ? "#00bcbb" : "#767577",
-                                fontSize: 18,
-                                textAlign: "center",
+                                    paddingTop: 5,
+                                    paddingLeft: 5,
+                                    fontFamily: fonts.Roboto.Regular,
+                                    color: toggleSwitch ? "#00bcbb" : "#767577",
+                                    fontSize: 18,
+                                    textAlign: "center",
                                 }}
                             >
-                                 Evento Recurrente
+                                Evento Recurrente
                             </Text>
                         </TouchableOpacity>
                         {toggleSwitch &&
-                        <View>
-                            <ScrollView>
-                                <MultiSelect
-                                    items={[
-                                        {
-                                            id: 1,
-                                            name: 'Lunes'
-                                          },{
-                                            id: 2,
-                                            name: 'Martes'
-                                          },{
-                                            id: 3,
-                                            name: 'Miercoles'
-                                          },{
-                                            id: 4,
-                                            name: 'Jueves'
-                                          },{
-                                            id: 5,
-                                            name: 'Viernes'
-                                          },{
-                                            id: 6,
-                                            name: 'Sabado'
-                                          },{
-                                            id: 0,
-                                            name: 'Domingo'
-                                          },
-                                    ]}
-                                    uniqueKey="id"
-                                    onSelectedItemsChange={onSelectedItemsChange}
-                                    selectedItems={selectedItems}
-                                    selectText="Dias que se repite"
-                                    searchInputPlaceholderText="dias"
-                                    submitButtonText="Aceptar"
-                                    submitButtonColor="#488aff"
-                                />
-                                
-                                <Text style={{width: '100%'}}>Tiempo de recurrencia</Text>
-                                <RNPickerSelect
-                                    key={5}
-                                    placeholder="Selecciona el tiempo de recurrencia"
-                                    value={recTime}
-                                    onValueChange={(value) => setRecTime(value)}
-                                    items={[
-                                        { label: 'nada', value: 0 },
-                                        { label: '1 mes', value: 1 },
-                                        { label: '2 meses', value: 2 },
-                                        { label: '3 meses', value: 3 },
-                                        { label: '4 meses', value: 4 },
-                                        { label: '5 meses', value: 5 },
-                                        { label: '6 meses', value: 6 },
-                                        { label: '7 meses', value: 7 },
-                                        { label: '8 meses', value: 8 },
-                                        { label: '9 meses', value: 9 },
-                                        { label: '10 meses', value: 10 },
-                                        { label: '11 meses', value: 11 },
-                                        { label: '12 meses', value: 12 },
-                                        { label: '13 meses', value: 13 },
-                                        { label: '14 meses', value: 14 },
-                                    ]}
-                                />
-                                <TouchableOpacity style={{ display: "flex", flexDirection: "row", width: '100%'}}>
-                                    <Switch
-                                        style={{ paddingTop: 7 }}
-                                        trackColor={{ false: "#767577", true: "#00bcbb" }}
-                                        thumbColor={togglePaymenthSwitch ? "#488aff" : "#f4f3f4"}
-                                        ios_backgroundColor="#3e3e3e"
-                                        onValueChange={setTogglePaymenthSwitch}
-                                        value={togglePaymenthSwitch}
+                            <View>
+                                <ScrollView>
+                                    <MultiSelect
+                                        items={[
+                                            {
+                                                id: 1,
+                                                name: 'Lunes'
+                                            }, {
+                                                id: 2,
+                                                name: 'Martes'
+                                            }, {
+                                                id: 3,
+                                                name: 'Miercoles'
+                                            }, {
+                                                id: 4,
+                                                name: 'Jueves'
+                                            }, {
+                                                id: 5,
+                                                name: 'Viernes'
+                                            }, {
+                                                id: 6,
+                                                name: 'Sabado'
+                                            }, {
+                                                id: 0,
+                                                name: 'Domingo'
+                                            },
+                                        ]}
+                                        uniqueKey="id"
+                                        onSelectedItemsChange={onSelectedItemsChange}
+                                        selectedItems={selectedItems}
+                                        selectText="Dias que se repite"
+                                        searchInputPlaceholderText="dias"
+                                        submitButtonText="Aceptar"
+                                        submitButtonColor="#488aff"
                                     />
-                                    <Text
-                                        style={{
-                                        paddingTop: 5,
-                                        paddingLeft: 5,
-                                        fontFamily: fonts.Roboto.Regular,
-                                        color: togglePaymenthSwitch ? "#00bcbb" : "#767577",
-                                        fontSize: 12,
-                                        textAlign: "center",
-                                        }}
-                                    >
-                                        Evento pagado
-                                    </Text>
-                                </TouchableOpacity>
-                            </ScrollView>
-                        </View>}
+
+                                    <Text style={{ width: '100%' }}>Tiempo de recurrencia</Text>
+                                    <RNPickerSelect
+                                        key={5}
+                                        placeholder="Selecciona el tiempo de recurrencia"
+                                        value={recTime}
+                                        onValueChange={(value) => setRecTime(value)}
+                                        items={[
+                                            { label: 'nada', value: 0 },
+                                            { label: '1 mes', value: 1 },
+                                            { label: '2 meses', value: 2 },
+                                            { label: '3 meses', value: 3 },
+                                            { label: '4 meses', value: 4 },
+                                            { label: '5 meses', value: 5 },
+                                            { label: '6 meses', value: 6 },
+                                            { label: '7 meses', value: 7 },
+                                            { label: '8 meses', value: 8 },
+                                            { label: '9 meses', value: 9 },
+                                            { label: '10 meses', value: 10 },
+                                            { label: '11 meses', value: 11 },
+                                            { label: '12 meses', value: 12 },
+                                            { label: '13 meses', value: 13 },
+                                            { label: '14 meses', value: 14 },
+                                        ]}
+                                    />
+                                    <TouchableOpacity style={{ display: "flex", flexDirection: "row", width: '100%' }}>
+                                        <Switch
+                                            style={{ paddingTop: 7 }}
+                                            trackColor={{ false: "#767577", true: "#00bcbb" }}
+                                            thumbColor={togglePaymenthSwitch ? "#488aff" : "#f4f3f4"}
+                                            ios_backgroundColor="#3e3e3e"
+                                            onValueChange={setTogglePaymenthSwitch}
+                                            value={togglePaymenthSwitch}
+                                        />
+                                        <Text
+                                            style={{
+                                                paddingTop: 5,
+                                                paddingLeft: 5,
+                                                fontFamily: fonts.Roboto.Regular,
+                                                color: togglePaymenthSwitch ? "#00bcbb" : "#767577",
+                                                fontSize: 12,
+                                                textAlign: "center",
+                                            }}
+                                        >
+                                            Evento pagado
+                                        </Text>
+                                    </TouchableOpacity>
+                                </ScrollView>
+                            </View>}
                         <View style={{ display: 'flex', flexDirection: 'row', marginTop: 20 }}>
                             <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12, paddingTop: 10 }}>Fecha: </Text>
                             <TextInput editable={false} value={date} style={{ width: '90%', borderBottomWidth: 1, paddingVertical: 1, fontFamily: fonts.Roboto.Regular, fontSize: 12 }} ></TextInput>
@@ -473,10 +461,10 @@ const AddEvent = ({
                         </View>
                         <View style={{ display: 'flex', flexDirection: 'row' }}>
                             <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12, paddingTop: 20 }}>Hora de entrega: </Text>
-                            <View style={{ width: '70%', paddingTop: 0, borderBottomColor: '#000', borderBottomWidth: 1}}>
+                            <View style={{ width: '70%', paddingTop: 0, borderBottomColor: '#000', borderBottomWidth: 1 }}>
 
                                 <RNPickerSelect
-                                    style={{inputIOS: { height: 35, paddingTop: 10, paddingLeft: 5 }}}
+                                    style={{ inputIOS: { height: 35, paddingTop: 10, paddingLeft: 5 } }}
                                     key={1}
                                     placeholder="Seleciona la hora"
                                     onValueChange={(value) => setDeliveredDay({ ...deliveredDay, hour: value })}
@@ -500,6 +488,27 @@ const AddEvent = ({
                             </View>
 
                         </View>
+                        <View style={{ display: 'flex', flexDirection: 'row' }}>
+                            <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12, paddingTop: 20 }}>Que me avise: </Text>
+                            <View style={{ width: '70%', paddingTop: 0, borderBottomColor: '#000', borderBottomWidth: 1 }}>
+
+                                <RNPickerSelect
+                                    style={{ inputIOS: { height: 35, paddingTop: 10, paddingLeft: 5 } }}
+                                    key={4}
+                                    placeholder="Seleciona la hora"
+                                    onValueChange={(value) => setNotificationSend(value)}
+                                    items={[
+                                        { label: 'nunca', value: '0' },
+                                        { label: '1 hora antes', value: '1h' },
+                                        { label: '5 horas antes', value: '5h' },
+                                        { label: '1 dia antes', value: '1d' },
+                                        { label: '1 semana antes', value: '1s' },
+                                        { label: '1 mes antes', value: '1m' }
+                                    ]}
+                                />
+                            </View>
+
+                        </View>
 
                         <View style={{ display: 'flex', flexDirection: 'row' }}>
                             <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12, paddingTop: 20 }}>Fecha de recoleccion: </Text>
@@ -508,7 +517,7 @@ const AddEvent = ({
                                 <RNPickerSelect
                                     key={2}
                                     placeholder="Seleciona la hora"
-                                    style={{inputIOS: { height: 35, paddingTop: 10, paddingLeft: 5 }}}
+                                    style={{ inputIOS: { height: 35, paddingTop: 10, paddingLeft: 5 } }}
                                     onValueChange={(value) => {
                                         setRecolectedDay({ ...recolectedDay, date: value })
                                     }
@@ -530,7 +539,7 @@ const AddEvent = ({
                                 <RNPickerSelect
                                     key={3}
                                     placeholder="Seleciona la hora"
-                                    style={{inputIOS: { height: 35, paddingTop: 10, paddingLeft: 5 }}}
+                                    style={{ inputIOS: { height: 35, paddingTop: 10, paddingLeft: 5 } }}
                                     onValueChange={(value) => setRecolectedDay({ ...recolectedDay, hour: value })}
                                     items={[
                                         { label: '9:00', value: '9:00' },
@@ -551,6 +560,28 @@ const AddEvent = ({
                                 />
 
                             </View>
+                        </View>
+
+                        <View style={{ display: 'flex', flexDirection: 'row' }}>
+                            <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12, paddingTop: 20 }}>Que me avise: </Text>
+                            <View style={{ width: '70%', paddingTop: 0, borderBottomColor: '#000', borderBottomWidth: 1 }}>
+
+                                <RNPickerSelect
+                                    style={{ inputIOS: { height: 35, paddingTop: 10, paddingLeft: 5 } }}
+                                    key={4}
+                                    placeholder="Seleciona la hora"
+                                    onValueChange={(value) => setNotificationRecolection(value)}
+                                    items={[
+                                        { label: 'nunca', value: '0' },
+                                        { label: '1 hora antes', value: '1h' },
+                                        { label: '5 horas antes', value: '5h' },
+                                        { label: '1 dia antes', value: '1d' },
+                                        { label: '1 semana antes', value: '1s' },
+                                        { label: '1 mes antes', value: '1m' }
+                                    ]}
+                                />
+                            </View>
+
                         </View>
                     </View>
                     <View style={{ display: 'flex', flexDirection: 'row', paddingTop: 10 }}>
@@ -602,18 +633,19 @@ const AddEvent = ({
 
                     <TouchableOpacity onPress={() => {
 
-                        setTotal(totalRx)
-                        if (flete !== '') {
-                            setTotal(total + parseInt(flete))
+                        let locallyTotal = totalRx
+                        if (flete && flete !== '0') {
+                            locallyTotal = locallyTotal + parseInt(flete)
                         }
 
-                        if (persentage !== '') {
-                            setTotal(total - (total * (parseInt(persentage) / 100)))
+                        if (persentage && persentage !== '0') {
+                            locallyTotal = locallyTotal - (locallyTotal * (parseInt(persentage) / 100))
                         }
 
                         if (iva) {
-                            setTotal(total + (total * .16))
+                            locallyTotal = locallyTotal + (locallyTotal * .16)
                         }
+                        setTotal(locallyTotal)
                     }}
                         style={{ height: 30, width: '100%', backgroundColor: '#488aff', justifyContent: 'center', alignItems: 'center', borderRadius: 5, marginTop: 5 }}>
                         <Text style={{ fontFamily: fonts.Roboto.Regular, color: 'white', fontSize: 12 }}>Confirmar Descuento, flete e IVA</Text>
@@ -682,7 +714,7 @@ const AddEvent = ({
                     ListFooterComponent={() => {
                         return (
                             <View>
-                                {packagesRx.length !== 0 ? <View style={{ height: 200 }} /> :
+                                {packagesRx.length !== 0 ? <View /> :
                                     <TouchableOpacity onPress={() => navigation.goBack()} style={{ justifyContent: 'center', alignItems: 'center' }}>
                                         <Text style={{ fontFamily: fonts.Roboto.Bold, color: '#488aff', fontSize: 16 }}>Agregar material</Text>
                                     </TouchableOpacity>

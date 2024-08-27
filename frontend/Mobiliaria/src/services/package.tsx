@@ -4,7 +4,7 @@ import { IPackage } from "@interfaces/packages";
 import { getAccessTokenAsync } from "@utils/token";
 
 export const getPackages = async (): Promise<any> => {
-    const url = `http://3.218.160.237:8000${GET_PACKAGES}`
+    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${GET_PACKAGES}`
 
     const instance = axios.create({
         baseURL: url,
@@ -27,7 +27,7 @@ export const getPackages = async (): Promise<any> => {
 
 
 export const removePackage = async (id: number): Promise<any> => {
-    const url = `http://3.218.160.237:8000${REMOVE_PACKAGES}?id=${id}`
+    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${REMOVE_PACKAGES}?id=${id}`
     console.log(url);    
 
     const instance = axios.create({
@@ -52,7 +52,7 @@ export const removePackage = async (id: number): Promise<any> => {
 
 
 export const addPackage = async (body: any): Promise<any> => {
-    const url = `http://3.218.160.237:8000${ADD_PACKAGES}`
+    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${ADD_PACKAGES}`
     console.log(url);    
 
     const instance = axios.create({
