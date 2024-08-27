@@ -315,7 +315,13 @@ async function addEvent(body: any, id: number, idUsuario: number) {
   await connection.execute("SET TRANSACTION ISOLATION LEVEL READ COMMITTED");
 
   await connection.beginTransaction();
-console.log(body.evento.fecha_envio_evento);
+  
+  if(!body.notifications) {
+    body.notifications = {
+      send: null,
+      recolected: null
+    }
+  }
 
   let dateEnv = body.evento.fecha_envio_evento.split("-");
   if (dateEnv[0].length === 2) {
