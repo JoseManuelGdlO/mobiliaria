@@ -56,6 +56,7 @@ const Home = ({
     const [total, setTotal] = React.useState('0');
     const [loading, setLoading] = React.useState<boolean>(false);
     const [ requestDate, setRequestDate ] = React.useState<string>('');
+    const [ comingNav, setComingNav ] = React.useState<boolean>(false);
 
     const { colors, fonts } = useTheme();
 
@@ -151,6 +152,8 @@ const Home = ({
         try {
             setTotal('0')
             const response = await eventService.getEventsDay(date)
+            console.log('response', response, date);
+            
             if(response.data.length !== 0){
                 setTotal(formatCurrency(response.total.toString()))
             }
@@ -175,6 +178,7 @@ const Home = ({
     const keyExtractor = (item: (any), index: number): string => index.toString()
 
     const onRefresh = React.useCallback(() => {
+        setComingNav(true)
         setLoading(true)
         setRefreshing(true);
         const date = new Date().toISOString().split('T')[0]
@@ -182,7 +186,18 @@ const Home = ({
         getEvents()
     }, []);
 
-    useEffect(() => {   
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            setLoading(true)
+            getEvents();
+            getEventsDay(requestDate)
+        });
+    
+        return unsubscribe;
+      }, [navigation]);
+
+    useEffect(() => {
+        
         requestUserPermissions()
         subscribeNotifications()
        
@@ -198,19 +213,12 @@ const Home = ({
             getEvents()
         }
         
-        setRequestDate(`${arrDate[2]}-${arrDate[1]}-${arrDate[0]}`)
-        setDateEvent(`${arrDate[2]} de ${monthToString(Number(arrDate[1]))}`)
-        getEventsDay(date)
+        if(comingNav){
+            setRequestDate(`${arrDate[2]}-${arrDate[1]}-${arrDate[0]}`)
+            setDateEvent(`${arrDate[2]} de ${monthToString(Number(arrDate[1]))}`)
+            getEventsDay(date)
+        }
     }, [])
-
-    useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
-            setLoading(true)
-            getEvents();
-        });
-    
-        return unsubscribe;
-      }, [navigation]);
 
     const renderItem = ({
         item,

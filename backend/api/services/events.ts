@@ -318,8 +318,8 @@ async function addEvent(body: any, id: number, idUsuario: number) {
   
   if(!body.notifications) {
     body.notifications = {
-      send: null,
-      recolected: null
+      send: 0,
+      recolected: 0
     }
   }
 

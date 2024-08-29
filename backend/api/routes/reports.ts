@@ -38,6 +38,6 @@ router.get('/getReports', verifyToken, async function (req: any, res: any, next:
     }
 });
 
-cron.schedule('*/1 * * * *', reviewNotifications)
+cron.schedule('1 * * * *', reviewNotifications)
 
 module.exports = router;

@@ -356,7 +356,7 @@ const Packages = (): JSX.Element => {
                   return (
                     <TouchableOpacity
                       onPress={() => {
-                        const newProducts = detailsPackage.products.filter(
+                        const newProducts = detailsPackage.productsBody.filter(
                           (element) => element.id_mob !== item.id_mob
                         );
                         
@@ -523,6 +523,7 @@ const Packages = (): JSX.Element => {
                     })
                     packageService.addPackage(detailsPackage);
                     setPackages([...packages, {id: 0, nombre: detailsPackage.name, descripcion: detailsPackage.description, precio: parseInt(detailsPackage.price), products: detailsPackage.productsBody}]);
+                    setDetailsPackage({ name: "", description: "", price: "", products: [], productsBody: []});
                     getInit();
                   } catch (error) {
                     console.log(error);

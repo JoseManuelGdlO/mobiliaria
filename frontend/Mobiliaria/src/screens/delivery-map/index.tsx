@@ -37,11 +37,12 @@ const DeliveryMap = (): JSX.Element => {
     const socket = io('http://192.168.0.21:3000');
 
     socket.on('connect', function () {
-      console.log('Websocket Connected with App');
+      console.log('Websocket Connected with App in Map');
     });
 
     socket.on('empresa_' + user.id_empresa, (msg) => {
-
+      console.log('Websocket Received', msg);
+      
       setDriversMarker(msg)
     });
 

@@ -170,6 +170,8 @@ const EventDetail = ({
 
     const removeEvent = async () => {
         try {
+            console.log('event?.event?.id_evento', event?.event?.id_evento);
+            
             setLoading(true)
             await eventService.removeEvent(event?.event?.id_evento)
             setLoading(false)

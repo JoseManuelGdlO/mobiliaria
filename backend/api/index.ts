@@ -28,7 +28,6 @@ io.on('connect', (socket: any) => {
 
   socket.on("location", (arg: any) => {
     const location: any = arg;
-    console.log('Location received:', location.user.id_usuario);
 
     if(location.user.rol_usuario !== 'Repartidor') return
     
@@ -73,7 +72,7 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-    res.json({ message: "version: 0.3.7" });
+    res.json({ message: "version: 0.4.0" });
 });
 
 app.use("/auth", authRouter);

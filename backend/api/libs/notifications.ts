@@ -78,7 +78,7 @@ export async function sendNotification(message: string, title: string, idCompany
       }
   
       helper.emptyOrRows(rows).forEach((element: any) => {
-        const notification = JSON.stringify({
+        const notification ={
           message: {
             token: element.token, // this is the fcm token of user which you want to send notification
             notification: {
@@ -96,10 +96,10 @@ export async function sendNotification(message: string, title: string, idCompany
               },
             },
             data: {
-              nombre: idUsuario ? rowsUser[0].nombre_comp : 0, // here you can send addition data along with notification 
+              nombre: String(idUsuario ? rowsUser[0].nombre_comp : 0), // here you can send addition data along with notification 
             },
           },
-        });
+        };
         AxiosConfig(access_token, notification);
       });
   
