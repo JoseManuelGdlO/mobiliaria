@@ -101,6 +101,12 @@ async function runCron() {
       SELECT * FROM evento_mob 
       WHERE 
         (fecha_envio_evento >= ? OR fecha_recoleccion_evento >= ?)
+        AND
+        (notificacion_envio IS NOT NULL OR notificacion_recoleccion IS NOT NULL)
+        AND
+        (notificacion_envio != 'null' OR notificacion_recoleccion != 'null')
+        AND
+        (notificacion_envio != 0 OR notificacion_recoleccion != 0)
     `;
 
     try {
