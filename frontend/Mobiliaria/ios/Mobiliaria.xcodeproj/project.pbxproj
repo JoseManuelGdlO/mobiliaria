@@ -1,935 +1,2741 @@
-// !$*UTF8*$!
-{
-	archiveVersion = 1;
-	classes = {
-	};
-	objectVersion = 54;
-	objects = {
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>archiveVersion</key>
+	<string>1</string>
+	<key>classes</key>
+	<dict/>
+	<key>objectVersion</key>
+	<string>54</string>
+	<key>objects</key>
+	<dict>
+		<key>00DD1BFF1BD5951E006B06BC</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array/>
+			<key>inputPaths</key>
+			<array>
+				<string>$(SRCROOT)/.xcode.env.local</string>
+				<string>$(SRCROOT)/.xcode.env</string>
+			</array>
+			<key>isa</key>
+			<string>PBXShellScriptBuildPhase</string>
+			<key>name</key>
+			<string>Bundle React Native code and images</string>
+			<key>outputPaths</key>
+			<array/>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+			<key>shellPath</key>
+			<string>/bin/sh</string>
+			<key>shellScript</key>
+			<string>set -e
 
-/* Begin PBXBuildFile section */
-		00E356F31AD99517003FC87E /* MobiliariaTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* MobiliariaTests.m */; };
-		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
-		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		14C4C790306545FEBEA53DFE /* SourceSansPro-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 71573E87DB91457A9A23C87A /* SourceSansPro-ExtraLightItalic.ttf */; };
-		1A889B47BF424FA29841AFD7 /* Inter-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8C989FD6DB1848B081715F1E /* Inter-Thin.ttf */; };
-		1C06BD16195545AE9FBC075B /* Roboto-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E310597AB54D4B46B71B307D /* Roboto-Black.ttf */; };
-		1C805D1ADD9C427195EFAC7E /* Inter-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8B33974A23B3404FAAB8B67B /* Inter-Regular.ttf */; };
-		1CF99E2248844ACBADBE23F8 /* SourceSansPro-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5C42074B08984CF481B5A623 /* SourceSansPro-Light.ttf */; };
-		25D17692ABA54A85A5CB8923 /* Inter-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B72F5E4B723A4E14AD2DBFA0 /* Inter-Light.ttf */; };
-		57872007898A41C49475FF95 /* Pods_Mobiliaria_MobiliariaTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37A32DC2B1D7977ACB6F38AB /* Pods_Mobiliaria_MobiliariaTests.framework */; };
-		58277B0363F14B529E36BB00 /* Roboto-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F878C9E3C4344038A8B60773 /* Roboto-BlackItalic.ttf */; };
-		583E88A8CCC045C6BFEC5A90 /* Roboto-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 08B0945050624379B63D4420 /* Roboto-Thin.ttf */; };
-		5862FCE6240E45159EC4FD1D /* SourceSansPro-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F0EACFEB99984F0098F9D97B /* SourceSansPro-Regular.ttf */; };
-		5C8464917A4C4362A2A5A528 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 83E6DE4A109242E4B9BEB0DB /* Roboto-Regular.ttf */; };
-		5CA12AACE76E44CAA3D7B18C /* Roboto-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 35EB162B71014E8D89816EB6 /* Roboto-MediumItalic.ttf */; };
-		61E107F18D554DA6A11186EA /* SourceSansPro-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7B9DD2D33FAB4C8283A404EF /* SourceSansPro-Italic.ttf */; };
-		61E971F208174B9F86FBDDA7 /* SourceSansPro-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D6052103DC6746A099D0052E /* SourceSansPro-BlackItalic.ttf */; };
-		62FD4DE8D003471BB4C8C449 /* SourceSansPro-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D12C0BA3A2443DABEC73208 /* SourceSansPro-LightItalic.ttf */; };
-		641BAFF2D0B245E7BEF6721A /* Roboto-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 45625AC3E26F4EF5A369E6F2 /* Roboto-Bold.ttf */; };
-		67B702F8C0D242E4BB8AF719 /* Roboto-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BE3B66358F7C4C1C9CADE069 /* Roboto-Light.ttf */; };
-		693A1E2DF092444896C73039 /* Roboto-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 92A35EF8F41A490FA3CEA708 /* Roboto-Medium.ttf */; };
-		78BDB6189E09440A805D0BEC /* SourceSansPro-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8C0D5495E89A4550ADC6B010 /* SourceSansPro-SemiBold.ttf */; };
-		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		848BDBD02B86E0F300E0759D /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 848BDBCF2B86E0F300E0759D /* Media.xcassets */; };
-		84B5C7ED2C25686400326FBB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 84B5C7EC2C25686400326FBB /* GoogleService-Info.plist */; };
-		93DF9187877F4B0E9B176141 /* SourceSansPro-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7653DD7516A54AFB89A2AB21 /* SourceSansPro-SemiBoldItalic.ttf */; };
-		9710B6DA89DE4473AB4CEF72 /* Prata-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6AA83E0FE1224C48A35C8BFF /* Prata-Regular.ttf */; };
-		A6FBFF7F87504B33A5FDB21A /* SourceSansPro-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3D78C010F82749DF8460DCCD /* SourceSansPro-Bold.ttf */; };
-		B0DC6F1B324C42A68073B72F /* SourceSansPro-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3E983D9CD3884C76BCAB527A /* SourceSansPro-ExtraLight.ttf */; };
-		B47DB254481847709CF4C797 /* Inter-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 55740931FCA1472F85729744 /* Inter-SemiBold.ttf */; };
-		C3CBC2CEB18339FF8341F1C2 /* Pods_Mobiliaria.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD275DA0B1ABEB5241FCA067 /* Pods_Mobiliaria.framework */; };
-		CA7967A712964543867B564B /* Roboto-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 47170DCA77E147248958BFE8 /* Roboto-Italic.ttf */; };
-		D73A65C2435C44D48E74DD0B /* Roboto-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E4CE86F24E5340DEB8E84531 /* Roboto-BoldItalic.ttf */; };
-		D7760CE8FA844F2C9F472CA2 /* Inter-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC8D6B73C2424BCC93B4B128 /* Inter-ExtraLight.ttf */; };
-		DE10EFDA6F70410B992DA6C1 /* Roboto-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4DB989988AB640CD909AF4D6 /* Roboto-ThinItalic.ttf */; };
-		E82DBD3826594B03BE6C96EA /* Inter-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D62D2DE4EC6343F691867F67 /* Inter-Bold.ttf */; };
-		EACC11FA2F1C47308E90C639 /* SourceSansPro-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F4886D9946B042F58B32C354 /* SourceSansPro-Black.ttf */; };
-		EB333B90DE57477088ECED44 /* Inter-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 222E9AE16A7647FA946C810F /* Inter-ExtraBold.ttf */; };
-		EED7D9B00E364C849C1B85DF /* Inter-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C52D358CA3934131BDF249F9 /* Inter-Black.ttf */; };
-		FAA830DC886C4583B6DD8C77 /* SourceSansPro-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1B83BE6240354853BA42AF5F /* SourceSansPro-BoldItalic.ttf */; };
-		FB78CB0CDB134172ADCE8F8C /* Inter-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0A33363B9EDF4E9081BA2A63 /* Inter-Medium.ttf */; };
-		FB862C0B54CB4B92922AA871 /* Roboto-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 40B6C98F82164686B455CF18 /* Roboto-LightItalic.ttf */; };
-/* End PBXBuildFile section */
+WITH_ENVIRONMENT="../node_modules/react-native/scripts/xcode/with-environment.sh"
+REACT_NATIVE_XCODE="../node_modules/react-native/scripts/react-native-xcode.sh"
 
-/* Begin PBXContainerItemProxy section */
-		00E356F41AD99517003FC87E /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 83CBB9F71A601CBA00E9B192 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 13B07F861A680F5B00A75B9A;
-			remoteInfo = Mobiliaria;
-		};
-/* End PBXContainerItemProxy section */
+/bin/sh -c "$WITH_ENVIRONMENT $REACT_NATIVE_XCODE"
+</string>
+		</dict>
+		<key>00E356EA1AD99517003FC87E</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array>
+				<string>00E356F31AD99517003FC87E</string>
+			</array>
+			<key>isa</key>
+			<string>PBXSourcesBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>00E356EB1AD99517003FC87E</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array>
+				<string>57872007898A41C49475FF95</string>
+			</array>
+			<key>isa</key>
+			<string>PBXFrameworksBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>00E356EC1AD99517003FC87E</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array/>
+			<key>isa</key>
+			<string>PBXResourcesBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>00E356ED1AD99517003FC87E</key>
+		<dict>
+			<key>buildConfigurationList</key>
+			<string>00E357021AD99517003FC87E</string>
+			<key>buildPhases</key>
+			<array>
+				<string>A55EABD7B0C7F3A422A6CC61</string>
+				<string>00E356EA1AD99517003FC87E</string>
+				<string>00E356EB1AD99517003FC87E</string>
+				<string>00E356EC1AD99517003FC87E</string>
+				<string>C59DA0FBD6956966B86A3779</string>
+				<string>F6A41C54EA430FDDC6A6ED99</string>
+			</array>
+			<key>buildRules</key>
+			<array/>
+			<key>dependencies</key>
+			<array>
+				<string>00E356F51AD99517003FC87E</string>
+			</array>
+			<key>isa</key>
+			<string>PBXNativeTarget</string>
+			<key>name</key>
+			<string>MobiliariaTests</string>
+			<key>productName</key>
+			<string>MobiliariaTests</string>
+			<key>productReference</key>
+			<string>00E356EE1AD99517003FC87E</string>
+			<key>productType</key>
+			<string>com.apple.product-type.bundle.unit-test</string>
+		</dict>
+		<key>00E356EE1AD99517003FC87E</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>wrapper.cfbundle</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>MobiliariaTests.xctest</string>
+			<key>sourceTree</key>
+			<string>BUILT_PRODUCTS_DIR</string>
+		</dict>
+		<key>00E356EF1AD99517003FC87E</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>00E356F21AD99517003FC87E</string>
+				<string>00E356F01AD99517003FC87E</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>MobiliariaTests</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>00E356F01AD99517003FC87E</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>00E356F11AD99517003FC87E</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>Supporting Files</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>00E356F11AD99517003FC87E</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.plist.xml</string>
+			<key>path</key>
+			<string>Info.plist</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>00E356F21AD99517003FC87E</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>path</key>
+			<string>MobiliariaTests.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>00E356F31AD99517003FC87E</key>
+		<dict>
+			<key>fileRef</key>
+			<string>00E356F21AD99517003FC87E</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>00E356F41AD99517003FC87E</key>
+		<dict>
+			<key>containerPortal</key>
+			<string>83CBB9F71A601CBA00E9B192</string>
+			<key>isa</key>
+			<string>PBXContainerItemProxy</string>
+			<key>proxyType</key>
+			<string>1</string>
+			<key>remoteGlobalIDString</key>
+			<string>13B07F861A680F5B00A75B9A</string>
+			<key>remoteInfo</key>
+			<string>Mobiliaria</string>
+		</dict>
+		<key>00E356F51AD99517003FC87E</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXTargetDependency</string>
+			<key>target</key>
+			<string>13B07F861A680F5B00A75B9A</string>
+			<key>targetProxy</key>
+			<string>00E356F41AD99517003FC87E</string>
+		</dict>
+		<key>00E356F61AD99517003FC87E</key>
+		<dict>
+			<key>baseConfigurationReference</key>
+			<string>5B7EB9410499542E8C5724F5</string>
+			<key>buildSettings</key>
+			<dict>
+				<key>BUNDLE_LOADER</key>
+				<string>$(TEST_HOST)</string>
+				<key>GCC_PREPROCESSOR_DEFINITIONS</key>
+				<array>
+					<string>DEBUG=1</string>
+					<string>$(inherited)</string>
+				</array>
+				<key>INFOPLIST_FILE</key>
+				<string>MobiliariaTests/Info.plist</string>
+				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
+				<string>12.4</string>
+				<key>LD_RUNPATH_SEARCH_PATHS</key>
+				<array>
+					<string>$(inherited)</string>
+					<string>@executable_path/Frameworks</string>
+					<string>@loader_path/Frameworks</string>
+				</array>
+				<key>OTHER_LDFLAGS</key>
+				<array>
+					<string>-ObjC</string>
+					<string>-lc++</string>
+					<string>$(inherited)</string>
+				</array>
+				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
+				<string>org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)</string>
+				<key>PRODUCT_NAME</key>
+				<string>$(TARGET_NAME)</string>
+				<key>TEST_HOST</key>
+				<string>$(BUILT_PRODUCTS_DIR)/Mobiliaria.app/Mobiliaria</string>
+			</dict>
+			<key>isa</key>
+			<string>XCBuildConfiguration</string>
+			<key>name</key>
+			<string>Debug</string>
+		</dict>
+		<key>00E356F71AD99517003FC87E</key>
+		<dict>
+			<key>baseConfigurationReference</key>
+			<string>89C6BE57DB24E9ADA2F236DE</string>
+			<key>buildSettings</key>
+			<dict>
+				<key>BUNDLE_LOADER</key>
+				<string>$(TEST_HOST)</string>
+				<key>COPY_PHASE_STRIP</key>
+				<string>NO</string>
+				<key>INFOPLIST_FILE</key>
+				<string>MobiliariaTests/Info.plist</string>
+				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
+				<string>12.4</string>
+				<key>LD_RUNPATH_SEARCH_PATHS</key>
+				<array>
+					<string>$(inherited)</string>
+					<string>@executable_path/Frameworks</string>
+					<string>@loader_path/Frameworks</string>
+				</array>
+				<key>OTHER_LDFLAGS</key>
+				<array>
+					<string>-ObjC</string>
+					<string>-lc++</string>
+					<string>$(inherited)</string>
+				</array>
+				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
+				<string>org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)</string>
+				<key>PRODUCT_NAME</key>
+				<string>$(TARGET_NAME)</string>
+				<key>TEST_HOST</key>
+				<string>$(BUILT_PRODUCTS_DIR)/Mobiliaria.app/Mobiliaria</string>
+			</dict>
+			<key>isa</key>
+			<string>XCBuildConfiguration</string>
+			<key>name</key>
+			<string>Release</string>
+		</dict>
+		<key>00E357021AD99517003FC87E</key>
+		<dict>
+			<key>buildConfigurations</key>
+			<array>
+				<string>00E356F61AD99517003FC87E</string>
+				<string>00E356F71AD99517003FC87E</string>
+			</array>
+			<key>defaultConfigurationIsVisible</key>
+			<string>0</string>
+			<key>defaultConfigurationName</key>
+			<string>Release</string>
+			<key>isa</key>
+			<string>XCConfigurationList</string>
+		</dict>
+		<key>00EEFC60759A1932668264C0</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array/>
+			<key>inputFileListPaths</key>
+			<array>
+				<string>${PODS_ROOT}/Target Support Files/Pods-Mobiliaria/Pods-Mobiliaria-frameworks-${CONFIGURATION}-input-files.xcfilelist</string>
+			</array>
+			<key>isa</key>
+			<string>PBXShellScriptBuildPhase</string>
+			<key>name</key>
+			<string>[CP] Embed Pods Frameworks</string>
+			<key>outputFileListPaths</key>
+			<array>
+				<string>${PODS_ROOT}/Target Support Files/Pods-Mobiliaria/Pods-Mobiliaria-frameworks-${CONFIGURATION}-output-files.xcfilelist</string>
+			</array>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+			<key>shellPath</key>
+			<string>/bin/sh</string>
+			<key>shellScript</key>
+			<string>"${PODS_ROOT}/Target Support Files/Pods-Mobiliaria/Pods-Mobiliaria-frameworks.sh"
+</string>
+			<key>showEnvVarsInLog</key>
+			<string>0</string>
+		</dict>
+		<key>08B0945050624379B63D4420</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>Roboto-Thin.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/roboto/Roboto-Thin.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>0A33363B9EDF4E9081BA2A63</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>Inter-Medium.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/Inter/Inter-Medium.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>1001E5C1046E4B9F91FE8AA8</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>C52D358CA3934131BDF249F9</string>
+				<string>D62D2DE4EC6343F691867F67</string>
+				<string>222E9AE16A7647FA946C810F</string>
+				<string>DC8D6B73C2424BCC93B4B128</string>
+				<string>B72F5E4B723A4E14AD2DBFA0</string>
+				<string>0A33363B9EDF4E9081BA2A63</string>
+				<string>8B33974A23B3404FAAB8B67B</string>
+				<string>55740931FCA1472F85729744</string>
+				<string>8C989FD6DB1848B081715F1E</string>
+				<string>6AA83E0FE1224C48A35C8BFF</string>
+				<string>E310597AB54D4B46B71B307D</string>
+				<string>F878C9E3C4344038A8B60773</string>
+				<string>45625AC3E26F4EF5A369E6F2</string>
+				<string>E4CE86F24E5340DEB8E84531</string>
+				<string>47170DCA77E147248958BFE8</string>
+				<string>BE3B66358F7C4C1C9CADE069</string>
+				<string>40B6C98F82164686B455CF18</string>
+				<string>92A35EF8F41A490FA3CEA708</string>
+				<string>35EB162B71014E8D89816EB6</string>
+				<string>83E6DE4A109242E4B9BEB0DB</string>
+				<string>08B0945050624379B63D4420</string>
+				<string>4DB989988AB640CD909AF4D6</string>
+				<string>F4886D9946B042F58B32C354</string>
+				<string>D6052103DC6746A099D0052E</string>
+				<string>3D78C010F82749DF8460DCCD</string>
+				<string>1B83BE6240354853BA42AF5F</string>
+				<string>3E983D9CD3884C76BCAB527A</string>
+				<string>71573E87DB91457A9A23C87A</string>
+				<string>7B9DD2D33FAB4C8283A404EF</string>
+				<string>5C42074B08984CF481B5A623</string>
+				<string>4D12C0BA3A2443DABEC73208</string>
+				<string>F0EACFEB99984F0098F9D97B</string>
+				<string>8C0D5495E89A4550ADC6B010</string>
+				<string>7653DD7516A54AFB89A2AB21</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>Resources</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>13B07F861A680F5B00A75B9A</key>
+		<dict>
+			<key>buildConfigurationList</key>
+			<string>13B07F931A680F5B00A75B9A</string>
+			<key>buildPhases</key>
+			<array>
+				<string>C38B50BA6285516D6DCD4F65</string>
+				<string>FD10A7F022414F080027D42C</string>
+				<string>13B07F871A680F5B00A75B9A</string>
+				<string>13B07F8C1A680F5B00A75B9A</string>
+				<string>13B07F8E1A680F5B00A75B9A</string>
+				<string>00DD1BFF1BD5951E006B06BC</string>
+				<string>00EEFC60759A1932668264C0</string>
+				<string>E235C05ADACE081382539298</string>
+				<string>750AC7AB95030B3C36184672</string>
+			</array>
+			<key>buildRules</key>
+			<array/>
+			<key>dependencies</key>
+			<array/>
+			<key>isa</key>
+			<string>PBXNativeTarget</string>
+			<key>name</key>
+			<string>Mobiliaria</string>
+			<key>productName</key>
+			<string>Mobiliaria</string>
+			<key>productReference</key>
+			<string>13B07F961A680F5B00A75B9A</string>
+			<key>productType</key>
+			<string>com.apple.product-type.application</string>
+		</dict>
+		<key>13B07F871A680F5B00A75B9A</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array>
+				<string>13B07FBC1A68108700A75B9A</string>
+				<string>13B07FC11A68108700A75B9A</string>
+			</array>
+			<key>isa</key>
+			<string>PBXSourcesBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>13B07F8C1A680F5B00A75B9A</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array>
+				<string>C3CBC2CEB18339FF8341F1C2</string>
+			</array>
+			<key>isa</key>
+			<string>PBXFrameworksBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>13B07F8E1A680F5B00A75B9A</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array>
+				<string>848BDBD02B86E0F300E0759D</string>
+				<string>81AB9BB82411601600AC10FF</string>
+				<string>13B07FBF1A68108700A75B9A</string>
+				<string>EED7D9B00E364C849C1B85DF</string>
+				<string>E82DBD3826594B03BE6C96EA</string>
+				<string>EB333B90DE57477088ECED44</string>
+				<string>D7760CE8FA844F2C9F472CA2</string>
+				<string>25D17692ABA54A85A5CB8923</string>
+				<string>FB78CB0CDB134172ADCE8F8C</string>
+				<string>1C805D1ADD9C427195EFAC7E</string>
+				<string>B47DB254481847709CF4C797</string>
+				<string>84B5C7ED2C25686400326FBB</string>
+				<string>1A889B47BF424FA29841AFD7</string>
+				<string>9710B6DA89DE4473AB4CEF72</string>
+				<string>1C06BD16195545AE9FBC075B</string>
+				<string>58277B0363F14B529E36BB00</string>
+				<string>641BAFF2D0B245E7BEF6721A</string>
+				<string>D73A65C2435C44D48E74DD0B</string>
+				<string>CA7967A712964543867B564B</string>
+				<string>67B702F8C0D242E4BB8AF719</string>
+				<string>FB862C0B54CB4B92922AA871</string>
+				<string>693A1E2DF092444896C73039</string>
+				<string>5CA12AACE76E44CAA3D7B18C</string>
+				<string>5C8464917A4C4362A2A5A528</string>
+				<string>583E88A8CCC045C6BFEC5A90</string>
+				<string>DE10EFDA6F70410B992DA6C1</string>
+				<string>EACC11FA2F1C47308E90C639</string>
+				<string>61E971F208174B9F86FBDDA7</string>
+				<string>A6FBFF7F87504B33A5FDB21A</string>
+				<string>FAA830DC886C4583B6DD8C77</string>
+				<string>B0DC6F1B324C42A68073B72F</string>
+				<string>14C4C790306545FEBEA53DFE</string>
+				<string>61E107F18D554DA6A11186EA</string>
+				<string>1CF99E2248844ACBADBE23F8</string>
+				<string>62FD4DE8D003471BB4C8C449</string>
+				<string>5862FCE6240E45159EC4FD1D</string>
+				<string>78BDB6189E09440A805D0BEC</string>
+				<string>93DF9187877F4B0E9B176141</string>
+			</array>
+			<key>isa</key>
+			<string>PBXResourcesBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>13B07F931A680F5B00A75B9A</key>
+		<dict>
+			<key>buildConfigurations</key>
+			<array>
+				<string>13B07F941A680F5B00A75B9A</string>
+				<string>13B07F951A680F5B00A75B9A</string>
+			</array>
+			<key>defaultConfigurationIsVisible</key>
+			<string>0</string>
+			<key>defaultConfigurationName</key>
+			<string>Release</string>
+			<key>isa</key>
+			<string>XCConfigurationList</string>
+		</dict>
+		<key>13B07F941A680F5B00A75B9A</key>
+		<dict>
+			<key>baseConfigurationReference</key>
+			<string>3B4392A12AC88292D35C810B</string>
+			<key>buildSettings</key>
+			<dict>
+				<key>ASSETCATALOG_COMPILER_APPICON_NAME</key>
+				<string>AppIcon</string>
+				<key>CLANG_ENABLE_MODULES</key>
+				<string>YES</string>
+				<key>CODE_SIGN_ENTITLEMENTS</key>
+				<string>Mobiliaria/Mobiliaria.entitlements</string>
+				<key>CODE_SIGN_IDENTITY</key>
+				<string>Apple Development</string>
+				<key>CODE_SIGN_STYLE</key>
+				<string>Automatic</string>
+				<key>CURRENT_PROJECT_VERSION</key>
+				<string>26</string>
+				<key>DEVELOPMENT_TEAM</key>
+				<string>582K6827K7</string>
+				<key>ENABLE_BITCODE</key>
+				<string>NO</string>
+				<key>INFOPLIST_FILE</key>
+				<string>Mobiliaria/Info.plist</string>
+				<key>LD_RUNPATH_SEARCH_PATHS</key>
+				<array>
+					<string>$(inherited)</string>
+					<string>@executable_path/Frameworks</string>
+				</array>
+				<key>MARKETING_VERSION</key>
+				<string>2.0</string>
+				<key>OTHER_LDFLAGS</key>
+				<array>
+					<string>$(inherited)</string>
+					<string>-ObjC</string>
+					<string>-lc++</string>
+				</array>
+				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
+				<string>com.eventivapp.jm.garcia</string>
+				<key>PRODUCT_NAME</key>
+				<string>Mobiliaria</string>
+				<key>PROVISIONING_PROFILE_SPECIFIER</key>
+				<string></string>
+				<key>SWIFT_OPTIMIZATION_LEVEL</key>
+				<string>-Onone</string>
+				<key>SWIFT_VERSION</key>
+				<string>5.0</string>
+				<key>VERSIONING_SYSTEM</key>
+				<string>apple-generic</string>
+			</dict>
+			<key>isa</key>
+			<string>XCBuildConfiguration</string>
+			<key>name</key>
+			<string>Debug</string>
+		</dict>
+		<key>13B07F951A680F5B00A75B9A</key>
+		<dict>
+			<key>baseConfigurationReference</key>
+			<string>5709B34CF0A7D63546082F79</string>
+			<key>buildSettings</key>
+			<dict>
+				<key>ASSETCATALOG_COMPILER_APPICON_NAME</key>
+				<string>AppIcon</string>
+				<key>CLANG_ENABLE_MODULES</key>
+				<string>YES</string>
+				<key>CODE_SIGN_ENTITLEMENTS</key>
+				<string>Mobiliaria/Mobiliaria.entitlements</string>
+				<key>CODE_SIGN_IDENTITY</key>
+				<string>Apple Development</string>
+				<key>CODE_SIGN_STYLE</key>
+				<string>Automatic</string>
+				<key>CURRENT_PROJECT_VERSION</key>
+				<string>26</string>
+				<key>DEVELOPMENT_TEAM</key>
+				<string>582K6827K7</string>
+				<key>INFOPLIST_FILE</key>
+				<string>Mobiliaria/Info.plist</string>
+				<key>LD_RUNPATH_SEARCH_PATHS</key>
+				<array>
+					<string>$(inherited)</string>
+					<string>@executable_path/Frameworks</string>
+				</array>
+				<key>MARKETING_VERSION</key>
+				<string>2.0</string>
+				<key>OTHER_LDFLAGS</key>
+				<array>
+					<string>$(inherited)</string>
+					<string>-ObjC</string>
+					<string>-lc++</string>
+				</array>
+				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
+				<string>com.eventivapp.jm.garcia</string>
+				<key>PRODUCT_NAME</key>
+				<string>Mobiliaria</string>
+				<key>PROVISIONING_PROFILE_SPECIFIER</key>
+				<string></string>
+				<key>SWIFT_VERSION</key>
+				<string>5.0</string>
+				<key>VERSIONING_SYSTEM</key>
+				<string>apple-generic</string>
+			</dict>
+			<key>isa</key>
+			<string>XCBuildConfiguration</string>
+			<key>name</key>
+			<string>Release</string>
+		</dict>
+		<key>13B07F961A680F5B00A75B9A</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>wrapper.application</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>Mobiliaria.app</string>
+			<key>sourceTree</key>
+			<string>BUILT_PRODUCTS_DIR</string>
+		</dict>
+		<key>13B07FAE1A68108700A75B9A</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>84B5C7EE2C25694600326FBB</string>
+				<string>13B07FAF1A68108700A75B9A</string>
+				<string>13B07FB01A68108700A75B9A</string>
+				<string>13B07FB51A68108700A75B9A</string>
+				<string>13B07FB61A68108700A75B9A</string>
+				<string>81AB9BB72411601600AC10FF</string>
+				<string>13B07FB71A68108700A75B9A</string>
+				<string>848BDBCF2B86E0F300E0759D</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>Mobiliaria</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>13B07FAF1A68108700A75B9A</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>name</key>
+			<string>AppDelegate.h</string>
+			<key>path</key>
+			<string>Mobiliaria/AppDelegate.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>13B07FB01A68108700A75B9A</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.cpp.objcpp</string>
+			<key>name</key>
+			<string>AppDelegate.mm</string>
+			<key>path</key>
+			<string>Mobiliaria/AppDelegate.mm</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>13B07FB51A68108700A75B9A</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>folder.assetcatalog</string>
+			<key>name</key>
+			<string>Images.xcassets</string>
+			<key>path</key>
+			<string>Mobiliaria/Images.xcassets</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>13B07FB61A68108700A75B9A</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.plist.xml</string>
+			<key>name</key>
+			<string>Info.plist</string>
+			<key>path</key>
+			<string>Mobiliaria/Info.plist</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>13B07FB71A68108700A75B9A</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>name</key>
+			<string>main.m</string>
+			<key>path</key>
+			<string>Mobiliaria/main.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>13B07FBC1A68108700A75B9A</key>
+		<dict>
+			<key>fileRef</key>
+			<string>13B07FB01A68108700A75B9A</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>13B07FBF1A68108700A75B9A</key>
+		<dict>
+			<key>fileRef</key>
+			<string>13B07FB51A68108700A75B9A</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>13B07FC11A68108700A75B9A</key>
+		<dict>
+			<key>fileRef</key>
+			<string>13B07FB71A68108700A75B9A</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>14C4C790306545FEBEA53DFE</key>
+		<dict>
+			<key>fileRef</key>
+			<string>71573E87DB91457A9A23C87A</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>1A889B47BF424FA29841AFD7</key>
+		<dict>
+			<key>fileRef</key>
+			<string>8C989FD6DB1848B081715F1E</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>1B83BE6240354853BA42AF5F</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>SourceSansPro-BoldItalic.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/SourceSansPro/SourceSansPro-BoldItalic.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>1C06BD16195545AE9FBC075B</key>
+		<dict>
+			<key>fileRef</key>
+			<string>E310597AB54D4B46B71B307D</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>1C805D1ADD9C427195EFAC7E</key>
+		<dict>
+			<key>fileRef</key>
+			<string>8B33974A23B3404FAAB8B67B</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>1CF99E2248844ACBADBE23F8</key>
+		<dict>
+			<key>fileRef</key>
+			<string>5C42074B08984CF481B5A623</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>222E9AE16A7647FA946C810F</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>Inter-ExtraBold.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/Inter/Inter-ExtraBold.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>25D17692ABA54A85A5CB8923</key>
+		<dict>
+			<key>fileRef</key>
+			<string>B72F5E4B723A4E14AD2DBFA0</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>2D16E6871FA4F8E400B85C8A</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>ED297162215061F000B7C4FE</string>
+				<string>DD275DA0B1ABEB5241FCA067</string>
+				<string>37A32DC2B1D7977ACB6F38AB</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>Frameworks</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>35EB162B71014E8D89816EB6</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>Roboto-MediumItalic.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/roboto/Roboto-MediumItalic.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>37A32DC2B1D7977ACB6F38AB</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>wrapper.framework</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>Pods_Mobiliaria_MobiliariaTests.framework</string>
+			<key>sourceTree</key>
+			<string>BUILT_PRODUCTS_DIR</string>
+		</dict>
+		<key>3B4392A12AC88292D35C810B</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.xcconfig</string>
+			<key>name</key>
+			<string>Pods-Mobiliaria.debug.xcconfig</string>
+			<key>path</key>
+			<string>Target Support Files/Pods-Mobiliaria/Pods-Mobiliaria.debug.xcconfig</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>3D78C010F82749DF8460DCCD</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>SourceSansPro-Bold.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/SourceSansPro/SourceSansPro-Bold.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>3E983D9CD3884C76BCAB527A</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>SourceSansPro-ExtraLight.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/SourceSansPro/SourceSansPro-ExtraLight.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>40B6C98F82164686B455CF18</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>Roboto-LightItalic.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/roboto/Roboto-LightItalic.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>45625AC3E26F4EF5A369E6F2</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>Roboto-Bold.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/roboto/Roboto-Bold.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>47170DCA77E147248958BFE8</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>Roboto-Italic.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/roboto/Roboto-Italic.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>4D12C0BA3A2443DABEC73208</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>SourceSansPro-LightItalic.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/SourceSansPro/SourceSansPro-LightItalic.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>4DB989988AB640CD909AF4D6</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>Roboto-ThinItalic.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/roboto/Roboto-ThinItalic.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>55740931FCA1472F85729744</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>Inter-SemiBold.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/Inter/Inter-SemiBold.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>5709B34CF0A7D63546082F79</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.xcconfig</string>
+			<key>name</key>
+			<string>Pods-Mobiliaria.release.xcconfig</string>
+			<key>path</key>
+			<string>Target Support Files/Pods-Mobiliaria/Pods-Mobiliaria.release.xcconfig</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>57872007898A41C49475FF95</key>
+		<dict>
+			<key>fileRef</key>
+			<string>37A32DC2B1D7977ACB6F38AB</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>58277B0363F14B529E36BB00</key>
+		<dict>
+			<key>fileRef</key>
+			<string>F878C9E3C4344038A8B60773</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>583E88A8CCC045C6BFEC5A90</key>
+		<dict>
+			<key>fileRef</key>
+			<string>08B0945050624379B63D4420</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>5862FCE6240E45159EC4FD1D</key>
+		<dict>
+			<key>fileRef</key>
+			<string>F0EACFEB99984F0098F9D97B</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>5B7EB9410499542E8C5724F5</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.xcconfig</string>
+			<key>name</key>
+			<string>Pods-Mobiliaria-MobiliariaTests.debug.xcconfig</string>
+			<key>path</key>
+			<string>Target Support Files/Pods-Mobiliaria-MobiliariaTests/Pods-Mobiliaria-MobiliariaTests.debug.xcconfig</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>5C42074B08984CF481B5A623</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>SourceSansPro-Light.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/SourceSansPro/SourceSansPro-Light.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>5C8464917A4C4362A2A5A528</key>
+		<dict>
+			<key>fileRef</key>
+			<string>83E6DE4A109242E4B9BEB0DB</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>5CA12AACE76E44CAA3D7B18C</key>
+		<dict>
+			<key>fileRef</key>
+			<string>35EB162B71014E8D89816EB6</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>61E107F18D554DA6A11186EA</key>
+		<dict>
+			<key>fileRef</key>
+			<string>7B9DD2D33FAB4C8283A404EF</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>61E971F208174B9F86FBDDA7</key>
+		<dict>
+			<key>fileRef</key>
+			<string>D6052103DC6746A099D0052E</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>62FD4DE8D003471BB4C8C449</key>
+		<dict>
+			<key>fileRef</key>
+			<string>4D12C0BA3A2443DABEC73208</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>641BAFF2D0B245E7BEF6721A</key>
+		<dict>
+			<key>fileRef</key>
+			<string>45625AC3E26F4EF5A369E6F2</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>67B702F8C0D242E4BB8AF719</key>
+		<dict>
+			<key>fileRef</key>
+			<string>BE3B66358F7C4C1C9CADE069</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>693A1E2DF092444896C73039</key>
+		<dict>
+			<key>fileRef</key>
+			<string>92A35EF8F41A490FA3CEA708</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>6AA83E0FE1224C48A35C8BFF</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>Prata-Regular.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/Prata/Prata-Regular.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>71573E87DB91457A9A23C87A</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>SourceSansPro-ExtraLightItalic.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/SourceSansPro/SourceSansPro-ExtraLightItalic.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>750AC7AB95030B3C36184672</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array/>
+			<key>inputPaths</key>
+			<array>
+				<string>$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)</string>
+			</array>
+			<key>isa</key>
+			<string>PBXShellScriptBuildPhase</string>
+			<key>name</key>
+			<string>[CP-User] [RNFB] Core Configuration</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+			<key>shellPath</key>
+			<string>/bin/sh</string>
+			<key>shellScript</key>
+			<string>#!/usr/bin/env bash
+#
+# Copyright (c) 2016-present Invertase Limited &amp; Contributors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this library except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 
-/* Begin PBXFileReference section */
-		00E356EE1AD99517003FC87E /* MobiliariaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MobiliariaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		00E356F21AD99517003FC87E /* MobiliariaTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MobiliariaTests.m; sourceTree = "<group>"; };
-		08B0945050624379B63D4420 /* Roboto-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Thin.ttf"; path = "../src/assets/fonts/roboto/Roboto-Thin.ttf"; sourceTree = "<group>"; };
-		0A33363B9EDF4E9081BA2A63 /* Inter-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter-Medium.ttf"; path = "../src/assets/fonts/Inter/Inter-Medium.ttf"; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* Mobiliaria.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mobiliaria.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Mobiliaria/AppDelegate.h; sourceTree = "<group>"; };
-		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = Mobiliaria/AppDelegate.mm; sourceTree = "<group>"; };
-		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Mobiliaria/Images.xcassets; sourceTree = "<group>"; };
-		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Mobiliaria/Info.plist; sourceTree = "<group>"; };
-		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Mobiliaria/main.m; sourceTree = "<group>"; };
-		1B83BE6240354853BA42AF5F /* SourceSansPro-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SourceSansPro-BoldItalic.ttf"; path = "../src/assets/fonts/SourceSansPro/SourceSansPro-BoldItalic.ttf"; sourceTree = "<group>"; };
-		222E9AE16A7647FA946C810F /* Inter-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter-ExtraBold.ttf"; path = "../src/assets/fonts/Inter/Inter-ExtraBold.ttf"; sourceTree = "<group>"; };
-		35EB162B71014E8D89816EB6 /* Roboto-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-MediumItalic.ttf"; path = "../src/assets/fonts/roboto/Roboto-MediumItalic.ttf"; sourceTree = "<group>"; };
-		37A32DC2B1D7977ACB6F38AB /* Pods_Mobiliaria_MobiliariaTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Mobiliaria_MobiliariaTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		3B4392A12AC88292D35C810B /* Pods-Mobiliaria.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mobiliaria.debug.xcconfig"; path = "Target Support Files/Pods-Mobiliaria/Pods-Mobiliaria.debug.xcconfig"; sourceTree = "<group>"; };
-		3D78C010F82749DF8460DCCD /* SourceSansPro-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SourceSansPro-Bold.ttf"; path = "../src/assets/fonts/SourceSansPro/SourceSansPro-Bold.ttf"; sourceTree = "<group>"; };
-		3E983D9CD3884C76BCAB527A /* SourceSansPro-ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SourceSansPro-ExtraLight.ttf"; path = "../src/assets/fonts/SourceSansPro/SourceSansPro-ExtraLight.ttf"; sourceTree = "<group>"; };
-		40B6C98F82164686B455CF18 /* Roboto-LightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-LightItalic.ttf"; path = "../src/assets/fonts/roboto/Roboto-LightItalic.ttf"; sourceTree = "<group>"; };
-		45625AC3E26F4EF5A369E6F2 /* Roboto-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Bold.ttf"; path = "../src/assets/fonts/roboto/Roboto-Bold.ttf"; sourceTree = "<group>"; };
-		47170DCA77E147248958BFE8 /* Roboto-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Italic.ttf"; path = "../src/assets/fonts/roboto/Roboto-Italic.ttf"; sourceTree = "<group>"; };
-		4D12C0BA3A2443DABEC73208 /* SourceSansPro-LightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SourceSansPro-LightItalic.ttf"; path = "../src/assets/fonts/SourceSansPro/SourceSansPro-LightItalic.ttf"; sourceTree = "<group>"; };
-		4DB989988AB640CD909AF4D6 /* Roboto-ThinItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-ThinItalic.ttf"; path = "../src/assets/fonts/roboto/Roboto-ThinItalic.ttf"; sourceTree = "<group>"; };
-		55740931FCA1472F85729744 /* Inter-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter-SemiBold.ttf"; path = "../src/assets/fonts/Inter/Inter-SemiBold.ttf"; sourceTree = "<group>"; };
-		5709B34CF0A7D63546082F79 /* Pods-Mobiliaria.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mobiliaria.release.xcconfig"; path = "Target Support Files/Pods-Mobiliaria/Pods-Mobiliaria.release.xcconfig"; sourceTree = "<group>"; };
-		5B7EB9410499542E8C5724F5 /* Pods-Mobiliaria-MobiliariaTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mobiliaria-MobiliariaTests.debug.xcconfig"; path = "Target Support Files/Pods-Mobiliaria-MobiliariaTests/Pods-Mobiliaria-MobiliariaTests.debug.xcconfig"; sourceTree = "<group>"; };
-		5C42074B08984CF481B5A623 /* SourceSansPro-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SourceSansPro-Light.ttf"; path = "../src/assets/fonts/SourceSansPro/SourceSansPro-Light.ttf"; sourceTree = "<group>"; };
-		6AA83E0FE1224C48A35C8BFF /* Prata-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Prata-Regular.ttf"; path = "../src/assets/fonts/Prata/Prata-Regular.ttf"; sourceTree = "<group>"; };
-		71573E87DB91457A9A23C87A /* SourceSansPro-ExtraLightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SourceSansPro-ExtraLightItalic.ttf"; path = "../src/assets/fonts/SourceSansPro/SourceSansPro-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
-		7653DD7516A54AFB89A2AB21 /* SourceSansPro-SemiBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SourceSansPro-SemiBoldItalic.ttf"; path = "../src/assets/fonts/SourceSansPro/SourceSansPro-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
-		7B9DD2D33FAB4C8283A404EF /* SourceSansPro-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SourceSansPro-Italic.ttf"; path = "../src/assets/fonts/SourceSansPro/SourceSansPro-Italic.ttf"; sourceTree = "<group>"; };
-		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Mobiliaria/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		83E6DE4A109242E4B9BEB0DB /* Roboto-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Regular.ttf"; path = "../src/assets/fonts/roboto/Roboto-Regular.ttf"; sourceTree = "<group>"; };
-		848BDBCF2B86E0F300E0759D /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
-		84B5C7EC2C25686400326FBB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		84B5C7EE2C25694600326FBB /* Mobiliaria.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Mobiliaria.entitlements; path = Mobiliaria/Mobiliaria.entitlements; sourceTree = "<group>"; };
-		89C6BE57DB24E9ADA2F236DE /* Pods-Mobiliaria-MobiliariaTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Mobiliaria-MobiliariaTests.release.xcconfig"; path = "Target Support Files/Pods-Mobiliaria-MobiliariaTests/Pods-Mobiliaria-MobiliariaTests.release.xcconfig"; sourceTree = "<group>"; };
-		8B33974A23B3404FAAB8B67B /* Inter-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter-Regular.ttf"; path = "../src/assets/fonts/Inter/Inter-Regular.ttf"; sourceTree = "<group>"; };
-		8C0D5495E89A4550ADC6B010 /* SourceSansPro-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SourceSansPro-SemiBold.ttf"; path = "../src/assets/fonts/SourceSansPro/SourceSansPro-SemiBold.ttf"; sourceTree = "<group>"; };
-		8C989FD6DB1848B081715F1E /* Inter-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter-Thin.ttf"; path = "../src/assets/fonts/Inter/Inter-Thin.ttf"; sourceTree = "<group>"; };
-		92A35EF8F41A490FA3CEA708 /* Roboto-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Medium.ttf"; path = "../src/assets/fonts/roboto/Roboto-Medium.ttf"; sourceTree = "<group>"; };
-		B72F5E4B723A4E14AD2DBFA0 /* Inter-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter-Light.ttf"; path = "../src/assets/fonts/Inter/Inter-Light.ttf"; sourceTree = "<group>"; };
-		BE3B66358F7C4C1C9CADE069 /* Roboto-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Light.ttf"; path = "../src/assets/fonts/roboto/Roboto-Light.ttf"; sourceTree = "<group>"; };
-		C52D358CA3934131BDF249F9 /* Inter-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter-Black.ttf"; path = "../src/assets/fonts/Inter/Inter-Black.ttf"; sourceTree = "<group>"; };
-		D6052103DC6746A099D0052E /* SourceSansPro-BlackItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SourceSansPro-BlackItalic.ttf"; path = "../src/assets/fonts/SourceSansPro/SourceSansPro-BlackItalic.ttf"; sourceTree = "<group>"; };
-		D62D2DE4EC6343F691867F67 /* Inter-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter-Bold.ttf"; path = "../src/assets/fonts/Inter/Inter-Bold.ttf"; sourceTree = "<group>"; };
-		DC8D6B73C2424BCC93B4B128 /* Inter-ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter-ExtraLight.ttf"; path = "../src/assets/fonts/Inter/Inter-ExtraLight.ttf"; sourceTree = "<group>"; };
-		DD275DA0B1ABEB5241FCA067 /* Pods_Mobiliaria.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Mobiliaria.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E310597AB54D4B46B71B307D /* Roboto-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Black.ttf"; path = "../src/assets/fonts/roboto/Roboto-Black.ttf"; sourceTree = "<group>"; };
-		E4CE86F24E5340DEB8E84531 /* Roboto-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-BoldItalic.ttf"; path = "../src/assets/fonts/roboto/Roboto-BoldItalic.ttf"; sourceTree = "<group>"; };
-		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		F0EACFEB99984F0098F9D97B /* SourceSansPro-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SourceSansPro-Regular.ttf"; path = "../src/assets/fonts/SourceSansPro/SourceSansPro-Regular.ttf"; sourceTree = "<group>"; };
-		F4886D9946B042F58B32C354 /* SourceSansPro-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SourceSansPro-Black.ttf"; path = "../src/assets/fonts/SourceSansPro/SourceSansPro-Black.ttf"; sourceTree = "<group>"; };
-		F878C9E3C4344038A8B60773 /* Roboto-BlackItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-BlackItalic.ttf"; path = "../src/assets/fonts/roboto/Roboto-BlackItalic.ttf"; sourceTree = "<group>"; };
-/* End PBXFileReference section */
+##########################################################################
+##########################################################################
+#
+#  NOTE THAT IF YOU CHANGE THIS FILE YOU MUST RUN pod install AFTERWARDS
+#
+#  This file is installed as an Xcode build script in the project file
+#  by cocoapods, and you will not see your changes until you pod install
+#
+##########################################################################
+##########################################################################
 
-/* Begin PBXFrameworksBuildPhase section */
-		00E356EB1AD99517003FC87E /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				57872007898A41C49475FF95 /* Pods_Mobiliaria_MobiliariaTests.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		13B07F8C1A680F5B00A75B9A /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				C3CBC2CEB18339FF8341F1C2 /* Pods_Mobiliaria.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXFrameworksBuildPhase section */
+set -e
 
-/* Begin PBXGroup section */
-		00E356EF1AD99517003FC87E /* MobiliariaTests */ = {
-			isa = PBXGroup;
-			children = (
-				00E356F21AD99517003FC87E /* MobiliariaTests.m */,
-				00E356F01AD99517003FC87E /* Supporting Files */,
-			);
-			path = MobiliariaTests;
-			sourceTree = "<group>";
-		};
-		00E356F01AD99517003FC87E /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				00E356F11AD99517003FC87E /* Info.plist */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		1001E5C1046E4B9F91FE8AA8 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				C52D358CA3934131BDF249F9 /* Inter-Black.ttf */,
-				D62D2DE4EC6343F691867F67 /* Inter-Bold.ttf */,
-				222E9AE16A7647FA946C810F /* Inter-ExtraBold.ttf */,
-				DC8D6B73C2424BCC93B4B128 /* Inter-ExtraLight.ttf */,
-				B72F5E4B723A4E14AD2DBFA0 /* Inter-Light.ttf */,
-				0A33363B9EDF4E9081BA2A63 /* Inter-Medium.ttf */,
-				8B33974A23B3404FAAB8B67B /* Inter-Regular.ttf */,
-				55740931FCA1472F85729744 /* Inter-SemiBold.ttf */,
-				8C989FD6DB1848B081715F1E /* Inter-Thin.ttf */,
-				6AA83E0FE1224C48A35C8BFF /* Prata-Regular.ttf */,
-				E310597AB54D4B46B71B307D /* Roboto-Black.ttf */,
-				F878C9E3C4344038A8B60773 /* Roboto-BlackItalic.ttf */,
-				45625AC3E26F4EF5A369E6F2 /* Roboto-Bold.ttf */,
-				E4CE86F24E5340DEB8E84531 /* Roboto-BoldItalic.ttf */,
-				47170DCA77E147248958BFE8 /* Roboto-Italic.ttf */,
-				BE3B66358F7C4C1C9CADE069 /* Roboto-Light.ttf */,
-				40B6C98F82164686B455CF18 /* Roboto-LightItalic.ttf */,
-				92A35EF8F41A490FA3CEA708 /* Roboto-Medium.ttf */,
-				35EB162B71014E8D89816EB6 /* Roboto-MediumItalic.ttf */,
-				83E6DE4A109242E4B9BEB0DB /* Roboto-Regular.ttf */,
-				08B0945050624379B63D4420 /* Roboto-Thin.ttf */,
-				4DB989988AB640CD909AF4D6 /* Roboto-ThinItalic.ttf */,
-				F4886D9946B042F58B32C354 /* SourceSansPro-Black.ttf */,
-				D6052103DC6746A099D0052E /* SourceSansPro-BlackItalic.ttf */,
-				3D78C010F82749DF8460DCCD /* SourceSansPro-Bold.ttf */,
-				1B83BE6240354853BA42AF5F /* SourceSansPro-BoldItalic.ttf */,
-				3E983D9CD3884C76BCAB527A /* SourceSansPro-ExtraLight.ttf */,
-				71573E87DB91457A9A23C87A /* SourceSansPro-ExtraLightItalic.ttf */,
-				7B9DD2D33FAB4C8283A404EF /* SourceSansPro-Italic.ttf */,
-				5C42074B08984CF481B5A623 /* SourceSansPro-Light.ttf */,
-				4D12C0BA3A2443DABEC73208 /* SourceSansPro-LightItalic.ttf */,
-				F0EACFEB99984F0098F9D97B /* SourceSansPro-Regular.ttf */,
-				8C0D5495E89A4550ADC6B010 /* SourceSansPro-SemiBold.ttf */,
-				7653DD7516A54AFB89A2AB21 /* SourceSansPro-SemiBoldItalic.ttf */,
-			);
-			name = Resources;
-			sourceTree = "<group>";
-		};
-		13B07FAE1A68108700A75B9A /* Mobiliaria */ = {
-			isa = PBXGroup;
-			children = (
-				84B5C7EE2C25694600326FBB /* Mobiliaria.entitlements */,
-				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
-				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
-				13B07FB51A68108700A75B9A /* Images.xcassets */,
-				13B07FB61A68108700A75B9A /* Info.plist */,
-				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
-				13B07FB71A68108700A75B9A /* main.m */,
-				848BDBCF2B86E0F300E0759D /* Media.xcassets */,
-			);
-			name = Mobiliaria;
-			sourceTree = "<group>";
-		};
-		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				DD275DA0B1ABEB5241FCA067 /* Pods_Mobiliaria.framework */,
-				37A32DC2B1D7977ACB6F38AB /* Pods_Mobiliaria_MobiliariaTests.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Libraries;
-			sourceTree = "<group>";
-		};
-		83CBB9F61A601CBA00E9B192 = {
-			isa = PBXGroup;
-			children = (
-				84B5C7EC2C25686400326FBB /* GoogleService-Info.plist */,
-				13B07FAE1A68108700A75B9A /* Mobiliaria */,
-				832341AE1AAA6A7D00B99B32 /* Libraries */,
-				00E356EF1AD99517003FC87E /* MobiliariaTests */,
-				83CBBA001A601CBA00E9B192 /* Products */,
-				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				BBD78D7AC51CEA395F1C20DB /* Pods */,
-				1001E5C1046E4B9F91FE8AA8 /* Resources */,
-			);
-			indentWidth = 2;
-			sourceTree = "<group>";
-			tabWidth = 2;
-			usesTabs = 0;
-		};
-		83CBBA001A601CBA00E9B192 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				13B07F961A680F5B00A75B9A /* Mobiliaria.app */,
-				00E356EE1AD99517003FC87E /* MobiliariaTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				3B4392A12AC88292D35C810B /* Pods-Mobiliaria.debug.xcconfig */,
-				5709B34CF0A7D63546082F79 /* Pods-Mobiliaria.release.xcconfig */,
-				5B7EB9410499542E8C5724F5 /* Pods-Mobiliaria-MobiliariaTests.debug.xcconfig */,
-				89C6BE57DB24E9ADA2F236DE /* Pods-Mobiliaria-MobiliariaTests.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
-/* End PBXGroup section */
+_MAX_LOOKUPS=2;
+_SEARCH_RESULT=''
+_RN_ROOT_EXISTS=''
+_CURRENT_LOOKUPS=1
+_JSON_ROOT="'react-native'"
+_JSON_FILE_NAME='firebase.json'
+_JSON_OUTPUT_BASE64='e30=' # { }
+_CURRENT_SEARCH_DIR=${PROJECT_DIR}
+_PLIST_BUDDY=/usr/libexec/PlistBuddy
+_TARGET_PLIST="${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}"
+_DSYM_PLIST="${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist"
 
-/* Begin PBXNativeTarget section */
-		00E356ED1AD99517003FC87E /* MobiliariaTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "MobiliariaTests" */;
-			buildPhases = (
-				A55EABD7B0C7F3A422A6CC61 /* [CP] Check Pods Manifest.lock */,
-				00E356EA1AD99517003FC87E /* Sources */,
-				00E356EB1AD99517003FC87E /* Frameworks */,
-				00E356EC1AD99517003FC87E /* Resources */,
-				C59DA0FBD6956966B86A3779 /* [CP] Embed Pods Frameworks */,
-				F6A41C54EA430FDDC6A6ED99 /* [CP] Copy Pods Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				00E356F51AD99517003FC87E /* PBXTargetDependency */,
-			);
-			name = MobiliariaTests;
-			productName = MobiliariaTests;
-			productReference = 00E356EE1AD99517003FC87E /* MobiliariaTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		13B07F861A680F5B00A75B9A /* Mobiliaria */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Mobiliaria" */;
-			buildPhases = (
-				C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */,
-				FD10A7F022414F080027D42C /* Start Packager */,
-				13B07F871A680F5B00A75B9A /* Sources */,
-				13B07F8C1A680F5B00A75B9A /* Frameworks */,
-				13B07F8E1A680F5B00A75B9A /* Resources */,
-				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */,
-				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
-				750AC7AB95030B3C36184672 /* [CP-User] [RNFB] Core Configuration */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = Mobiliaria;
-			productName = Mobiliaria;
-			productReference = 13B07F961A680F5B00A75B9A /* Mobiliaria.app */;
-			productType = "com.apple.product-type.application";
-		};
-/* End PBXNativeTarget section */
+# plist arrays
+_PLIST_ENTRY_KEYS=()
+_PLIST_ENTRY_TYPES=()
+_PLIST_ENTRY_VALUES=()
 
-/* Begin PBXProject section */
-		83CBB9F71A601CBA00E9B192 /* Project object */ = {
-			isa = PBXProject;
-			attributes = {
-				LastUpgradeCheck = 1210;
-				TargetAttributes = {
-					00E356ED1AD99517003FC87E = {
-						CreatedOnToolsVersion = 6.2;
-						TestTargetID = 13B07F861A680F5B00A75B9A;
-					};
-					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1120;
-					};
-				};
-			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Mobiliaria" */;
-			compatibilityVersion = "Xcode 12.0";
-			developmentRegion = en;
-			hasScannedForEncodings = 0;
-			knownRegions = (
-				en,
-				Base,
-			);
-			mainGroup = 83CBB9F61A601CBA00E9B192;
-			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
-			projectDirPath = "";
-			projectRoot = "";
-			targets = (
-				13B07F861A680F5B00A75B9A /* Mobiliaria */,
-				00E356ED1AD99517003FC87E /* MobiliariaTests */,
-			);
-		};
-/* End PBXProject section */
-
-/* Begin PBXResourcesBuildPhase section */
-		00E356EC1AD99517003FC87E /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		13B07F8E1A680F5B00A75B9A /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				848BDBD02B86E0F300E0759D /* Media.xcassets in Resources */,
-				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
-				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				EED7D9B00E364C849C1B85DF /* Inter-Black.ttf in Resources */,
-				E82DBD3826594B03BE6C96EA /* Inter-Bold.ttf in Resources */,
-				EB333B90DE57477088ECED44 /* Inter-ExtraBold.ttf in Resources */,
-				D7760CE8FA844F2C9F472CA2 /* Inter-ExtraLight.ttf in Resources */,
-				25D17692ABA54A85A5CB8923 /* Inter-Light.ttf in Resources */,
-				FB78CB0CDB134172ADCE8F8C /* Inter-Medium.ttf in Resources */,
-				1C805D1ADD9C427195EFAC7E /* Inter-Regular.ttf in Resources */,
-				B47DB254481847709CF4C797 /* Inter-SemiBold.ttf in Resources */,
-				84B5C7ED2C25686400326FBB /* GoogleService-Info.plist in Resources */,
-				1A889B47BF424FA29841AFD7 /* Inter-Thin.ttf in Resources */,
-				9710B6DA89DE4473AB4CEF72 /* Prata-Regular.ttf in Resources */,
-				1C06BD16195545AE9FBC075B /* Roboto-Black.ttf in Resources */,
-				58277B0363F14B529E36BB00 /* Roboto-BlackItalic.ttf in Resources */,
-				641BAFF2D0B245E7BEF6721A /* Roboto-Bold.ttf in Resources */,
-				D73A65C2435C44D48E74DD0B /* Roboto-BoldItalic.ttf in Resources */,
-				CA7967A712964543867B564B /* Roboto-Italic.ttf in Resources */,
-				67B702F8C0D242E4BB8AF719 /* Roboto-Light.ttf in Resources */,
-				FB862C0B54CB4B92922AA871 /* Roboto-LightItalic.ttf in Resources */,
-				693A1E2DF092444896C73039 /* Roboto-Medium.ttf in Resources */,
-				5CA12AACE76E44CAA3D7B18C /* Roboto-MediumItalic.ttf in Resources */,
-				5C8464917A4C4362A2A5A528 /* Roboto-Regular.ttf in Resources */,
-				583E88A8CCC045C6BFEC5A90 /* Roboto-Thin.ttf in Resources */,
-				DE10EFDA6F70410B992DA6C1 /* Roboto-ThinItalic.ttf in Resources */,
-				EACC11FA2F1C47308E90C639 /* SourceSansPro-Black.ttf in Resources */,
-				61E971F208174B9F86FBDDA7 /* SourceSansPro-BlackItalic.ttf in Resources */,
-				A6FBFF7F87504B33A5FDB21A /* SourceSansPro-Bold.ttf in Resources */,
-				FAA830DC886C4583B6DD8C77 /* SourceSansPro-BoldItalic.ttf in Resources */,
-				B0DC6F1B324C42A68073B72F /* SourceSansPro-ExtraLight.ttf in Resources */,
-				14C4C790306545FEBEA53DFE /* SourceSansPro-ExtraLightItalic.ttf in Resources */,
-				61E107F18D554DA6A11186EA /* SourceSansPro-Italic.ttf in Resources */,
-				1CF99E2248844ACBADBE23F8 /* SourceSansPro-Light.ttf in Resources */,
-				62FD4DE8D003471BB4C8C449 /* SourceSansPro-LightItalic.ttf in Resources */,
-				5862FCE6240E45159EC4FD1D /* SourceSansPro-Regular.ttf in Resources */,
-				78BDB6189E09440A805D0BEC /* SourceSansPro-SemiBold.ttf in Resources */,
-				93DF9187877F4B0E9B176141 /* SourceSansPro-SemiBoldItalic.ttf in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/.xcode.env.local",
-				"$(SRCROOT)/.xcode.env",
-			);
-			name = "Bundle React Native code and images";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
-		};
-		00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Mobiliaria/Pods-Mobiliaria-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Mobiliaria/Pods-Mobiliaria-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Mobiliaria/Pods-Mobiliaria-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		750AC7AB95030B3C36184672 /* [CP-User] [RNFB] Core Configuration */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
-			);
-			name = "[CP-User] [RNFB] Core Configuration";
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "#!/usr/bin/env bash\n#\n# Copyright (c) 2016-present Invertase Limited & Contributors\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this library except in compliance with the License.\n# You may obtain a copy of the License at\n#\n#   http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.\n#\n\n##########################################################################\n##########################################################################\n#\n#  NOTE THAT IF YOU CHANGE THIS FILE YOU MUST RUN pod install AFTERWARDS\n#\n#  This file is installed as an Xcode build script in the project file\n#  by cocoapods, and you will not see your changes until you pod install\n#\n##########################################################################\n##########################################################################\n\nset -e\n\n_MAX_LOOKUPS=2;\n_SEARCH_RESULT=''\n_RN_ROOT_EXISTS=''\n_CURRENT_LOOKUPS=1\n_JSON_ROOT=\"'react-native'\"\n_JSON_FILE_NAME='firebase.json'\n_JSON_OUTPUT_BASE64='e30=' # { }\n_CURRENT_SEARCH_DIR=${PROJECT_DIR}\n_PLIST_BUDDY=/usr/libexec/PlistBuddy\n_TARGET_PLIST=\"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}\"\n_DSYM_PLIST=\"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist\"\n\n# plist arrays\n_PLIST_ENTRY_KEYS=()\n_PLIST_ENTRY_TYPES=()\n_PLIST_ENTRY_VALUES=()\n\nfunction setPlistValue {\n  echo \"info:      setting plist entry '$1' of type '$2' in file '$4'\"\n  ${_PLIST_BUDDY} -c \"Add :$1 $2 '$3'\" $4 || echo \"info:      '$1' already exists\"\n}\n\nfunction getFirebaseJsonKeyValue () {\n  if [[ ${_RN_ROOT_EXISTS} ]]; then\n    ruby -Ku -e \"require 'rubygems';require 'json'; output=JSON.parse('$1'); puts output[$_JSON_ROOT]['$2']\"\n  else\n    echo \"\"\n  fi;\n}\n\nfunction jsonBoolToYesNo () {\n  if [[ $1 == \"false\" ]]; then\n    echo \"NO\"\n  elif [[ $1 == \"true\" ]]; then\n    echo \"YES\"\n  else echo \"NO\"\n  fi\n}\n\necho \"info: -> RNFB build script started\"\necho \"info: 1) Locating ${_JSON_FILE_NAME} file:\"\n\nif [[ -z ${_CURRENT_SEARCH_DIR} ]]; then\n  _CURRENT_SEARCH_DIR=$(pwd)\nfi;\n\nwhile true; do\n  _CURRENT_SEARCH_DIR=$(dirname \"$_CURRENT_SEARCH_DIR\")\n  if [[ \"$_CURRENT_SEARCH_DIR\" == \"/\" ]] || [[ ${_CURRENT_LOOKUPS} -gt ${_MAX_LOOKUPS} ]]; then break; fi;\n  echo \"info:      ($_CURRENT_LOOKUPS of $_MAX_LOOKUPS) Searching in '$_CURRENT_SEARCH_DIR' for a ${_JSON_FILE_NAME} file.\"\n  _SEARCH_RESULT=$(find \"$_CURRENT_SEARCH_DIR\" -maxdepth 2 -name ${_JSON_FILE_NAME} -print | /usr/bin/head -n 1)\n  if [[ ${_SEARCH_RESULT} ]]; then\n    echo \"info:      ${_JSON_FILE_NAME} found at $_SEARCH_RESULT\"\n    break;\n  fi;\n  _CURRENT_LOOKUPS=$((_CURRENT_LOOKUPS+1))\ndone\n\nif [[ ${_SEARCH_RESULT} ]]; then\n  _JSON_OUTPUT_RAW=$(cat \"${_SEARCH_RESULT}\")\n  _RN_ROOT_EXISTS=$(ruby -Ku -e \"require 'rubygems';require 'json'; output=JSON.parse('$_JSON_OUTPUT_RAW'); puts output[$_JSON_ROOT]\" || echo '')\n\n  if [[ ${_RN_ROOT_EXISTS} ]]; then\n    if ! python3 --version >/dev/null 2>&1; then echo \"python3 not found, firebase.json file processing error.\" && exit 1; fi\n    _JSON_OUTPUT_BASE64=$(python3 -c 'import json,sys,base64;print(base64.b64encode(bytes(json.dumps(json.loads(open('\"'${_SEARCH_RESULT}'\"', '\"'rb'\"').read())['${_JSON_ROOT}']), '\"'utf-8'\"')).decode())' || echo \"e30=\")\n  fi\n\n  _PLIST_ENTRY_KEYS+=(\"firebase_json_raw\")\n  _PLIST_ENTRY_TYPES+=(\"string\")\n  _PLIST_ENTRY_VALUES+=(\"$_JSON_OUTPUT_BASE64\")\n\n  # config.app_data_collection_default_enabled\n  _APP_DATA_COLLECTION_ENABLED=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"app_data_collection_default_enabled\")\n  if [[ $_APP_DATA_COLLECTION_ENABLED ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FirebaseDataCollectionDefaultEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_APP_DATA_COLLECTION_ENABLED\")\")\n  fi\n\n  # config.analytics_auto_collection_enabled\n  _ANALYTICS_AUTO_COLLECTION=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"analytics_auto_collection_enabled\")\n  if [[ $_ANALYTICS_AUTO_COLLECTION ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FIREBASE_ANALYTICS_COLLECTION_ENABLED\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_AUTO_COLLECTION\")\")\n  fi\n\n  # config.analytics_collection_deactivated\n  _ANALYTICS_DEACTIVATED=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"analytics_collection_deactivated\")\n  if [[ $_ANALYTICS_DEACTIVATED ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FIREBASE_ANALYTICS_COLLECTION_DEACTIVATED\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_DEACTIVATED\")\")\n  fi\n\n  # config.analytics_idfv_collection_enabled\n  _ANALYTICS_IDFV_COLLECTION=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"analytics_idfv_collection_enabled\")\n  if [[ $_ANALYTICS_IDFV_COLLECTION ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_IDFV_COLLECTION_ENABLED\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_IDFV_COLLECTION\")\")\n  fi\n\n  # config.analytics_default_allow_analytics_storage\n  _ANALYTICS_STORAGE=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"analytics_default_allow_analytics_storage\")\n  if [[ $_ANALYTICS_STORAGE ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_DEFAULT_ALLOW_ANALYTICS_STORAGE\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_STORAGE\")\")\n  fi\n\n  # config.analytics_default_allow_ad_storage\n  _ANALYTICS_AD_STORAGE=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"analytics_default_allow_ad_storage\")\n  if [[ $_ANALYTICS_AD_STORAGE ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_STORAGE\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_AD_STORAGE\")\")\n  fi\n\n  # config.analytics_default_allow_ad_user_data\n  _ANALYTICS_AD_USER_DATA=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"analytics_default_allow_ad_user_data\")\n  if [[ $_ANALYTICS_AD_USER_DATA ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_USER_DATA\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_AD_USER_DATA\")\")\n  fi\n\n  # config.analytics_default_allow_ad_personalization_signals\n  _ANALYTICS_PERSONALIZATION=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"analytics_default_allow_ad_personalization_signals\")\n  if [[ $_ANALYTICS_PERSONALIZATION ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_PERSONALIZATION_SIGNALS\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_PERSONALIZATION\")\")\n  fi\n\n  # config.analytics_registration_with_ad_network_enabled\n  _ANALYTICS_REGISTRATION_WITH_AD_NETWORK=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"google_analytics_registration_with_ad_network_enabled\")\n  if [[ $_ANALYTICS_REGISTRATION_WITH_AD_NETWORK ]]; then\n    _PLIST_ENTRY_KEYS+=(\"GOOGLE_ANALYTICS_REGISTRATION_WITH_AD_NETWORK_ENABLED\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_REGISTRATION_WITH_AD_NETWORK\")\")\n  fi\n\n  # config.google_analytics_automatic_screen_reporting_enabled\n  _ANALYTICS_AUTO_SCREEN_REPORTING=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"google_analytics_automatic_screen_reporting_enabled\")\n  if [[ $_ANALYTICS_AUTO_SCREEN_REPORTING ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FirebaseAutomaticScreenReportingEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_ANALYTICS_AUTO_SCREEN_REPORTING\")\")\n  fi\n\n  # config.perf_auto_collection_enabled\n  _PERF_AUTO_COLLECTION=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"perf_auto_collection_enabled\")\n  if [[ $_PERF_AUTO_COLLECTION ]]; then\n    _PLIST_ENTRY_KEYS+=(\"firebase_performance_collection_enabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_PERF_AUTO_COLLECTION\")\")\n  fi\n\n  # config.perf_collection_deactivated\n  _PERF_DEACTIVATED=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"perf_collection_deactivated\")\n  if [[ $_PERF_DEACTIVATED ]]; then\n    _PLIST_ENTRY_KEYS+=(\"firebase_performance_collection_deactivated\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_PERF_DEACTIVATED\")\")\n  fi\n\n  # config.messaging_auto_init_enabled\n  _MESSAGING_AUTO_INIT=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"messaging_auto_init_enabled\")\n  if [[ $_MESSAGING_AUTO_INIT ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FirebaseMessagingAutoInitEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_MESSAGING_AUTO_INIT\")\")\n  fi\n\n  # config.in_app_messaging_auto_colllection_enabled\n  _FIAM_AUTO_INIT=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"in_app_messaging_auto_collection_enabled\")\n  if [[ $_FIAM_AUTO_INIT ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FirebaseInAppMessagingAutomaticDataCollectionEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_FIAM_AUTO_INIT\")\")\n  fi\n\n  # config.app_check_token_auto_refresh\n  _APP_CHECK_TOKEN_AUTO_REFRESH=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"app_check_token_auto_refresh\")\n  if [[ $_APP_CHECK_TOKEN_AUTO_REFRESH ]]; then\n    _PLIST_ENTRY_KEYS+=(\"FirebaseAppCheckTokenAutoRefreshEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"$(jsonBoolToYesNo \"$_APP_CHECK_TOKEN_AUTO_REFRESH\")\")\n  fi\n\n  # config.crashlytics_disable_auto_disabler - undocumented for now - mainly for debugging, document if becomes useful\n  _CRASHLYTICS_AUTO_DISABLE_ENABLED=$(getFirebaseJsonKeyValue \"$_JSON_OUTPUT_RAW\" \"crashlytics_disable_auto_disabler\")\n  if [[ $_CRASHLYTICS_AUTO_DISABLE_ENABLED == \"true\" ]]; then\n    echo \"Disabled Crashlytics auto disabler.\" # do nothing\n  else\n    _PLIST_ENTRY_KEYS+=(\"FirebaseCrashlyticsCollectionEnabled\")\n    _PLIST_ENTRY_TYPES+=(\"bool\")\n    _PLIST_ENTRY_VALUES+=(\"NO\")\n  fi\nelse\n  _PLIST_ENTRY_KEYS+=(\"firebase_json_raw\")\n  _PLIST_ENTRY_TYPES+=(\"string\")\n  _PLIST_ENTRY_VALUES+=(\"$_JSON_OUTPUT_BASE64\")\n  echo \"warning:   A firebase.json file was not found, whilst this file is optional it is recommended to include it to configure firebase services in React Native Firebase.\"\nfi;\n\necho \"info: 2) Injecting Info.plist entries: \"\n\n# Log out the keys we're adding\nfor i in \"${!_PLIST_ENTRY_KEYS[@]}\"; do\n  echo \"    ->  $i) ${_PLIST_ENTRY_KEYS[$i]}\" \"${_PLIST_ENTRY_TYPES[$i]}\" \"${_PLIST_ENTRY_VALUES[$i]}\"\ndone\n\nfor plist in \"${_TARGET_PLIST}\" \"${_DSYM_PLIST}\" ; do\n  if [[ -f \"${plist}\" ]]; then\n\n    # paths with spaces break the call to setPlistValue. temporarily modify\n    # the shell internal field separator variable (IFS), which normally\n    # includes spaces, to consist only of line breaks\n    oldifs=$IFS\n    IFS=\"\n\"\n\n    for i in \"${!_PLIST_ENTRY_KEYS[@]}\"; do\n      setPlistValue \"${_PLIST_ENTRY_KEYS[$i]}\" \"${_PLIST_ENTRY_TYPES[$i]}\" \"${_PLIST_ENTRY_VALUES[$i]}\" \"${plist}\"\n    done\n\n    # restore the original internal field separator value\n    IFS=$oldifs\n  else\n    echo \"warning:   A Info.plist build output file was not found (${plist})\"\n  fi\ndone\n\necho \"info: <- RNFB build script finished\"\n";
-		};
-		A55EABD7B0C7F3A422A6CC61 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Mobiliaria-MobiliariaTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		C38B50BA6285516D6DCD4F65 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Mobiliaria-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		C59DA0FBD6956966B86A3779 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Mobiliaria-MobiliariaTests/Pods-Mobiliaria-MobiliariaTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Mobiliaria-MobiliariaTests/Pods-Mobiliaria-MobiliariaTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Mobiliaria-MobiliariaTests/Pods-Mobiliaria-MobiliariaTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		E235C05ADACE081382539298 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Mobiliaria/Pods-Mobiliaria-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Mobiliaria/Pods-Mobiliaria-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Mobiliaria/Pods-Mobiliaria-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		F6A41C54EA430FDDC6A6ED99 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Mobiliaria-MobiliariaTests/Pods-Mobiliaria-MobiliariaTests-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Mobiliaria-MobiliariaTests/Pods-Mobiliaria-MobiliariaTests-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Mobiliaria-MobiliariaTests/Pods-Mobiliaria-MobiliariaTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		FD10A7F022414F080027D42C /* Start Packager */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Start Packager";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "export RCT_METRO_PORT=\"${RCT_METRO_PORT:=8081}\"\necho \"export RCT_METRO_PORT=${RCT_METRO_PORT}\" > \"${SRCROOT}/../node_modules/react-native/scripts/.packager.env\"\nif [ -z \"${RCT_NO_LAUNCH_PACKAGER+xxx}\" ] ; then\n  if nc -w 5 -z localhost ${RCT_METRO_PORT} ; then\n    if ! curl -s \"http://localhost:${RCT_METRO_PORT}/status\" | grep -q \"packager-status:running\" ; then\n      echo \"Port ${RCT_METRO_PORT} already in use, packager is either not running or not running correctly\"\n      exit 2\n    fi\n  else\n    open \"$SRCROOT/../node_modules/react-native/scripts/launchPackager.command\" || echo \"Can't start packager automatically\"\n  fi\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
-
-/* Begin PBXSourcesBuildPhase section */
-		00E356EA1AD99517003FC87E /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				00E356F31AD99517003FC87E /* MobiliariaTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		13B07F871A680F5B00A75B9A /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
-				13B07FC11A68108700A75B9A /* main.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		00E356F51AD99517003FC87E /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 13B07F861A680F5B00A75B9A /* Mobiliaria */;
-			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
-
-/* Begin XCBuildConfiguration section */
-		00E356F61AD99517003FC87E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5B7EB9410499542E8C5724F5 /* Pods-Mobiliaria-MobiliariaTests.debug.xcconfig */;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = MobiliariaTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-lc++",
-					"$(inherited)",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Mobiliaria.app/Mobiliaria";
-			};
-			name = Debug;
-		};
-		00E356F71AD99517003FC87E /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 89C6BE57DB24E9ADA2F236DE /* Pods-Mobiliaria-MobiliariaTests.release.xcconfig */;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				COPY_PHASE_STRIP = NO;
-				INFOPLIST_FILE = MobiliariaTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-lc++",
-					"$(inherited)",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Mobiliaria.app/Mobiliaria";
-			};
-			name = Release;
-		};
-		13B07F941A680F5B00A75B9A /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3B4392A12AC88292D35C810B /* Pods-Mobiliaria.debug.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = Mobiliaria/Mobiliaria.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20;
-				DEVELOPMENT_TEAM = 582K6827K7;
-				ENABLE_BITCODE = NO;
-				INFOPLIST_FILE = Mobiliaria/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.19;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
-					"-lc++",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.eventivapp.jm.garcia;
-				PRODUCT_NAME = Mobiliaria;
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				VERSIONING_SYSTEM = "apple-generic";
-			};
-			name = Debug;
-		};
-		13B07F951A680F5B00A75B9A /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5709B34CF0A7D63546082F79 /* Pods-Mobiliaria.release.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = Mobiliaria/Mobiliaria.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20;
-				DEVELOPMENT_TEAM = 582K6827K7;
-				INFOPLIST_FILE = Mobiliaria/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				MARKETING_VERSION = 1.19;
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-ObjC",
-					"-lc++",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.eventivapp.jm.garcia;
-				PRODUCT_NAME = Mobiliaria;
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 5.0;
-				VERSIONING_SYSTEM = "apple-generic";
-			};
-			name = Release;
-		};
-		83CBBA201A601CBA00E9B192 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-					_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION,
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers",
-					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers/react/nativemodule/core",
-					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers/platform/ios",
-					"${PODS_CONFIGURATION_BUILD_DIR}/React-NativeModulesApple/React_NativeModulesApple.framework/Headers",
-					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers/react/renderer/graphics/platform/ios",
-				);
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
-				LD_RUNPATH_SEARCH_PATHS = (
-					/usr/lib/swift,
-					"$(inherited)",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"\"$(SDKROOT)/usr/lib/swift\"",
-					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
-					"\"$(inherited)\"",
-				);
-				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				OTHER_CFLAGS = "$(inherited)";
-				OTHER_CPLUSPLUSFLAGS = (
-					"$(OTHER_CFLAGS)",
-					"-DFOLLY_NO_CONFIG",
-					"-DFOLLY_MOBILE=1",
-					"-DFOLLY_USE_LIBCPP=1",
-				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-Wl",
-					"-ld_classic",
-					"-Wl",
-					"-ld_classic",
-					"-Wl",
-					"-ld_classic",
-					"-Wl",
-					"-ld_classic",
-					"-Wl",
-					"-ld_classic",
-					"-Wl",
-					"-ld_classic",
-				);
-				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
-				SDKROOT = iphoneos;
-			};
-			name = Debug;
-		};
-		83CBBA211A601CBA00E9B192 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = YES;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION,
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers",
-					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers/react/nativemodule/core",
-					"${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers/platform/ios",
-					"${PODS_CONFIGURATION_BUILD_DIR}/React-NativeModulesApple/React_NativeModulesApple.framework/Headers",
-					"${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers/react/renderer/graphics/platform/ios",
-				);
-				IPHONEOS_DEPLOYMENT_TARGET = 12.4;
-				LD_RUNPATH_SEARCH_PATHS = (
-					/usr/lib/swift,
-					"$(inherited)",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"\"$(SDKROOT)/usr/lib/swift\"",
-					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
-					"\"$(inherited)\"",
-				);
-				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_CFLAGS = "$(inherited)";
-				OTHER_CPLUSPLUSFLAGS = (
-					"$(OTHER_CFLAGS)",
-					"-DFOLLY_NO_CONFIG",
-					"-DFOLLY_MOBILE=1",
-					"-DFOLLY_USE_LIBCPP=1",
-				);
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"-Wl",
-					"-ld_classic",
-					"-Wl",
-					"-ld_classic",
-					"-Wl",
-					"-ld_classic",
-					"-Wl",
-					"-ld_classic",
-					"-Wl",
-					"-ld_classic",
-					"-Wl",
-					"-ld_classic",
-				);
-				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
-				SDKROOT = iphoneos;
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-/* End XCBuildConfiguration section */
-
-/* Begin XCConfigurationList section */
-		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "MobiliariaTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				00E356F61AD99517003FC87E /* Debug */,
-				00E356F71AD99517003FC87E /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Mobiliaria" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				13B07F941A680F5B00A75B9A /* Debug */,
-				13B07F951A680F5B00A75B9A /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "Mobiliaria" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				83CBBA201A601CBA00E9B192 /* Debug */,
-				83CBBA211A601CBA00E9B192 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-/* End XCConfigurationList section */
-	};
-	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
+function setPlistValue {
+  echo "info:      setting plist entry '$1' of type '$2' in file '$4'"
+  ${_PLIST_BUDDY} -c "Add :$1 $2 '$3'" $4 || echo "info:      '$1' already exists"
 }
+
+function getFirebaseJsonKeyValue () {
+  if [[ ${_RN_ROOT_EXISTS} ]]; then
+    ruby -Ku -e "require 'rubygems';require 'json'; output=JSON.parse('$1'); puts output[$_JSON_ROOT]['$2']"
+  else
+    echo ""
+  fi;
+}
+
+function jsonBoolToYesNo () {
+  if [[ $1 == "false" ]]; then
+    echo "NO"
+  elif [[ $1 == "true" ]]; then
+    echo "YES"
+  else echo "NO"
+  fi
+}
+
+echo "info: -&gt; RNFB build script started"
+echo "info: 1) Locating ${_JSON_FILE_NAME} file:"
+
+if [[ -z ${_CURRENT_SEARCH_DIR} ]]; then
+  _CURRENT_SEARCH_DIR=$(pwd)
+fi;
+
+while true; do
+  _CURRENT_SEARCH_DIR=$(dirname "$_CURRENT_SEARCH_DIR")
+  if [[ "$_CURRENT_SEARCH_DIR" == "/" ]] || [[ ${_CURRENT_LOOKUPS} -gt ${_MAX_LOOKUPS} ]]; then break; fi;
+  echo "info:      ($_CURRENT_LOOKUPS of $_MAX_LOOKUPS) Searching in '$_CURRENT_SEARCH_DIR' for a ${_JSON_FILE_NAME} file."
+  _SEARCH_RESULT=$(find "$_CURRENT_SEARCH_DIR" -maxdepth 2 -name ${_JSON_FILE_NAME} -print | /usr/bin/head -n 1)
+  if [[ ${_SEARCH_RESULT} ]]; then
+    echo "info:      ${_JSON_FILE_NAME} found at $_SEARCH_RESULT"
+    break;
+  fi;
+  _CURRENT_LOOKUPS=$((_CURRENT_LOOKUPS+1))
+done
+
+if [[ ${_SEARCH_RESULT} ]]; then
+  _JSON_OUTPUT_RAW=$(cat "${_SEARCH_RESULT}")
+  _RN_ROOT_EXISTS=$(ruby -Ku -e "require 'rubygems';require 'json'; output=JSON.parse('$_JSON_OUTPUT_RAW'); puts output[$_JSON_ROOT]" || echo '')
+
+  if [[ ${_RN_ROOT_EXISTS} ]]; then
+    if ! python3 --version &gt;/dev/null 2&gt;&amp;1; then echo "python3 not found, firebase.json file processing error." &amp;&amp; exit 1; fi
+    _JSON_OUTPUT_BASE64=$(python3 -c 'import json,sys,base64;print(base64.b64encode(bytes(json.dumps(json.loads(open('"'${_SEARCH_RESULT}'"', '"'rb'"').read())['${_JSON_ROOT}']), '"'utf-8'"')).decode())' || echo "e30=")
+  fi
+
+  _PLIST_ENTRY_KEYS+=("firebase_json_raw")
+  _PLIST_ENTRY_TYPES+=("string")
+  _PLIST_ENTRY_VALUES+=("$_JSON_OUTPUT_BASE64")
+
+  # config.app_data_collection_default_enabled
+  _APP_DATA_COLLECTION_ENABLED=$(getFirebaseJsonKeyValue "$_JSON_OUTPUT_RAW" "app_data_collection_default_enabled")
+  if [[ $_APP_DATA_COLLECTION_ENABLED ]]; then
+    _PLIST_ENTRY_KEYS+=("FirebaseDataCollectionDefaultEnabled")
+    _PLIST_ENTRY_TYPES+=("bool")
+    _PLIST_ENTRY_VALUES+=("$(jsonBoolToYesNo "$_APP_DATA_COLLECTION_ENABLED")")
+  fi
+
+  # config.analytics_auto_collection_enabled
+  _ANALYTICS_AUTO_COLLECTION=$(getFirebaseJsonKeyValue "$_JSON_OUTPUT_RAW" "analytics_auto_collection_enabled")
+  if [[ $_ANALYTICS_AUTO_COLLECTION ]]; then
+    _PLIST_ENTRY_KEYS+=("FIREBASE_ANALYTICS_COLLECTION_ENABLED")
+    _PLIST_ENTRY_TYPES+=("bool")
+    _PLIST_ENTRY_VALUES+=("$(jsonBoolToYesNo "$_ANALYTICS_AUTO_COLLECTION")")
+  fi
+
+  # config.analytics_collection_deactivated
+  _ANALYTICS_DEACTIVATED=$(getFirebaseJsonKeyValue "$_JSON_OUTPUT_RAW" "analytics_collection_deactivated")
+  if [[ $_ANALYTICS_DEACTIVATED ]]; then
+    _PLIST_ENTRY_KEYS+=("FIREBASE_ANALYTICS_COLLECTION_DEACTIVATED")
+    _PLIST_ENTRY_TYPES+=("bool")
+    _PLIST_ENTRY_VALUES+=("$(jsonBoolToYesNo "$_ANALYTICS_DEACTIVATED")")
+  fi
+
+  # config.analytics_idfv_collection_enabled
+  _ANALYTICS_IDFV_COLLECTION=$(getFirebaseJsonKeyValue "$_JSON_OUTPUT_RAW" "analytics_idfv_collection_enabled")
+  if [[ $_ANALYTICS_IDFV_COLLECTION ]]; then
+    _PLIST_ENTRY_KEYS+=("GOOGLE_ANALYTICS_IDFV_COLLECTION_ENABLED")
+    _PLIST_ENTRY_TYPES+=("bool")
+    _PLIST_ENTRY_VALUES+=("$(jsonBoolToYesNo "$_ANALYTICS_IDFV_COLLECTION")")
+  fi
+
+  # config.analytics_default_allow_analytics_storage
+  _ANALYTICS_STORAGE=$(getFirebaseJsonKeyValue "$_JSON_OUTPUT_RAW" "analytics_default_allow_analytics_storage")
+  if [[ $_ANALYTICS_STORAGE ]]; then
+    _PLIST_ENTRY_KEYS+=("GOOGLE_ANALYTICS_DEFAULT_ALLOW_ANALYTICS_STORAGE")
+    _PLIST_ENTRY_TYPES+=("bool")
+    _PLIST_ENTRY_VALUES+=("$(jsonBoolToYesNo "$_ANALYTICS_STORAGE")")
+  fi
+
+  # config.analytics_default_allow_ad_storage
+  _ANALYTICS_AD_STORAGE=$(getFirebaseJsonKeyValue "$_JSON_OUTPUT_RAW" "analytics_default_allow_ad_storage")
+  if [[ $_ANALYTICS_AD_STORAGE ]]; then
+    _PLIST_ENTRY_KEYS+=("GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_STORAGE")
+    _PLIST_ENTRY_TYPES+=("bool")
+    _PLIST_ENTRY_VALUES+=("$(jsonBoolToYesNo "$_ANALYTICS_AD_STORAGE")")
+  fi
+
+  # config.analytics_default_allow_ad_user_data
+  _ANALYTICS_AD_USER_DATA=$(getFirebaseJsonKeyValue "$_JSON_OUTPUT_RAW" "analytics_default_allow_ad_user_data")
+  if [[ $_ANALYTICS_AD_USER_DATA ]]; then
+    _PLIST_ENTRY_KEYS+=("GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_USER_DATA")
+    _PLIST_ENTRY_TYPES+=("bool")
+    _PLIST_ENTRY_VALUES+=("$(jsonBoolToYesNo "$_ANALYTICS_AD_USER_DATA")")
+  fi
+
+  # config.analytics_default_allow_ad_personalization_signals
+  _ANALYTICS_PERSONALIZATION=$(getFirebaseJsonKeyValue "$_JSON_OUTPUT_RAW" "analytics_default_allow_ad_personalization_signals")
+  if [[ $_ANALYTICS_PERSONALIZATION ]]; then
+    _PLIST_ENTRY_KEYS+=("GOOGLE_ANALYTICS_DEFAULT_ALLOW_AD_PERSONALIZATION_SIGNALS")
+    _PLIST_ENTRY_TYPES+=("bool")
+    _PLIST_ENTRY_VALUES+=("$(jsonBoolToYesNo "$_ANALYTICS_PERSONALIZATION")")
+  fi
+
+  # config.analytics_registration_with_ad_network_enabled
+  _ANALYTICS_REGISTRATION_WITH_AD_NETWORK=$(getFirebaseJsonKeyValue "$_JSON_OUTPUT_RAW" "google_analytics_registration_with_ad_network_enabled")
+  if [[ $_ANALYTICS_REGISTRATION_WITH_AD_NETWORK ]]; then
+    _PLIST_ENTRY_KEYS+=("GOOGLE_ANALYTICS_REGISTRATION_WITH_AD_NETWORK_ENABLED")
+    _PLIST_ENTRY_TYPES+=("bool")
+    _PLIST_ENTRY_VALUES+=("$(jsonBoolToYesNo "$_ANALYTICS_REGISTRATION_WITH_AD_NETWORK")")
+  fi
+
+  # config.google_analytics_automatic_screen_reporting_enabled
+  _ANALYTICS_AUTO_SCREEN_REPORTING=$(getFirebaseJsonKeyValue "$_JSON_OUTPUT_RAW" "google_analytics_automatic_screen_reporting_enabled")
+  if [[ $_ANALYTICS_AUTO_SCREEN_REPORTING ]]; then
+    _PLIST_ENTRY_KEYS+=("FirebaseAutomaticScreenReportingEnabled")
+    _PLIST_ENTRY_TYPES+=("bool")
+    _PLIST_ENTRY_VALUES+=("$(jsonBoolToYesNo "$_ANALYTICS_AUTO_SCREEN_REPORTING")")
+  fi
+
+  # config.perf_auto_collection_enabled
+  _PERF_AUTO_COLLECTION=$(getFirebaseJsonKeyValue "$_JSON_OUTPUT_RAW" "perf_auto_collection_enabled")
+  if [[ $_PERF_AUTO_COLLECTION ]]; then
+    _PLIST_ENTRY_KEYS+=("firebase_performance_collection_enabled")
+    _PLIST_ENTRY_TYPES+=("bool")
+    _PLIST_ENTRY_VALUES+=("$(jsonBoolToYesNo "$_PERF_AUTO_COLLECTION")")
+  fi
+
+  # config.perf_collection_deactivated
+  _PERF_DEACTIVATED=$(getFirebaseJsonKeyValue "$_JSON_OUTPUT_RAW" "perf_collection_deactivated")
+  if [[ $_PERF_DEACTIVATED ]]; then
+    _PLIST_ENTRY_KEYS+=("firebase_performance_collection_deactivated")
+    _PLIST_ENTRY_TYPES+=("bool")
+    _PLIST_ENTRY_VALUES+=("$(jsonBoolToYesNo "$_PERF_DEACTIVATED")")
+  fi
+
+  # config.messaging_auto_init_enabled
+  _MESSAGING_AUTO_INIT=$(getFirebaseJsonKeyValue "$_JSON_OUTPUT_RAW" "messaging_auto_init_enabled")
+  if [[ $_MESSAGING_AUTO_INIT ]]; then
+    _PLIST_ENTRY_KEYS+=("FirebaseMessagingAutoInitEnabled")
+    _PLIST_ENTRY_TYPES+=("bool")
+    _PLIST_ENTRY_VALUES+=("$(jsonBoolToYesNo "$_MESSAGING_AUTO_INIT")")
+  fi
+
+  # config.in_app_messaging_auto_colllection_enabled
+  _FIAM_AUTO_INIT=$(getFirebaseJsonKeyValue "$_JSON_OUTPUT_RAW" "in_app_messaging_auto_collection_enabled")
+  if [[ $_FIAM_AUTO_INIT ]]; then
+    _PLIST_ENTRY_KEYS+=("FirebaseInAppMessagingAutomaticDataCollectionEnabled")
+    _PLIST_ENTRY_TYPES+=("bool")
+    _PLIST_ENTRY_VALUES+=("$(jsonBoolToYesNo "$_FIAM_AUTO_INIT")")
+  fi
+
+  # config.app_check_token_auto_refresh
+  _APP_CHECK_TOKEN_AUTO_REFRESH=$(getFirebaseJsonKeyValue "$_JSON_OUTPUT_RAW" "app_check_token_auto_refresh")
+  if [[ $_APP_CHECK_TOKEN_AUTO_REFRESH ]]; then
+    _PLIST_ENTRY_KEYS+=("FirebaseAppCheckTokenAutoRefreshEnabled")
+    _PLIST_ENTRY_TYPES+=("bool")
+    _PLIST_ENTRY_VALUES+=("$(jsonBoolToYesNo "$_APP_CHECK_TOKEN_AUTO_REFRESH")")
+  fi
+
+  # config.crashlytics_disable_auto_disabler - undocumented for now - mainly for debugging, document if becomes useful
+  _CRASHLYTICS_AUTO_DISABLE_ENABLED=$(getFirebaseJsonKeyValue "$_JSON_OUTPUT_RAW" "crashlytics_disable_auto_disabler")
+  if [[ $_CRASHLYTICS_AUTO_DISABLE_ENABLED == "true" ]]; then
+    echo "Disabled Crashlytics auto disabler." # do nothing
+  else
+    _PLIST_ENTRY_KEYS+=("FirebaseCrashlyticsCollectionEnabled")
+    _PLIST_ENTRY_TYPES+=("bool")
+    _PLIST_ENTRY_VALUES+=("NO")
+  fi
+else
+  _PLIST_ENTRY_KEYS+=("firebase_json_raw")
+  _PLIST_ENTRY_TYPES+=("string")
+  _PLIST_ENTRY_VALUES+=("$_JSON_OUTPUT_BASE64")
+  echo "warning:   A firebase.json file was not found, whilst this file is optional it is recommended to include it to configure firebase services in React Native Firebase."
+fi;
+
+echo "info: 2) Injecting Info.plist entries: "
+
+# Log out the keys we're adding
+for i in "${!_PLIST_ENTRY_KEYS[@]}"; do
+  echo "    -&gt;  $i) ${_PLIST_ENTRY_KEYS[$i]}" "${_PLIST_ENTRY_TYPES[$i]}" "${_PLIST_ENTRY_VALUES[$i]}"
+done
+
+for plist in "${_TARGET_PLIST}" "${_DSYM_PLIST}" ; do
+  if [[ -f "${plist}" ]]; then
+
+    # paths with spaces break the call to setPlistValue. temporarily modify
+    # the shell internal field separator variable (IFS), which normally
+    # includes spaces, to consist only of line breaks
+    oldifs=$IFS
+    IFS="
+"
+
+    for i in "${!_PLIST_ENTRY_KEYS[@]}"; do
+      setPlistValue "${_PLIST_ENTRY_KEYS[$i]}" "${_PLIST_ENTRY_TYPES[$i]}" "${_PLIST_ENTRY_VALUES[$i]}" "${plist}"
+    done
+
+    # restore the original internal field separator value
+    IFS=$oldifs
+  else
+    echo "warning:   A Info.plist build output file was not found (${plist})"
+  fi
+done
+
+echo "info: &lt;- RNFB build script finished"
+</string>
+		</dict>
+		<key>7653DD7516A54AFB89A2AB21</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>SourceSansPro-SemiBoldItalic.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/SourceSansPro/SourceSansPro-SemiBoldItalic.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>78BDB6189E09440A805D0BEC</key>
+		<dict>
+			<key>fileRef</key>
+			<string>8C0D5495E89A4550ADC6B010</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>7B9DD2D33FAB4C8283A404EF</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>SourceSansPro-Italic.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/SourceSansPro/SourceSansPro-Italic.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>81AB9BB72411601600AC10FF</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>file.storyboard</string>
+			<key>name</key>
+			<string>LaunchScreen.storyboard</string>
+			<key>path</key>
+			<string>Mobiliaria/LaunchScreen.storyboard</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>81AB9BB82411601600AC10FF</key>
+		<dict>
+			<key>fileRef</key>
+			<string>81AB9BB72411601600AC10FF</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>832341AE1AAA6A7D00B99B32</key>
+		<dict>
+			<key>children</key>
+			<array/>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>Libraries</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>83CBB9F61A601CBA00E9B192</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>84B5C7EC2C25686400326FBB</string>
+				<string>13B07FAE1A68108700A75B9A</string>
+				<string>832341AE1AAA6A7D00B99B32</string>
+				<string>00E356EF1AD99517003FC87E</string>
+				<string>83CBBA001A601CBA00E9B192</string>
+				<string>2D16E6871FA4F8E400B85C8A</string>
+				<string>BBD78D7AC51CEA395F1C20DB</string>
+				<string>1001E5C1046E4B9F91FE8AA8</string>
+			</array>
+			<key>indentWidth</key>
+			<string>2</string>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+			<key>tabWidth</key>
+			<string>2</string>
+			<key>usesTabs</key>
+			<string>0</string>
+		</dict>
+		<key>83CBB9F71A601CBA00E9B192</key>
+		<dict>
+			<key>attributes</key>
+			<dict>
+				<key>LastUpgradeCheck</key>
+				<string>1210</string>
+				<key>TargetAttributes</key>
+				<dict>
+					<key>00E356ED1AD99517003FC87E</key>
+					<dict>
+						<key>CreatedOnToolsVersion</key>
+						<string>6.2</string>
+						<key>TestTargetID</key>
+						<string>13B07F861A680F5B00A75B9A</string>
+					</dict>
+					<key>13B07F861A680F5B00A75B9A</key>
+					<dict>
+						<key>LastSwiftMigration</key>
+						<string>1120</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>buildConfigurationList</key>
+			<string>83CBB9FA1A601CBA00E9B192</string>
+			<key>compatibilityVersion</key>
+			<string>Xcode 12.0</string>
+			<key>developmentRegion</key>
+			<string>en</string>
+			<key>hasScannedForEncodings</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXProject</string>
+			<key>knownRegions</key>
+			<array>
+				<string>en</string>
+				<string>Base</string>
+			</array>
+			<key>mainGroup</key>
+			<string>83CBB9F61A601CBA00E9B192</string>
+			<key>productRefGroup</key>
+			<string>83CBBA001A601CBA00E9B192</string>
+			<key>projectDirPath</key>
+			<string></string>
+			<key>projectRoot</key>
+			<string></string>
+			<key>targets</key>
+			<array>
+				<string>13B07F861A680F5B00A75B9A</string>
+				<string>00E356ED1AD99517003FC87E</string>
+			</array>
+		</dict>
+		<key>83CBB9FA1A601CBA00E9B192</key>
+		<dict>
+			<key>buildConfigurations</key>
+			<array>
+				<string>83CBBA201A601CBA00E9B192</string>
+				<string>83CBBA211A601CBA00E9B192</string>
+			</array>
+			<key>defaultConfigurationIsVisible</key>
+			<string>0</string>
+			<key>defaultConfigurationName</key>
+			<string>Release</string>
+			<key>isa</key>
+			<string>XCConfigurationList</string>
+		</dict>
+		<key>83CBBA001A601CBA00E9B192</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>13B07F961A680F5B00A75B9A</string>
+				<string>00E356EE1AD99517003FC87E</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>Products</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>83CBBA201A601CBA00E9B192</key>
+		<dict>
+			<key>buildSettings</key>
+			<dict>
+				<key>ALWAYS_SEARCH_USER_PATHS</key>
+				<string>NO</string>
+				<key>CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED</key>
+				<string>YES</string>
+				<key>CLANG_CXX_LANGUAGE_STANDARD</key>
+				<string>c++17</string>
+				<key>CLANG_CXX_LIBRARY</key>
+				<string>libc++</string>
+				<key>CLANG_ENABLE_MODULES</key>
+				<string>YES</string>
+				<key>CLANG_ENABLE_OBJC_ARC</key>
+				<string>YES</string>
+				<key>CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING</key>
+				<string>YES</string>
+				<key>CLANG_WARN_BOOL_CONVERSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_COMMA</key>
+				<string>YES</string>
+				<key>CLANG_WARN_CONSTANT_CONVERSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS</key>
+				<string>YES</string>
+				<key>CLANG_WARN_DIRECT_OBJC_ISA_USAGE</key>
+				<string>YES_ERROR</string>
+				<key>CLANG_WARN_EMPTY_BODY</key>
+				<string>YES</string>
+				<key>CLANG_WARN_ENUM_CONVERSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_INFINITE_RECURSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_INT_CONVERSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_NON_LITERAL_NULL_CONVERSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF</key>
+				<string>YES</string>
+				<key>CLANG_WARN_OBJC_LITERAL_CONVERSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_OBJC_ROOT_CLASS</key>
+				<string>YES_ERROR</string>
+				<key>CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER</key>
+				<string>YES</string>
+				<key>CLANG_WARN_RANGE_LOOP_ANALYSIS</key>
+				<string>YES</string>
+				<key>CLANG_WARN_STRICT_PROTOTYPES</key>
+				<string>YES</string>
+				<key>CLANG_WARN_SUSPICIOUS_MOVE</key>
+				<string>YES</string>
+				<key>CLANG_WARN_UNREACHABLE_CODE</key>
+				<string>YES</string>
+				<key>CLANG_WARN__DUPLICATE_METHOD_MATCH</key>
+				<string>YES</string>
+				<key>CODE_SIGN_IDENTITY[sdk=iphoneos*]</key>
+				<string>iPhone Developer</string>
+				<key>COPY_PHASE_STRIP</key>
+				<string>NO</string>
+				<key>ENABLE_STRICT_OBJC_MSGSEND</key>
+				<string>YES</string>
+				<key>ENABLE_TESTABILITY</key>
+				<string>YES</string>
+				<key>EXCLUDED_ARCHS[sdk=iphonesimulator*]</key>
+				<string>i386</string>
+				<key>GCC_C_LANGUAGE_STANDARD</key>
+				<string>gnu99</string>
+				<key>GCC_DYNAMIC_NO_PIC</key>
+				<string>NO</string>
+				<key>GCC_NO_COMMON_BLOCKS</key>
+				<string>YES</string>
+				<key>GCC_OPTIMIZATION_LEVEL</key>
+				<string>0</string>
+				<key>GCC_PREPROCESSOR_DEFINITIONS</key>
+				<array>
+					<string>DEBUG=1</string>
+					<string>$(inherited)</string>
+					<string>_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION</string>
+				</array>
+				<key>GCC_SYMBOLS_PRIVATE_EXTERN</key>
+				<string>NO</string>
+				<key>GCC_WARN_64_TO_32_BIT_CONVERSION</key>
+				<string>YES</string>
+				<key>GCC_WARN_ABOUT_RETURN_TYPE</key>
+				<string>YES_ERROR</string>
+				<key>GCC_WARN_UNDECLARED_SELECTOR</key>
+				<string>YES</string>
+				<key>GCC_WARN_UNINITIALIZED_AUTOS</key>
+				<string>YES_AGGRESSIVE</string>
+				<key>GCC_WARN_UNUSED_FUNCTION</key>
+				<string>YES</string>
+				<key>GCC_WARN_UNUSED_VARIABLE</key>
+				<string>YES</string>
+				<key>HEADER_SEARCH_PATHS</key>
+				<array>
+					<string>$(inherited)</string>
+					<string>${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers</string>
+					<string>${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers/react/nativemodule/core</string>
+					<string>${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers/platform/ios</string>
+					<string>${PODS_CONFIGURATION_BUILD_DIR}/React-NativeModulesApple/React_NativeModulesApple.framework/Headers</string>
+					<string>${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers/react/renderer/graphics/platform/ios</string>
+				</array>
+				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
+				<string>12.4</string>
+				<key>LD_RUNPATH_SEARCH_PATHS</key>
+				<array>
+					<string>/usr/lib/swift</string>
+					<string>$(inherited)</string>
+				</array>
+				<key>LIBRARY_SEARCH_PATHS</key>
+				<array>
+					<string>"$(SDKROOT)/usr/lib/swift"</string>
+					<string>"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)"</string>
+					<string>"$(inherited)"</string>
+				</array>
+				<key>MTL_ENABLE_DEBUG_INFO</key>
+				<string>YES</string>
+				<key>ONLY_ACTIVE_ARCH</key>
+				<string>YES</string>
+				<key>OTHER_CFLAGS</key>
+				<string>$(inherited)</string>
+				<key>OTHER_CPLUSPLUSFLAGS</key>
+				<array>
+					<string>$(OTHER_CFLAGS)</string>
+					<string>-DFOLLY_NO_CONFIG</string>
+					<string>-DFOLLY_MOBILE=1</string>
+					<string>-DFOLLY_USE_LIBCPP=1</string>
+				</array>
+				<key>OTHER_LDFLAGS</key>
+				<array>
+					<string>$(inherited)</string>
+					<string>-Wl</string>
+					<string>-ld_classic</string>
+					<string>-Wl</string>
+					<string>-ld_classic</string>
+					<string>-Wl</string>
+					<string>-ld_classic</string>
+					<string>-Wl</string>
+					<string>-ld_classic</string>
+					<string>-Wl</string>
+					<string>-ld_classic</string>
+					<string>-Wl</string>
+					<string>-ld_classic</string>
+					<string>-Wl</string>
+					<string>-ld_classic</string>
+					<string>-Wl -ld_classic </string>
+				</array>
+				<key>REACT_NATIVE_PATH</key>
+				<string>${PODS_ROOT}/../../node_modules/react-native</string>
+				<key>SDKROOT</key>
+				<string>iphoneos</string>
+			</dict>
+			<key>isa</key>
+			<string>XCBuildConfiguration</string>
+			<key>name</key>
+			<string>Debug</string>
+		</dict>
+		<key>83CBBA211A601CBA00E9B192</key>
+		<dict>
+			<key>buildSettings</key>
+			<dict>
+				<key>ALWAYS_SEARCH_USER_PATHS</key>
+				<string>NO</string>
+				<key>CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED</key>
+				<string>YES</string>
+				<key>CLANG_CXX_LANGUAGE_STANDARD</key>
+				<string>c++17</string>
+				<key>CLANG_CXX_LIBRARY</key>
+				<string>libc++</string>
+				<key>CLANG_ENABLE_MODULES</key>
+				<string>YES</string>
+				<key>CLANG_ENABLE_OBJC_ARC</key>
+				<string>YES</string>
+				<key>CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING</key>
+				<string>YES</string>
+				<key>CLANG_WARN_BOOL_CONVERSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_COMMA</key>
+				<string>YES</string>
+				<key>CLANG_WARN_CONSTANT_CONVERSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS</key>
+				<string>YES</string>
+				<key>CLANG_WARN_DIRECT_OBJC_ISA_USAGE</key>
+				<string>YES_ERROR</string>
+				<key>CLANG_WARN_EMPTY_BODY</key>
+				<string>YES</string>
+				<key>CLANG_WARN_ENUM_CONVERSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_INFINITE_RECURSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_INT_CONVERSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_NON_LITERAL_NULL_CONVERSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF</key>
+				<string>YES</string>
+				<key>CLANG_WARN_OBJC_LITERAL_CONVERSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_OBJC_ROOT_CLASS</key>
+				<string>YES_ERROR</string>
+				<key>CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER</key>
+				<string>YES</string>
+				<key>CLANG_WARN_RANGE_LOOP_ANALYSIS</key>
+				<string>YES</string>
+				<key>CLANG_WARN_STRICT_PROTOTYPES</key>
+				<string>YES</string>
+				<key>CLANG_WARN_SUSPICIOUS_MOVE</key>
+				<string>YES</string>
+				<key>CLANG_WARN_UNREACHABLE_CODE</key>
+				<string>YES</string>
+				<key>CLANG_WARN__DUPLICATE_METHOD_MATCH</key>
+				<string>YES</string>
+				<key>CODE_SIGN_IDENTITY[sdk=iphoneos*]</key>
+				<string>iPhone Developer</string>
+				<key>COPY_PHASE_STRIP</key>
+				<string>YES</string>
+				<key>ENABLE_NS_ASSERTIONS</key>
+				<string>NO</string>
+				<key>ENABLE_STRICT_OBJC_MSGSEND</key>
+				<string>YES</string>
+				<key>EXCLUDED_ARCHS[sdk=iphonesimulator*]</key>
+				<string>i386</string>
+				<key>GCC_C_LANGUAGE_STANDARD</key>
+				<string>gnu99</string>
+				<key>GCC_NO_COMMON_BLOCKS</key>
+				<string>YES</string>
+				<key>GCC_PREPROCESSOR_DEFINITIONS</key>
+				<array>
+					<string>$(inherited)</string>
+					<string>_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION</string>
+				</array>
+				<key>GCC_WARN_64_TO_32_BIT_CONVERSION</key>
+				<string>YES</string>
+				<key>GCC_WARN_ABOUT_RETURN_TYPE</key>
+				<string>YES_ERROR</string>
+				<key>GCC_WARN_UNDECLARED_SELECTOR</key>
+				<string>YES</string>
+				<key>GCC_WARN_UNINITIALIZED_AUTOS</key>
+				<string>YES_AGGRESSIVE</string>
+				<key>GCC_WARN_UNUSED_FUNCTION</key>
+				<string>YES</string>
+				<key>GCC_WARN_UNUSED_VARIABLE</key>
+				<string>YES</string>
+				<key>HEADER_SEARCH_PATHS</key>
+				<array>
+					<string>$(inherited)</string>
+					<string>${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers</string>
+					<string>${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon/ReactCommon.framework/Headers/react/nativemodule/core</string>
+					<string>${PODS_CONFIGURATION_BUILD_DIR}/ReactCommon-Samples/ReactCommon_Samples.framework/Headers/platform/ios</string>
+					<string>${PODS_CONFIGURATION_BUILD_DIR}/React-NativeModulesApple/React_NativeModulesApple.framework/Headers</string>
+					<string>${PODS_CONFIGURATION_BUILD_DIR}/React-graphics/React_graphics.framework/Headers/react/renderer/graphics/platform/ios</string>
+				</array>
+				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
+				<string>12.4</string>
+				<key>LD_RUNPATH_SEARCH_PATHS</key>
+				<array>
+					<string>/usr/lib/swift</string>
+					<string>$(inherited)</string>
+				</array>
+				<key>LIBRARY_SEARCH_PATHS</key>
+				<array>
+					<string>"$(SDKROOT)/usr/lib/swift"</string>
+					<string>"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)"</string>
+					<string>"$(inherited)"</string>
+				</array>
+				<key>MTL_ENABLE_DEBUG_INFO</key>
+				<string>NO</string>
+				<key>OTHER_CFLAGS</key>
+				<string>$(inherited)</string>
+				<key>OTHER_CPLUSPLUSFLAGS</key>
+				<array>
+					<string>$(OTHER_CFLAGS)</string>
+					<string>-DFOLLY_NO_CONFIG</string>
+					<string>-DFOLLY_MOBILE=1</string>
+					<string>-DFOLLY_USE_LIBCPP=1</string>
+				</array>
+				<key>OTHER_LDFLAGS</key>
+				<array>
+					<string>$(inherited)</string>
+					<string>-Wl</string>
+					<string>-ld_classic</string>
+					<string>-Wl</string>
+					<string>-ld_classic</string>
+					<string>-Wl</string>
+					<string>-ld_classic</string>
+					<string>-Wl</string>
+					<string>-ld_classic</string>
+					<string>-Wl</string>
+					<string>-ld_classic</string>
+					<string>-Wl</string>
+					<string>-ld_classic</string>
+					<string>-Wl</string>
+					<string>-ld_classic</string>
+					<string>-Wl -ld_classic </string>
+				</array>
+				<key>REACT_NATIVE_PATH</key>
+				<string>${PODS_ROOT}/../../node_modules/react-native</string>
+				<key>SDKROOT</key>
+				<string>iphoneos</string>
+				<key>VALIDATE_PRODUCT</key>
+				<string>YES</string>
+			</dict>
+			<key>isa</key>
+			<string>XCBuildConfiguration</string>
+			<key>name</key>
+			<string>Release</string>
+		</dict>
+		<key>83E6DE4A109242E4B9BEB0DB</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>Roboto-Regular.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/roboto/Roboto-Regular.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>848BDBCF2B86E0F300E0759D</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>folder.assetcatalog</string>
+			<key>path</key>
+			<string>Media.xcassets</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>848BDBD02B86E0F300E0759D</key>
+		<dict>
+			<key>fileRef</key>
+			<string>848BDBCF2B86E0F300E0759D</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>84B5C7EC2C25686400326FBB</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.plist.xml</string>
+			<key>path</key>
+			<string>GoogleService-Info.plist</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>84B5C7ED2C25686400326FBB</key>
+		<dict>
+			<key>fileRef</key>
+			<string>84B5C7EC2C25686400326FBB</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>84B5C7EE2C25694600326FBB</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.plist.entitlements</string>
+			<key>name</key>
+			<string>Mobiliaria.entitlements</string>
+			<key>path</key>
+			<string>Mobiliaria/Mobiliaria.entitlements</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>89C6BE57DB24E9ADA2F236DE</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.xcconfig</string>
+			<key>name</key>
+			<string>Pods-Mobiliaria-MobiliariaTests.release.xcconfig</string>
+			<key>path</key>
+			<string>Target Support Files/Pods-Mobiliaria-MobiliariaTests/Pods-Mobiliaria-MobiliariaTests.release.xcconfig</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>8B33974A23B3404FAAB8B67B</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>Inter-Regular.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/Inter/Inter-Regular.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>8C0D5495E89A4550ADC6B010</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>SourceSansPro-SemiBold.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/SourceSansPro/SourceSansPro-SemiBold.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>8C989FD6DB1848B081715F1E</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>Inter-Thin.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/Inter/Inter-Thin.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>92A35EF8F41A490FA3CEA708</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>Roboto-Medium.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/roboto/Roboto-Medium.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>93DF9187877F4B0E9B176141</key>
+		<dict>
+			<key>fileRef</key>
+			<string>7653DD7516A54AFB89A2AB21</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>9710B6DA89DE4473AB4CEF72</key>
+		<dict>
+			<key>fileRef</key>
+			<string>6AA83E0FE1224C48A35C8BFF</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>A55EABD7B0C7F3A422A6CC61</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array/>
+			<key>inputFileListPaths</key>
+			<array/>
+			<key>inputPaths</key>
+			<array>
+				<string>${PODS_PODFILE_DIR_PATH}/Podfile.lock</string>
+				<string>${PODS_ROOT}/Manifest.lock</string>
+			</array>
+			<key>isa</key>
+			<string>PBXShellScriptBuildPhase</string>
+			<key>name</key>
+			<string>[CP] Check Pods Manifest.lock</string>
+			<key>outputFileListPaths</key>
+			<array/>
+			<key>outputPaths</key>
+			<array>
+				<string>$(DERIVED_FILE_DIR)/Pods-Mobiliaria-MobiliariaTests-checkManifestLockResult.txt</string>
+			</array>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+			<key>shellPath</key>
+			<string>/bin/sh</string>
+			<key>shellScript</key>
+			<string>diff "${PODS_PODFILE_DIR_PATH}/Podfile.lock" "${PODS_ROOT}/Manifest.lock" &gt; /dev/null
+if [ $? != 0 ] ; then
+    # print error to STDERR
+    echo "error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation." &gt;&amp;2
+    exit 1
+fi
+# This output is used by Xcode 'outputs' to avoid re-running this script phase.
+echo "SUCCESS" &gt; "${SCRIPT_OUTPUT_FILE_0}"
+</string>
+			<key>showEnvVarsInLog</key>
+			<string>0</string>
+		</dict>
+		<key>A6FBFF7F87504B33A5FDB21A</key>
+		<dict>
+			<key>fileRef</key>
+			<string>3D78C010F82749DF8460DCCD</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>B0DC6F1B324C42A68073B72F</key>
+		<dict>
+			<key>fileRef</key>
+			<string>3E983D9CD3884C76BCAB527A</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>B47DB254481847709CF4C797</key>
+		<dict>
+			<key>fileRef</key>
+			<string>55740931FCA1472F85729744</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>B72F5E4B723A4E14AD2DBFA0</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>Inter-Light.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/Inter/Inter-Light.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>BBD78D7AC51CEA395F1C20DB</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>3B4392A12AC88292D35C810B</string>
+				<string>5709B34CF0A7D63546082F79</string>
+				<string>5B7EB9410499542E8C5724F5</string>
+				<string>89C6BE57DB24E9ADA2F236DE</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>Pods</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>BE3B66358F7C4C1C9CADE069</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>Roboto-Light.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/roboto/Roboto-Light.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>C38B50BA6285516D6DCD4F65</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array/>
+			<key>inputFileListPaths</key>
+			<array/>
+			<key>inputPaths</key>
+			<array>
+				<string>${PODS_PODFILE_DIR_PATH}/Podfile.lock</string>
+				<string>${PODS_ROOT}/Manifest.lock</string>
+			</array>
+			<key>isa</key>
+			<string>PBXShellScriptBuildPhase</string>
+			<key>name</key>
+			<string>[CP] Check Pods Manifest.lock</string>
+			<key>outputFileListPaths</key>
+			<array/>
+			<key>outputPaths</key>
+			<array>
+				<string>$(DERIVED_FILE_DIR)/Pods-Mobiliaria-checkManifestLockResult.txt</string>
+			</array>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+			<key>shellPath</key>
+			<string>/bin/sh</string>
+			<key>shellScript</key>
+			<string>diff "${PODS_PODFILE_DIR_PATH}/Podfile.lock" "${PODS_ROOT}/Manifest.lock" &gt; /dev/null
+if [ $? != 0 ] ; then
+    # print error to STDERR
+    echo "error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation." &gt;&amp;2
+    exit 1
+fi
+# This output is used by Xcode 'outputs' to avoid re-running this script phase.
+echo "SUCCESS" &gt; "${SCRIPT_OUTPUT_FILE_0}"
+</string>
+			<key>showEnvVarsInLog</key>
+			<string>0</string>
+		</dict>
+		<key>C3CBC2CEB18339FF8341F1C2</key>
+		<dict>
+			<key>fileRef</key>
+			<string>DD275DA0B1ABEB5241FCA067</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>C52D358CA3934131BDF249F9</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>Inter-Black.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/Inter/Inter-Black.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>C59DA0FBD6956966B86A3779</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array/>
+			<key>inputFileListPaths</key>
+			<array>
+				<string>${PODS_ROOT}/Target Support Files/Pods-Mobiliaria-MobiliariaTests/Pods-Mobiliaria-MobiliariaTests-frameworks-${CONFIGURATION}-input-files.xcfilelist</string>
+			</array>
+			<key>isa</key>
+			<string>PBXShellScriptBuildPhase</string>
+			<key>name</key>
+			<string>[CP] Embed Pods Frameworks</string>
+			<key>outputFileListPaths</key>
+			<array>
+				<string>${PODS_ROOT}/Target Support Files/Pods-Mobiliaria-MobiliariaTests/Pods-Mobiliaria-MobiliariaTests-frameworks-${CONFIGURATION}-output-files.xcfilelist</string>
+			</array>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+			<key>shellPath</key>
+			<string>/bin/sh</string>
+			<key>shellScript</key>
+			<string>"${PODS_ROOT}/Target Support Files/Pods-Mobiliaria-MobiliariaTests/Pods-Mobiliaria-MobiliariaTests-frameworks.sh"
+</string>
+			<key>showEnvVarsInLog</key>
+			<string>0</string>
+		</dict>
+		<key>CA7967A712964543867B564B</key>
+		<dict>
+			<key>fileRef</key>
+			<string>47170DCA77E147248958BFE8</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>D6052103DC6746A099D0052E</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>SourceSansPro-BlackItalic.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/SourceSansPro/SourceSansPro-BlackItalic.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>D62D2DE4EC6343F691867F67</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>Inter-Bold.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/Inter/Inter-Bold.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>D73A65C2435C44D48E74DD0B</key>
+		<dict>
+			<key>fileRef</key>
+			<string>E4CE86F24E5340DEB8E84531</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>D7760CE8FA844F2C9F472CA2</key>
+		<dict>
+			<key>fileRef</key>
+			<string>DC8D6B73C2424BCC93B4B128</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>DC8D6B73C2424BCC93B4B128</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>Inter-ExtraLight.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/Inter/Inter-ExtraLight.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>DD275DA0B1ABEB5241FCA067</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>wrapper.framework</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>Pods_Mobiliaria.framework</string>
+			<key>sourceTree</key>
+			<string>BUILT_PRODUCTS_DIR</string>
+		</dict>
+		<key>DE10EFDA6F70410B992DA6C1</key>
+		<dict>
+			<key>fileRef</key>
+			<string>4DB989988AB640CD909AF4D6</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>E235C05ADACE081382539298</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array/>
+			<key>inputFileListPaths</key>
+			<array>
+				<string>${PODS_ROOT}/Target Support Files/Pods-Mobiliaria/Pods-Mobiliaria-resources-${CONFIGURATION}-input-files.xcfilelist</string>
+			</array>
+			<key>isa</key>
+			<string>PBXShellScriptBuildPhase</string>
+			<key>name</key>
+			<string>[CP] Copy Pods Resources</string>
+			<key>outputFileListPaths</key>
+			<array>
+				<string>${PODS_ROOT}/Target Support Files/Pods-Mobiliaria/Pods-Mobiliaria-resources-${CONFIGURATION}-output-files.xcfilelist</string>
+			</array>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+			<key>shellPath</key>
+			<string>/bin/sh</string>
+			<key>shellScript</key>
+			<string>"${PODS_ROOT}/Target Support Files/Pods-Mobiliaria/Pods-Mobiliaria-resources.sh"
+</string>
+			<key>showEnvVarsInLog</key>
+			<string>0</string>
+		</dict>
+		<key>E310597AB54D4B46B71B307D</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>Roboto-Black.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/roboto/Roboto-Black.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>E4CE86F24E5340DEB8E84531</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>Roboto-BoldItalic.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/roboto/Roboto-BoldItalic.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>E82DBD3826594B03BE6C96EA</key>
+		<dict>
+			<key>fileRef</key>
+			<string>D62D2DE4EC6343F691867F67</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>EACC11FA2F1C47308E90C639</key>
+		<dict>
+			<key>fileRef</key>
+			<string>F4886D9946B042F58B32C354</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>EB333B90DE57477088ECED44</key>
+		<dict>
+			<key>fileRef</key>
+			<string>222E9AE16A7647FA946C810F</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>ED297162215061F000B7C4FE</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>wrapper.framework</string>
+			<key>name</key>
+			<string>JavaScriptCore.framework</string>
+			<key>path</key>
+			<string>System/Library/Frameworks/JavaScriptCore.framework</string>
+			<key>sourceTree</key>
+			<string>SDKROOT</string>
+		</dict>
+		<key>EED7D9B00E364C849C1B85DF</key>
+		<dict>
+			<key>fileRef</key>
+			<string>C52D358CA3934131BDF249F9</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>F0EACFEB99984F0098F9D97B</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>SourceSansPro-Regular.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/SourceSansPro/SourceSansPro-Regular.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>F4886D9946B042F58B32C354</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>SourceSansPro-Black.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/SourceSansPro/SourceSansPro-Black.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>F6A41C54EA430FDDC6A6ED99</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array/>
+			<key>inputFileListPaths</key>
+			<array>
+				<string>${PODS_ROOT}/Target Support Files/Pods-Mobiliaria-MobiliariaTests/Pods-Mobiliaria-MobiliariaTests-resources-${CONFIGURATION}-input-files.xcfilelist</string>
+			</array>
+			<key>isa</key>
+			<string>PBXShellScriptBuildPhase</string>
+			<key>name</key>
+			<string>[CP] Copy Pods Resources</string>
+			<key>outputFileListPaths</key>
+			<array>
+				<string>${PODS_ROOT}/Target Support Files/Pods-Mobiliaria-MobiliariaTests/Pods-Mobiliaria-MobiliariaTests-resources-${CONFIGURATION}-output-files.xcfilelist</string>
+			</array>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+			<key>shellPath</key>
+			<string>/bin/sh</string>
+			<key>shellScript</key>
+			<string>"${PODS_ROOT}/Target Support Files/Pods-Mobiliaria-MobiliariaTests/Pods-Mobiliaria-MobiliariaTests-resources.sh"
+</string>
+			<key>showEnvVarsInLog</key>
+			<string>0</string>
+		</dict>
+		<key>F878C9E3C4344038A8B60773</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>undefined</string>
+			<key>fileEncoding</key>
+			<string>9</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>unknown</string>
+			<key>name</key>
+			<string>Roboto-BlackItalic.ttf</string>
+			<key>path</key>
+			<string>../src/assets/fonts/roboto/Roboto-BlackItalic.ttf</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>FAA830DC886C4583B6DD8C77</key>
+		<dict>
+			<key>fileRef</key>
+			<string>1B83BE6240354853BA42AF5F</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>FB78CB0CDB134172ADCE8F8C</key>
+		<dict>
+			<key>fileRef</key>
+			<string>0A33363B9EDF4E9081BA2A63</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>FB862C0B54CB4B92922AA871</key>
+		<dict>
+			<key>fileRef</key>
+			<string>40B6C98F82164686B455CF18</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>FD10A7F022414F080027D42C</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array/>
+			<key>inputFileListPaths</key>
+			<array/>
+			<key>inputPaths</key>
+			<array/>
+			<key>isa</key>
+			<string>PBXShellScriptBuildPhase</string>
+			<key>name</key>
+			<string>Start Packager</string>
+			<key>outputFileListPaths</key>
+			<array/>
+			<key>outputPaths</key>
+			<array/>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+			<key>shellPath</key>
+			<string>/bin/sh</string>
+			<key>shellScript</key>
+			<string>export RCT_METRO_PORT="${RCT_METRO_PORT:=8081}"
+echo "export RCT_METRO_PORT=${RCT_METRO_PORT}" &gt; "${SRCROOT}/../node_modules/react-native/scripts/.packager.env"
+if [ -z "${RCT_NO_LAUNCH_PACKAGER+xxx}" ] ; then
+  if nc -w 5 -z localhost ${RCT_METRO_PORT} ; then
+    if ! curl -s "http://localhost:${RCT_METRO_PORT}/status" | grep -q "packager-status:running" ; then
+      echo "Port ${RCT_METRO_PORT} already in use, packager is either not running or not running correctly"
+      exit 2
+    fi
+  else
+    open "$SRCROOT/../node_modules/react-native/scripts/launchPackager.command" || echo "Can't start packager automatically"
+  fi
+fi
+</string>
+			<key>showEnvVarsInLog</key>
+			<string>0</string>
+		</dict>
+	</dict>
+	<key>rootObject</key>
+	<string>83CBB9F71A601CBA00E9B192</string>
+</dict>
+</plist>

@@ -19,11 +19,11 @@ PODS:
     - FirebaseCoreInternal (~> 10.0)
     - GoogleUtilities/Environment (~> 7.12)
     - GoogleUtilities/Logger (~> 7.12)
-  - FirebaseCoreExtension (10.28.0):
+  - FirebaseCoreExtension (10.29.0):
     - FirebaseCore (~> 10.0)
-  - FirebaseCoreInternal (10.28.0):
+  - FirebaseCoreInternal (10.29.0):
     - "GoogleUtilities/NSData+zlib (~> 7.8)"
-  - FirebaseInstallations (10.28.0):
+  - FirebaseInstallations (10.29.0):
     - FirebaseCore (~> 10.0)
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/UserDefaults (~> 7.8)
@@ -796,9 +796,9 @@ SPEC CHECKSUMS:
   FBReactNativeSpec: 448e08a759d29a96e15725ae532445bf4343567c
   Firebase: 26b040b20866a55f55eb3611b9fcf3ae64816b86
   FirebaseCore: a2b95ae4ce7c83ceecfbbbe3b6f1cddc7415a808
-  FirebaseCoreExtension: f63147b723e2a700fe0f34ec6fb7f358d6fe83e0
-  FirebaseCoreInternal: 58d07f1362fddeb0feb6a857d1d1d1c5e558e698
-  FirebaseInstallations: 60c1d3bc1beef809fd1ad1189a8057a040c59f2e
+  FirebaseCoreExtension: 705ca5b14bf71d2564a0ddc677df1fc86ffa600f
+  FirebaseCoreInternal: df84dd300b561c27d5571684f389bf60b0a5c934
+  FirebaseInstallations: 913cf60d0400ebd5d6b63a28b290372ab44590dd
   FirebaseMessaging: 585984d0a1df120617eb10b44cad8968b859815e
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
@@ -829,7 +829,7 @@ SPEC CHECKSUMS:
   React-logger: 2e4aee3e11b3ec4fa6cfd8004610bbb3b8d6cca4
   react-native-background-actions: ecffd3f0864140ef6cf21c29be6819a02b531a52
   react-native-date-picker: 1d61c76315098a6ad4c643a356f005916c7d4875
-  react-native-geolocation: ea54bea79ec30822737f3fe2f74d2d61cf178c25
+  react-native-geolocation: 67bb814aa950c4a5b32ed19ceab38ebd01565bbd
   react-native-maps: fa054512735831f232e822ee6bdb0afcdd88de4a
   react-native-safe-area-context: 7aa8e6d9d0f3100a820efb1a98af68aa747f9284
   react-native-sensitive-info: 400c6e3d27945e15c8cddb5b4b92233c85ee06f8
@@ -864,6 +864,6 @@ SPEC CHECKSUMS:
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: 86fed2e4d425ee4c6eab3813ba1791101ee153c6
 
-PODFILE CHECKSUM: 74d911840080320b57b5481cb70c04368e98ccf3
+PODFILE CHECKSUM: 0e2cfab0bcbdac70f0d8e42ab44fe97bbbffab16
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2
