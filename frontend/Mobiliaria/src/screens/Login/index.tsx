@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Alert,
   Image,
@@ -28,6 +28,7 @@ import { CommonActions, useNavigation } from "@react-navigation/native";
 import { NavigationScreens } from "@interfaces/navigation";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StorageKeysEnum } from "@interfaces/auth";
+import Geolocation from "@react-native-community/geolocation";
 
 const Login = (): JSX.Element => {
   const dispatch = useDispatch();
@@ -68,6 +69,10 @@ const Login = (): JSX.Element => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    Geolocation.requestAuthorization();
+  }, []);
 
   return (
     <View

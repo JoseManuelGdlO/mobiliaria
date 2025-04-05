@@ -26,6 +26,8 @@ export const getWorkers = async (): Promise<any> => {
 
 export const getEventsDelivery = async (date: string): Promise<any> => {
     const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${GET_WORKERS_EVENTS}?date=${date}`
+    console.log(url);
+    
 
     const instance = axios.create({
         baseURL: url,
@@ -39,6 +41,7 @@ export const getEventsDelivery = async (date: string): Promise<any> => {
     return await instance
         .get(url)
         .then(async response => {
+            
             return response.data.data
         })
         .catch(async error => {

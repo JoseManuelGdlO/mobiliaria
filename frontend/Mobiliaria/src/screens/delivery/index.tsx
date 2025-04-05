@@ -37,18 +37,23 @@ const Delivery = (): JSX.Element => {
 
     const requestUserPermissions = async () => {
 
-        if(Platform.OS === 'android') {
-            PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+        try {
+            if(Platform.OS === 'android') {
+                await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+            }
+            const authStatus = await messaging().requestPermission();
+            const enabled =
+            authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+            authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+    
+            if (enabled) {
+                console.log('Authorization status:', authStatus);
+                getToken();
+            }
+        } catch (error) {
+            console.log(error);
         }
-        const authStatus = await messaging().requestPermission();
-        const enabled =
-        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
-        if (enabled) {
-            console.log('Authorization status:', authStatus);
-            getToken();
-        }
     }
 
     const getToken = async () => {
