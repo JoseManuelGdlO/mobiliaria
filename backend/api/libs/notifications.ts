@@ -52,7 +52,7 @@ export async function getAccessToken(): Promise<string> {
   };
 
   
-export async function sendNotification(message: string, title: string, idCompany: number, idUsuario?: number) {
+export async function sendNotification(message: string, title: string, idCompany: number, idUsuario: number, access_token?: string) {
   
 
     try {
@@ -72,9 +72,9 @@ export async function sendNotification(message: string, title: string, idCompany
         return 404;
       }
   
-      const access_token = await getAccessToken();
+      
       if (!access_token) {
-        return 404;
+        return
       }
   
       helper.emptyOrRows(rows).forEach((element: any) => {
@@ -96,7 +96,7 @@ export async function sendNotification(message: string, title: string, idCompany
               },
             },
             data: {
-              nombre: String(idUsuario ? rowsUser[0].nombre_comp : 0), // here you can send addition data along with notification 
+              nombre: String(idUsuario ? rowsUser[0].nombre_comp : '0'), // here you can send addition data along with notification 
             },
           },
         };

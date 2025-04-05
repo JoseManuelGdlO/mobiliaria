@@ -72,7 +72,7 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-    res.json({ message: "version: 0.4.0" });
+    res.json({ message: "version: 0.4.2" });
 });
 
 app.use("/auth", authRouter);

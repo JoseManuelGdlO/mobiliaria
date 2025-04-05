@@ -1,7 +1,7 @@
 import { db } from './db';
 import { helper } from '../helper';
 import moment from 'moment';
-import { sendNotification } from '../libs/notifications';
+import { getAccessToken, sendNotification } from '../libs/notifications';
 
 async function getReports(id: number, months: string) {
     let code = 200;
@@ -110,26 +110,30 @@ async function runCron() {
     `;
 
     try {
-        const results = await db.query(query, [now.format('YYYY-MM-DD'), now.format('YYYY-MM-DD')])        
+        const results = await db.query(query, [now.format('YYYY-MM-DD'), now.format('YYYY-MM-DD')])
+        let access_token = await getAccessToken();     
 
-        results.forEach((event: any) => {
+        results.forEach(async (event: any) => {
             // Si la notificación de envío no está desactivada, procesarla
-            if (event.notificacion_envio && event.notificacion_envio !== '0') {
+            if (event.notificacion_envio_enviada === 0 && event.notificacion_envio && event.notificacion_envio !== '0') {
                 const envioNotificationTime = calculateNotificationTime(event.fecha_envio_evento, event.hora_envio_evento, event.notificacion_envio);
                 
                 if (now.isSameOrAfter(envioNotificationTime)) {
                     // Aquí iría el código para notificar sobre el envío
-                    sendNotification(`Falta ${convertNombeclatureToString(event.notificacion_envio)}, El evento de ${event.nombre_titular_evento} esta proximo`, 'Envio proximo', event.id_empresa, event.id_usuario);
+                    const updateQuery = `UPDATE evento_mob SET notificacion_envio_enviada = TRUE WHERE id_evento = ${event.id_evento}`;
+                    await db.query(updateQuery)
+                    sendNotification(`Falta ${convertNombeclatureToString(event.notificacion_envio)}, El evento de ${event.nombre_titular_evento} esta proximo`, 'Envio proximo', event.id_empresa, event.id_usuario, access_token);
                 }
             }
 
             // Si la notificación de recolección no está desactivada, procesarla
-            if (event.notificacion_recoleccion && event.notificacion_recoleccion !== '0') {
+            if (event.notificacion_recoleccion_enviada === 0 && event.notificacion_recoleccion && event.notificacion_recoleccion !== '0') {
                 const recoleccionNotificationTime = calculateNotificationTime(event.fecha_recoleccion_evento, event.hora_recoleccion_evento, event.notificacion_recoleccion);
-                
                 if (now.isSameOrAfter(recoleccionNotificationTime)) {
                     // Aquí iría el código para notificar sobre la recolección
-                    sendNotification(`Falta ${convertNombeclatureToString(event.notificacion_recoleccion)}, Tenemos que recoger meterial del evento de ${event.nombre_titular_evento}`, 'Recoleccion cerca', event.id_empresa, event.id_usuario);
+                    const updateQuery = `UPDATE evento_mob SET notificacion_recoleccion_enviada = TRUE WHERE id_evento = ${event.id_evento}`;
+                    await db.query(updateQuery)
+                    sendNotification(`Falta ${convertNombeclatureToString(event.notificacion_recoleccion)}, Tenemos que recoger meterial del evento de ${event.nombre_titular_evento}`, 'Recoleccion cerca', event.id_empresa, event.id_usuario, access_token);
                 }
             }
         });

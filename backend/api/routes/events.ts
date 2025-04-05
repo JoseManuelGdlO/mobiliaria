@@ -3,6 +3,7 @@ import { verifyToken } from '../libs/headers';
 const router = express.Router();
 const eventService = require('../services/events');
 import jwt_decode from "jwt-decode";
+import { getAccessToken } from '../libs/notifications';
 
 
 router.get('/getEvents', verifyToken, async function (req: any, res: any, next: any) {
@@ -187,8 +188,9 @@ router.get('/not', verifyToken, async function (req: any, res: any, next: any) {
         const title = req.query.title
         const idCompany = req.query.idCompany
         const id = req.query.idUsuario
+        const access_token = await getAccessToken();
 
-        const response = await eventService.sendNotification(message, title, idCompany, id);
+        const response = await eventService.sendNotification(message, title, idCompany, id, access_token);
         
         res.status(response.code).json(response);
     } catch (err: any) {
