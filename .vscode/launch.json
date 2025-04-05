@@ -2,13 +2,20 @@
     "version": "0.2.0",
     "configurations": [
       {
-        "name": "Launch script in the terminal",
+        "name": "Launch express",
         "command": "cd backend/api && nodemon index.ts", // update entry point
         "request": "launch",
         "type": "node-terminal",
         "skipFiles": [
           "<node_internals>/**"
         ]
+      },
+      {
+        "name":"Run Android",
+        "request":"attach",
+        "type":"reactnativedirect",
+        "cwd":"${workspaceFolder}/frontend/Mobiliaria",
+        "platform":"android"
       }
     ]
   }
