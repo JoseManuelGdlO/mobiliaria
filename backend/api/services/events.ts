@@ -369,7 +369,9 @@ async function addEvent(body: any, id: number, idUsuario: number) {
     saveHistorical(event.insertId, idUsuario, "Creación");
 
     if(body.rec && !body.rec) {
-     sendNotification(`el dia ${body.evento.fecha_envio_evento}, ${body.mobiliario.length} items rentados`, "Nuevo evento", id, idUsuario);
+      
+     const access_token = await getAccessToken();
+     sendNotification(`el dia ${body.evento.fecha_envio_evento}, ${body.mobiliario.length} items rentados`, "Nuevo evento", id, idUsuario, access_token);
     }
     await connection.commit();
     return 201;
