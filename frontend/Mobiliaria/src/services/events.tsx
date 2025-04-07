@@ -6,7 +6,7 @@ import { IAvailability } from "@interfaces/availability"
 import { formatDateString } from "@utils/dateFormat"
 
 export const getEvents = async (): Promise<any> => {
-    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${GET_EVENTS_PATH}?id=1`
+    const url = `https://mobiliaria.onrender.com${GET_EVENTS_PATH}?id=1`
 
     const instance = axios.create({
         baseURL: url,
@@ -28,7 +28,7 @@ export const getEvents = async (): Promise<any> => {
 }
 
 export const getEventsDay = async (date: string): Promise<any> => {
-    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${GET_EVENTS_DAY_PATH}?id=1&date=${date}`
+    const url = `https://mobiliaria.onrender.com${GET_EVENTS_DAY_PATH}?id=1&date=${date}`
     console.log('url', url);
     
 
@@ -52,7 +52,7 @@ export const getEventsDay = async (date: string): Promise<any> => {
 }
 
 export const addDirection = async (id: number, body: any): Promise<any> => {
-    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${ADD_DIRECTIONS_EVENT_PATH}?id=${id}`
+    const url = `https://mobiliaria.onrender.com${ADD_DIRECTIONS_EVENT_PATH}?id=${id}`
     console.log('url', url);
     
     const instance = axios.create({
@@ -75,7 +75,7 @@ export const addDirection = async (id: number, body: any): Promise<any> => {
 }
 
 export const getEventDetail = async (id: number): Promise<any> => {
-    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${GET_DETAILS_EVENT_PATH}?id=${id}`
+    const url = `https://mobiliaria.onrender.com${GET_DETAILS_EVENT_PATH}?id=${id}`
 
     const instance = axios.create({
         baseURL: url,
@@ -97,7 +97,7 @@ export const getEventDetail = async (id: number): Promise<any> => {
 }
 
 export const getAvailableDay = async (date: string): Promise<any> => {
-    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${GET_AVAILABLE_DAY_PATH}?date=${date}`
+    const url = `https://mobiliaria.onrender.com${GET_AVAILABLE_DAY_PATH}?date=${date}`
 
     const instance = axios.create({
         baseURL: url,
@@ -119,7 +119,7 @@ export const getAvailableDay = async (date: string): Promise<any> => {
 }
 
 export const addEvent = async (body: any): Promise<any> => {
-    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${CREATE_EVENT}`
+    const url = `https://mobiliaria.onrender.com${CREATE_EVENT}`
 
     const instance = axios.create({
         baseURL: url,
@@ -196,7 +196,7 @@ export const addRecurrentEvent = async (body: any, recTime: number, weekDays: an
 
 
 export const addObservation = async (obs: string, id: number): Promise<any> => {
-    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${ADD_OBS}`
+    const url = `https://mobiliaria.onrender.com${ADD_OBS}`
 
     const instance = axios.create({
         baseURL: url,
@@ -223,7 +223,7 @@ export const addObservation = async (obs: string, id: number): Promise<any> => {
 }
 
 export const changeStatus = async (id: number, delivered: number, recolected: number): Promise<any> => {
-    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${STATUS_DELIVERY}?id=${id}&delivered=${delivered}&recolected=${recolected}`
+    const url = `https://mobiliaria.onrender.com${STATUS_DELIVERY}?id=${id}&delivered=${delivered}&recolected=${recolected}`
 
     const instance = axios.create({
         baseURL: url,
@@ -245,7 +245,7 @@ export const changeStatus = async (id: number, delivered: number, recolected: nu
 }
 
 export const addItemsToEvent = async (id: number, items: IAvailability[]): Promise<any> => {
-    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${ADD_ITEMS}`
+    const url = `https://mobiliaria.onrender.com${ADD_ITEMS}`
     const body = {
         id,
         items
@@ -272,7 +272,7 @@ export const addItemsToEvent = async (id: number, items: IAvailability[]): Promi
 }
 
 export const removeEvent = async (id: number): Promise<any> => {
-    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${REMOVE_EVENT}?id=${id}`
+    const url = `https://mobiliaria.onrender.com${REMOVE_EVENT}?id=${id}`
 
 
     const instance = axios.create({
@@ -297,7 +297,7 @@ export const removeEvent = async (id: number): Promise<any> => {
 }
 
 export const removeItem = async (id: number, id_mob: number): Promise<any> => {
-    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${REMOVE_ITEM}?id=${id}&id_mob=${id_mob}`
+    const url = `https://mobiliaria.onrender.com${REMOVE_ITEM}?id=${id}&id_mob=${id_mob}`
 
     
     const instance = axios.create({
@@ -324,7 +324,7 @@ export const removeItem = async (id: number, id_mob: number): Promise<any> => {
 }
 
 export const editEvent = async (id: number, titular:string, telefono: string, direccion: string): Promise<any> => {
-    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${EDIT_EVENT}`
+    const url = `https://mobiliaria.onrender.com${EDIT_EVENT}`
     const body = {
         id,
         titular,

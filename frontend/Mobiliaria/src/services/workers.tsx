@@ -3,7 +3,7 @@ import { ACTIVE_WORKER, ADD_WORKER, EDIT_WORKER, GET_WORKERS, GET_WORKERS_EVENTS
 import { getAccessTokenAsync } from "@utils/token"
 
 export const getWorkers = async (): Promise<any> => {
-    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${GET_WORKERS}`
+    const url = `https://mobiliaria.onrender.com${GET_WORKERS}`
 
     const instance = axios.create({
         baseURL: url,
@@ -25,7 +25,7 @@ export const getWorkers = async (): Promise<any> => {
 }
 
 export const getEventsDelivery = async (date: string): Promise<any> => {
-    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${GET_WORKERS_EVENTS}?date=${date}`
+    const url = `https://mobiliaria.onrender.com${GET_WORKERS_EVENTS}?date=${date}`
     console.log(url);
     
 
@@ -50,7 +50,7 @@ export const getEventsDelivery = async (date: string): Promise<any> => {
 }
 
 export const addWorker = async (body: any): Promise<any> => {
-    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${ADD_WORKER}`
+    const url = `https://mobiliaria.onrender.com${ADD_WORKER}`
 
     const instance = axios.create({
         baseURL: url,
@@ -72,7 +72,7 @@ export const addWorker = async (body: any): Promise<any> => {
 }
 
 export const editWorker = async (body: any): Promise<any> => {
-    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${EDIT_WORKER}`
+    const url = `https://mobiliaria.onrender.com${EDIT_WORKER}`
 
     const instance = axios.create({
         baseURL: url,
@@ -94,7 +94,7 @@ export const editWorker = async (body: any): Promise<any> => {
 }
 
 export const active = async (active: 0 | 1, id: number): Promise<any> => {
-    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${ACTIVE_WORKER}?type=${active}&id=${id}`
+    const url = `https://mobiliaria.onrender.com${ACTIVE_WORKER}?type=${active}&id=${id}`
 
     const instance = axios.create({
         baseURL: url,
@@ -116,7 +116,7 @@ export const active = async (active: 0 | 1, id: number): Promise<any> => {
 }
 
 export const deleteWorker = async (id: number): Promise<any> => {
-    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${REMOVE_WORKER}?id=${id}`
+    const url = `https://mobiliaria.onrender.com${REMOVE_WORKER}?id=${id}`
 
     const instance = axios.create({
         baseURL: url,

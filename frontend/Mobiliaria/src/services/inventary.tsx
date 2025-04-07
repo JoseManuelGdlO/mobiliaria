@@ -3,7 +3,7 @@ import { ADD_INVENTARY, GET_INVENTARY, REMOVE_INVENTARY, UPDATE_INVENTARY } from
 import { getAccessTokenAsync } from "@utils/token"
 
 export const getInventary = async (): Promise<any> => {
-    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${GET_INVENTARY}`
+    const url = `https://mobiliaria.onrender.com${GET_INVENTARY}`
     
 
     const instance = axios.create({
@@ -26,7 +26,7 @@ export const getInventary = async (): Promise<any> => {
 }
 
 export const addInventary = async (body: any): Promise<any> => {
-    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${ADD_INVENTARY}`
+    const url = `https://mobiliaria.onrender.com${ADD_INVENTARY}`
     const instance = axios.create({
         baseURL: url,
         headers: {
@@ -48,7 +48,7 @@ export const addInventary = async (body: any): Promise<any> => {
 
 
 export const updateInventary = async (body: any): Promise<any> => {
-    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${UPDATE_INVENTARY}`
+    const url = `https://mobiliaria.onrender.com${UPDATE_INVENTARY}`
     const instance = axios.create({
         baseURL: url,
         headers: {
@@ -68,7 +68,7 @@ export const updateInventary = async (body: any): Promise<any> => {
 }
 
 export const remove = async (id: number): Promise<any> => {
-    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${REMOVE_INVENTARY}?id=${id}`
+    const url = `https://mobiliaria.onrender.com${REMOVE_INVENTARY}?id=${id}`
     const instance = axios.create({
         baseURL: url,
         headers: {
