@@ -3,7 +3,7 @@ import { getAccessTokenAsync } from "@utils/token"
 import { GET_CLIENTS } from "./endpoints"
 
 export const getClients = async (): Promise<any> => {
-    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${GET_CLIENTS}`
+    const url = `https://mobiliaria.onrender.com${GET_CLIENTS}`
 
     const instance = axios.create({
         baseURL: url,

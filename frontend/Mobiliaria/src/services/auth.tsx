@@ -2,7 +2,7 @@ import axios from "axios"
 import { LOGIN_PATH, LOGIN_TOKEN_PATH } from "./endpoints"
 
 export const login = async (email: string, password: string): Promise<any> => {
-    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${LOGIN_PATH}`
+    const url = `https://mobiliaria.onrender.com${LOGIN_PATH}`
     const instance = axios.create({
         baseURL: url,
         data: {
@@ -29,7 +29,7 @@ export const login = async (email: string, password: string): Promise<any> => {
 }
 
 export const tokenUser = async (id: number, token: string): Promise<any> => {
-    const url = `http://lb-eventivapi-879655844.us-east-1.elb.amazonaws.com${LOGIN_TOKEN_PATH}`
+    const url = `https://mobiliaria.onrender.com${LOGIN_TOKEN_PATH}`
 
     const instance = axios.create({
         baseURL: url,
