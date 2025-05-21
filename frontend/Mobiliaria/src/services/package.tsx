@@ -2,9 +2,11 @@ import axios from "axios"
 import { ADD_PACKAGES, GET_PACKAGES, REMOVE_PACKAGES } from "./endpoints"
 import { IPackage } from "@interfaces/packages";
 import { getAccessTokenAsync } from "@utils/token";
+import { initRemoteConfig } from "@utils/remote-config"
 
 export const getPackages = async (): Promise<any> => {
-    const url = `https://mobiliaria.onrender.com${GET_PACKAGES}`
+        const API_URL = await initRemoteConfig(); // obtiene desde Firebase
+    const url = `${API_URL}${GET_PACKAGES}`
 
     const instance = axios.create({
         baseURL: url,
@@ -27,7 +29,8 @@ export const getPackages = async (): Promise<any> => {
 
 
 export const removePackage = async (id: number): Promise<any> => {
-    const url = `https://mobiliaria.onrender.com${REMOVE_PACKAGES}?id=${id}`
+        const API_URL = await initRemoteConfig(); // obtiene desde Firebase
+    const url = `${API_URL}${REMOVE_PACKAGES}?id=${id}`
     console.log(url);    
 
     const instance = axios.create({
@@ -52,7 +55,8 @@ export const removePackage = async (id: number): Promise<any> => {
 
 
 export const addPackage = async (body: any): Promise<any> => {
-    const url = `https://mobiliaria.onrender.com${ADD_PACKAGES}`
+        const API_URL = await initRemoteConfig(); // obtiene desde Firebase
+    const url = `${API_URL}${ADD_PACKAGES}`
     console.log(url);    
 
     const instance = axios.create({

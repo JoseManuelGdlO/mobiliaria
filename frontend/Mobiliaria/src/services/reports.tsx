@@ -1,9 +1,11 @@
 import { getAccessTokenAsync } from "@utils/token"
 import axios from "axios"
 import { GET_REPORTS } from "./endpoints"
+import { initRemoteConfig } from "@utils/remote-config"
 
 export const getReports = async (months: number): Promise<any> => {
-    const url = `https://mobiliaria.onrender.com${GET_REPORTS}?months=${months}`
+        const API_URL = await initRemoteConfig(); // obtiene desde Firebase
+    const url = `${API_URL}${GET_REPORTS}?months=${months}`
 
     const instance = axios.create({
         baseURL: url,

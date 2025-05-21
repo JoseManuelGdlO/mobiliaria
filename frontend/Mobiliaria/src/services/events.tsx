@@ -4,9 +4,11 @@ import axios from 'axios'
 import { getAccessTokenAsync } from "@utils/token"
 import { IAvailability } from "@interfaces/availability"
 import { formatDateString } from "@utils/dateFormat"
+import { initRemoteConfig } from "@utils/remote-config"
 
 export const getEvents = async (): Promise<any> => {
-    const url = `https://mobiliaria.onrender.com${GET_EVENTS_PATH}?id=1`
+        const API_URL = await initRemoteConfig(); // obtiene desde Firebase
+    const url = `${API_URL}${GET_EVENTS_PATH}?id=1`
 
     const instance = axios.create({
         baseURL: url,
@@ -28,7 +30,8 @@ export const getEvents = async (): Promise<any> => {
 }
 
 export const getEventsDay = async (date: string): Promise<any> => {
-    const url = `https://mobiliaria.onrender.com${GET_EVENTS_DAY_PATH}?id=1&date=${date}`
+        const API_URL = await initRemoteConfig(); // obtiene desde Firebase
+    const url = `${API_URL}${GET_EVENTS_DAY_PATH}?id=1&date=${date}`
     console.log('url', url);
     
 
@@ -52,7 +55,8 @@ export const getEventsDay = async (date: string): Promise<any> => {
 }
 
 export const addDirection = async (id: number, body: any): Promise<any> => {
-    const url = `https://mobiliaria.onrender.com${ADD_DIRECTIONS_EVENT_PATH}?id=${id}`
+        const API_URL = await initRemoteConfig(); // obtiene desde Firebase
+    const url = `${API_URL}${ADD_DIRECTIONS_EVENT_PATH}?id=${id}`
     console.log('url', url);
     
     const instance = axios.create({
@@ -75,7 +79,8 @@ export const addDirection = async (id: number, body: any): Promise<any> => {
 }
 
 export const getEventDetail = async (id: number): Promise<any> => {
-    const url = `https://mobiliaria.onrender.com${GET_DETAILS_EVENT_PATH}?id=${id}`
+        const API_URL = await initRemoteConfig(); // obtiene desde Firebase
+    const url = `${API_URL}${GET_DETAILS_EVENT_PATH}?id=${id}`
 
     const instance = axios.create({
         baseURL: url,
@@ -97,7 +102,8 @@ export const getEventDetail = async (id: number): Promise<any> => {
 }
 
 export const getAvailableDay = async (date: string): Promise<any> => {
-    const url = `https://mobiliaria.onrender.com${GET_AVAILABLE_DAY_PATH}?date=${date}`
+        const API_URL = await initRemoteConfig(); // obtiene desde Firebase
+    const url = `${API_URL}${GET_AVAILABLE_DAY_PATH}?date=${date}`
 
     const instance = axios.create({
         baseURL: url,
@@ -119,7 +125,8 @@ export const getAvailableDay = async (date: string): Promise<any> => {
 }
 
 export const addEvent = async (body: any): Promise<any> => {
-    const url = `https://mobiliaria.onrender.com${CREATE_EVENT}`
+        const API_URL = await initRemoteConfig(); // obtiene desde Firebase
+    const url = `${API_URL}${CREATE_EVENT}`
 
     const instance = axios.create({
         baseURL: url,
@@ -196,7 +203,8 @@ export const addRecurrentEvent = async (body: any, recTime: number, weekDays: an
 
 
 export const addObservation = async (obs: string, id: number): Promise<any> => {
-    const url = `https://mobiliaria.onrender.com${ADD_OBS}`
+        const API_URL = await initRemoteConfig(); // obtiene desde Firebase
+    const url = `${API_URL}${ADD_OBS}`
 
     const instance = axios.create({
         baseURL: url,
@@ -223,7 +231,8 @@ export const addObservation = async (obs: string, id: number): Promise<any> => {
 }
 
 export const changeStatus = async (id: number, delivered: number, recolected: number): Promise<any> => {
-    const url = `https://mobiliaria.onrender.com${STATUS_DELIVERY}?id=${id}&delivered=${delivered}&recolected=${recolected}`
+        const API_URL = await initRemoteConfig(); // obtiene desde Firebase
+    const url = `${API_URL}${STATUS_DELIVERY}?id=${id}&delivered=${delivered}&recolected=${recolected}`
 
     const instance = axios.create({
         baseURL: url,
@@ -245,7 +254,8 @@ export const changeStatus = async (id: number, delivered: number, recolected: nu
 }
 
 export const addItemsToEvent = async (id: number, items: IAvailability[]): Promise<any> => {
-    const url = `https://mobiliaria.onrender.com${ADD_ITEMS}`
+        const API_URL = await initRemoteConfig(); // obtiene desde Firebase
+    const url = `${API_URL}${ADD_ITEMS}`
     const body = {
         id,
         items
@@ -272,7 +282,8 @@ export const addItemsToEvent = async (id: number, items: IAvailability[]): Promi
 }
 
 export const removeEvent = async (id: number): Promise<any> => {
-    const url = `https://mobiliaria.onrender.com${REMOVE_EVENT}?id=${id}`
+        const API_URL = await initRemoteConfig(); // obtiene desde Firebase
+    const url = `${API_URL}${REMOVE_EVENT}?id=${id}`
 
 
     const instance = axios.create({
@@ -297,7 +308,8 @@ export const removeEvent = async (id: number): Promise<any> => {
 }
 
 export const removeItem = async (id: number, id_mob: number): Promise<any> => {
-    const url = `https://mobiliaria.onrender.com${REMOVE_ITEM}?id=${id}&id_mob=${id_mob}`
+        const API_URL = await initRemoteConfig(); // obtiene desde Firebase
+    const url = `${API_URL}${REMOVE_ITEM}?id=${id}&id_mob=${id_mob}`
 
     
     const instance = axios.create({
@@ -324,7 +336,8 @@ export const removeItem = async (id: number, id_mob: number): Promise<any> => {
 }
 
 export const editEvent = async (id: number, titular:string, telefono: string, direccion: string): Promise<any> => {
-    const url = `https://mobiliaria.onrender.com${EDIT_EVENT}`
+        const API_URL = await initRemoteConfig(); // obtiene desde Firebase
+    const url = `${API_URL}${EDIT_EVENT}`
     const body = {
         id,
         titular,

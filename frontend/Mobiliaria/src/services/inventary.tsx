@@ -1,9 +1,11 @@
 import axios from "axios"
 import { ADD_INVENTARY, GET_INVENTARY, REMOVE_INVENTARY, UPDATE_INVENTARY } from "./endpoints"
 import { getAccessTokenAsync } from "@utils/token"
+import { initRemoteConfig } from "@utils/remote-config"
 
 export const getInventary = async (): Promise<any> => {
-    const url = `https://mobiliaria.onrender.com${GET_INVENTARY}`
+        const API_URL = await initRemoteConfig(); // obtiene desde Firebase
+    const url = `${API_URL}${GET_INVENTARY}`
     
 
     const instance = axios.create({
@@ -26,7 +28,8 @@ export const getInventary = async (): Promise<any> => {
 }
 
 export const addInventary = async (body: any): Promise<any> => {
-    const url = `https://mobiliaria.onrender.com${ADD_INVENTARY}`
+        const API_URL = await initRemoteConfig(); // obtiene desde Firebase
+    const url = `${API_URL}${ADD_INVENTARY}`
     const instance = axios.create({
         baseURL: url,
         headers: {
@@ -48,7 +51,8 @@ export const addInventary = async (body: any): Promise<any> => {
 
 
 export const updateInventary = async (body: any): Promise<any> => {
-    const url = `https://mobiliaria.onrender.com${UPDATE_INVENTARY}`
+        const API_URL = await initRemoteConfig(); // obtiene desde Firebase
+    const url = `${API_URL}${UPDATE_INVENTARY}`
     const instance = axios.create({
         baseURL: url,
         headers: {
@@ -68,7 +72,8 @@ export const updateInventary = async (body: any): Promise<any> => {
 }
 
 export const remove = async (id: number): Promise<any> => {
-    const url = `https://mobiliaria.onrender.com${REMOVE_INVENTARY}?id=${id}`
+        const API_URL = await initRemoteConfig(); // obtiene desde Firebase
+    const url = `${API_URL}${REMOVE_INVENTARY}?id=${id}`
     const instance = axios.create({
         baseURL: url,
         headers: {

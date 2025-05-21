@@ -1,9 +1,11 @@
 import axios from "axios"
 import { getAccessTokenAsync } from "@utils/token"
 import { ADD_FLETE, ADD_PAYMENTS, GET_PAYMENTS } from "./endpoints"
+import { initRemoteConfig } from "@utils/remote-config"
 
 export const getPayments = async (): Promise<any> => {
-    const url = `https://mobiliaria.onrender.com${GET_PAYMENTS}`
+        const API_URL = await initRemoteConfig(); // obtiene desde Firebase
+    const url = `${API_URL}${GET_PAYMENTS}`
 
     const instance = axios.create({
         baseURL: url,
@@ -25,7 +27,8 @@ export const getPayments = async (): Promise<any> => {
 }
 
 export const addPayment = async (body: any): Promise<any> => {
-    const url = `https://mobiliaria.onrender.com${ADD_PAYMENTS}`
+        const API_URL = await initRemoteConfig(); // obtiene desde Firebase
+    const url = `${API_URL}${ADD_PAYMENTS}`
 
     const instance = axios.create({
         baseURL: url,
@@ -47,7 +50,8 @@ export const addPayment = async (body: any): Promise<any> => {
 }
 
 export const addFlete = async (body: any, id: number): Promise<any> => {
-    const url = `https://mobiliaria.onrender.com${ADD_FLETE}?id=${id}`
+        const API_URL = await initRemoteConfig(); // obtiene desde Firebase
+    const url = `${API_URL}${ADD_FLETE}?id=${id}`
 
     const instance = axios.create({
         baseURL: url,
