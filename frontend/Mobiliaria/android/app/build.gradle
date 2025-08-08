@@ -70,6 +70,15 @@ def enableProguardInReleaseBuilds = false
  */
 def jscFlavor = 'org.webkit:android-jsc:+'
 
+buildscript {
+    ext {
+        kotlin_version = '1.9.10' // o '1.9.20' si es necesario
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
 android {
     ndkVersion rootProject.ext.ndkVersion
 
