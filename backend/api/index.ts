@@ -95,4 +95,5 @@ app.use((err: any, req: any, res: any, next: any) => {
 
 app.listen(port, () => {
     console.log(`Example app listening at YOUR_IP_INSTANCE:${port}`);
+    console.log('version: 0.4.3');
 });
