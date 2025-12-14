@@ -18,5 +18,7 @@ export async function saveHistorical(idEvent: number, idUser: number, descriptio
       console.error(error);
       connection.rollback();
       console.info("Rollback successful");
+    } finally {
+      await connection.end();
     }
-  }
+}

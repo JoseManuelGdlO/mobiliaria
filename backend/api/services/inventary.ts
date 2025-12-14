@@ -115,6 +115,8 @@ async function addPackage(id: number, body:any) {
             code,
             data: error
         }
+    } finally {
+        await connection.end();
     }
 
 }

@@ -112,6 +112,15 @@ async function getDetails(id: number) {
 async function getEventsOfDay(id: number, date: string) {
   let code = 200;
 
+  // Validar que date no esté vacío
+  if (!date || date.trim() === '') {
+    code = 400;
+    return {
+      data: [],
+      code,
+    };
+  }
+
   const rows = await db.query(
     `SELECT 
         e.*,
@@ -380,6 +389,8 @@ async function addEvent(body: any, id: number, idUsuario: number) {
     connection.rollback();
     console.info("Rollback successful");
     return 405;
+  } finally {
+    await connection.end();
   }
 }
 
@@ -448,6 +459,8 @@ async function addUrltoEvent(body: any, id: number, idUsuario: number) {
     connection.rollback();
     console.info("Rollback successful");
     return 405;
+  } finally {
+    await connection.end();
   }
 }
 
@@ -487,6 +500,8 @@ async function addFlete(body: any, id: number, idUsuario: number) {
     connection.rollback();
     console.info("Rollback successful");
     return 405;
+  } finally {
+    await connection.end();
   }
 }
 
@@ -565,6 +580,8 @@ async function addItems(body: any, idUsuario: number) {
     connection.rollback();
     console.info("Rollback successful");
     return 405;
+  } finally {
+    await connection.end();
   }
 }
 
@@ -640,6 +657,8 @@ async function remove(id: number) {
     connection.rollback();
     console.info("Rollback successful");
     return 405;
+  } finally {
+    await connection.end();
   }
 }
 
@@ -696,6 +715,8 @@ async function removeItem(id: number, id_mob: number) {
     connection.rollback();
     console.info("Rollback successful");
     return 405;
+  } finally {
+    await connection.end();
   }
 }
 
