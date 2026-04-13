@@ -13,6 +13,7 @@ const db_1 = require("./db");
 const helper_1 = require("../helper");
 const historical_1 = require("../libs/historical");
 const notifications_1 = require("../libs/notifications");
+const designDraftStore = new Map();
 function getEvents(id) {
     return __awaiter(this, void 0, void 0, function* () {
         let code = 200;
@@ -569,6 +570,26 @@ function removeItem(id, id_mob) {
         }
     });
 }
+function saveDesignDraft(idEvent, idEmpresa, idUsuario, draft) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const key = `${idEmpresa}:${idEvent}`;
+        const payload = {
+            idEvent,
+            idEmpresa,
+            idUsuario,
+            updatedAt: Date.now(),
+            draft,
+        };
+        designDraftStore.set(key, payload);
+        if (idEvent > 0) {
+            (0, historical_1.saveHistorical)(idEvent, idUsuario, "Modificación", "Actualización de borrador de diseño y cotización viva");
+        }
+        return {
+            code: 201,
+            data: payload,
+        };
+    });
+}
 module.exports = {
     getEvents,
     getEventsOfDay,
@@ -583,5 +604,6 @@ module.exports = {
     addItems,
     addUrltoEvent,
     addFlete,
-    sendNotification: notifications_1.sendNotification
+    sendNotification: notifications_1.sendNotification,
+    saveDesignDraft
 };

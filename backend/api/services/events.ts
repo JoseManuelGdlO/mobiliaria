@@ -3,6 +3,8 @@ import { helper } from "../helper";
 import { saveHistorical } from "../libs/historical";
 import { getAccessToken, sendNotification } from "../libs/notifications";
 
+const designDraftStore = new Map<string, any>();
+
 async function getEvents(id: number) {
   let code = 200;
 
@@ -730,6 +732,37 @@ async function removeItem(id: number, id_mob: number) {
   }
 }
 
+async function saveDesignDraft(
+  idEvent: number,
+  idEmpresa: number,
+  idUsuario: number,
+  draft: any
+) {
+  const key = `${idEmpresa}:${idEvent}`;
+  const payload = {
+    idEvent,
+    idEmpresa,
+    idUsuario,
+    updatedAt: Date.now(),
+    draft,
+  };
+  designDraftStore.set(key, payload);
+
+  if (idEvent > 0) {
+    saveHistorical(
+      idEvent,
+      idUsuario,
+      "Modificación",
+      "Actualización de borrador de diseño y cotización viva"
+    );
+  }
+
+  return {
+    code: 201,
+    data: payload,
+  };
+}
+
 module.exports = {
   getEvents,
   getEventsOfDay,
@@ -744,5 +777,6 @@ module.exports = {
   addItems,
   addUrltoEvent,
   addFlete,
-  sendNotification
+  sendNotification,
+  saveDesignDraft
 };

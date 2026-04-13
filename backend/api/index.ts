@@ -10,6 +10,8 @@ const clientsRouter = require("./routes/clients");
 const paymentsRouter = require("./routes/payments"); 
 const reportsRouter = require("./routes/reports");
 const durangRouter = require("./routes/durangeneidad");
+const recommendationsRouter = require("./routes/recommendations");
+const quotesRouter = require("./routes/quotes");
 import { requestTiming } from "./middleware/requestTiming";
 import { config } from "./config";
 
@@ -199,6 +201,8 @@ app.use("/workers", workersRouter);
 app.use("/clients", clientsRouter);
 app.use("/payments", paymentsRouter);
 app.use("/reports", reportsRouter);
+app.use("/recommendations", recommendationsRouter);
+app.use("/quotes", quotesRouter);
 
 
 app.use("/durangeneidad", durangRouter);

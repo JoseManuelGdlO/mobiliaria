@@ -25,5 +25,10 @@ export type NavigationScreens =
         },
         AddEvent: {
             date: string
+        },
+        DesignEvent: undefined
+        DisenaEvento: undefined
+        DesignEventResult: {
+            refresh?: boolean
         }
     }

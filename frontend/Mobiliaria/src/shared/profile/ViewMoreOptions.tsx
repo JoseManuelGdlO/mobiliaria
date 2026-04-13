@@ -36,6 +36,11 @@ export const useViewMoreMenuOptions = (): Option[] => {
             icon: <MaterialCommunityIcons name="credit-card-outline" size={ICON_SIZE} color={c} />,
             navigate: 'Pagos',
         },
+        {
+            name: 'Diseña tu evento',
+            icon: <MaterialCommunityIcons name="palette-outline" size={ICON_SIZE} color={c} />,
+            navigate: 'DisenaEvento',
+        },
     ]
 
     return options

@@ -15,6 +15,8 @@ const clientsRouter = require("./routes/clients");
 const paymentsRouter = require("./routes/payments");
 const reportsRouter = require("./routes/reports");
 const durangRouter = require("./routes/durangeneidad");
+const recommendationsRouter = require("./routes/recommendations");
+const quotesRouter = require("./routes/quotes");
 const requestTiming_1 = require("./middleware/requestTiming");
 const config_1 = require("./config");
 //For env File 
@@ -179,6 +181,8 @@ app.use("/workers", workersRouter);
 app.use("/clients", clientsRouter);
 app.use("/payments", paymentsRouter);
 app.use("/reports", reportsRouter);
+app.use("/recommendations", recommendationsRouter);
+app.use("/quotes", quotesRouter);
 app.use("/durangeneidad", durangRouter);
 /* Error handler middleware */
 app.use((err, req, res, next) => {

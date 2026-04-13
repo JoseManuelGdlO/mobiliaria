@@ -110,6 +110,10 @@ const Home = ({
         navigation.navigate('Available', { date: requestDate })
     }
 
+    const openDesignFlow = () => {
+        navigation.navigate('DesignEvent')
+    }
+
     const getColorSpecific = (total: number): string => {
 
         if (total <= 2) {
@@ -462,6 +466,23 @@ const Home = ({
                     backgroundButton={colors.Morado600}
                     onPress={addEvent}
                     title="Crear nuevo evento"
+                />
+                <PrimaryButton
+                    containerStyle={{
+                        width: '100%',
+                        paddingVertical: 4,
+                        marginBottom: 4,
+                        borderWidth: 1,
+                        borderColor: colors.Morado100,
+                    }}
+                    textStyle={{
+                        fontSize: 14,
+                        fontFamily: fonts.Inter.SemiBold,
+                        color: colors.Morado100,
+                    }}
+                    backgroundButton='transparent'
+                    onPress={openDesignFlow}
+                    title="Diseña tu evento premium"
                 />
             </View>
         </View>

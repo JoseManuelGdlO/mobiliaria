@@ -13,6 +13,7 @@ import EventDetail from '@screens/event-detail'
 import Availability from '@screens/add-event/availability'
 import AddEvent from '@screens/add-event'
 import Charts from '@screens/charts'
+import DesignEvent from '@screens/design-event'
 
 
 const Stack = createNativeStackNavigator()
@@ -44,6 +45,7 @@ export default function SignedIn(): JSX.Element {
                     <Stack.Screen options={{ title: 'Detalle de evento', headerShown: true, header: () => <BasicHeader title='Detalle de evento' /> }} name='EventDetail' component={EventDetail} />
                     <Stack.Screen options={{ title: 'Productos disponibles', headerShown: true, header: () => <BasicHeader title='Productos y paquetes' /> }} name='Available' component={Availability} />
                     <Stack.Screen options={{ title: 'Nuevo Evento', headerShown: true, header: () => <BasicHeader title='Nuevo evento' /> }} name='AddEvent' component={AddEvent} />
+                    <Stack.Screen options={{ title: 'Diseña tu evento', headerShown: true, header: () => <BasicHeader title='Diseña tu evento' /> }} name='DesignEvent' component={DesignEvent} />
 
                 </Stack.Group>
             </Stack.Navigator>

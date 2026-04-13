@@ -148,6 +148,23 @@ router.put('/flete', headers_1.verifyToken, function (req, res, next) {
         }
     });
 });
+router.post('/:id/design-draft', headers_1.verifyToken, function (req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var _a, _b, _c;
+        try {
+            const bearer = req.authPayload;
+            const idUsuario = Number((_a = bearer === null || bearer === void 0 ? void 0 : bearer.data) === null || _a === void 0 ? void 0 : _a.id_usuario);
+            const idEmpresa = Number((_b = bearer === null || bearer === void 0 ? void 0 : bearer.data) === null || _b === void 0 ? void 0 : _b.id_empresa);
+            const idEvent = Number(req.params.id);
+            const response = yield eventService.saveDesignDraft(idEvent, idEmpresa, idUsuario, (_c = req.body) !== null && _c !== void 0 ? _c : {});
+            res.status(response.code).json(response.data);
+        }
+        catch (err) {
+            console.error(`Error while saving event draft`, err.message);
+            next(err);
+        }
+    });
+});
 router.post('/additems', headers_1.verifyToken, function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {

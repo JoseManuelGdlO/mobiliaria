@@ -120,6 +120,20 @@ router.put('/flete', verifyToken, async function (req: any, res: any, next: any)
     }
 });
 
+router.post('/:id/design-draft', verifyToken, async function (req: any, res: any, next: any) {
+    try {
+        const bearer: any = req.authPayload;
+        const idUsuario = Number(bearer?.data?.id_usuario);
+        const idEmpresa = Number(bearer?.data?.id_empresa);
+        const idEvent = Number(req.params.id);
+        const response = await eventService.saveDesignDraft(idEvent, idEmpresa, idUsuario, req.body ?? {});
+        res.status(response.code).json(response.data);
+    } catch (err: any) {
+        console.error(`Error while saving event draft`, err.message);
+        next(err);
+    }
+});
+
 router.post('/additems', verifyToken, async function (req: any, res: any, next: any) {
     try {
         let body = req.body
