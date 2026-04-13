@@ -8,16 +8,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 const express = require('express');
 const router = express.Router();
 const authService = require('../services/auth');
 const jwt = require('jsonwebtoken');
+const config_1 = require("../config");
 router.post('/login', function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const response = yield authService.login(req.body);
             if (response.code === 200) {
-                jwt.sign(response, 'secretkey', (err, token) => {
+                jwt.sign(response, config_1.config.jwtSecret, { expiresIn: config_1.config.jwtExpiresIn }, (err, token) => {
                     res.status(response.code).json({ data: response.data, token });
                 });
             }
@@ -36,7 +38,7 @@ router.post('/token', function (req, res, next) {
         try {
             const response = yield authService.token(req.body);
             if (response.code === 200) {
-                jwt.sign(response, 'secretkey', (err, token) => {
+                jwt.sign(response, config_1.config.jwtSecret, { expiresIn: config_1.config.jwtExpiresIn }, (err, token) => {
                     res.status(response.code).json({ data: response.data, token });
                 });
             }

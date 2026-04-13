@@ -26,7 +26,7 @@ import {
 } from "@redux/actions/userAction";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StorageKeysEnum } from "@interfaces/auth";
-import Geolocation from "@react-native-community/geolocation";
+import { ensureLocationPermissions } from "@utils/location-permissions";
 
 const Login = (): JSX.Element => {
   const dispatch = useDispatch();
@@ -61,7 +61,7 @@ const Login = (): JSX.Element => {
   };
 
   useEffect(() => {
-    Geolocation.requestAuthorization();
+    ensureLocationPermissions();
   }, []);
 
   const handleSupportPress = () => {

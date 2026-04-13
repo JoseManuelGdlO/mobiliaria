@@ -16,7 +16,7 @@ function getWorkers(id) {
     return __awaiter(this, void 0, void 0, function* () {
         let code = 200;
         console.log('id', id);
-        const rows = yield db_1.db.query(`SELECT * FROM usuarios_mobiliaria WHERE id_empresa = ${id} AND admin is null AND delete_usuario is NULL order by nombre_comp`);
+        const rows = yield db_1.db.query(`SELECT * FROM usuarios_mobiliaria WHERE id_empresa = ? AND admin is null AND delete_usuario is NULL order by nombre_comp`, [id]);
         let data = helper_1.helper.emptyOrRows(rows);
         if (data.length === 0) {
             code = 404;
@@ -34,7 +34,7 @@ function getWorkers(id) {
 function getEventsDay(id, date) {
     return __awaiter(this, void 0, void 0, function* () {
         let code = 200;
-        const eventsDelivery = yield db_1.db.query(`SELECT * FROM evento_mob WHERE id_empresa = ${id} AND fecha_envio_evento = '${date}' ORDER BY hora_envio_evento `);
+        const eventsDelivery = yield db_1.db.query(`SELECT * FROM evento_mob WHERE id_empresa = ? AND fecha_envio_evento = ? ORDER BY hora_envio_evento `, [id, date]);
         let dataEventsDelivery = helper_1.helper.emptyOrRows(eventsDelivery);
         if (dataEventsDelivery.length === 0) {
             code = 404;
@@ -47,12 +47,15 @@ function getEventsDay(id, date) {
             const inv = yield db_1.db.query(`SELECT D.id_mob, D.ocupados, I.nombre_mob
             FROM inventario_disponibilidad_mob D
             LEFT JOIN inventario_mob I ON D.id_mob = I.id_mob
-            WHERE id_evento = '${event.id_evento}'`);
+            WHERE id_evento = ?`, [event.id_evento]);
             let dataInv = helper_1.helper.emptyOrRows(inv);
             event.inventario = dataInv;
             event.tipo_evento = 'envio';
+            event.lastSeenAt = null;
+            event.accuracy = null;
+            event.isOnline = false;
         }
-        const eventReturn = yield db_1.db.query(`SELECT * FROM evento_mob WHERE id_empresa = ${id} AND fecha_envio_evento = '${date}' ORDER BY hora_envio_evento `);
+        const eventReturn = yield db_1.db.query(`SELECT * FROM evento_mob WHERE id_empresa = ? AND fecha_envio_evento = ? ORDER BY hora_envio_evento `, [id, date]);
         let dataeventReturn = helper_1.helper.emptyOrRows(eventReturn);
         if (dataeventReturn.length === 0) {
             code = 404;
@@ -65,10 +68,13 @@ function getEventsDay(id, date) {
             const inv = yield db_1.db.query(`SELECT D.id_mob, D.ocupados, I.nombre_mob
             FROM inventario_disponibilidad_mob D
             LEFT JOIN inventario_mob I ON D.id_mob = I.id_mob
-            WHERE id_evento = '${event.id_evento}'`);
+            WHERE id_evento = ?`, [event.id_evento]);
             let dataInv = helper_1.helper.emptyOrRows(inv);
             event.inventario = dataInv;
             event.tipo_evento = 'recoleccion';
+            event.lastSeenAt = null;
+            event.accuracy = null;
+            event.isOnline = false;
         }
         return {
             data: [...dataEventsDelivery, ...dataeventReturn],

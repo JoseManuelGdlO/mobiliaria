@@ -142,9 +142,10 @@ async function getEventsOfDay(id: number, date: string) {
             WHERE p2.id_evento = e.id_evento
         )
     AND
-      e.id_empresa = ${id}
+      e.id_empresa = ?
     AND
-      e.fecha_envio_evento = '${date}';`
+      e.fecha_envio_evento = ?;`,
+    [id, date]
   );
 
   let data = helper.emptyOrRows(rows);
@@ -453,8 +454,9 @@ async function addUrltoEvent(body: any, id: number, idUsuario: number) {
 
 
   try {
-    const [event] = await connection.execute(
-      ` UPDATE evento_mob SET url = '${body.url}', lat = '${body.lat}', lng = '${body.lng}' WHERE id_evento = ${id}`
+    await connection.execute(
+      ` UPDATE evento_mob SET url = ?, lat = ?, lng = ? WHERE id_evento = ?`,
+      [body.url, body.lat, body.lng, id]
     );
 
     saveHistorical(id, idUsuario, "Modificación", `Se actualizo la url ${body.url}`);

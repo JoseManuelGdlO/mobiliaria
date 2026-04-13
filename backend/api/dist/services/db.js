@@ -47,8 +47,13 @@ var dbDurangeneidad;
 (function (dbDurangeneidad) {
     function query(sql, params) {
         return __awaiter(this, void 0, void 0, function* () {
-            const [results] = yield durangPool.execute(sql, params);
-            return results;
+            try {
+                const [results] = yield durangPool.execute(sql, params);
+                return results;
+            }
+            catch (error) {
+                console.log(error);
+            }
         });
     }
     dbDurangeneidad.query = query;

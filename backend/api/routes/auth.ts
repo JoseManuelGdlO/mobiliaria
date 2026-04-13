@@ -2,13 +2,14 @@ const express = require('express');
 const router = express.Router();
 const authService = require('../services/auth');
 const jwt = require('jsonwebtoken');
+import { config } from '../config';
 
 
 router.post('/login', async function (req: any, res: any, next: any) {
     try {
         const response = await authService.login(req.body)
         if (response.code === 200) {
-            jwt.sign( response, 'secretkey', (err: any, token: any) => {
+            jwt.sign(response, config.jwtSecret, { expiresIn: config.jwtExpiresIn }, (err: any, token: any) => {
                 res.status(response.code).json({ data: response.data, token });
             })
         } else {
@@ -24,7 +25,7 @@ router.post('/token', async function (req: any, res: any, next: any) {
     try {        
         const response = await authService.token(req.body)
         if (response.code === 200) {
-            jwt.sign( response, 'secretkey', (err: any, token: any) => {
+            jwt.sign(response, config.jwtSecret, { expiresIn: config.jwtExpiresIn }, (err: any, token: any) => {
                 res.status(response.code).json({ data: response.data, token });
             })
         } else {

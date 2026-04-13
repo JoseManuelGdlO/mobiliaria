@@ -35,7 +35,7 @@ function login(body) {
     return __awaiter(this, void 0, void 0, function* () {
         let code = 200;
         const rows = yield db_1.db.query(`SELECT * FROM usuarios_mobiliaria
-      WHERE correo = "${body.email}" AND contrasena = "${body.password}"`);
+      WHERE correo = ? AND contrasena = ?`, [body.email, body.password]);
         let data = helper_1.helper.emptyOrRows(rows);
         if (data.length === 0) {
             code = 404;
@@ -54,7 +54,7 @@ function login(body) {
 function token(body) {
     return __awaiter(this, void 0, void 0, function* () {
         let code = 200;
-        const rows = yield db_1.db.query(`UPDATE usuarios_mobiliaria SET token = '${body.token}' WHERE id_usuario = ${body.id};`);
+        const rows = yield db_1.db.query(`UPDATE usuarios_mobiliaria SET token = ? WHERE id_usuario = ?;`, [body.token, body.id]);
         let data = helper_1.helper.emptyOrRows(rows);
         if (data.length === 0) {
             code = 404;

@@ -8,7 +8,8 @@ async function getWorkers(id: number) {
     console.log('id', id);
     
     const rows = await db.query(
-        `SELECT * FROM usuarios_mobiliaria WHERE id_empresa = ${id} AND admin is null AND delete_usuario is NULL order by nombre_comp`
+        `SELECT * FROM usuarios_mobiliaria WHERE id_empresa = ? AND admin is null AND delete_usuario is NULL order by nombre_comp`,
+        [id]
     );
 
     let data = helper.emptyOrRows(rows);
@@ -31,7 +32,8 @@ async function getEventsDay(id: number, date: string) {
 
 
     const eventsDelivery = await db.query(
-        `SELECT * FROM evento_mob WHERE id_empresa = ${id} AND fecha_envio_evento = '${date}' ORDER BY hora_envio_evento `
+        `SELECT * FROM evento_mob WHERE id_empresa = ? AND fecha_envio_evento = ? ORDER BY hora_envio_evento `,
+        [id, date]
     );
 
     let dataEventsDelivery = helper.emptyOrRows(eventsDelivery);
@@ -48,17 +50,22 @@ async function getEventsDay(id: number, date: string) {
             `SELECT D.id_mob, D.ocupados, I.nombre_mob
             FROM inventario_disponibilidad_mob D
             LEFT JOIN inventario_mob I ON D.id_mob = I.id_mob
-            WHERE id_evento = '${event.id_evento}'`
+            WHERE id_evento = ?`,
+            [event.id_evento]
         );
 
         let dataInv = helper.emptyOrRows(inv);
 
         event.inventario = dataInv;
         event.tipo_evento = 'envio';
+        event.lastSeenAt = null;
+        event.accuracy = null;
+        event.isOnline = false;
     }
 
     const eventReturn = await db.query(
-        `SELECT * FROM evento_mob WHERE id_empresa = ${id} AND fecha_envio_evento = '${date}' ORDER BY hora_envio_evento `
+        `SELECT * FROM evento_mob WHERE id_empresa = ? AND fecha_envio_evento = ? ORDER BY hora_envio_evento `,
+        [id, date]
     );
 
     let dataeventReturn = helper.emptyOrRows(eventReturn);
@@ -75,13 +82,17 @@ async function getEventsDay(id: number, date: string) {
             `SELECT D.id_mob, D.ocupados, I.nombre_mob
             FROM inventario_disponibilidad_mob D
             LEFT JOIN inventario_mob I ON D.id_mob = I.id_mob
-            WHERE id_evento = '${event.id_evento}'`
+            WHERE id_evento = ?`,
+            [event.id_evento]
         );
 
         let dataInv = helper.emptyOrRows(inv);
 
         event.inventario = dataInv;
         event.tipo_evento = 'recoleccion';
+        event.lastSeenAt = null;
+        event.accuracy = null;
+        event.isOnline = false;
     }
 
     return {
