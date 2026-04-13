@@ -50,6 +50,10 @@ const Workers = (): JSX.Element => {
     const PickerChevron = (): JSX.Element => (
         <MaterialCommunityIcons name="chevron-down" size={22} color={colors.Morado100} />
     )
+    const formatDate = (date: string): string => {
+        if (date.length === 0) return 'Sin fecha'
+        return date.replace('T', ' ').split('.')[0]
+    }
 
     const getWorkers = async () => {
         setLoading(true)
@@ -82,7 +86,7 @@ const Workers = (): JSX.Element => {
         return (
             <View style={{ paddingHorizontal: 16, marginBottom: 12 }}>
                 <AppCard>
-                    <View style={{ flexDirection: 'row' }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <LottieView
                             autoPlay
                             loop
@@ -91,11 +95,25 @@ const Workers = (): JSX.Element => {
                         />
                         <View style={{ paddingLeft: 10, flex: 1 }}>
                             <Text style={{ fontFamily: fonts.Inter.SemiBold, fontSize: 16, color: colors.Griss50 }}>{item.nombre_comp}</Text>
-                            <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: colors.gris300, marginTop: 4 }}>Alta {item.fecha_creacion}</Text>
+                            <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: colors.gris300, marginTop: 4 }}>Alta {formatDate(item.fecha_creacion)}</Text>
+                        </View>
+                        <View
+                            style={{
+                                borderRadius: 999,
+                                paddingHorizontal: 10,
+                                paddingVertical: 5,
+                                backgroundColor: item.active === 1 ? `${colors.exito500}26` : `${colors.red}22`,
+                                borderWidth: 1,
+                                borderColor: item.active === 1 ? `${colors.exito500}55` : `${colors.red}55`,
+                            }}
+                        >
+                            <Text style={{ fontFamily: fonts.Inter.SemiBold, fontSize: 11, color: item.active === 1 ? colors.exito400 : colors.red }}>
+                                {item.active === 1 ? 'Activo' : 'Inactivo'}
+                            </Text>
                         </View>
                     </View>
                     <View style={{ marginTop: 12, paddingTop: 12, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: `${colors.Griss50}18` }}>
-                        <Text style={{ color: colors.Morado100, fontFamily: fonts.Inter.Medium, fontSize: 14 }}>Usuario: {item.usuario}</Text>
+                        <Text style={{ color: colors.Morado100, fontFamily: fonts.Inter.Medium, fontSize: 14 }}>@{item.usuario}</Text>
                         <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: colors.gris300, marginTop: 4 }}>Correo: {item.correo}</Text>
                     </View>
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 14, flexWrap: 'wrap' }}>
@@ -108,16 +126,16 @@ const Workers = (): JSX.Element => {
                                 setWorkerNew(item)
                                 setVisible(true)
                             }}
-                            style={{ backgroundColor: colors.Morado600, borderRadius: 10, paddingHorizontal: 14, paddingVertical: 8, marginRight: 8 }}
+                            style={{ backgroundColor: colors.Morado600, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 9, marginRight: 8 }}
                         >
-                            <Text style={{ fontFamily: fonts.Inter.SemiBold, fontSize: 12, color: colors.white }}>Detalles</Text>
+                            <Text style={{ fontFamily: fonts.Inter.SemiBold, fontSize: 12, color: colors.white }}>Editar</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => {
                                 setWorkerNew(item)
                                 setOpenAlert(2)
                             }}
-                            style={{ backgroundColor: `${colors.red}33`, borderRadius: 10, paddingHorizontal: 14, paddingVertical: 8, borderWidth: 1, borderColor: `${colors.red}55` }}
+                            style={{ backgroundColor: `${colors.red}22`, borderRadius: 12, paddingHorizontal: 14, paddingVertical: 9, borderWidth: 1, borderColor: `${colors.red}55` }}
                         >
                             <Text style={{ fontFamily: fonts.Inter.SemiBold, fontSize: 12, color: colors.red }}>Eliminar</Text>
                         </TouchableOpacity>
@@ -128,21 +146,40 @@ const Workers = (): JSX.Element => {
         )
     }
 
-    const footerRender = () => {
+    const listHeader = () => {
         return(
-            <>
-                <View style={{ paddingHorizontal: 16 }}>
-                    <PrimaryButton
-                        containerStyle={{ width: '100%', paddingVertical: 8, marginBottom: 12 }}
-                        textStyle={{ fontSize: 13, fontFamily: fonts.Inter.SemiBold, color: colors.white }}
-                        backgroundButton={colors.Morado600}
-                        onPress={() => {
-                            setVisible(true)
-                        }}
-                        title='Agregar usuario'
-                    />
+            <View style={{ paddingHorizontal: 16, marginBottom: 10 }}>
+                <View
+                    style={{
+                        borderRadius: 16,
+                        borderWidth: 1,
+                        borderColor: `${colors.Morado100}33`,
+                        backgroundColor: `${colors.Griss50}08`,
+                        paddingHorizontal: 14,
+                        paddingVertical: 14,
+                    }}
+                >
+                    <Text style={{ fontFamily: fonts.Inter.SemiBold, fontSize: 19, color: colors.Griss50 }}>Trabajadores</Text>
+                    <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 13, color: colors.gris300, marginTop: 6 }}>
+                        Administra usuarios y permisos del equipo de trabajo.
+                    </Text>
                 </View>
-            </>
+            </View>
+        )
+    }
+    const footerRender = () => {
+        return (
+            <View style={{ paddingHorizontal: 16 }}>
+                <PrimaryButton
+                    containerStyle={{ width: '100%', paddingVertical: 10, marginBottom: 12 }}
+                    textStyle={{ fontSize: 13, fontFamily: fonts.Inter.SemiBold, color: colors.white }}
+                    backgroundButton={colors.Morado600}
+                    onPress={() => {
+                        setVisible(true)
+                    }}
+                    title='Agregar trabajador'
+                />
+            </View>
         )
     }
 
@@ -153,6 +190,7 @@ const Workers = (): JSX.Element => {
                 data={workers}
                 renderItem={renderItem}
                 keyExtractor={keyExtractor}
+                ListHeaderComponent={listHeader}
                 ListFooterComponent={footerRender}
                 contentContainerStyle={{ paddingTop: 8, paddingBottom: 24 }}
                 ListEmptyComponent={!loading ? <EmptyState title="No hay trabajadores." subtitle="Agrega uno con el botón inferior." /> : null}

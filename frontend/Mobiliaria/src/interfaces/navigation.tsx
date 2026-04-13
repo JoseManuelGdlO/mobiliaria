@@ -11,6 +11,10 @@ export type NavigationScreens =
         Workers: undefined,
         Package: undefined,
         ViewMore: undefined,
+        /** Rutas del stack «Ver más» (MenuScreens en FooterMenu) */
+        Clientes: undefined,
+        Pagos: undefined,
+        Estadisticas: undefined,
         Clients: undefined,
         EventDetail: {
             id: number

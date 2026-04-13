@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import {
   Alert,
   Image,
+  Linking,
   ScrollView,
   Switch,
   Text,
@@ -34,10 +35,10 @@ const Login = (): JSX.Element => {
   const [password, setPassword] = React.useState("");
   const [error, setError] = React.useState("");
   const [toggleSwitch, setToggleSwitch] = React.useState(false);
-  const { colors, fonts } = useTheme();
+  const { colors } = useTheme();
   const styles = _styles();
 
-  const Login = async () => {
+  const handleLogin = async () => {
     if (email == "" || password == "") {
       toast("Error", "Faltan campos por llenar", "error");
       return;
@@ -63,160 +64,95 @@ const Login = (): JSX.Element => {
     Geolocation.requestAuthorization();
   }, []);
 
+  const handleSupportPress = () => {
+    Alert.alert(
+      "Soporte",
+      "Si tienes problemas para ingresar, contacta al administrador para restablecer tu acceso."
+    );
+  };
+
+  const handleOpenLink = async (url: string) => {
+    try {
+      await Linking.openURL(url);
+    } catch (err) {
+      toast("Error", "No se pudo abrir el enlace", "error");
+    }
+  };
+
   return (
-    <View
-      style={{
-        backgroundColor: colors.DarkViolet300,
-        height: "100%",
-        position: "absolute",
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <ScrollView>
+    <View style={styles.root}>
+      <ScrollView contentContainerStyle={styles.contentContainer} bounces={false}>
         <Image
-          style={{ width: "100%", height: 450, objectFit: "contain" }}
-          source={require("../../assets/images/Eventivalogo.jpg")}
-        ></Image>
-        <View style={{ paddingHorizontal: 25, marginTop: -60 }}>
-          <Text
-            style={{
-              fontFamily: fonts.Inter.SemiBold,
-              color: "#00bcbb",
-              fontSize: 20,
-            }}
-          >
-            Login
-          </Text>
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              borderBottomWidth: 1,
-              borderBottomColor: "#fe693f",
-              paddingBottom: 3,
-              marginTop: 10,
-            }}
-          >
-            <View style={{ paddingTop: 3 }}>
+          style={styles.logo}
+          resizeMode="contain"
+          source={require("../../assets/images/Eventivalogo.png")}
+        />
+        <Text style={styles.brandText}>Eventiva</Text>
+        <View style={styles.card}>
+          <Text style={styles.title}>Iniciar sesión</Text>
+          <Text style={styles.subtitle}>Accede para continuar con tu operación diaria</Text>
+          <View style={styles.inputContainer}>
+            <View>
               <ArrobaIcon></ArrobaIcon>
             </View>
             <TextInput
-              style={{ width: "90%", paddingVertical: 0, paddingHorizontal: 5 }}
+              style={styles.input}
               placeholder="Correo electrónico"
+              placeholderTextColor={colors.gris300}
               keyboardType="email-address"
+              autoCapitalize="none"
               onChangeText={setEmail}
               value={email}
             />
           </View>
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              borderBottomWidth: 1,
-              borderBottomColor: "#fe693f",
-              paddingBottom: 3,
-              marginTop: 10,
-            }}
-          >
-            <View style={{ paddingTop: 3 }}>
+          <View style={styles.inputContainer}>
+            <View>
               <Candado></Candado>
             </View>
             <TextInput
-              style={{ width: "90%", paddingVertical: 0, paddingHorizontal: 5 }}
-              placeholder="Contrasena"
+              style={styles.input}
+              placeholder="Contraseña"
+              placeholderTextColor={colors.gris300}
               secureTextEntry={true}
               onChangeText={setPassword}
               value={password}
             />
           </View>
 
-          <TouchableOpacity
-            onPress={Login}
-            style={{
-              backgroundColor: colors.Morado600,
-              paddingVertical: 15,
-              paddingHorizontal: 30,
-              borderRadius: 12,
-              marginTop: 30,
-            }}
-          >
-            <Text
-              style={{
-                fontFamily: fonts.Inter.SemiBold,
-                color: colors.white,
-                fontSize: 15,
-                textAlign: "center",
-              }}
-            >
-              Iniciar sesión
-            </Text>
+          <TouchableOpacity onPress={handleLogin} style={styles.button}>
+            <Text style={styles.buttonText}>Iniciar sesión</Text>
           </TouchableOpacity>
 
-          <View
-            style={{ display: "flex", flexDirection: "row", marginTop: 20 }}
-          >
-            <TouchableOpacity style={{ display: "flex", flexDirection: "row" }}>
+          <View style={styles.bottomRow}>
+            <View style={styles.rememberWrap}>
               <Switch
-                style={{ paddingTop: 7 }}
                 trackColor={{ false: "#767577", true: colors.Morado600 }}
                 thumbColor={toggleSwitch ? "#fe693f" : "#f4f3f4"}
                 ios_backgroundColor="#3e3e3e"
                 onValueChange={setToggleSwitch}
                 value={toggleSwitch}
               />
-              <Text
-                style={{
-                  paddingTop: 10,
-                  paddingLeft: 5,
-                  fontFamily: fonts.Inter.Regular,
-                  color: colors.Morado100,
-                  fontSize: 12,
-                  textAlign: "center",
-                }}
-              >
-                Recordar usuario
-              </Text>
-            </TouchableOpacity>
+              <Text style={styles.rememberText}>Recordar usuario</Text>
+            </View>
 
-            <TouchableOpacity
-              style={{
-                paddingVertical: 10,
-                paddingHorizontal: 0,
-                borderRadius: 5,
-                marginTop: 0,
-                width: "60%",
-              }}
-            >
-              <Text
-                style={{
-                  fontFamily: fonts.Inter.Regular,
-                  color: colors.Morado100,
-                  fontSize: 12,
-                  textAlign: "right",
-                }}
-              >
-                ¿Tienes problemas?
-              </Text>
+            <TouchableOpacity style={styles.helpButton} onPress={handleSupportPress}>
+              <Text style={styles.helpText}>¿Tienes problemas?</Text>
             </TouchableOpacity>
           </View>
           <View>
-            <Text
-              style={{
-                fontFamily: fonts.Inter.SemiBold,
-                color: colors.red,
-                fontSize: 14,
-                textAlign: "center",
-                marginTop: 20,
-              }}
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+          <View style={styles.legalLinksContainer}>
+            <TouchableOpacity
+              onPress={() => handleOpenLink("https://intelekia.cloud/privacidad")}
             >
-              {error}
-            </Text>
-           
+              <Text style={styles.legalLinkText}>Aviso de privacidad de datos</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => handleOpenLink("https://intelekia.cloud/terminos")}
+            >
+              <Text style={styles.legalLinkText}>Términos y condiciones</Text>
+            </TouchableOpacity>
           </View>
         </View>
 
