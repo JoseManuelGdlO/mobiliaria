@@ -223,7 +223,7 @@ const bootstrap = async () => {
 
     http.listen(port, () => {
       console.log(`Example app listening at YOUR_IP_INSTANCE:${port}`);
-      console.log('version: 0.4.3');
+      console.log('version: 0.4.4');
       console.log(`Socket.IO enabled on port ${port}`);
     });
   } catch (error) {
