@@ -1,46 +1,42 @@
 import React from 'react'
-import Support from '@assets/images/icons/Support'
-import ProfileIcon from '@assets/images/icons/ProfileIcon'
-import ChartIcon from '@assets/images/icons/ChartIcon'
-import { Image } from 'react-native'
-import useReduxUser from '@hooks/useReduxUser'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import { useTheme } from '@hooks/useTheme'
 
 export interface Option {
-  name: string
-  icon?: JSX.Element
-  navigate?: string
-  customAction?: () => void
-  params?: object
-  modalRef?: any
+    name: string
+    icon?: JSX.Element
+    navigate?: string
+    customAction?: () => void
+    params?: object
+    modalRef?: any
 }
 
-export const GetOptionsMenu = (): Option[] => {
-  const { user } = useReduxUser()
-  
-  let options: Option[] = []
+const ICON_SIZE = 26
 
-  options = [
-    {
-      name: 'Clientes',
-      icon: <ProfileIcon color='#9E2EBE' />,
-      navigate: 'Clientes'
-    },
-    {
-      name: 'Seguimiento a pagos',
-      icon: <Support color='#9E2EBE' />,
-      navigate: 'Payments'
-    }
-  ]
+/**
+ * Opciones del menú «Ver más» con iconos Material (misma línea visual que el resto de la app).
+ */
+export const useViewMoreMenuOptions = (): Option[] => {
+    const { colors } = useTheme()
+    const c = colors.Morado100
 
-  if(user?.admin === 1) {
-    options.push({
-      name: 'Estadisticas',
-      icon:  <Image
-                style={{ width: 24, height: 24 }}
-                source={require("../../assets/images/chart.png")}
-              ></Image>,
-      navigate: 'Charts'
-    })
-  }
-  return options
+    const options: Option[] = [
+        {
+            name: 'Estadísticas',
+            icon: <MaterialCommunityIcons name="chart-timeline-variant" size={ICON_SIZE} color={c} />,
+            navigate: 'Estadisticas',
+        },
+        {
+            name: 'Clientes',
+            icon: <MaterialCommunityIcons name="account-group-outline" size={ICON_SIZE} color={c} />,
+            navigate: 'Clientes',
+        },
+        {
+            name: 'Seguimiento a pagos',
+            icon: <MaterialCommunityIcons name="credit-card-outline" size={ICON_SIZE} color={c} />,
+            navigate: 'Pagos',
+        },
+    ]
+
+    return options
 }
