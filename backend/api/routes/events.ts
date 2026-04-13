@@ -2,13 +2,12 @@ import express from 'express';
 import { verifyToken } from '../libs/headers';
 const router = express.Router();
 const eventService = require('../services/events');
-import jwt_decode from "jwt-decode";
 import { getAccessToken } from '../libs/notifications';
 
 
 router.get('/getEvents', verifyToken, async function (req: any, res: any, next: any) {
     try {
-        const bearer: any = jwt_decode( req.headers['authorization']);
+        const bearer: any = req.authPayload;
         let id = bearer.data.id_empresa;
         
         res.status(201).json(await eventService.getEvents(id));
@@ -21,7 +20,7 @@ router.get('/getEvents', verifyToken, async function (req: any, res: any, next: 
 
 router.get('/getEventsDay', verifyToken, async function (req: any, res: any, next: any) {
     try {
-        const bearer: any = jwt_decode(req.headers['authorization']);
+        const bearer: any = req.authPayload;
         let id = bearer.data.id_empresa;
         let date = req.query.date;
         res.status(201).json(await eventService.getEventsOfDay(id, date));
@@ -43,7 +42,7 @@ router.get('/getDetail', verifyToken, async function (req: any, res: any, next: 
 
 router.get('/available', verifyToken, async function (req: any, res: any, next: any) {
     try {
-        const bearer: any = jwt_decode(req.headers['authorization']);
+        const bearer: any = req.authPayload;
         let id = bearer.data.id_empresa;
 
         let date = req.query.date;
@@ -57,7 +56,7 @@ router.get('/available', verifyToken, async function (req: any, res: any, next: 
 router.post('/add', verifyToken, async function (req: any, res: any, next: any) {
     try {
         const body = req.body;
-        const bearer: any = jwt_decode(req.headers['authorization']);
+        const bearer: any = req.authPayload;
         let id = bearer.data.id_empresa;
         let idUsuario = bearer.data.id_usuario;
         const response = await eventService.addEvent(body, id, idUsuario)
@@ -83,7 +82,7 @@ router.put('/status', verifyToken, async function (req: any, res: any, next: any
         let id = req.query.id
         let delivered = req.query.delivered
         let recolected = req.query.recolected
-        const bearer: any = jwt_decode(req.headers['authorization']);
+        const bearer: any = req.authPayload;
         let idUsuario = bearer.data.id_usuario;
         const response = await eventService.changeStatus(id, delivered, recolected, idUsuario);
         res.status(response.code).json(response.data);
@@ -94,7 +93,7 @@ router.put('/status', verifyToken, async function (req: any, res: any, next: any
 });
 router.put('/ubication', verifyToken, async function (req: any, res: any, next: any) {
     try {
-        const bearer: any = jwt_decode(req.headers['authorization']);
+        const bearer: any = req.authPayload;
         let idUsuario = bearer.data.id_usuario;
         let id = req.query.id
         let body = req.body
@@ -109,7 +108,7 @@ router.put('/ubication', verifyToken, async function (req: any, res: any, next: 
 });
 router.put('/flete', verifyToken, async function (req: any, res: any, next: any) {
     try {
-        const bearer: any = jwt_decode(req.headers['authorization']);
+        const bearer: any = req.authPayload;
         let idUsuario = bearer.data.id_usuario;
         let id = req.query.id
         let body = req.body
@@ -124,7 +123,7 @@ router.put('/flete', verifyToken, async function (req: any, res: any, next: any)
 router.post('/additems', verifyToken, async function (req: any, res: any, next: any) {
     try {
         let body = req.body
-        const bearer: any = jwt_decode(req.headers['authorization']);
+        const bearer: any = req.authPayload;
         let idUsuario = bearer.data.id_usuario;
         
         const response = await eventService.addItems(body, idUsuario);
@@ -139,7 +138,7 @@ router.post('/additems', verifyToken, async function (req: any, res: any, next: 
 router.post('/edit', verifyToken, async function (req: any, res: any, next: any) {
     try {
         
-        const bearer: any = jwt_decode(req.headers['authorization']);
+        const bearer: any = req.authPayload;
         let idUsuario = bearer.data.id_usuario;
         let body = req.body
         
@@ -170,7 +169,7 @@ router.delete('/removeitem', verifyToken, async function (req: any, res: any, ne
     try {
         let id = req.query.id
         const id_mob = req.query.id_mob
-        const bearer: any = jwt_decode(req.headers['authorization']);
+        const bearer: any = req.authPayload;
         let idUsuario = bearer.data.id_usuario;
 
         const response = await eventService.removeItem(id, id_mob, idUsuario);

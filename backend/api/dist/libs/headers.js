@@ -13,6 +13,7 @@ function verifyToken(req, res, next) {
                 res.status(409).json({ error: 'token invalido' });
             }
             else {
+                req.authPayload = authData;
                 next();
             }
         });

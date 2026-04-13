@@ -16,12 +16,11 @@ const express_1 = __importDefault(require("express"));
 const headers_1 = require("../libs/headers");
 const router = express_1.default.Router();
 const eventService = require('../services/events');
-const jwt_decode_1 = __importDefault(require("jwt-decode"));
 const notifications_1 = require("../libs/notifications");
 router.get('/getEvents', headers_1.verifyToken, function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const bearer = (0, jwt_decode_1.default)(req.headers['authorization']);
+            const bearer = req.authPayload;
             let id = bearer.data.id_empresa;
             res.status(201).json(yield eventService.getEvents(id));
         }
@@ -34,7 +33,7 @@ router.get('/getEvents', headers_1.verifyToken, function (req, res, next) {
 router.get('/getEventsDay', headers_1.verifyToken, function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const bearer = (0, jwt_decode_1.default)(req.headers['authorization']);
+            const bearer = req.authPayload;
             let id = bearer.data.id_empresa;
             let date = req.query.date;
             res.status(201).json(yield eventService.getEventsOfDay(id, date));
@@ -60,7 +59,7 @@ router.get('/getDetail', headers_1.verifyToken, function (req, res, next) {
 router.get('/available', headers_1.verifyToken, function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const bearer = (0, jwt_decode_1.default)(req.headers['authorization']);
+            const bearer = req.authPayload;
             let id = bearer.data.id_empresa;
             let date = req.query.date;
             res.status(201).json(yield eventService.availiable(id, date));
@@ -75,7 +74,7 @@ router.post('/add', headers_1.verifyToken, function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const body = req.body;
-            const bearer = (0, jwt_decode_1.default)(req.headers['authorization']);
+            const bearer = req.authPayload;
             let id = bearer.data.id_empresa;
             let idUsuario = bearer.data.id_usuario;
             const response = yield eventService.addEvent(body, id, idUsuario);
@@ -105,7 +104,7 @@ router.put('/status', headers_1.verifyToken, function (req, res, next) {
             let id = req.query.id;
             let delivered = req.query.delivered;
             let recolected = req.query.recolected;
-            const bearer = (0, jwt_decode_1.default)(req.headers['authorization']);
+            const bearer = req.authPayload;
             let idUsuario = bearer.data.id_usuario;
             const response = yield eventService.changeStatus(id, delivered, recolected, idUsuario);
             res.status(response.code).json(response.data);
@@ -119,7 +118,7 @@ router.put('/status', headers_1.verifyToken, function (req, res, next) {
 router.put('/ubication', headers_1.verifyToken, function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const bearer = (0, jwt_decode_1.default)(req.headers['authorization']);
+            const bearer = req.authPayload;
             let idUsuario = bearer.data.id_usuario;
             let id = req.query.id;
             let body = req.body;
@@ -136,7 +135,7 @@ router.put('/ubication', headers_1.verifyToken, function (req, res, next) {
 router.put('/flete', headers_1.verifyToken, function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const bearer = (0, jwt_decode_1.default)(req.headers['authorization']);
+            const bearer = req.authPayload;
             let idUsuario = bearer.data.id_usuario;
             let id = req.query.id;
             let body = req.body;
@@ -153,7 +152,7 @@ router.post('/additems', headers_1.verifyToken, function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             let body = req.body;
-            const bearer = (0, jwt_decode_1.default)(req.headers['authorization']);
+            const bearer = req.authPayload;
             let idUsuario = bearer.data.id_usuario;
             const response = yield eventService.addItems(body, idUsuario);
             res.status(response).json();
@@ -167,7 +166,7 @@ router.post('/additems', headers_1.verifyToken, function (req, res, next) {
 router.post('/edit', headers_1.verifyToken, function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const bearer = (0, jwt_decode_1.default)(req.headers['authorization']);
+            const bearer = req.authPayload;
             let idUsuario = bearer.data.id_usuario;
             let body = req.body;
             const response = yield eventService.editEvent(body, idUsuario);
@@ -198,7 +197,7 @@ router.delete('/removeitem', headers_1.verifyToken, function (req, res, next) {
         try {
             let id = req.query.id;
             const id_mob = req.query.id_mob;
-            const bearer = (0, jwt_decode_1.default)(req.headers['authorization']);
+            const bearer = req.authPayload;
             let idUsuario = bearer.data.id_usuario;
             const response = yield eventService.removeItem(id, id_mob, idUsuario);
             res.status(response).json();

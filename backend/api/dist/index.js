@@ -15,6 +15,7 @@ const clientsRouter = require("./routes/clients");
 const paymentsRouter = require("./routes/payments");
 const reportsRouter = require("./routes/reports");
 const durangRouter = require("./routes/durangeneidad");
+const requestTiming_1 = require("./middleware/requestTiming");
 //For env File 
 dotenv_1.default.config();
 const app = (0, express_1.default)();
@@ -53,13 +54,14 @@ const corsOptions = {
     optionSuccessStatus: 200
 };
 app.use((0, cors_1.default)());
+app.use(requestTiming_1.requestTiming);
 app.use(express_1.default.json({ limit: '25mb' }));
 app.use(express_1.default.urlencoded({
     extended: true,
     limit: '25mb'
 }));
 app.get("/", (req, res) => {
-    res.json({ message: "version: 0.4.2" });
+    res.json({ message: "version: 0.4.3" });
 });
 app.use("/auth", authRouter);
 app.use("/events", eventsRouter);
@@ -78,4 +80,5 @@ app.use((err, req, res, next) => {
 });
 app.listen(port, () => {
     console.log(`Example app listening at YOUR_IP_INSTANCE:${port}`);
+    console.log('version: 0.4.3');
 });

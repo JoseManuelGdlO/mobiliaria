@@ -1,6 +1,6 @@
 import { IUser } from '@interfaces/user';
 import Geolocation from '@react-native-community/geolocation';
-import { useState } from 'react';
+import { Platform } from 'react-native';
 import BackgroundService from 'react-native-background-actions';
 import { io } from 'socket.io-client';
 
@@ -12,6 +12,12 @@ Geolocation.setRNConfiguration({
 });
 
 export const sendLocationWS = async (user: IUser) => {
+    // Android 14+ (API 34): foreground services must declare a type; this library's
+    // native startForeground() call can hard-crash the app. Skip until upgraded/patched.
+    if (Platform.OS === 'android' && Platform.Version >= 34) {
+        return;
+    }
+
     let location: any = null;
     let lastLocation: any = null
     const socket = io('http://192.168.0.21:3000');

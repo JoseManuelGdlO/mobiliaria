@@ -19,7 +19,7 @@ export interface children {
 const MenuScreens: screen[] = [
   {
     name: 'Pagos',
-    header: () => <BasicHeader title='Seguimiento a pagos' />,
+    header: () => <BasicHeader title='Seguimiento de pagos' />,
     component: Payments
   },
   {
@@ -29,7 +29,7 @@ const MenuScreens: screen[] = [
   },
   {
     name: 'Estadisticas',
-    header: () => <BasicHeader title='Estadisticas' />,
+    header: () => <BasicHeader title='Estadísticas' />,
     component: Charts
   }
 

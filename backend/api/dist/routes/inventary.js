@@ -14,13 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const headers_1 = require("../libs/headers");
 const express_1 = __importDefault(require("express"));
-const jwt_decode_1 = __importDefault(require("jwt-decode"));
 const inventaryService = require('../services/inventary');
 const router = express_1.default.Router();
 router.get('/getInventary', headers_1.verifyToken, function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const bearer = (0, jwt_decode_1.default)(req.headers['authorization']);
+            const bearer = req.authPayload;
             let id = bearer.data.id_empresa;
             res.status(201).json(yield inventaryService.getInventary(id));
         }
@@ -59,7 +58,7 @@ router.put('/updateInventary', headers_1.verifyToken, function (req, res, next) 
 router.get('/getPackages', headers_1.verifyToken, function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const bearer = (0, jwt_decode_1.default)(req.headers['authorization']);
+            const bearer = req.authPayload;
             let id = bearer.data.id_empresa;
             const response = yield inventaryService.getPackages(id);
             res.status(response.code).json(response.data);
@@ -73,7 +72,7 @@ router.get('/getPackages', headers_1.verifyToken, function (req, res, next) {
 router.post('/addInventary', headers_1.verifyToken, function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const bearer = (0, jwt_decode_1.default)(req.headers['authorization']);
+            const bearer = req.authPayload;
             let id = bearer.data.id_empresa;
             let body = req.body;
             const response = yield inventaryService.addInventary(body, id);
@@ -88,7 +87,7 @@ router.post('/addInventary', headers_1.verifyToken, function (req, res, next) {
 router.post('/addPackages', headers_1.verifyToken, function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const bearer = (0, jwt_decode_1.default)(req.headers['authorization']);
+            const bearer = req.authPayload;
             let id = bearer.data.id_empresa;
             let body = req.body;
             const response = yield inventaryService.addPackage(id, body);

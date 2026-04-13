@@ -14,13 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const headers_1 = require("../libs/headers");
 const express_1 = __importDefault(require("express"));
-const jwt_decode_1 = __importDefault(require("jwt-decode"));
 const clientsService = require('../services/clients');
 const router = express_1.default.Router();
 router.get('/getClients', headers_1.verifyToken, function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const bearer = (0, jwt_decode_1.default)(req.headers['authorization']);
+            const bearer = req.authPayload;
             let id = bearer.data.id_empresa;
             res.status(201).json(yield clientsService.getClients(id));
         }

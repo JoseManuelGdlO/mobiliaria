@@ -1,4 +1,4 @@
-package com.mobiliaria;
+package com.eventivapp.jm.delao;
 
 import android.app.Application;
 import com.facebook.react.PackageList;
@@ -54,7 +54,7 @@ public class MainApplication extends Application implements ReactApplication {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
     if (BuildConfig.IS_NEW_ARCHITECTURE_ENABLED) {
-      // If you opted-in for the New Architecture, we load the native entry point for this app.
+      // If you opted-in for the New Architecture, we load the native entry point for your app.
       DefaultNewArchitectureEntryPoint.load();
     }
     ReactNativeFlipper.initializeFlipper(this, getReactNativeHost().getReactInstanceManager());

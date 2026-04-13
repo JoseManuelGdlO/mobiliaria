@@ -87,7 +87,7 @@ async function addPackage(id: number, body:any) {
     await connection.beginTransaction();
 
     try {
-        const [pkt,] = await connection.execute(
+        const [pkt]: any = await connection.execute(
         `INSERT INTO paquetes (nombre, precio, fkid_empresa, descripcion)
             VALUES ('${body.name}', '${body.price}', ${id},'${body.description}')`
         )
@@ -116,7 +116,7 @@ async function addPackage(id: number, body:any) {
             data: error
         }
     } finally {
-        await connection.end();
+        connection.release();
     }
 
 }

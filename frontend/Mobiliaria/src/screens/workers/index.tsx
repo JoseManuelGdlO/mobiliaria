@@ -1,15 +1,20 @@
 import Loading from "@components/loading"
 import { IWorker } from "@interfaces/workers"
-import React, { useEffect, useRef } from "react"
-import { Dimensions, FlatList, Modal, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native"
+import React, { useEffect, useMemo, useRef } from "react"
+import { Dimensions, FlatList, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
+import AppModal from "@components/AppModal"
 import * as workersService from '../../services/workers';
 import LottieView from "lottie-react-native";
 import { useTheme } from "@hooks/useTheme";
 import PrimaryButton from "@components/PrimaryButton";
+import AppCard from "@components/AppCard";
+import EmptyState from "@components/EmptyState";
 const height = Dimensions.get('window').height
 import RNPickerSelect from 'react-native-picker-select';
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Toast from "react-native-toast-message";
-import AreYouSure from "@components/are-you-suere-modal";
+import { createAppPickerSelectStyle } from "@utils/pickerSelectTheme";
+import ConfirmDialog from "@components/ConfirmDialog";
 
 const Workers = (): JSX.Element => {
     const animation = useRef(null);
@@ -31,6 +36,20 @@ const Workers = (): JSX.Element => {
     const [ openAlert, setOpenAlert ] = React.useState(0)
 
     const { fonts, colors } = useTheme()
+
+    const pickerSelectStyles = useMemo(() => createAppPickerSelectStyle(colors, fonts), [colors, fonts])
+    const pickerCommon = useMemo(
+        () => ({
+            useNativeAndroidPickerStyle: false as const,
+            darkTheme: true as const,
+            style: pickerSelectStyles,
+            doneText: 'Listo' as const,
+        }),
+        [pickerSelectStyles],
+    )
+    const PickerChevron = (): JSX.Element => (
+        <MaterialCommunityIcons name="chevron-down" size={22} color={colors.Morado100} />
+    )
 
     const getWorkers = async () => {
         setLoading(true)
@@ -61,55 +80,49 @@ const Workers = (): JSX.Element => {
         index: number
     }): JSX.Element => {
         return (
-            <View style={{ padding: 10 }}>
-                <View style={{
-                    padding: 10, borderColor: '#9E2EBE', borderRadius: 5, borderWidth: 1, overflow: 'hidden'
-                }}>
-                    <View style={{ display: 'flex', flexDirection: 'row' }}>
+            <View style={{ paddingHorizontal: 16, marginBottom: 12 }}>
+                <AppCard>
+                    <View style={{ flexDirection: 'row' }}>
                         <LottieView
-                            ref={animation}
                             autoPlay
-                            loop={true}
-                            style={{
-                                width: 60,
-                                height: 60,
-                                backgroundColor: 'transparent',
-                            }}
-                            // Find more Lottie files at https://lottiefiles.com/featured
+                            loop
+                            style={{ width: 56, height: 56, backgroundColor: 'transparent' }}
                             source={require('../../assets/images/lottie/user.json')}
                         />
-                        <View style={{ paddingTop: 10 }}>
-                            <Text style={{ fontFamily: fonts.Roboto.Bold }}>{item.nombre_comp}</Text>
-                            <Text style={{ fontFamily: fonts.Roboto.MediumItalic, fontSize: 12 }}>Creacion {item.fecha_creacion}</Text>
+                        <View style={{ paddingLeft: 10, flex: 1 }}>
+                            <Text style={{ fontFamily: fonts.Inter.SemiBold, fontSize: 16, color: colors.Griss50 }}>{item.nombre_comp}</Text>
+                            <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: colors.gris300, marginTop: 4 }}>Alta {item.fecha_creacion}</Text>
                         </View>
                     </View>
-                    <View style={{ paddingHorizontal: 10 }}>
-                        <Text style={{ color: '#9E2EBE', fontFamily: fonts.Roboto.Medium, fontSize: 15 }}>Usuario: {item.usuario}</Text>
-                        <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12 }}>Correo: {item.correo}</Text>
+                    <View style={{ marginTop: 12, paddingTop: 12, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: `${colors.Griss50}18` }}>
+                        <Text style={{ color: colors.Morado100, fontFamily: fonts.Inter.Medium, fontSize: 14 }}>Usuario: {item.usuario}</Text>
+                        <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: colors.gris300, marginTop: 4 }}>Correo: {item.correo}</Text>
                     </View>
-                    <View style={{ display: 'flex', flexDirection: 'row', paddingTop: 20 }}>
-                        <View style={{ paddingHorizontal: 10, width: '60%' }}>
-                            <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12 }}>Rol del usuario</Text>
-                            <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12, color: '#488aff' }}>{item.rol_usuario}</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 14, flexWrap: 'wrap' }}>
+                        <View style={{ flex: 1, minWidth: '45%', marginBottom: 8 }}>
+                            <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 11, color: colors.gris400 }}>Rol</Text>
+                            <Text style={{ fontFamily: fonts.Inter.Medium, fontSize: 13, color: colors.primario300 }}>{item.rol_usuario}</Text>
                         </View>
                         <TouchableOpacity
                             onPress={() => {
                                 setWorkerNew(item)
                                 setVisible(true)
                             }}
-                            style={{ backgroundColor: 'blue', borderRadius: 10, marginTop: 10, paddingHorizontal: 15, justifyContent: 'center', height: 20 }}>
-                            <Text style={{ fontFamily: fonts.Roboto.Medium, fontSize: 12, color: 'white' }}>Detalles</Text>
+                            style={{ backgroundColor: colors.Morado600, borderRadius: 10, paddingHorizontal: 14, paddingVertical: 8, marginRight: 8 }}
+                        >
+                            <Text style={{ fontFamily: fonts.Inter.SemiBold, fontSize: 12, color: colors.white }}>Detalles</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             onPress={() => {
                                 setWorkerNew(item)
                                 setOpenAlert(2)
                             }}
-                        style={{ marginLeft: 5, backgroundColor: 'red', borderRadius: 10, marginTop: 10, paddingHorizontal: 15, justifyContent: 'center', height: 20 }}>
-                            <Text style={{ fontFamily: fonts.Roboto.Medium, fontSize: 12, color: 'white' }}>Eliminar</Text>
+                            style={{ backgroundColor: `${colors.red}33`, borderRadius: 10, paddingHorizontal: 14, paddingVertical: 8, borderWidth: 1, borderColor: `${colors.red}55` }}
+                        >
+                            <Text style={{ fontFamily: fonts.Inter.SemiBold, fontSize: 12, color: colors.red }}>Eliminar</Text>
                         </TouchableOpacity>
                     </View>
-                </View>
+                </AppCard>
             </View>
 
         )
@@ -118,11 +131,11 @@ const Workers = (): JSX.Element => {
     const footerRender = () => {
         return(
             <>
-                <View style={{ paddingHorizontal: 10 }}>
+                <View style={{ paddingHorizontal: 16 }}>
                     <PrimaryButton
-                        containerStyle={{ width: '100%', paddingVertical: 5, marginBottom: 5 }}
-                        textStyle={{ fontSize: 12, fontFamily: fonts.Roboto.Regular, color: '#FFF' }}
-                        backgroundButton="#9E2EBE"
+                        containerStyle={{ width: '100%', paddingVertical: 8, marginBottom: 12 }}
+                        textStyle={{ fontSize: 13, fontFamily: fonts.Inter.SemiBold, color: colors.white }}
+                        backgroundButton={colors.Morado600}
                         onPress={() => {
                             setVisible(true)
                         }}
@@ -134,125 +147,208 @@ const Workers = (): JSX.Element => {
     }
 
     return (
-        <>
+        <View style={{ flex: 1, backgroundColor: colors.DarkViolet300 }}>
 
             <FlatList
                 data={workers}
                 renderItem={renderItem}
                 keyExtractor={keyExtractor}
                 ListFooterComponent={footerRender}
+                contentContainerStyle={{ paddingTop: 8, paddingBottom: 24 }}
+                ListEmptyComponent={!loading ? <EmptyState title="No hay trabajadores." subtitle="Agrega uno con el botón inferior." /> : null}
             />
             <Loading loading={loading} />
-            <Modal visible={visible} transparent>
-                <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center' }}>
-                    <View style={{ backgroundColor: '#fff', borderRadius: 10, margin: 20, maxHeight: height - 100 }}>
-                        <Text style={{ fontFamily: fonts.Inter.Bold, fontWeight: 'bold', fontSize: 16, color: '#9E2EBE', marginTop: 16, marginLeft: 16 }}>
-                            Usuario
-                        </Text>
-                        <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: '#000', marginTop: 5, marginLeft: 16 }}>
-                            {workerNew.correo === '' ? 'Agregar usuario' : 'Modificar usuario'}
-                        </Text>
-                        <ScrollView style={{ margin: 20 }} showsVerticalScrollIndicator={false}>
-                            <View>
-                                <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: '#9E2EBE', marginTop: 5 }}>
-                                    Nombre completo
+            <AppModal
+                visible={visible}
+                onRequestClose={() => setVisible(false)}
+                keyboardAvoiding
+                maxHeight={height - 100}
+            >
+                    <View>
+                        <View style={{ paddingHorizontal: 18, paddingTop: 18, paddingBottom: 8 }}>
+                            <Text style={{ fontFamily: fonts.Inter.SemiBold, fontSize: 22, color: colors.Griss50, letterSpacing: 0.2 }}>
+                                {workerNew.id_usuario === 0 ? 'Nuevo usuario' : 'Editar usuario'}
+                            </Text>
+                            <View
+                                style={{
+                                    alignSelf: 'flex-start',
+                                    marginTop: 10,
+                                    paddingHorizontal: 12,
+                                    paddingVertical: 6,
+                                    borderRadius: 999,
+                                    backgroundColor: `${colors.Morado600}33`,
+                                    borderWidth: 1,
+                                    borderColor: `${colors.Morado100}44`,
+                                }}
+                            >
+                                <Text style={{ fontFamily: fonts.Inter.SemiBold, fontSize: 13, color: colors.Morado100 }}>
+                                    {workerNew.correo === '' ? 'Completa los datos' : 'Modifica los datos del usuario'}
                                 </Text>
-                                <TextInput
-                                    autoCapitalize="none"
-                                    value={workerNew.nombre_comp}
-                                    onChangeText={(value: string) => {
-                                        setWorkerNew({
-                                            ...workerNew,
-                                            nombre_comp: value
-                                        })
-                                    
-                                    }}
-                                    style={{ width: '100%', height: 30, paddingVertical: 0, paddingHorizontal: 10, borderBottomWidth: 1, color: '#000' }}
-                                />
                             </View>
-                            <View style={{ marginTop: 10 }}>
-                                <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: '#9E2EBE', marginTop: 5 }}>
-                                    Usuario
-                                </Text>
-                                <TextInput
-                                    autoCapitalize="none"
-                                    value={workerNew.usuario}
-                                    onChangeText={(value: string) => {
-                                        setWorkerNew({
-                                            ...workerNew,
-                                            usuario: value
-                                        })
-
-                                    }}
-                                    style={{ width: '100%', height: 30, paddingVertical: 0, paddingHorizontal: 10, borderBottomWidth: 1, color: '#000' }}
-                                />
-                            </View>
-                            <View style={{ marginTop: 10 }}>
-                                <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: '#9E2EBE', marginTop: 5 }}>
-                                    Correo electronico
-                                </Text>
-                                <TextInput
-                                    autoCapitalize="none"
-                                    value={workerNew.correo}
-                                    onChangeText={(value: string) => {
-                                        setWorkerNew({
-                                            ...workerNew,
-                                            correo: value
-                                        })
-
-                                    }}
-                                    style={{ width: '100%', height: 30, paddingVertical: 0, paddingHorizontal: 10, borderBottomWidth: 1, color: '#000' }}
-                                />
-                            </View>
-                            <View style={{ marginTop: 10 }}>
-                                <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: '#9E2EBE', marginTop: 5 }}>
-                                    Tipo de usuario
-                                </Text>
-                                <View style={{ borderBottomWidth: 1 }}>
+                        </View>
+                        <ScrollView
+                            style={{ paddingHorizontal: 18 }}
+                            contentContainerStyle={{ paddingBottom: 12 }}
+                            showsVerticalScrollIndicator={false}
+                            keyboardShouldPersistTaps="handled"
+                        >
+                            <Text style={{ fontFamily: fonts.Inter.Medium, fontSize: 13, color: colors.gris300, marginTop: 8 }}>
+                                Nombre completo
+                            </Text>
+                            <TextInput
+                                autoCapitalize="words"
+                                placeholder="Nombre y apellido"
+                                placeholderTextColor={colors.gris400}
+                                value={workerNew.nombre_comp}
+                                onChangeText={(value: string) => {
+                                    setWorkerNew({
+                                        ...workerNew,
+                                        nombre_comp: value,
+                                    })
+                                }}
+                                style={{
+                                    width: '100%',
+                                    marginTop: 8,
+                                    paddingVertical: 12,
+                                    paddingHorizontal: 14,
+                                    borderRadius: 12,
+                                    borderWidth: 1,
+                                    borderColor: `${colors.Morado100}44`,
+                                    backgroundColor: `${colors.Griss50}0C`,
+                                    color: colors.Griss50,
+                                    fontFamily: fonts.Inter.Regular,
+                                    fontSize: 15,
+                                }}
+                            />
+                            <Text style={{ fontFamily: fonts.Inter.Medium, fontSize: 13, color: colors.gris300, marginTop: 16 }}>
+                                Usuario
+                            </Text>
+                            <TextInput
+                                autoCapitalize="none"
+                                placeholder="Nombre de usuario"
+                                placeholderTextColor={colors.gris400}
+                                value={workerNew.usuario}
+                                onChangeText={(value: string) => {
+                                    setWorkerNew({
+                                        ...workerNew,
+                                        usuario: value,
+                                    })
+                                }}
+                                style={{
+                                    width: '100%',
+                                    marginTop: 8,
+                                    paddingVertical: 12,
+                                    paddingHorizontal: 14,
+                                    borderRadius: 12,
+                                    borderWidth: 1,
+                                    borderColor: `${colors.Morado100}44`,
+                                    backgroundColor: `${colors.Griss50}0C`,
+                                    color: colors.Griss50,
+                                    fontFamily: fonts.Inter.Regular,
+                                    fontSize: 15,
+                                }}
+                            />
+                            <Text style={{ fontFamily: fonts.Inter.Medium, fontSize: 13, color: colors.gris300, marginTop: 16 }}>
+                                Correo electrónico
+                            </Text>
+                            <TextInput
+                                autoCapitalize="none"
+                                keyboardType="email-address"
+                                placeholder="correo@ejemplo.com"
+                                placeholderTextColor={colors.gris400}
+                                value={workerNew.correo}
+                                onChangeText={(value: string) => {
+                                    setWorkerNew({
+                                        ...workerNew,
+                                        correo: value,
+                                    })
+                                }}
+                                style={{
+                                    width: '100%',
+                                    marginTop: 8,
+                                    paddingVertical: 12,
+                                    paddingHorizontal: 14,
+                                    borderRadius: 12,
+                                    borderWidth: 1,
+                                    borderColor: `${colors.Morado100}44`,
+                                    backgroundColor: `${colors.Griss50}0C`,
+                                    color: colors.Griss50,
+                                    fontFamily: fonts.Inter.Regular,
+                                    fontSize: 15,
+                                }}
+                            />
+                            <Text style={{ fontFamily: fonts.Inter.Medium, fontSize: 13, color: colors.gris300, marginTop: 16 }}>
+                                Tipo de usuario
+                            </Text>
+                            <View
+                                style={{
+                                    marginTop: 8,
+                                    borderRadius: 12,
+                                    borderWidth: 1,
+                                    borderColor: `${colors.Morado100}44`,
+                                    backgroundColor: `${colors.Griss50}0C`,
+                                    paddingHorizontal: 4,
+                                }}
+                            >
                                 <RNPickerSelect
-                                    placeholder={{ label: 'Selecciona un tipo de usuario', value: null  }}
-                                    value={workerNew.rol_usuario}
+                                    {...pickerCommon}
+                                    Icon={PickerChevron}
+                                    placeholder={{ label: 'Selecciona un tipo de usuario', value: null, color: colors.gris400 }}
+                                    value={workerNew.rol_usuario || null}
                                     onValueChange={(value) => {
                                         setWorkerNew({
                                             ...workerNew,
-                                            rol_usuario: value
+                                            rol_usuario: value ?? '',
                                         })
-                                    
                                     }}
                                     items={[
                                         { label: 'Administrador', value: 'Administrador' },
                                         { label: 'Repartidor', value: 'Repartidor' },
                                     ]}
                                 />
-
-                                </View>
                             </View>
-                            <View style={{ marginTop: 10 }}>
-                                <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: '#9E2EBE', marginTop: 5 }}>
-                                    Contrasena
-                                </Text>
-                                <TextInput
-                                keyboardType="visible-password"
-                                    autoCapitalize="none"
-                                    value={workerNew.contrasena}
-                                    onChangeText={(value: string) => {
-                                        setWorkerNew({
-                                            ...workerNew,
-                                            contrasena: value
-                                        })
-
-                                    }}
-                                    style={{ width: '100%', height: 30, paddingVertical: 0, paddingHorizontal: 10, borderBottomWidth: 1, color: '#000' }}
-                                />
-                            </View>
-
+                            <Text style={{ fontFamily: fonts.Inter.Medium, fontSize: 13, color: colors.gris300, marginTop: 16 }}>
+                                Contraseña
+                            </Text>
+                            <TextInput
+                                secureTextEntry
+                                autoCapitalize="none"
+                                placeholder="••••••••"
+                                placeholderTextColor={colors.gris400}
+                                value={workerNew.contrasena}
+                                onChangeText={(value: string) => {
+                                    setWorkerNew({
+                                        ...workerNew,
+                                        contrasena: value,
+                                    })
+                                }}
+                                style={{
+                                    width: '100%',
+                                    marginTop: 8,
+                                    paddingVertical: 12,
+                                    paddingHorizontal: 14,
+                                    borderRadius: 12,
+                                    borderWidth: 1,
+                                    borderColor: `${colors.Morado100}44`,
+                                    backgroundColor: `${colors.Griss50}0C`,
+                                    color: colors.Griss50,
+                                    fontFamily: fonts.Inter.Regular,
+                                    fontSize: 15,
+                                }}
+                            />
                         </ScrollView>
-                        <View style={{ margin: 16, display: 'flex', flexDirection: 'row' }}>
+                        <View style={{ paddingHorizontal: 18, paddingTop: 8, paddingBottom: 18 }}>
                             <PrimaryButton
-                                containerStyle={{ width: '33%', paddingVertical: 5, borderRadius: 5, marginRight: 5 }}
-                                textStyle={{ fontSize: 12, fontFamily: fonts.Roboto.Regular, color: 'white' }}
+                                containerStyle={{
+                                    width: '100%',
+                                    paddingVertical: 14,
+                                    borderRadius: 14,
+                                    minHeight: 50,
+                                    marginBottom: 10,
+                                }}
+                                textStyle={{ fontSize: 15, fontFamily: fonts.Inter.SemiBold, color: colors.white }}
+                                backgroundButton={colors.Morado600}
                                 onPress={() => {
-
                                     if (workerNew.id_usuario === 0) {
                                         if (workerNew.contrasena.length === 0 || workerNew.correo.length === 0 || workerNew.usuario.length === 0 || workerNew.rol_usuario.length === 0) {
                                             Toast.show({
@@ -334,30 +430,43 @@ const Workers = (): JSX.Element => {
                                     setWorkerNew({ id_usuario: 0, active: 0, nombre_comp: '', usuario: '', correo: '', rol_usuario: '', fecha_creacion: '', id_empresa: 0, contrasena: '', admin: 0  })
 
                                 }}
-                                title={workerNew.id_usuario === 0 ? 'Agregar' : 'Modificar'}
+                                title={workerNew.id_usuario === 0 ? 'Guardar usuario' : 'Guardar cambios'}
                             />
                             <PrimaryButton
-                                containerStyle={{ width: '33%', paddingVertical: 5, borderRadius: 5, marginRight: 5 }}
-                                textStyle={{ fontSize: 12, fontFamily: fonts.Roboto.Regular, color: 'white' }}
+                                containerStyle={{
+                                    width: '100%',
+                                    paddingVertical: 14,
+                                    borderRadius: 14,
+                                    minHeight: 50,
+                                    marginBottom: workerNew.id_usuario !== 0 ? 10 : 0,
+                                    borderWidth: 1.5,
+                                    borderColor: `${colors.Morado100}66`,
+                                    backgroundColor: 'transparent',
+                                }}
+                                textStyle={{ fontSize: 15, fontFamily: fonts.Inter.SemiBold, color: colors.Griss50 }}
+                                backgroundButton="transparent"
                                 onPress={() => setVisible(false)}
-                                backgroundButton='gray'
-                                title='Cancelar'
+                                title="Cancelar"
                             />
                             {workerNew.id_usuario !== 0 && (
                             <PrimaryButton
-                                containerStyle={{ width: '33%', paddingVertical: 5, borderRadius: 5 }}
-                                textStyle={{ fontSize: 12, fontFamily: fonts.Roboto.Regular, color: 'white' }}
+                                containerStyle={{
+                                    width: '100%',
+                                    paddingVertical: 14,
+                                    borderRadius: 14,
+                                    minHeight: 50,
+                                }}
+                                textStyle={{ fontSize: 15, fontFamily: fonts.Inter.SemiBold, color: colors.white }}
                                 onPress={() => {
                                     setOpenAlert(1)
                                 }}
-                                backgroundButton={workerNew.active && workerNew.active === 1 ? 'red' : 'green'}
-                                title={workerNew.active && workerNew.active === 1 ? 'Desactivar' : 'Activar'}
+                                backgroundButton={workerNew.active && workerNew.active === 1 ? colors.red : '#2e7d32'}
+                                title={workerNew.active && workerNew.active === 1 ? 'Desactivar cuenta' : 'Activar cuenta'}
                             />)}
                         </View>
                     </View>
-                </View>
-            </Modal>
-            <AreYouSure open={openAlert !== 0} sure={() => {
+            </AppModal>
+            <ConfirmDialog open={openAlert !== 0} sure={() => {
 
                 if(openAlert === 1){
                     
@@ -403,9 +512,9 @@ const Workers = (): JSX.Element => {
                 notsure={() => {
                     setOpenAlert(0)
                 }}
-            ></AreYouSure>
+            ></ConfirmDialog>
             <Toast></Toast>
-        </>
+        </View>
     )
 }
 export default Workers

@@ -10,6 +10,7 @@ const clientsRouter = require("./routes/clients");
 const paymentsRouter = require("./routes/payments"); 
 const reportsRouter = require("./routes/reports");
 const durangRouter = require("./routes/durangeneidad");
+import { requestTiming } from "./middleware/requestTiming";
 
 //For env File 
 dotenv.config();
@@ -63,6 +64,7 @@ const corsOptions = {
     optionSuccessStatus: 200
 }
 app.use(cors());
+app.use(requestTiming);
 app.use(express.json({ limit: '25mb' }));
 app.use(
     express.urlencoded({

@@ -6,6 +6,7 @@
  */
 
 import React, { useEffect } from 'react';
+import { bootstrapRemoteConfig } from './src/utils/remote-config';
 import type { ReactElement } from 'react';
 export { type RootState } from './src/redux/reducers'
 import {
@@ -39,6 +40,10 @@ const MyStatusBar = ({ backgroundColor, barStyle, ...props }: { backgroundColor:
 
 const App = (): JSX.Element => {
   GlobalFont.applyGlobal('Inter')
+
+  useEffect(() => {
+    bootstrapRemoteConfig().catch(() => {});
+  }, []);
 
   return (
     <>

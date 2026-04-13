@@ -1,31 +1,30 @@
 import Loading from "@components/loading";
-import { IClients } from "@interfaces/clients";
-import LottieView from "lottie-react-native";
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   FlatList,
-  Modal,
   ScrollView,
   Dimensions,
   TextInput,
+  StyleSheet,
 } from "react-native";
 import * as packageService from "../../services/package";
 import * as inventaryService from "../../services/inventary";
 import { useTheme } from "@hooks/useTheme";
 import { IPackage } from "@interfaces/packages";
-import AreYouSure from "@components/are-you-suere-modal";
+import ConfirmDialog from "@components/ConfirmDialog";
 import { IInventary } from "@interfaces/inventary";
-import CheckIcon from "@assets/images/icons/CheckIcon";
-import { generateRandomColor } from "@utils/colors";
-import CancelIcon from "@assets/images/icons/CancelIcon";
 import Toast from "react-native-toast-message";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import AppCard from "@components/AppCard";
+import AppModal from "@components/AppModal";
+import PrimaryButton from "@components/PrimaryButton";
+import EmptyState from "@components/EmptyState";
 const height = Dimensions.get("window").height;
 
 const Packages = (): JSX.Element => {
-  const animation = useRef(null);
   const [packages, setPackages] = React.useState<IPackage[]>([]);
   const [invantary, setInventary] = React.useState<IInventary[]>([]);
   const [filteryList, setFilteryList] = React.useState<IInventary[]>([]);
@@ -75,182 +74,161 @@ const Packages = (): JSX.Element => {
     index: number;
   }): JSX.Element => {
     return (
-      <View
-        style={{ padding: 10, flex: 1, flexDirection: "column", margin: 1 }}
-      >
-        <View
-          style={{
-            padding: 10,
-            borderColor: "#9E2EBE",
-            borderRadius: 5,
-            borderWidth: 1,
-            overflow: "hidden",
-          }}
-        >
+      <View style={{ paddingHorizontal: 16, marginBottom: 12 }}>
+        <AppCard>
           <View style={{ display: "flex", flexDirection: "row" }}>
-            <LottieView
-              ref={animation}
-              autoPlay
-              loop={true}
+            <View
               style={{
-                width: 60,
-                height: 60,
-                backgroundColor: "transparent",
+                width: 56,
+                height: 56,
+                borderRadius: 14,
+                backgroundColor: `${colors.Morado600}35`,
+                borderWidth: 1,
+                borderColor: `${colors.Morado100}44`,
+                alignItems: "center",
+                justifyContent: "center",
               }}
-              // Find more Lottie files at https://lottiefiles.com/featured
-              source={require("../../assets/images/lottie/box.json")}
-            />
-            <View style={{ paddingTop: 5, width: "70%" }}>
-              <Text style={{ fontFamily: fonts.Roboto.Bold, color: "#488aff" }}>
+            >
+              <MaterialCommunityIcons
+                name="gift-outline"
+                size={30}
+                color={colors.Morado100}
+              />
+            </View>
+            <View style={{ paddingLeft: 12, flex: 1 }}>
+              <Text style={{ fontFamily: fonts.Inter.SemiBold, fontSize: 16, color: colors.Griss50 }}>
                 {item.nombre}
               </Text>
-              <Text
-                lineBreakMode="tail"
-                style={{
-                  fontFamily: fonts.Roboto.MediumItalic,
-                  fontSize: 12,
-                  width: "100%",
-                }}
-              >
+              <Text lineBreakMode="tail" style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: colors.gris300, marginTop: 4 }}>
                 {item.descripcion}
               </Text>
             </View>
           </View>
-          <View
-            style={{ display: "flex", flexDirection: "row", paddingTop: 10 }}
-          >
-            <View style={{ paddingHorizontal: 2, width: "90%" }}>
-              <Text style={{ fontFamily: fonts.Roboto.Regular, fontSize: 12 }}>
-                Precio.- ${item.precio}
+          <View style={{ flexDirection: "row", paddingTop: 12, marginTop: 12, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: `${colors.Griss50}18`, alignItems: "center" }}>
+            <View style={{ flex: 1, paddingRight: 8 }}>
+              <Text style={{ fontFamily: fonts.Inter.Medium, fontSize: 13, color: colors.Morado100 }}>
+                Precio: ${item.precio}
               </Text>
-              <Text
-                style={{
-                  fontFamily: fonts.Roboto.Regular,
-                  fontSize: 12,
-                  color: "#488aff",
-                }}
-              >
-                {item.products
-                  .map((item) => {
-                    return `${item.cantidad} ${item.nombre_mob}`;
-                  })
-                  .join(", ")}
+              <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: colors.primario300, marginTop: 4 }}>
+                {item.products.map((p) => `${p.cantidad} ${p.nombre_mob}`).join(", ")}
               </Text>
             </View>
             <TouchableOpacity
               style={{
-                backgroundColor: "red",
-                height: 30,
-                borderRadius: 20,
-                paddingHorizontal: 15,
+                backgroundColor: `${colors.red}33`,
+                height: 36,
+                borderRadius: 10,
+                paddingHorizontal: 14,
                 justifyContent: "center",
+                borderWidth: 1,
+                borderColor: `${colors.red}55`,
               }}
               onPress={() => {
                 setToRemove(item.id);
               }}
             >
-              <Text
-                style={{
-                  fontFamily: fonts.Roboto.Black,
-                  fontSize: 12,
-                  color: '#fff',
-                }}
-              >
-                X
-              </Text>
+              <Text style={{ fontFamily: fonts.Inter.SemiBold, fontSize: 12, color: colors.red }}>Eliminar</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </AppCard>
       </View>
     );
   };
 
   return (
-    <>
+    <View style={{ flex: 1, backgroundColor: colors.DarkViolet300 }}>
       <View
         style={{
           flexDirection: "row",
           alignItems: "center",
-          justifyContent: "flex-start",
+          justifyContent: "space-between",
+          paddingHorizontal: 16,
+          paddingVertical: 16,
         }}
       >
-        <LottieView
-          ref={animation}
-          autoPlay
-          loop={true}
+        <View
           style={{
-            width: "50%",
-            height: 150,
-            backgroundColor: "transparent",
+            flex: 1,
+            flexDirection: "row",
+            alignItems: "center",
+            marginRight: 12,
           }}
-          // Find more Lottie files at https://lottiefiles.com/featured
-          source={require("../../assets/images/lottie/packages.json")}
-        />
-        <View>
-          <TouchableOpacity
-            onPress={() => setOpen(true)}
+        >
+          <View
             style={{
-              backgroundColor: "#488aff",
-              borderRadius: 8,
-              paddingVertical: 5,
-              paddingHorizontal: 15,
+              width: 88,
+              height: 88,
+              borderRadius: 20,
+              backgroundColor: `${colors.Morado600}33`,
+              borderWidth: 1,
+              borderColor: `${colors.Morado100}44`,
+              alignItems: "center",
               justifyContent: "center",
             }}
           >
+            <MaterialCommunityIcons
+              name="package-variant-closed"
+              size={44}
+              color={colors.Morado100}
+            />
+          </View>
+          <View style={{ flex: 1, marginLeft: 14 }}>
             <Text
               style={{
-                fontFamily: fonts.Roboto.Regular,
-                fontSize: 12,
-                color: '#fff',
+                fontFamily: fonts.Inter.SemiBold,
+                fontSize: 17,
+                color: colors.Griss50,
               }}
             >
-              Agregar paquete
+              Tus paquetes
             </Text>
-          </TouchableOpacity>
+            <Text
+              style={{
+                fontFamily: fonts.Inter.Regular,
+                fontSize: 13,
+                color: colors.gris300,
+                marginTop: 4,
+              }}
+            >
+              Combina productos y precios
+            </Text>
+          </View>
         </View>
+        <TouchableOpacity
+          onPress={() => setOpen(true)}
+          style={{
+            backgroundColor: colors.Morado600,
+            borderRadius: 12,
+            paddingVertical: 12,
+            paddingHorizontal: 14,
+            justifyContent: "center",
+          }}
+        >
+          <Text
+            style={{
+              fontFamily: fonts.Inter.SemiBold,
+              fontSize: 13,
+              color: colors.white,
+            }}
+          >
+            Agregar
+          </Text>
+        </TouchableOpacity>
       </View>
       <FlatList
         data={packages}
-        numColumns={2}
+        numColumns={1}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
-        ListEmptyComponent={() => {
-          return (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: 20,
-              }}
-            >
-              <Text
-                style={{
-                  fontFamily: fonts.Roboto.Bold,
-                  fontSize: 20,
-                  color: "#488aff",
-                }}
-              >
-                Aun no has creado algun paquete
-              </Text>
-              <LottieView
-                ref={animation}
-                autoPlay
-                loop={true}
-                style={{
-                  width: "100%",
-                  height: 250,
-                  backgroundColor: "transparent",
-                }}
-                // Find more Lottie files at https://lottiefiles.com/featured
-                source={require("../../assets/images/lottie/not_found.json")}
-              />
-            </View>
-          );
-        }}
+        contentContainerStyle={{ paddingBottom: 32 }}
+        ListEmptyComponent={
+          !loading ? (
+            <EmptyState title="Aún no has creado ningún paquete." subtitle="Usa el botón superior para agregar uno." />
+          ) : null
+        }
       />
       <Loading loading={loading} />
-      <AreYouSure
+      <ConfirmDialog
         open={toRemove !== 0}
         title="Estas seguro que eliminar este paquete?"
         sure={() => {
@@ -264,95 +242,131 @@ const Packages = (): JSX.Element => {
           console.log("notsure");
           setToRemove(0);
         }}
-      ></AreYouSure>
-      <Modal visible={open} transparent>
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: "rgba(0,0,0,0.5)",
-            justifyContent: "center",
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: '#fff',
-              borderRadius: 10,
-              margin: 20,
-              maxHeight: height - 100,
-            }}
-          >
+      ></ConfirmDialog>
+      <AppModal
+        visible={open}
+        onRequestClose={() => setOpen(false)}
+        keyboardAvoiding
+        maxHeight={height - 100}
+      >
+            <View>
+              <View style={{ paddingHorizontal: 18, paddingTop: 18, paddingBottom: 8 }}>
+                <Text style={{ fontFamily: fonts.Inter.SemiBold, fontSize: 22, color: colors.Griss50, letterSpacing: 0.2 }}>
+                  Nuevo paquete
+                </Text>
+                <View
+                  style={{
+                    alignSelf: "flex-start",
+                    marginTop: 10,
+                    paddingHorizontal: 12,
+                    paddingVertical: 6,
+                    borderRadius: 999,
+                    backgroundColor: `${colors.Morado600}33`,
+                    borderWidth: 1,
+                    borderColor: `${colors.Morado100}44`,
+                  }}
+                >
+                  <Text style={{ fontFamily: fonts.Inter.SemiBold, fontSize: 13, color: colors.Morado100 }}>
+                    Completa los datos
+                  </Text>
+                </View>
+              </View>
             <ScrollView
-              style={{ margin: 20 }}
+              style={{ paddingHorizontal: 18 }}
+              contentContainerStyle={{ paddingBottom: 12 }}
               showsVerticalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
             >
-              <Text
-                style={{
-                  fontFamily: fonts.Roboto.Medium,
-                  fontSize: 18,
-                  color: "#488aff",
-                  marginTop: 16,
-                }}
-              >
-                Agregar paquete nuevo
+              <Text style={{ fontFamily: fonts.Inter.Medium, fontSize: 13, color: colors.gris300, marginTop: 8 }}>
+                Nombre del paquete
               </Text>
               <TextInput
-                placeholder="Nombre del paquete"
+                placeholder="Ej. Paquete básico"
+                placeholderTextColor={colors.gris400}
+                value={detailsPackage.name}
                 style={{
+                  width: "100%",
+                  marginTop: 8,
+                  paddingVertical: 12,
+                  paddingHorizontal: 14,
+                  borderRadius: 12,
                   borderWidth: 1,
-                  borderColor: "#9E2EBE",
-                  borderRadius: 5,
-                  paddingVertical: 5,
-                  paddingHorizontal: 10,
-                  marginTop: 25,
+                  borderColor: `${colors.Morado100}44`,
+                  backgroundColor: `${colors.Griss50}0C`,
+                  color: colors.Griss50,
+                  fontFamily: fonts.Inter.Regular,
+                  fontSize: 15,
                 }}
                 onChangeText={(value: string) => {
                   setDetailsPackage({ ...detailsPackage, name: value });
                 }}
-              ></TextInput>
+              />
+              <Text style={{ fontFamily: fonts.Inter.Medium, fontSize: 13, color: colors.gris300, marginTop: 16 }}>
+                Descripción
+              </Text>
               <TextInput
-                placeholder="Descripcion"
+                placeholder="Describe el paquete"
+                placeholderTextColor={colors.gris400}
+                value={detailsPackage.description}
+                multiline
                 style={{
+                  width: "100%",
+                  marginTop: 8,
+                  minHeight: 72,
+                  paddingVertical: 12,
+                  paddingHorizontal: 14,
+                  borderRadius: 12,
                   borderWidth: 1,
-                  borderColor: "#9E2EBE",
-                  borderRadius: 5,
-                  paddingVertical: 5,
-                  paddingHorizontal: 10,
-                  marginTop: 10,
+                  borderColor: `${colors.Morado100}44`,
+                  backgroundColor: `${colors.Griss50}0C`,
+                  color: colors.Griss50,
+                  fontFamily: fonts.Inter.Regular,
+                  fontSize: 15,
+                  textAlignVertical: "top",
                 }}
                 onChangeText={(value: string) => {
                   setDetailsPackage({ ...detailsPackage, description: value });
                 }}
-              ></TextInput>
+              />
+              <Text style={{ fontFamily: fonts.Inter.Medium, fontSize: 13, color: colors.gris300, marginTop: 16 }}>
+                Precio
+              </Text>
               <TextInput
-                placeholder="Precio"
+                placeholder="0.00"
+                placeholderTextColor={colors.gris400}
+                value={detailsPackage.price}
+                keyboardType="numeric"
                 style={{
+                  width: "100%",
+                  marginTop: 8,
+                  paddingVertical: 12,
+                  paddingHorizontal: 14,
+                  borderRadius: 12,
                   borderWidth: 1,
-                  borderColor: "#9E2EBE",
-                  borderRadius: 5,
-                  paddingVertical: 5,
-                  paddingHorizontal: 10,
-                  marginTop: 10,
+                  borderColor: `${colors.Morado100}44`,
+                  backgroundColor: `${colors.Griss50}0C`,
+                  color: colors.Griss50,
+                  fontFamily: fonts.Inter.Regular,
+                  fontSize: 15,
                 }}
-                keyboardType = 'numeric'
                 onChangeText={(value: string) => {
                   setDetailsPackage({ ...detailsPackage, price: value });
                 }}
-              ></TextInput>
+              />
               <Text
                 style={{
-                  fontFamily: fonts.Roboto.Regular,
-                  fontSize: 14,
-                  color: "#488aff",
-                  marginTop: 16,
-                  textAlign: "center",
+                  fontFamily: fonts.Inter.SemiBold,
+                  fontSize: 15,
+                  color: colors.Griss50,
+                  marginTop: 20,
+                  marginBottom: 8,
                 }}
               >
-                Productos
+                Productos incluidos
               </Text>
               <FlatList
                 data={detailsPackage.productsBody}
-                renderItem={({ item, index }) => {
-                  const color = generateRandomColor();
+                renderItem={({ item }) => {
                   return (
                     <TouchableOpacity
                       onPress={() => {
@@ -367,42 +381,59 @@ const Packages = (): JSX.Element => {
                       }}
                       style={{
                         flexDirection: "row",
+                        alignItems: "center",
                         justifyContent: "space-between",
-                        backgroundColor: color,
-                        paddingHorizontal: 5,
-                        borderRadius: 10,
-                        marginRight: 5,
+                        backgroundColor: `${colors.Morado600}38`,
+                        borderWidth: 1,
+                        borderColor: `${colors.Morado100}55`,
+                        paddingHorizontal: 10,
+                        paddingVertical: 8,
+                        borderRadius: 12,
+                        marginRight: 8,
+                        maxWidth: 200,
                       }}
                     >
                       <Text
                         style={{
-                          fontFamily: fonts.Roboto.Regular,
-                          fontSize: 14,
-                          color: "#FFF",
-                          marginTop: 5,
-                          textAlign: "center",
+                          fontFamily: fonts.Inter.Medium,
+                          fontSize: 13,
+                          color: colors.Griss50,
+                          flex: 1,
+                          marginRight: 6,
                         }}
+                        numberOfLines={1}
                       >
-                        {item.nombre_mob.substring(0, 10)}... {item.cantidad}
+                        {item.nombre_mob.substring(0, 10)}… {item.cantidad}
                       </Text>
-                      <View style={{ marginTop: 3 }}>
-                        <CancelIcon size={20} fill="#FFF"></CancelIcon>
-                      </View>
+                      <MaterialCommunityIcons
+                        name="close-circle-outline"
+                        size={22}
+                        color={colors.gris300}
+                      />
                     </TouchableOpacity>
                   );
                 }}
                 keyExtractor={(item, index) => index.toString()}
                 horizontal
               ></FlatList>
+              <Text style={{ fontFamily: fonts.Inter.Medium, fontSize: 13, color: colors.gris300, marginTop: 16 }}>
+                Buscar producto
+              </Text>
               <TextInput
-                placeholder="Buscar producto"
+                placeholder="Escribe al menos 4 caracteres"
+                placeholderTextColor={colors.gris400}
                 style={{
+                  width: "100%",
+                  marginTop: 8,
+                  paddingVertical: 12,
+                  paddingHorizontal: 14,
+                  borderRadius: 12,
                   borderWidth: 1,
-                  borderColor: "#9E2EBE",
-                  borderRadius: 5,
-                  paddingVertical: 5,
-                  paddingHorizontal: 10,
-                  marginTop: 10,
+                  borderColor: `${colors.Morado100}44`,
+                  backgroundColor: `${colors.Griss50}0C`,
+                  color: colors.Griss50,
+                  fontFamily: fonts.Inter.Regular,
+                  fontSize: 15,
                 }}
                 onChangeText={(value: string) => {
                   if (value.length > 3) {
@@ -420,23 +451,23 @@ const Packages = (): JSX.Element => {
               ></TextInput>
               {filteryList.map((item, index) => {
                 return (
-                  <>
                     <View
+                      key={item.id_mob ?? `filter-${index}`}
                       style={{
                         flexDirection: "row",
                         justifyContent: "space-between",
-                        borderBottomColor: "black",
+                        alignItems: "center",
+                        borderBottomColor: `${colors.Morado100}33`,
                         borderBottomWidth: 1,
-                        paddingVertical: 3,
+                        paddingVertical: 10,
                       }}
                     >
                       <Text
                         style={{
-                          fontFamily: fonts.Roboto.Regular,
+                          fontFamily: fonts.Inter.Regular,
                           fontSize: 14,
-                          width: "70%",
-                          color: "#000",
-                          marginTop: 10,
+                          width: "58%",
+                          color: colors.Griss50,
                           textAlign: "left",
                         }}
                       >
@@ -445,28 +476,36 @@ const Packages = (): JSX.Element => {
                       <View
                         style={{
                           flexDirection: "row",
-                          justifyContent: "center",
-                          width: "30%",
+                          justifyContent: "flex-end",
+                          alignItems: "center",
+                          width: "42%",
+                          gap: 8,
                         }}
                       >
                         <TextInput
                           style={{
-                            borderBottomWidth: 1,
-                            borderColor: "#9E2EBE",
-                            paddingVertical: 1,
+                            borderWidth: 1,
+                            borderColor: `${colors.Morado100}44`,
+                            borderRadius: 10,
+                            paddingVertical: 8,
                             textAlign: "center",
-                            fontSize: 25,
-                            width: "60%",
+                            fontSize: 16,
+                            width: "52%",
                             margin: 0,
+                            color: colors.Griss50,
+                            fontFamily: fonts.Inter.SemiBold,
+                            backgroundColor: `${colors.Griss50}0C`,
                           }}
+                          placeholderTextColor={colors.gris400}
+                          keyboardType="numeric"
                           onChangeText={(value: string) => {
-                            item.cantidad = parseInt(value);
+                            item.cantidad = parseInt(value, 10);
                             setFilteryList([...filteryList]);
                           }}
                           placeholder="10"
                         ></TextInput>
                         <TouchableOpacity
-                          style={{ marginTop: 5, width: "40%" }}
+                          style={{ padding: 6 }}
                           onPress={() => {
                             if (item.cantidad) {
                               const inv = detailsPackage.productsBody.find(
@@ -488,29 +527,42 @@ const Packages = (): JSX.Element => {
                             }
                           }}
                         >
-                          <CheckIcon></CheckIcon>
+                          <MaterialCommunityIcons
+                            name="check-circle"
+                            size={28}
+                            color={colors.Morado100}
+                          />
                         </TouchableOpacity>
                       </View>
                     </View>
-                  </>
                 );
               })}
             </ScrollView>
-            <View style={{ margin: 16, display: "flex", flexDirection: "row", justifyContent: 'space-around' }}>
-              <TouchableOpacity
-                style={{ width: "50%", height: 30, borderRadius: 5,  alignItems: 'center', paddingVertical: 5, margin: 0, backgroundColor: 'green'}}
+            <View style={{ paddingHorizontal: 18, paddingTop: 8, paddingBottom: 18 }}>
+              <PrimaryButton
+                containerStyle={{
+                  width: "100%",
+                  paddingVertical: 14,
+                  borderRadius: 14,
+                  minHeight: 50,
+                  marginBottom: 10,
+                }}
+                textStyle={{ fontSize: 15, fontFamily: fonts.Inter.SemiBold, color: colors.white }}
+                backgroundButton={colors.Morado600}
                 onPress={() => {
-                  console.log(detailsPackage);
-                  
-                  if(detailsPackage.name === '' || detailsPackage.description === '' || detailsPackage.price === '' || detailsPackage.productsBody.length === 0) {
-                    
-                      Toast.show({
-                        type: 'error',
-                        text1: 'Error',
-                        text2: 'Todos los campos son requeridos',
-                        visibilityTime: 1000,
-                        autoHide: true
-                    })
+                  if (
+                    detailsPackage.name === "" ||
+                    detailsPackage.description === "" ||
+                    detailsPackage.price === "" ||
+                    detailsPackage.productsBody.length === 0
+                  ) {
+                    Toast.show({
+                      type: "error",
+                      text1: "Error",
+                      text2: "Todos los campos son requeridos",
+                      visibilityTime: 1000,
+                      autoHide: true,
+                    });
                     return;
                   }
                   setOpen(false);
@@ -518,41 +570,55 @@ const Packages = (): JSX.Element => {
                     detailsPackage.products = detailsPackage.productsBody.map((item) => {
                       return {
                         id: item.id_mob,
-                        quantity: item.cantidad
-                      }
-                    })
+                        quantity: item.cantidad,
+                      };
+                    });
                     packageService.addPackage(detailsPackage);
-                    setPackages([...packages, {id: 0, nombre: detailsPackage.name, descripcion: detailsPackage.description, precio: parseInt(detailsPackage.price), products: detailsPackage.productsBody}]);
-                    setDetailsPackage({ name: "", description: "", price: "", products: [], productsBody: []});
+                    setPackages([
+                      ...packages,
+                      {
+                        id: 0,
+                        nombre: detailsPackage.name,
+                        descripcion: detailsPackage.description,
+                        precio: parseInt(detailsPackage.price, 10),
+                        products: detailsPackage.productsBody,
+                      },
+                    ]);
+                    setDetailsPackage({
+                      name: "",
+                      description: "",
+                      price: "",
+                      products: [],
+                      productsBody: [],
+                    });
                     getInit();
                   } catch (error) {
                     console.log(error);
                   }
-                }}              
-                >
-                  <Text
-                  style={{
-                    fontFamily: fonts.Roboto.Black,
-                    fontSize: 12,
-                    color: '#FFF',
-                  }}
-                  >Agregar</Text>
-                </TouchableOpacity>
-              <TouchableOpacity
-                style={{ width: "50%", height: 30, borderRadius: 5,  alignItems: 'center', paddingVertical: 5, margin: 0, backgroundColor: '#e0e0e0'}}
-                onPress={() => {
-                  setOpen(false);
                 }}
-              >
-                <Text>Cancelar</Text>
-              </TouchableOpacity>
+                title="Guardar paquete"
+              />
+              <PrimaryButton
+                containerStyle={{
+                  width: "100%",
+                  paddingVertical: 14,
+                  borderRadius: 14,
+                  minHeight: 50,
+                  borderWidth: 1.5,
+                  borderColor: `${colors.Morado100}66`,
+                  backgroundColor: "transparent",
+                }}
+                textStyle={{ fontSize: 15, fontFamily: fonts.Inter.SemiBold, color: colors.Griss50 }}
+                backgroundButton="transparent"
+                onPress={() => setOpen(false)}
+                title="Cancelar"
+              />
             </View>
-          </View>
-        </View>
-      </Modal>
+            </View>
+      </AppModal>
       
       <Toast />
-    </>
+    </View>
   );
 };
 export default Packages;

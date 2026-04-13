@@ -21,8 +21,7 @@ const persistConfig = {
     key: 'root',
     storage: storage,
     stateReconciler: autoMergeLevel2,
-    blacklist: [
-    ]
+    blacklist: ['event']
 }
 const cReducers = combineReducers({
     user,

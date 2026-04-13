@@ -4,7 +4,7 @@ import React from 'react'
 import ViewMoreItem from '@components/ViewMore/ViewMoreItem'
 import CloseSessionButton from '@components/ViewMore/CloseSessionButton'
 import { GetOptionsMenu } from '@shared/profile/ViewMoreOptions'
-import useReduxUser from '@hooks/useReduxUser'
+import { useTheme } from '@hooks/useTheme'
 
 export interface Option {
   name: string
@@ -16,18 +16,18 @@ export interface Option {
 }
 
 const ViewMore = (): JSX.Element => {
-  const { user } = useReduxUser()
+  const { colors } = useTheme()
   const renderItem = ({ item }: { item: Option }): JSX.Element => <ViewMoreItem {...item} />
   const keyExtractor = (item: Option, index: number): string => index.toString()
 
   const options: Option[] = GetOptionsMenu()
 
   return (
-    <View>
+    <View style={{ flex: 1, backgroundColor: colors.DarkViolet300 }}>
       <FlatList
         bounces={false}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ padding: 16 }}
+        contentContainerStyle={{ paddingVertical: 12, paddingBottom: 32 }}
         data={options}
         renderItem={renderItem}
         keyExtractor={keyExtractor}

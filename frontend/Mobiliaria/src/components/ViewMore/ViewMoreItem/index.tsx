@@ -2,6 +2,7 @@ import { View, Text, ViewStyle, TextStyle } from 'react-native'
 import React, { memo } from 'react'
 import _styles from './styles'
 import { TouchableRipple } from 'react-native-paper'
+import { useTheme } from '@hooks/useTheme'
 import { useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { NavigationScreens } from '@interfaces/navigation'
@@ -42,6 +43,7 @@ const ViewMoreItem = ({
   hideRightArrow = false
 }: props): JSX.Element => {
   const navigation = useNavigation<StackNavigationProp<NavigationScreens>>()
+  const { colors } = useTheme()
   const styles = _styles()
   const goScreen = (): void => {
     if (navigate !== undefined && navigate.length > 0) {
@@ -59,7 +61,7 @@ const ViewMoreItem = ({
     <>
       <TouchableRipple
         onPress={goScreen}
-        rippleColor='rgba(0, 0, 0, .32)'
+        rippleColor={`${colors.Morado600}44`}
         borderless
       >
         <View style={styles.mainContainer}>

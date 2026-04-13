@@ -1,66 +1,27 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import React from 'react'
 import SignedOut from './SignedOut'
 import useReduxUser from '@hooks/useReduxUser'
+import { useTheme } from '@hooks/useTheme'
 
-import { Dimensions, Platform, View } from 'react-native'
-import { NavigationRouteState, getActiveRouteState } from '@utils/route'
+import { View } from 'react-native'
 import SignedIn from './SignedIn'
-import NewEventFab from '@components/NewEventFab'
 import SignedInDelivery from './SignedInDelivery'
 
-
-
-const Stack = createNativeStackNavigator()
-const windowWidth = Dimensions.get('window').width
-const windowheight = Dimensions.get('window').height
-
+/**
+ * Auth switching mounts one navigator tree at a time.
+ * Swapping Stack.Screen children inside one Stack.Navigator breaks React Navigation
+ * and can crash the app right after login when token state updates.
+ */
 export default function Navigation(): JSX.Element {
-    const { remember, token, user } = useReduxUser()
-    const [activeRouteName, setActiveRouteName] = useState('')
-    const maxLottieWidth = 300
-    const maxLottieHeight = 300
-    let margin = 0
-    let translateX = 0
-    let translateY = 0
-    
-    if (windowWidth > maxLottieWidth) {
-        margin = (windowWidth - maxLottieWidth) / 4
-    }
-    if (Platform.OS === 'ios') {
-        translateX = margin
-        translateY = (windowheight - maxLottieHeight) / 5.0
-    } else {
-        translateX = margin
-        translateY = (windowheight - maxLottieHeight) / 4.5
-    }
+    const { token, user } = useReduxUser()
+    const { colors } = useTheme()
+
+    const signedInBody =
+        user?.rol_usuario === 'Repartidor' ? <SignedInDelivery /> : <SignedIn />
+
     return (
-        <View style={{ flex: 1, backgroundColor: 'white' }}>
-            <Stack.Navigator
-                screenOptions={{
-                    headerShown: false,
-                    orientation: 'portrait'
-                }}
-                screenListeners={{
-                    state: e => {
-                        if (e.data !== undefined) {
-                            const activeRoute = getActiveRouteState(e.data as NavigationRouteState)                            
-                            setActiveRouteName(activeRoute?.name ?? '')
-                        }
-                    }
-                }}
-            >
-                {
-
-                    token
-                        ? user.rol_usuario !== 'Repartidor' 
-                        ? <Stack.Screen name='SignedInStack' component={SignedIn} /> 
-                        : <Stack.Screen name='SignedWorkerStack' component={SignedInDelivery} />
-                        : <Stack.Screen name='SignedOutStack' component={SignedOut} />
-                }
-
-            </Stack.Navigator>
-            {/* <NewEventFab activeRouteName={activeRouteName} /> */}
+        <View style={{ flex: 1, backgroundColor: colors.background_parts.header }}>
+            {!token ? <SignedOut /> : signedInBody}
         </View>
     )
 }

@@ -1,5 +1,6 @@
 import { memo, useEffect } from "react"
-import { ActivityIndicator, Dimensions, FlatList, Modal, RefreshControl, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { ActivityIndicator, Dimensions, FlatList, RefreshControl, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
+import AppModal from "@components/AppModal"
 import { IInventary } from "@interfaces/inventary"
 import * as inventaryService from '../../services/inventary';
 import Loading from "@components/loading";
@@ -8,8 +9,10 @@ import { useTheme } from "@hooks/useTheme";
 import SearchIcon from "@assets/images/icons/SearchIcon";
 import CancelIcon from "@assets/images/icons/CancelIcon";
 import PrimaryButton from "@components/PrimaryButton";
+import AppCard from "@components/AppCard";
+import EmptyState from "@components/EmptyState";
 import Toast from "react-native-toast-message";
-import AreYouSure from "@components/are-you-suere-modal";
+import ConfirmDialog from "@components/ConfirmDialog";
 const height = Dimensions.get('window').height
 
 const ITEMS_PEER_PAGE = 10
@@ -78,29 +81,32 @@ const Inventary = (): JSX.Element => {
         index: number
     }): JSX.Element => {
         return (
-            <TouchableOpacity onPress={() => {
+            <TouchableOpacity
+                activeOpacity={0.85}
+                onPress={() => {
                 setInventaryNew(item)
                 setNombre(item.nombre_mob)
                 setCantidad(item.cantidad_mob.toString())
                 setCosto(item.costo_mob.toString())
                 setVisible(true)
             }}>
-                <View style={{ display: 'flex', flexDirection: 'row', paddingHorizontal: 26, paddingVertical: 10, alignItems: "center", alignContent: 'space-between' }}>
-                    <View style={{ width: '85%' }}>
-                        <Text style={{ color: '#9E2EBE', fontFamily: fonts.Roboto.Medium, fontSize: 12 }}>
-                            {item.nombre_mob}
-                        </Text>
-                        <Text style={{ fontFamily: fonts.Roboto.MediumItalic, fontSize: 10 }}>
-                            {item.cantidad_mob} Pieza{item.cantidad_mob > 1 ? 's' : ''}
-                        </Text>
-                        <Text style={{ fontFamily: fonts.Roboto.BoldItalic, fontSize: 10 }}>
-                            ${item.costo_mob} c/u
-                        </Text>
-
-                    </View>
-                    <Text>
-                        detalles
-                    </Text>
+                <View style={{ paddingHorizontal: 16, marginBottom: 10 }}>
+                    <AppCard>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <View style={{ flex: 1, paddingRight: 8 }}>
+                                <Text style={{ color: colors.Morado100, fontFamily: fonts.Inter.SemiBold, fontSize: 14 }}>
+                                    {item.nombre_mob}
+                                </Text>
+                                <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: colors.gris300, marginTop: 4 }}>
+                                    {item.cantidad_mob} pieza{item.cantidad_mob > 1 ? 's' : ''}
+                                </Text>
+                                <Text style={{ fontFamily: fonts.Inter.Medium, fontSize: 12, color: colors.Griss100, marginTop: 2 }}>
+                                    ${item.costo_mob} c/u
+                                </Text>
+                            </View>
+                            <Text style={{ fontFamily: fonts.Inter.Medium, fontSize: 12, color: colors.primario300 }}>Detalles</Text>
+                        </View>
+                    </AppCard>
                 </View>
             </TouchableOpacity>
         )
@@ -130,19 +136,20 @@ const Inventary = (): JSX.Element => {
     }
 
     return (
-        <>
+        <View style={{ flex: 1, backgroundColor: colors.DarkViolet300 }}>
 
             <FlatList
                 ListHeaderComponent={
                     <View>
                         
-                        <View style={{ display: 'flex', flexDirection: 'row', padding: 16, backgroundColor: '#fff' }}>
+                        <View style={{ display: 'flex', flexDirection: 'row', padding: 16, backgroundColor: colors.background_parts.card, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: `${colors.Griss50}18` }}>
                             <View style={{ paddingTop: 10 }}>
                                 <SearchIcon></SearchIcon>
                             </View>
                             <TextInput
-                                style={{ width: '85%', height: 40, paddingVertical: 0, paddingHorizontal: 10, borderBottomWidth: 1 }}
-                                placeholder="Busqueda"
+                                style={{ width: '85%', height: 40, paddingVertical: 0, paddingHorizontal: 10, borderBottomWidth: 1, borderBottomColor: `${colors.Griss50}33`, color: colors.Griss50 }}
+                                placeholder="Búsqueda"
+                                placeholderTextColor={colors.gris400}
                                 onChangeText={(value: string) => {
                                     setSearch(value)
                                     if (value === '') {
@@ -172,8 +179,8 @@ const Inventary = (): JSX.Element => {
                         <View style={{ paddingHorizontal: 10 }}>
                             <PrimaryButton
                                 containerStyle={{ width: '100%', paddingVertical: 5, marginBottom: 5 }}
-                                textStyle={{ fontSize: 12, fontFamily: fonts.Roboto.Regular, color: '#fff' }}
-                                backgroundButton="#9E2EBE"
+                                textStyle={{ fontSize: 12, fontFamily: fonts.Inter.SemiBold, color: colors.white }}
+                                backgroundButton={colors.Morado600}
                                 onPress={() => {
                                     setVisible(true)
                                 }}
@@ -192,32 +199,75 @@ const Inventary = (): JSX.Element => {
                 ListFooterComponent={renderFooter}
                 onEndReachedThreshold={0.3}
                 onEndReached={addData}
+                ListEmptyComponent={
+                    !loading && search.length < 3 ? (
+                        <EmptyState title="Sin artículos en inventario." subtitle="Agrega uno con el botón superior." />
+                    ) : null
+                }
             />
             <Loading loading={loading} />
-            <Modal visible={visible} transparent>
-                <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center' }}>
-                    <View style={{ backgroundColor: '#FFF', borderRadius: 10, margin: 20, maxHeight: height - 100 }}>
-                        <Text style={{ fontFamily: fonts.Inter.Bold, fontWeight: 'bold', fontSize: 16, color: '#000', marginTop: 16, marginLeft: 16 }}>
-                            Inventario
-                        </Text>
-                        <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: '#000', marginTop: 5, marginLeft: 16 }}>
-                            {inventaryNew.nombre_mob === '' ? 'Agregar' : 'Modificar'}
-                        </Text>
-                        <ScrollView style={{ margin: 20 }} showsVerticalScrollIndicator={false}>
+            <AppModal
+                visible={visible}
+                onRequestClose={() => setVisible(false)}
+                keyboardAvoiding
+                maxHeight={height - 100}
+            >
+                    <View>
+                        <View style={{ paddingHorizontal: 18, paddingTop: 18, paddingBottom: 4 }}>
+                            <Text style={{ fontFamily: fonts.Inter.SemiBold, fontSize: 22, color: colors.Griss50, letterSpacing: 0.2 }}>
+                                Inventario
+                            </Text>
+                            <View
+                                style={{
+                                    alignSelf: 'flex-start',
+                                    marginTop: 10,
+                                    paddingHorizontal: 12,
+                                    paddingVertical: 6,
+                                    borderRadius: 999,
+                                    backgroundColor: `${colors.Morado600}33`,
+                                    borderWidth: 1,
+                                    borderColor: `${colors.Morado100}44`,
+                                }}
+                            >
+                                <Text style={{ fontFamily: fonts.Inter.SemiBold, fontSize: 13, color: colors.Morado100 }}>
+                                    {inventaryNew.nombre_mob === '' ? 'Agregar artículo' : 'Modificar artículo'}
+                                </Text>
+                            </View>
+                        </View>
+                        <ScrollView
+                            style={{ paddingHorizontal: 18 }}
+                            contentContainerStyle={{ paddingBottom: 12 }}
+                            showsVerticalScrollIndicator={false}
+                            keyboardShouldPersistTaps="handled"
+                        >
                             <View>
-                                <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: '#000', marginTop: 5 }}>
+                                <Text style={{ fontFamily: fonts.Inter.Medium, fontSize: 13, color: colors.gris300, marginTop: 8 }}>
                                     Nombre
                                 </Text>
                                 <TextInput
                                     autoCapitalize="none"
                                     value={nombre}
+                                    placeholder="Nombre del artículo"
+                                    placeholderTextColor={colors.gris400}
                                     onChangeText={setNombre}
-                                    style={{ width: '100%', height: 30, paddingVertical: 0, paddingHorizontal: 10, borderBottomWidth: 1, color: '#000' }}
+                                    style={{
+                                        width: '100%',
+                                        marginTop: 8,
+                                        paddingVertical: 12,
+                                        paddingHorizontal: 14,
+                                        borderRadius: 12,
+                                        borderWidth: 1,
+                                        borderColor: `${colors.Morado100}44`,
+                                        backgroundColor: `${colors.Griss50}0C`,
+                                        color: colors.Griss50,
+                                        fontFamily: fonts.Inter.Regular,
+                                        fontSize: 15,
+                                    }}
                                 />
                             </View>
-                            <View style={{ display: 'flex', flexDirection: 'row', paddingTop: 20 }}>
-                                <View style={{ width: '50%', paddingRight: 10 }}>
-                                    <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: '#000', marginTop: 5 }}>
+                            <View style={{ flexDirection: 'row', paddingTop: 16, gap: 12 }}>
+                                <View style={{ flex: 1, minWidth: 0 }}>
+                                    <Text style={{ fontFamily: fonts.Inter.Medium, fontSize: 13, color: colors.gris300 }}>
                                         Cantidad
                                     </Text>
                                     <TextInput
@@ -225,11 +275,25 @@ const Inventary = (): JSX.Element => {
                                         onChangeText={(value: string) => setCantidad(value)}
                                         keyboardType="number-pad"
                                         autoCapitalize="none"
-                                        style={{ width: '100%', height: 30, paddingVertical: 0, paddingHorizontal: 10, borderBottomWidth: 1, color: '#000' }}
+                                        placeholder="0"
+                                        placeholderTextColor={colors.gris400}
+                                        style={{
+                                            width: '100%',
+                                            marginTop: 8,
+                                            paddingVertical: 12,
+                                            paddingHorizontal: 14,
+                                            borderRadius: 12,
+                                            borderWidth: 1,
+                                            borderColor: `${colors.Morado100}44`,
+                                            backgroundColor: `${colors.Griss50}0C`,
+                                            color: colors.Griss50,
+                                            fontFamily: fonts.Inter.Regular,
+                                            fontSize: 15,
+                                        }}
                                     />
                                 </View>
-                                <View style={{ width: '50%' }}>
-                                    <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: '#000', marginTop: 5 }}>
+                                <View style={{ flex: 1, minWidth: 0 }}>
+                                    <Text style={{ fontFamily: fonts.Inter.Medium, fontSize: 13, color: colors.gris300 }}>
                                         Precio
                                     </Text>
                                     <TextInput
@@ -237,17 +301,44 @@ const Inventary = (): JSX.Element => {
                                         value={costo}
                                         onChangeText={(value: string) => setCosto(value)}
                                         autoCapitalize="none"
-                                        style={{ width: '100%', height: 30, paddingVertical: 0, paddingHorizontal: 10, borderBottomWidth: 1, color: '#000' }}
+                                        placeholder="0.00"
+                                        placeholderTextColor={colors.gris400}
+                                        style={{
+                                            width: '100%',
+                                            marginTop: 8,
+                                            paddingVertical: 12,
+                                            paddingHorizontal: 14,
+                                            borderRadius: 12,
+                                            borderWidth: 1,
+                                            borderColor: `${colors.Morado100}44`,
+                                            backgroundColor: `${colors.Griss50}0C`,
+                                            color: colors.Griss50,
+                                            fontFamily: fonts.Inter.Regular,
+                                            fontSize: 15,
+                                        }}
                                     />
                                 </View>
-
                             </View>
-
                         </ScrollView>
-                        <View style={{ margin: 16, display: 'flex', flexDirection: 'row' }}>
+                        <View
+                            style={{
+                                paddingHorizontal: 18,
+                                paddingTop: 16,
+                                paddingBottom: 18,
+                                borderTopWidth: StyleSheet.hairlineWidth,
+                                borderTopColor: `${colors.Griss50}22`,
+                                gap: 12,
+                            }}
+                        >
                             <PrimaryButton
-                                containerStyle={{ width: '33%', paddingVertical: 5, borderRadius: 5, marginRight: 5 }}
-                                textStyle={{ fontSize: 12, fontFamily: fonts.Roboto.Regular, color: 'white' }}
+                                containerStyle={{
+                                    width: '100%',
+                                    paddingVertical: 14,
+                                    borderRadius: 14,
+                                    minHeight: 50,
+                                }}
+                                textStyle={{ fontSize: 15, fontFamily: fonts.Inter.SemiBold, color: colors.white }}
+                                backgroundButton={colors.Morado600}
                                 onPress={() => {
 
                                     if (inventaryNew.nombre_mob === '') {
@@ -349,27 +440,41 @@ const Inventary = (): JSX.Element => {
                                     setCosto('')
 
                                 }}
-                                title={inventaryNew.nombre_mob === '' ? 'Agregar' : 'Modificar'}
+                                title={inventaryNew.nombre_mob === '' ? 'Guardar artículo' : 'Guardar cambios'}
                             />
                             <PrimaryButton
-                                containerStyle={{ width: '33%', paddingVertical: 5, borderRadius: 5, marginRight: 5 }}
-                                textStyle={{ fontSize: 12, fontFamily: fonts.Roboto.Regular, color: 'white' }}
+                                containerStyle={{
+                                    width: '100%',
+                                    paddingVertical: 14,
+                                    borderRadius: 14,
+                                    minHeight: 50,
+                                    borderWidth: 1.5,
+                                    borderColor: `${colors.Morado100}66`,
+                                    backgroundColor: 'transparent',
+                                }}
+                                textStyle={{ fontSize: 15, fontFamily: fonts.Inter.SemiBold, color: colors.Griss50 }}
+                                backgroundButton="transparent"
                                 onPress={() => setVisible(false)}
-                                backgroundButton='gray'
-                                title='Cancelar'
+                                title="Cancelar"
                             />
+                            {inventaryNew.nombre_mob !== '' && (
                             <PrimaryButton
-                                containerStyle={{ width: '33%', paddingVertical: 5, borderRadius: 5 }}
-                                textStyle={{ fontSize: 12, fontFamily: fonts.Roboto.Regular, color: 'white' }}
+                                containerStyle={{
+                                    width: '100%',
+                                    paddingVertical: 14,
+                                    borderRadius: 14,
+                                    minHeight: 50,
+                                }}
+                                textStyle={{ fontSize: 15, fontFamily: fonts.Inter.SemiBold, color: colors.white }}
+                                backgroundButton={colors.red}
                                 onPress={() => setOpenAlert(true)}
-                                backgroundButton='red'
-                                title='Eliminar'
+                                title="Eliminar del inventario"
                             />
+                            )}
                         </View>
                     </View>
-                </View>
-            </Modal>
-            <AreYouSure open={openAlert} sure={() => {
+            </AppModal>
+            <ConfirmDialog open={openAlert} sure={() => {
 
                 try {
                     inventaryService.remove(inventaryNew.id_mob ? inventaryNew.id_mob : 0)
@@ -397,8 +502,8 @@ const Inventary = (): JSX.Element => {
                 notsure={() => {
                     setOpenAlert(false)
                 }}
-            ></AreYouSure>
-        </>
+            ></ConfirmDialog>
+        </View>
     )
 }
 export default Inventary

@@ -14,13 +14,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const headers_1 = require("../libs/headers");
 const express_1 = __importDefault(require("express"));
-const jwt_decode_1 = __importDefault(require("jwt-decode"));
 const workersService = require('../services/workers');
 const router = express_1.default.Router();
 router.get('/getWorkers', headers_1.verifyToken, function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const bearer = (0, jwt_decode_1.default)(req.headers['authorization']);
+            const bearer = req.authPayload;
             let id = bearer.data.id_empresa;
             res.status(201).json(yield workersService.getWorkers(id));
         }
@@ -33,7 +32,7 @@ router.get('/getWorkers', headers_1.verifyToken, function (req, res, next) {
 router.get('/getEventsDay', headers_1.verifyToken, function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const bearer = (0, jwt_decode_1.default)(req.headers['authorization']);
+            const bearer = req.authPayload;
             let id = bearer.data.id_empresa;
             let date = req.query.date;
             res.status(201).json(yield workersService.getEventsDay(id, date));
@@ -47,7 +46,7 @@ router.get('/getEventsDay', headers_1.verifyToken, function (req, res, next) {
 router.post('/addWorker', headers_1.verifyToken, function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const bearer = (0, jwt_decode_1.default)(req.headers['authorization']);
+            const bearer = req.authPayload;
             let id = bearer.data.id_empresa;
             let body = req.body;
             const response = yield workersService.addWorker(body, id);

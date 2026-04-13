@@ -7,7 +7,8 @@ async function getEvents(id: number) {
   let code = 200;
 
   const rows = await db.query(
-    `SELECT nombre_evento, fecha_envio_evento, COUNT(fecha_envio_evento) as total from evento_mob where id_empresa = "${id}" AND fecha_envio_evento LIKE "%202%" GROUP BY fecha_envio_evento`
+    `SELECT nombre_evento, fecha_envio_evento, COUNT(fecha_envio_evento) as total from evento_mob where id_empresa = ? AND fecha_envio_evento LIKE ? GROUP BY fecha_envio_evento`,
+    [id, '%202%']
   );
 
   let data = helper.emptyOrRows(rows);
@@ -28,9 +29,10 @@ async function getEvents(id: number) {
 async function getDetails(id: number) {
   let code = 200;
   try {
-    let rows = await db.query(
-      `select * from evento_mob where id_evento = '${id}'`
-    );
+    const idNum = Number(id);
+    let rows = await db.query(`select * from evento_mob where id_evento = ?`, [
+      idNum,
+    ]);
 
     let event = helper.emptyOrRows(rows);
     if (event.length === 0) {
@@ -42,20 +44,23 @@ async function getDetails(id: number) {
       };
     }
 
-    rows = await db.query(
-      `select a.nombre_mob, b.costo, b.id_mob, b.ocupados, b.id_evento, b.id_fecha,
+    const [itemsRows, packagesRows] = await Promise.all([
+      db.query(
+        `select a.nombre_mob, b.costo, b.id_mob, b.ocupados, b.id_evento, b.id_fecha,
       b.fecha_evento, b.package
-      from inventario_mob a, inventario_disponibilidad_mob b where b.id_mob = a.id_mob and id_evento='${id}' AND  b.package IS NULL`
-    );
-    let items = helper.emptyOrRows(rows);
-
-    rows = await db.query(
-      `select a.nombre, b.costo, b.id_mob, b.ocupados, b.id_evento, b.id_fecha,
+      from inventario_mob a, inventario_disponibilidad_mob b where b.id_mob = a.id_mob and id_evento=? AND  b.package IS NULL`,
+        [idNum]
+      ),
+      db.query(
+        `select a.nombre, b.costo, b.id_mob, b.ocupados, b.id_evento, b.id_fecha,
       b.fecha_evento, b.package
-      from paquetes a, inventario_disponibilidad_mob b where b.id_mob = a.id and id_evento='${id}' AND  b.package = 1`
-    );
+      from paquetes a, inventario_disponibilidad_mob b where b.id_mob = a.id and id_evento=? AND  b.package = 1`,
+        [idNum]
+      ),
+    ]);
 
-    let packages = helper.emptyOrRows(rows);
+    let items = helper.emptyOrRows(itemsRows);
+    let packages = helper.emptyOrRows(packagesRows);
 
     items = [...items, ...packages];
     rows = await db.query(
@@ -63,7 +68,8 @@ async function getDetails(id: number) {
         FROM pagos_mob P
         LEFT JOIN evento_mob E
         ON P.id_evento = E.id_evento
-        WHERE P.id_evento =${id}`
+        WHERE P.id_evento = ?`,
+      [idNum]
     );
 
     let payments = helper.emptyOrRows(rows);
@@ -87,9 +93,8 @@ async function getDetails(id: number) {
       FROM 
           historical h
       JOIN 
-          usuarios_mobiliaria u ON h.fkid_user = u.id_usuario
-      AND
-          h.fkid_event = ${id}`
+          usuarios_mobiliaria u ON h.fkid_user = u.id_usuario AND h.fkid_event = ?`,
+      [idNum]
     );
 
     return {
@@ -300,7 +305,8 @@ async function availiable(id: number, dateArrive: string) {
 
 async function getPackages(id: number) {
   const rows = await db.query(
-    `SELECT * FROM paquetes WHERE fkid_empresa = ${id} AND eliminado = 0`
+    `SELECT * FROM paquetes WHERE fkid_empresa = ? AND eliminado = 0`,
+    [id]
   );
 
   let data = helper.emptyOrRows(rows);
@@ -308,13 +314,15 @@ async function getPackages(id: number) {
     return [];
   }
 
-  for (const pkt of data) {
-    const products = await db.query(
-      `SELECT * FROM paquete_inventario WHERE fkid_paquete = ${pkt.id}`
-    );
-
-    pkt.products = products;
-  }
+  await Promise.all(
+    data.map(async (pkt: any) => {
+      const products = await db.query(
+        `SELECT * FROM paquete_inventario WHERE fkid_paquete = ?`,
+        [pkt.id]
+      );
+      pkt.products = products;
+    })
+  );
 
   return data;
 }
@@ -343,7 +351,7 @@ async function addEvent(body: any, id: number, idUsuario: number) {
   }
 
   try {
-    const [event] = await connection.execute(
+    const [event]: any = await connection.execute(
       `INSERT INTO evento_mob (nombre_evento, id_empresa, tipo_evento, fecha_envio_evento, hora_envio_evento, fecha_recoleccion_evento, hora_recoleccion_evento, pagado_evento, nombre_titular_evento, direccion_evento ,telefono_titular_evento, descuento, iva, flete, lat, lng, url, id_creador, notificacion_envio, notificacion_recoleccion)
             VALUES ('${body.evento.nombre_evento}',${id}, '${body.evento.tipo_evento}', '${body.evento.fecha_envio_evento}',
                  	'${body.evento.hora_envio_evento}', '${body.evento.fecha_recoleccion_evento}', '${body.evento.hora_recoleccion_evento}',
@@ -370,7 +378,7 @@ async function addEvent(body: any, id: number, idUsuario: number) {
 
     }
 
-    const [paymenth] = await connection.execute(
+    const [paymenth]: any = await connection.execute(
       `INSERT INTO pagos_mob (id_evento, costo_total, saldo, anticipo)
             VALUES (${event.insertId},${body.costo.costo_total},${body.costo.saldo},${body.costo.anticipo})`
     );
@@ -390,7 +398,7 @@ async function addEvent(body: any, id: number, idUsuario: number) {
     console.info("Rollback successful");
     return 405;
   } finally {
-    await connection.end();
+    connection.release();
   }
 }
 
@@ -460,7 +468,7 @@ async function addUrltoEvent(body: any, id: number, idUsuario: number) {
     console.info("Rollback successful");
     return 405;
   } finally {
-    await connection.end();
+    connection.release();
   }
 }
 
@@ -480,7 +488,7 @@ async function addFlete(body: any, id: number, idUsuario: number) {
       ` UPDATE evento_mob SET flete = ${body.flete} WHERE id_evento = ${id}`
     );
 
-    const [payment] = await connection.execute(
+    const [payment]: any = await connection.execute(
       `SELECT * FROM pagos_mob WHERE id_evento = ${id}`
     );
 
@@ -501,7 +509,7 @@ async function addFlete(body: any, id: number, idUsuario: number) {
     console.info("Rollback successful");
     return 405;
   } finally {
-    await connection.end();
+    connection.release();
   }
 }
 
@@ -511,7 +519,7 @@ async function addItems(body: any, idUsuario: number) {
 
   await connection.beginTransaction();
   try {
-    let [event] = await connection.execute(
+    let [event]: any = await connection.execute(
       `SELECT * FROM evento_mob WHERE id_evento = ${body.id}`
     );
     event = event[0];
@@ -521,7 +529,7 @@ async function addItems(body: any, idUsuario: number) {
     for (const mobiliario of body.items) {
       sumTotal += mobiliario.cantidad * mobiliario.costo_mob;
 
-      const mobEvent = await connection.execute(
+      const mobEvent: any = await connection.execute(
         `SELECT * FROM inventario_disponibilidad_mob WHERE id_evento = ${body.id} AND id_mob = ${mobiliario.id_mob}`
       );
 
@@ -545,7 +553,7 @@ async function addItems(body: any, idUsuario: number) {
       }
     }
 
-    let [payment] = await connection.execute(
+    let [payment]: any = await connection.execute(
       `SELECT * FROM pagos_mob WHERE id_evento = ${body.id}`
     );
     payment = payment[payment.length - 1];
@@ -581,7 +589,7 @@ async function addItems(body: any, idUsuario: number) {
     console.info("Rollback successful");
     return 405;
   } finally {
-    await connection.end();
+    connection.release();
   }
 }
 
@@ -658,7 +666,7 @@ async function remove(id: number) {
     console.info("Rollback successful");
     return 405;
   } finally {
-    await connection.end();
+    connection.release();
   }
 }
 
@@ -668,12 +676,12 @@ async function removeItem(id: number, id_mob: number) {
 
   await connection.beginTransaction();
   try {
-    let item = await connection.execute(
+    let item: any = await connection.execute(
       `SELECT * FROM inventario_disponibilidad_mob WHERE id_evento = ${id} AND id_mob = ${id_mob}`
     );
 
     ///function for obtains discont of event
-    let event = await connection.execute(
+    let event: any = await connection.execute(
       `SELECT descuento, iva FROM evento_mob WHERE id_evento = ${id}`
     );
 
@@ -683,7 +691,7 @@ async function removeItem(id: number, id_mob: number) {
 
     let priceRemove = item.costo * item.ocupados;
 
-    let removePayment = await connection.execute(
+    let removePayment: any = await connection.execute(
       `SELECT * FROM pagos_mob WHERE id_evento = ${id}`
     );
 
@@ -716,7 +724,7 @@ async function removeItem(id: number, id_mob: number) {
     console.info("Rollback successful");
     return 405;
   } finally {
-    await connection.end();
+    connection.release();
   }
 }
 

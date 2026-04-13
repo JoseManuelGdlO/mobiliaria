@@ -1,32 +1,46 @@
 import { useTheme } from "@hooks/useTheme"
 import React, { useEffect, useRef, useState } from "react"
-import { Dimensions, Modal, Platform, ScrollView, StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { Platform, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import MapView, { Marker, PROVIDER_DEFAULT, PROVIDER_GOOGLE } from 'react-native-maps';
 import { mapStyle } from './mapStyle';
 import * as eventService from '../../services/events';
 import Geolocation from '@react-native-community/geolocation';
 import Loading from "@components/loading";
-import DatePicker from "react-native-date-picker";
-import PrimaryButton from "@components/PrimaryButton";
-import ArrowRight from "@assets/images/icons/ArrowRight";
-const height = Dimensions.get('window').height
+import DatePickerComponent from "@components/datepicker";
 import { Linking } from "react-native";
-import TruckPin from "@assets/images/icons/TruckPin";
-import LottieView from "lottie-react-native";
 import { io } from "socket.io-client";
 import useReduxUser from "@hooks/useReduxUser";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
+/** Convierte lat/lng del API a números válidos para MapView (evita NaN). Corrige par lat/lng invertido. */
+function parseMapCoordinate(latRaw: unknown, lngRaw: unknown): { latitude: number; longitude: number } | null {
+  const toNum = (v: unknown): number => {
+    if (v == null) return NaN
+    const s = String(v).trim().replace(',', '.')
+    if (s === '' || s.toLowerCase() === 'none' || s === 'null' || s === 'undefined') return NaN
+    return parseFloat(s)
+  }
+  let lat = toNum(latRaw)
+  let lng = toNum(lngRaw)
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null
+  // Algunos registros guardan longitud en "lat" y viceversa (p. ej. -104 / 24 en México)
+  if (Math.abs(lat) > 90 && Math.abs(lng) <= 90) {
+    const t = lat
+    lat = lng
+    lng = t
+  }
+  if (Math.abs(lat) > 90 || Math.abs(lng) > 180) return null
+  return { latitude: lat, longitude: lng }
+}
 
 const DeliveryMap = (): JSX.Element => {
   const { user } = useReduxUser()
   const [visible, setVisible] = useState(false)
   const [date, setDate] = useState(new Date())
   const [provitionalDate, setProvitionalDate] = useState(new Date())
-  const [open, setOpen] = useState(false)
-  const animation = useRef(null);
   const [loading, setLoading] = useState<boolean>(true)
   const [flagPost, setFlagPost] = useState<boolean>(false)
-  const mapRef = useRef(null)
+  const mapRef = useRef<MapView | null>(null)
   const [url, setUrl] = useState<string>('')
 
   const [events, setEvents] = useState<any>([])
@@ -42,30 +56,29 @@ const DeliveryMap = (): JSX.Element => {
 
     socket.on('empresa_' + user.id_empresa, (msg) => {
       console.log('Websocket Received', msg);
-      
-      setDriversMarker(msg)
+      const list = Array.isArray(msg) ? msg : msg != null ? [msg] : []
+      setDriversMarker(list)
     });
 
   }
 
-  const closeModal = (): void => {
+  const onDatePickerResult = (picked: Date | null): void => {
     setVisible(false)
+    if (picked != null) {
+      setDate(picked)
+      setProvitionalDate(picked)
+      setUrl('')
+      setEvents([])
+      getEventsDay(picked.toISOString().split('T')[0])
+    }
   }
 
-  const goToAvailable = (): void => {
-    setDate(provitionalDate)
-    setEvents([])
-    getEventsDay(provitionalDate.toISOString().split('T')[0])
-    setVisible(false)
-  }
-
-
-  const [optsMaps, setOptsMaps] = React.useState<any>(
+  const [optsMaps, setOptsMaps] = React.useState(
     {
-      latitude: -104.641382,
-      longitude: 24.0035672,
-      latitudeDelta: 0.008,
-      longitudeDelta: 0.008
+      latitude: 24.0035672,
+      longitude: -104.641382,
+      latitudeDelta: 0.08,
+      longitudeDelta: 0.08
     })
 
   const { fonts, colors } = useTheme()
@@ -78,12 +91,13 @@ const DeliveryMap = (): JSX.Element => {
   });
 
   const moveToLocation = (latitude: any, longitude: any) => {
-
-    if (!mapRef.current) return
+    const lat = typeof latitude === 'number' ? latitude : parseFloat(String(latitude))
+    const lng = typeof longitude === 'number' ? longitude : parseFloat(String(longitude))
+    if (!mapRef.current || !Number.isFinite(lat) || !Number.isFinite(lng)) return
 
     mapRef.current.animateToRegion({
-      latitude,
-      longitude,
+      latitude: lat,
+      longitude: lng,
       latitudeDelta: .2,
       longitudeDelta: .02
     }, 2000)
@@ -101,16 +115,18 @@ const DeliveryMap = (): JSX.Element => {
       setLoading(true)
       const response = await eventService.getEventsDay(date)
 
-      const localEvents = []
+      const localEvents: any[] = []
       for (const item of response.data) {
-
-        if (item.lng && item.lng !== 'none') {
+        if (parseMapCoordinate(item.lat, item.lng) != null) {
           localEvents.push(item)
         }
       }
       setEvents(localEvents)
       if (localEvents.length !== 0) {
-        moveToLocation(localEvents[0].lat, localEvents[0].lng)
+        const c = parseMapCoordinate(localEvents[0].lat, localEvents[0].lng)
+        if (c != null) {
+          moveToLocation(c.latitude, c.longitude)
+        }
       }
 
     } catch (error) {
@@ -128,128 +144,147 @@ const DeliveryMap = (): JSX.Element => {
   }, [])
 
   return (
-    <>
-      <TouchableOpacity onPress={() => {
-        setVisible(true)
-      }} style={{ zIndex: 10, width: '100%' }}>
-        <Text style={{ color: '#000', fontSize: 15, fontWeight: '100', paddingHorizontal: 20, fontFamily: fonts.Roboto.Regular, backgroundColor: '#FFF' }}> {getDatePipe()}</Text>
-        <View style={{ position: 'absolute', right: 20, marginTop: 5, backgroundColor: 'freen' }}>
-          <ArrowRight color="#000"></ArrowRight>
+    <View style={{ flex: 1, backgroundColor: colors.DarkViolet300 }}>
+      <TouchableOpacity
+        onPress={() => {
+          setProvitionalDate(date)
+          setVisible(true)
+        }}
+        activeOpacity={0.85}
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          paddingHorizontal: 16,
+          paddingVertical: 14,
+          backgroundColor: colors.background_parts.card,
+          borderBottomWidth: StyleSheet.hairlineWidth,
+          borderBottomColor: `${colors.Morado100}33`,
+        }}
+      >
+        <View
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: 12,
+            backgroundColor: `${colors.Morado600}38`,
+            borderWidth: 1,
+            borderColor: `${colors.Morado100}44`,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <MaterialCommunityIcons name="calendar-month-outline" size={24} color={colors.Morado100} />
         </View>
+        <View style={{ flex: 1, marginLeft: 14 }}>
+          <Text style={{ fontFamily: fonts.Inter.Medium, fontSize: 12, color: colors.gris300, letterSpacing: 0.2 }}>
+            Entregas del día
+          </Text>
+          <Text style={{ color: colors.Griss50, fontSize: 17, paddingTop: 2, fontFamily: fonts.Inter.SemiBold }}>
+            {getDatePipe()}
+          </Text>
+        </View>
+        <MaterialCommunityIcons name="chevron-right" size={24} color={colors.gris300} />
       </TouchableOpacity>
       {url !== '' &&
         <TouchableOpacity
           onPress={() => {
             Linking.openURL(url)
           }}
-          style={{ height: 20, width: '100%', paddingHorizontal: 10, backgroundColor: '#FFF', position: 'absolute', zIndex: 99, top: 25 }}>
-          <Text style={{ color: 'blue' }}>{url}</Text>
+          activeOpacity={0.85}
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            paddingHorizontal: 14,
+            paddingVertical: 10,
+            backgroundColor: colors.background_parts.card,
+            borderBottomWidth: StyleSheet.hairlineWidth,
+            borderBottomColor: `${colors.Morado100}22`,
+          }}
+        >
+          <MaterialCommunityIcons name="link-variant" size={20} color={colors.Morado100} style={{ marginRight: 10 }} />
+          <Text style={{ color: colors.primario300, fontFamily: fonts.Inter.Medium, fontSize: 13, flex: 1 }} numberOfLines={2}>{url}</Text>
         </TouchableOpacity>}
-      <View style={styles.container}>
+      <View style={{ flex: 1, minHeight: 0 }}>
         <MapView
           ref={mapRef}
           customMapStyle={mapStyle}
           provider={Platform.OS === 'android' ? PROVIDER_GOOGLE : PROVIDER_DEFAULT}
-          style={styles.mapStyle}
+          style={StyleSheet.absoluteFill}
           initialRegion={optsMaps}>
           {events.length !== 0 &&
             <>
               {
-                events.map((item: any, index: number) => (
+                events.map((item: any, index: number) => {
+                  const coord = parseMapCoordinate(item.lat, item.lng)
+                  if (coord == null) return null
+                  return (
                   <Marker
-                    key={index}
-                    coordinate={{ latitude: parseFloat(item.lat), longitude: parseFloat(item.lng) }}
+                    key={item.id_evento ?? item.id ?? `ev-${index}`}
+                    coordinate={coord}
                     title={item.nombre_titular_evento}
                     description={item.direccion_evento}
                     onPress={() => {
                       setUrl(item.url)
                     }}
-                  />
-                ))
+                  >
+                    <MaterialCommunityIcons name="map-marker" size={40} color={colors.Morado100} />
+                  </Marker>
+                  )
+                })
               }
             </>}
           {driversMarker.length !== 0 &&
             <>
               {
-                driversMarker.map((item: any, index: number) => (
+                driversMarker.map((item: any, index: number) => {
+                  const latRaw = item?.location?.coords?.latitude
+                  const lngRaw = item?.location?.coords?.longitude
+                  const coord = parseMapCoordinate(latRaw, lngRaw)
+                  if (coord == null) return null
+                  return (
                   <Marker
-                    key={index}
-                    coordinate={{ latitude: parseFloat(item.location.coords.latitude), longitude: parseFloat(item.location.coords.longitude) }}
+                    key={item.id_usuario ?? item.id ?? `drv-${index}`}
+                    coordinate={coord}
                     title={item.nombre_titular_evento}
                     description={item.direccion_evento}
                   >
-                    <LottieView
-                      ref={animation}
-                      autoPlay
-                      loop={false}
-                      style={{
-                        width: 120,
-                        height: 120,
-                        backgroundColor: 'transparent',
-                      }}
-                      // Find more Lottie files at https://lottiefiles.com/featured
-                      source={require('../../assets/images/lottie/truck.json')}
-                    />
+                    <View style={{ alignItems: 'center' }}>
+                      <View
+                        style={{
+                          backgroundColor: `${colors.Morado600}EE`,
+                          paddingHorizontal: 10,
+                          paddingVertical: 8,
+                          borderRadius: 22,
+                          borderWidth: 2,
+                          borderColor: `${colors.Griss50}66`,
+                          shadowColor: colors.black,
+                          shadowOffset: { width: 0, height: 2 },
+                          shadowOpacity: 0.35,
+                          shadowRadius: 3,
+                          elevation: 4,
+                        }}
+                      >
+                        <MaterialCommunityIcons name="truck" size={26} color={colors.white} />
+                      </View>
+                    </View>
                   </Marker>
-                ))
+                  )
+                })
               }
             </>}
         </MapView>
-        <Modal visible={visible} transparent>
-          <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center' }}>
-            <View style={{ backgroundColor: '#FFF', borderRadius: 10, margin: 20, maxHeight: height - 100 }}>
-              <Text style={{ fontFamily: fonts.Inter.Bold, fontWeight: 'bold', fontSize: 16, color: '#FFF', marginTop: 16, marginLeft: 16 }}>
-                Dia a revisar
-              </Text>
-              <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: '#FFF', marginTop: 5, marginLeft: 16 }}>
-                selecciona el dia
-              </Text>
-              <ScrollView style={{ margin: 20 }} showsVerticalScrollIndicator={false}>
-                <DatePicker
-                  open={open}
-                  date={date}
-                  locale='es'
-                  mode='date'
-                  onDateChange={(date) => {
-                    setUrl('')
-                    setProvitionalDate(date)
-                  }}
-                />
-              </ScrollView>
-              <View style={{ margin: 16, display: 'flex', flexDirection: 'row' }}>
-                <PrimaryButton
-                  containerStyle={{ width: '50%' }}
-                  onPress={goToAvailable}
-                  title='Aceptar'
-                />
-                <PrimaryButton
-                  containerStyle={{ width: '50%' }}
-                  onPress={closeModal}
-                  backgroundButton='red'
-                  title='Cancelar'
-                />
-              </View>
-            </View>
-          </View>
-        </Modal>
       </View>
 
+      <DatePickerComponent
+        open={visible}
+        date={provitionalDate}
+        mode="date"
+        onChangePicker={onDatePickerResult}
+      />
+
       <Loading loading={loading}></Loading>
-    </>
+    </View>
 
   )
 }
 export default DeliveryMap
-
-const styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    top: 25,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  mapStyle: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
-  },
-});
