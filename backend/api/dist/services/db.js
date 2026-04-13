@@ -31,6 +31,7 @@ var db;
             }
             catch (error) {
                 console.log(error);
+                throw error;
             }
         });
     }
@@ -53,6 +54,7 @@ var dbDurangeneidad;
             }
             catch (error) {
                 console.log(error);
+                throw error;
             }
         });
     }

@@ -16,6 +16,9 @@ const db_1 = require("./db");
 const helper_1 = require("../helper");
 const fts_service_1 = require("../libs/fts-service");
 const path_1 = __importDefault(require("path"));
+const article_1 = require("../models/article");
+const tag_1 = require("../models/tag");
+const sequelize_1 = require("./sequelize");
 const nodemailer = require("nodemailer");
 function login(body) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -125,29 +128,34 @@ function getDetail(id) {
 }
 function addArticle(body) {
     return __awaiter(this, void 0, void 0, function* () {
-        const connection = yield db_1.dbDurangeneidad.connection();
-        yield connection.execute("SET TRANSACTION ISOLATION LEVEL READ COMMITTED");
-        yield connection.beginTransaction();
+        const transaction = yield sequelize_1.sequelizeDurangeneidad.transaction();
         console.log(body.article.fkid_category, "id_fk");
         try {
-            const [article] = yield connection.execute(`INSERT INTO articulo (creador, creacion, titulo, body, lugar, descripcion, thumb, fkid_category)
-            VALUES ('${body.article.creador}', '${body.article.creacion}', '${body.article.titulo}', '${body.article.body}', '${body.article.lugar}', '${body.article.descripcion}', '${body.article.thumb}', ${body.article.fkid_category})`);
-            const articleId = article.insertId;
+            const article = yield article_1.ArticleModel.create({
+                creador: body.article.creador,
+                creacion: body.article.creacion,
+                titulo: body.article.titulo,
+                body: body.article.body,
+                lugar: body.article.lugar,
+                descripcion: body.article.descripcion,
+                thumb: body.article.thumb,
+                fkid_category: Number(body.article.fkid_category),
+            }, { transaction });
+            const articleId = Number(article.getDataValue("id"));
             for (let tag of body.tags) {
-                yield connection.execute(`INSERT INTO tags (fkid_articulo, label)
-                VALUES ('${articleId}', '${tag.label.toUpperCase()}')`);
+                yield tag_1.TagModel.create({
+                    fkid_articulo: articleId,
+                    label: String(tag.label || "").toUpperCase(),
+                }, { transaction });
             }
-            yield connection.commit();
+            yield transaction.commit();
             return 201;
         }
         catch (error) {
             console.error(error);
-            connection.rollback();
+            yield transaction.rollback();
             console.info("Rollback successful");
             return 405;
-        }
-        finally {
-            connection.release();
         }
     });
 }

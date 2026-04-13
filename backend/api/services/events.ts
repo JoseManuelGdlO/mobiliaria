@@ -2,6 +2,10 @@ import { db } from "./db";
 import { helper } from "../helper";
 import { saveHistorical } from "../libs/historical";
 import { getAccessToken, sendNotification } from "../libs/notifications";
+import { EventModel } from "../models/event";
+import { InventoryAvailabilityModel } from "../models/inventoryAvailability";
+import { PaymentModel } from "../models/payment";
+import { sequelizeMain } from "./sequelize";
 
 const designDraftStore = new Map<string, any>();
 
@@ -331,11 +335,6 @@ async function getPackages(id: number) {
 }
 
 async function addEvent(body: any, id: number, idUsuario: number) {
-  const connection = await db.connection();
-  await connection.execute("SET TRANSACTION ISOLATION LEVEL READ COMMITTED");
-
-  await connection.beginTransaction();
-  
   if(!body.notifications) {
     body.notifications = {
       send: 0,
@@ -353,19 +352,48 @@ async function addEvent(body: any, id: number, idUsuario: number) {
     body.evento.fecha_recoleccion_evento = `${dateRec[2]}-${dateRec[1]}-${dateRec[0]}`;
   }
 
+  const transaction = await sequelizeMain.transaction();
+
   try {
-    const [event]: any = await connection.execute(
-      `INSERT INTO evento_mob (nombre_evento, id_empresa, tipo_evento, fecha_envio_evento, hora_envio_evento, fecha_recoleccion_evento, hora_recoleccion_evento, pagado_evento, nombre_titular_evento, direccion_evento ,telefono_titular_evento, descuento, iva, flete, lat, lng, url, id_creador, notificacion_envio, notificacion_recoleccion)
-            VALUES ('${body.evento.nombre_evento}',${id}, '${body.evento.tipo_evento}', '${body.evento.fecha_envio_evento}',
-                 	'${body.evento.hora_envio_evento}', '${body.evento.fecha_recoleccion_evento}', '${body.evento.hora_recoleccion_evento}',
-                 		'${body.evento.pagado_evento}', '${body.evento.nombre_titular_evento}', '${body.evento.direccion_evento}', '${body.evento.telefono_titular_evento}',
-                 		${body.evento.descuento}, ${body.evento.ivavalor}, ${body.evento.fletevalor}, '${body.evento.maps.lat}', '${body.evento.maps.lng}', '${body.evento.maps.url}', ${idUsuario}, '${body.notifications.send}', '${body.notifications.recolected}')`
+    const event = await EventModel.create(
+      {
+        nombre_evento: body.evento.nombre_evento,
+        id_empresa: id,
+        tipo_evento: body.evento.tipo_evento,
+        fecha_envio_evento: body.evento.fecha_envio_evento,
+        hora_envio_evento: body.evento.hora_envio_evento,
+        fecha_recoleccion_evento: body.evento.fecha_recoleccion_evento,
+        hora_recoleccion_evento: body.evento.hora_recoleccion_evento,
+        pagado_evento: body.evento.pagado_evento,
+        nombre_titular_evento: body.evento.nombre_titular_evento,
+        direccion_evento: body.evento.direccion_evento,
+        telefono_titular_evento: body.evento.telefono_titular_evento,
+        descuento: Number(body.evento.descuento || 0),
+        iva: Number(body.evento.ivavalor || 0),
+        flete: Number(body.evento.fletevalor || 0),
+        lat: String(body.evento.maps?.lat || ""),
+        lng: String(body.evento.maps?.lng || ""),
+        url: String(body.evento.maps?.url || ""),
+        id_creador: idUsuario,
+        notificacion_envio: Number(body.notifications.send || 0),
+        notificacion_recoleccion: Number(body.notifications.recolected || 0),
+      },
+      { transaction }
     );
 
+    const eventId = Number(event.getDataValue("id_evento"));
     for (const mobiliario of body.mobiliario) {
-      await connection.execute(
-        `INSERT INTO inventario_disponibilidad_mob (fecha_evento, hora_evento, id_mob, ocupados, id_evento, hora_recoleccion, costo)
-                VALUES ('${mobiliario.fecha_evento}', '${mobiliario.hora_evento}', ${mobiliario.id_mob}, ${mobiliario.ocupados},${event.insertId}, '${mobiliario.hora_recoleccion}', ${mobiliario.costo})`
+      await InventoryAvailabilityModel.create(
+        {
+          fecha_evento: mobiliario.fecha_evento,
+          hora_evento: mobiliario.hora_evento,
+          id_mob: Number(mobiliario.id_mob),
+          ocupados: Number(mobiliario.ocupados),
+          id_evento: eventId,
+          hora_recoleccion: mobiliario.hora_recoleccion,
+          costo: Number(mobiliario.costo),
+        },
+        { transaction }
       );
     }
 
@@ -373,35 +401,47 @@ async function addEvent(body: any, id: number, idUsuario: number) {
       body.paquetes
     ) {
     for (const paquete of body.paquetes) {
-      await connection.execute(
-        `INSERT INTO inventario_disponibilidad_mob (fecha_evento, hora_evento, id_mob, ocupados, id_evento, hora_recoleccion, costo, package)
-                VALUES ('${body.evento.fecha_envio_evento}', '${body.evento.hora_envio_evento}', ${paquete.id}, ${paquete.cantidad},${event.insertId}, '${body.evento.hora_recoleccion_evento}', ${paquete.precio}, 1)`
+      await InventoryAvailabilityModel.create(
+        {
+          fecha_evento: body.evento.fecha_envio_evento,
+          hora_evento: body.evento.hora_envio_evento,
+          id_mob: Number(paquete.id),
+          ocupados: Number(paquete.cantidad),
+          id_evento: eventId,
+          hora_recoleccion: body.evento.hora_recoleccion_evento,
+          costo: Number(paquete.precio),
+          package: 1,
+        },
+        { transaction }
       );
     }
 
     }
 
-    const [paymenth]: any = await connection.execute(
-      `INSERT INTO pagos_mob (id_evento, costo_total, saldo, anticipo)
-            VALUES (${event.insertId},${body.costo.costo_total},${body.costo.saldo},${body.costo.anticipo})`
+    await PaymentModel.create(
+      {
+        id_evento: eventId,
+        costo_total: Number(body.costo.costo_total),
+        saldo: Number(body.costo.saldo),
+        anticipo: Number(body.costo.anticipo),
+      },
+      { transaction }
     );
 
-    saveHistorical(event.insertId, idUsuario, "Creación");
+    saveHistorical(eventId, idUsuario, "Creación");
 
     if(body.rec && !body.rec) {
       
      const access_token = await getAccessToken();
      sendNotification(`el dia ${body.evento.fecha_envio_evento}, ${body.mobiliario.length} items rentados`, "Nuevo evento", id, idUsuario, access_token);
     }
-    await connection.commit();
+    await transaction.commit();
     return 201;
   } catch (error) {
     console.error(error);
-    connection.rollback();
+    await transaction.rollback();
     console.info("Rollback successful");
     return 405;
-  } finally {
-    connection.release();
   }
 }
 
