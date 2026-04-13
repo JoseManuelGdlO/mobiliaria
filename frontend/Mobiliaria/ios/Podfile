@@ -57,6 +57,16 @@ target 'Mobiliaria' do
       target.build_configurations.each do |config|
         config.build_settings['ENABLE_BITCODE'] = 'NO'
         config.build_settings['BITCODE_GENERATION_MODE'] = 'marker' # Para evitar problemas en App Store Connect
+        # En Apple Silicon, excluir arm64 en simulator impide seleccionar destinos iOS Simulator.
+        config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = ''
+
+        # Xcode 26 marca como deprecado el espacio en user-defined literals usado por Yoga de RN 0.72.
+        # Lo desactivamos solo para compilar dependencias legacy sin tocar node_modules.
+        if target.name == 'Yoga'
+          cxxflags = config.build_settings['OTHER_CPLUSPLUSFLAGS'] || '$(inherited)'
+          cxxflags = "#{cxxflags} -Wno-deprecated-literal-operator" unless cxxflags.include?('-Wno-deprecated-literal-operator')
+          config.build_settings['OTHER_CPLUSPLUSFLAGS'] = cxxflags
+        end
       end
     end
 
@@ -76,7 +86,5 @@ target 'Mobiliaria' do
       config[:reactNativePath],
       :mac_catalyst_enabled => false
     )
-
-    __apply_Xcode_12_5_M1_post_install_workaround(installer)
   end
 end
