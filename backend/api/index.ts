@@ -9,11 +9,12 @@ const workersRouter = require("./routes/workers");
 const clientsRouter = require("./routes/clients");
 const paymentsRouter = require("./routes/payments"); 
 const reportsRouter = require("./routes/reports");
-const durangRouter = require("./routes/durangeneidad");
+// const durangRouter = require("./routes/durangeneidad");
 const recommendationsRouter = require("./routes/recommendations");
 const quotesRouter = require("./routes/quotes");
 import { requestTiming } from "./middleware/requestTiming";
 import { config } from "./config";
+import { sequelizeMain } from "./services/sequelize";
 
 //For env File 
 dotenv.config();
@@ -205,7 +206,8 @@ app.use("/recommendations", recommendationsRouter);
 app.use("/quotes", quotesRouter);
 
 
-app.use("/durangeneidad", durangRouter);
+// Durangeneidad disabled by request.
+// app.use("/durangeneidad", durangRouter);
 /* Error handler middleware */
 app.use((err: any, req: any, res: any, next: any) => {
     const statusCode = err.statusCode || 500;
@@ -214,8 +216,20 @@ app.use((err: any, req: any, res: any, next: any) => {
     return;
 });
 
-http.listen(port, () => {
-  console.log(`Example app listening at YOUR_IP_INSTANCE:${port}`);
-  console.log('version: 0.4.3');
-  console.log(`Socket.IO enabled on port ${port}`);
-});
+const bootstrap = async () => {
+  try {
+    await sequelizeMain.authenticate();
+    console.log("Sequelize connected to main database");
+
+    http.listen(port, () => {
+      console.log(`Example app listening at YOUR_IP_INSTANCE:${port}`);
+      console.log('version: 0.4.3');
+      console.log(`Socket.IO enabled on port ${port}`);
+    });
+  } catch (error) {
+    console.error("Failed to initialize Sequelize connections", error);
+    process.exit(1);
+  }
+};
+
+bootstrap();

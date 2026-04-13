@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -14,11 +23,12 @@ const workersRouter = require("./routes/workers");
 const clientsRouter = require("./routes/clients");
 const paymentsRouter = require("./routes/payments");
 const reportsRouter = require("./routes/reports");
-const durangRouter = require("./routes/durangeneidad");
+// const durangRouter = require("./routes/durangeneidad");
 const recommendationsRouter = require("./routes/recommendations");
 const quotesRouter = require("./routes/quotes");
 const requestTiming_1 = require("./middleware/requestTiming");
 const config_1 = require("./config");
+const sequelize_1 = require("./services/sequelize");
 //For env File 
 dotenv_1.default.config();
 const app = (0, express_1.default)();
@@ -183,7 +193,8 @@ app.use("/payments", paymentsRouter);
 app.use("/reports", reportsRouter);
 app.use("/recommendations", recommendationsRouter);
 app.use("/quotes", quotesRouter);
-app.use("/durangeneidad", durangRouter);
+// Durangeneidad disabled by request.
+// app.use("/durangeneidad", durangRouter);
 /* Error handler middleware */
 app.use((err, req, res, next) => {
     const statusCode = err.statusCode || 500;
@@ -191,8 +202,19 @@ app.use((err, req, res, next) => {
     res.status(statusCode).json({ message: err.message });
     return;
 });
-http.listen(port, () => {
-    console.log(`Example app listening at YOUR_IP_INSTANCE:${port}`);
-    console.log('version: 0.4.3');
-    console.log(`Socket.IO enabled on port ${port}`);
+const bootstrap = () => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        yield sequelize_1.sequelizeMain.authenticate();
+        console.log("Sequelize connected to main database");
+        http.listen(port, () => {
+            console.log(`Example app listening at YOUR_IP_INSTANCE:${port}`);
+            console.log('version: 0.4.3');
+            console.log(`Socket.IO enabled on port ${port}`);
+        });
+    }
+    catch (error) {
+        console.error("Failed to initialize Sequelize connections", error);
+        process.exit(1);
+    }
 });
+bootstrap();

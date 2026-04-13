@@ -17,9 +17,11 @@ router.get('/getInventary', verifyToken, async function (req: any, res: any, nex
 
 router.delete('/removeInventary', verifyToken, async function (req: any, res: any, next: any) {
     try {
+        const bearer: any = req.authPayload;
+        const companyId = bearer.data.id_empresa;
         let id = req.query.id;
 
-        const response = await inventaryService.removeInventary(id)
+        const response = await inventaryService.removeInventary(id, companyId)
         res.status(response.code).json(response.data);
     } catch (err: any) {
         console.error(`Error while getting enarm students info `, err.message);

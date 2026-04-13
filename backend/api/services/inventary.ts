@@ -1,6 +1,27 @@
 import { db } from './db';
 import { helper } from '../helper';
 
+const parseOptionalNumber = (value: any) => {
+    if (value === null || value === undefined || value === '') return null;
+    const parsed = Number(value);
+    if (!Number.isFinite(parsed) || parsed <= 0) return null;
+    return parsed;
+}
+
+const parseOptionalText = (value: any) => {
+    if (value === null || value === undefined) return null;
+    const text = String(value).trim();
+    if (!text.length) return null;
+    return text;
+}
+
+const parseUsage = (value: any) => {
+    const usage = parseOptionalText(value)?.toLowerCase();
+    if (!usage) return null;
+    if (!['indoor', 'outdoor', 'both'].includes(usage)) return null;
+    return usage;
+}
+
 async function getInventary(id: number) {
     let code = 200;
 
@@ -125,9 +146,18 @@ async function addInventary(body: any, id: number ) {
     let code = 200;
 
     try {
+        const anchoCm = parseOptionalNumber(body.widthCm);
+        const altoCm = parseOptionalNumber(body.heightCm);
+        const fondoCm = parseOptionalNumber(body.depthCm);
+        const pesoKg = parseOptionalNumber(body.weightKg);
+        const usoEspacio = parseUsage(body.spaceUsage);
+        const estilo = parseOptionalText(body.style);
+        const color = parseOptionalText(body.color);
+        const material = parseOptionalText(body.material);
+
         const rows = await db.query(
-        `INSERT INTO inventario_mob (id_empresa, cantidad_mob, nombre_mob, costo_mob, extra_mob, extra_mob_costo, ruta_imagen, eliminado)
-            VALUES (${id},${body.quantity},'${body.name}','${body.price}', null, '0', '', '0')`
+        `INSERT INTO inventario_mob (id_empresa, cantidad_mob, nombre_mob, costo_mob, extra_mob, extra_mob_costo, ruta_imagen, eliminado, ancho_cm, alto_cm, fondo_cm, peso_kg, uso_espacio, estilo, color, material)
+            VALUES (${id},${body.quantity},'${body.name}','${body.price}', null, '0', '', '0', ${anchoCm === null ? 'NULL' : anchoCm}, ${altoCm === null ? 'NULL' : altoCm}, ${fondoCm === null ? 'NULL' : fondoCm}, ${pesoKg === null ? 'NULL' : pesoKg}, ${usoEspacio === null ? 'NULL' : `'${usoEspacio}'`}, ${estilo === null ? 'NULL' : `'${estilo}'`}, ${color === null ? 'NULL' : `'${color}'`}, ${material === null ? 'NULL' : `'${material}'`})`
         )
 
 
@@ -147,15 +177,23 @@ async function addInventary(body: any, id: number ) {
 
 }
 
-async function removeInventary(id: number) {
+async function removeInventary(id: number, companyId: number) {
     let code = 200;
 
     try {
         const rows = await db.query(
             `UPDATE inventario_mob SET eliminado = '1' 
-                WHERE id_mob = ${id}`
+                WHERE id_mob = ${id} AND id_empresa = ${companyId}`
         )
 
+        if (!rows.affectedRows) {
+            return {
+                code: 404,
+                data: {
+                    message: 'Inventario no encontrado para esta empresa'
+                }
+            }
+        }
 
         return {
             data: rows,
@@ -175,8 +213,25 @@ async function updateInventary (body: any) {
     let code = 200;
 
     try {
+        const anchoCm = parseOptionalNumber(body.widthCm);
+        const altoCm = parseOptionalNumber(body.heightCm);
+        const fondoCm = parseOptionalNumber(body.depthCm);
+        const pesoKg = parseOptionalNumber(body.weightKg);
+        const usoEspacio = parseUsage(body.spaceUsage);
+        const estilo = parseOptionalText(body.style);
+        const color = parseOptionalText(body.color);
+        const material = parseOptionalText(body.material);
+
         const rows = await db.query(
-            `UPDATE inventario_mob SET cantidad_mob = ${body.quantity}, nombre_mob = '${body.name}', costo_mob = '${body.price}'
+            `UPDATE inventario_mob SET cantidad_mob = ${body.quantity}, nombre_mob = '${body.name}', costo_mob = '${body.price}',
+                ancho_cm = ${anchoCm === null ? 'NULL' : anchoCm},
+                alto_cm = ${altoCm === null ? 'NULL' : altoCm},
+                fondo_cm = ${fondoCm === null ? 'NULL' : fondoCm},
+                peso_kg = ${pesoKg === null ? 'NULL' : pesoKg},
+                uso_espacio = ${usoEspacio === null ? 'NULL' : `'${usoEspacio}'`},
+                estilo = ${estilo === null ? 'NULL' : `'${estilo}'`},
+                color = ${color === null ? 'NULL' : `'${color}'`},
+                material = ${material === null ? 'NULL' : `'${material}'`}
                 WHERE id_mob = ${body.id}`
         )
 

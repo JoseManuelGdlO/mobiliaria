@@ -55,6 +55,8 @@ const scoreByKeywords = (name: string, keywords: string[]) => {
   return keywords.reduce((sum, keyword) => sum + (base.includes(keyword) ? 1 : 0), 0);
 };
 
+const normalized = (value: any) => String(value ?? "").trim().toLowerCase();
+
 async function getMoodboard(idEmpresa: number, payload: any) {
   const styleKey = normalizeStyle(payload?.style);
   const preset = STYLE_PRESETS[styleKey];
@@ -62,6 +64,11 @@ async function getMoodboard(idEmpresa: number, payload: any) {
   const guestCount = Number(payload?.guestCount ?? 80);
   const budget = Number(payload?.budget ?? 0);
   const date = normalizeDate(payload?.date);
+  const styleFilter = normalized(payload?.filters?.style);
+  const colorFilter = normalized(payload?.filters?.color);
+  const materialFilter = normalized(payload?.filters?.material);
+  const spaceUsage = normalized(payload?.filters?.spaceUsage);
+  const maxWeightKg = Number(payload?.filters?.maxWeightKg ?? 0);
 
   const rows = await db.query(
     `
@@ -69,13 +76,21 @@ async function getMoodboard(idEmpresa: number, payload: any) {
         inv.id_mob,
         inv.nombre_mob,
         inv.costo_mob,
+        inv.ancho_cm,
+        inv.alto_cm,
+        inv.fondo_cm,
+        inv.peso_kg,
+        inv.uso_espacio,
+        inv.estilo,
+        inv.color,
+        inv.material,
         inv.cantidad_mob - COALESCE(SUM(dis.ocupados), 0) AS available
       FROM inventario_mob inv
       LEFT JOIN inventario_disponibilidad_mob dis 
         ON inv.id_mob = dis.id_mob
         AND DATE(dis.fecha_evento) = ?
       WHERE inv.id_empresa = ? AND inv.eliminado = 0
-      GROUP BY inv.id_mob, inv.nombre_mob, inv.costo_mob, inv.cantidad_mob
+      GROUP BY inv.id_mob, inv.nombre_mob, inv.costo_mob, inv.cantidad_mob, inv.ancho_cm, inv.alto_cm, inv.fondo_cm, inv.peso_kg, inv.uso_espacio, inv.estilo, inv.color, inv.material
       ORDER BY inv.nombre_mob
     `,
     [date, idEmpresa]
@@ -88,7 +103,19 @@ async function getMoodboard(idEmpresa: number, payload: any) {
 
   const recommendedItems = rows
     .map((item: any) => {
-      const score = scoreByKeywords(item.nombre_mob, preset.keywords);
+      const keywordScore = scoreByKeywords(item.nombre_mob, preset.keywords);
+      const itemStyle = normalized(item.estilo);
+      const itemColor = normalized(item.color);
+      const itemMaterial = normalized(item.material);
+      const itemUsage = normalized(item.uso_espacio);
+      const weightKg = Number(item.peso_kg ?? 0);
+
+      const styleScore = itemStyle.length && styleFilter.length ? (itemStyle.includes(styleFilter) ? 2 : 0) : 0;
+      const colorScore = itemColor.length && colorFilter.length ? (itemColor.includes(colorFilter) ? 1 : 0) : 0;
+      const materialScore = itemMaterial.length && materialFilter.length ? (itemMaterial.includes(materialFilter) ? 1 : 0) : 0;
+      const usageScore = itemUsage.length && spaceUsage.length ? ((itemUsage === "both" || itemUsage === spaceUsage) ? 1 : -2) : 0;
+      const weightPenalty = maxWeightKg > 0 && weightKg > maxWeightKg ? -3 : 0;
+      const score = keywordScore + styleScore + colorScore + materialScore + usageScore + weightPenalty;
       const quantityTarget = Math.max(1, Math.ceil((guestCount / 10) * preset.guestMultiplier));
       const quantity = Math.min(Number(item.available ?? 0), quantityTarget);
       return {
@@ -96,11 +123,19 @@ async function getMoodboard(idEmpresa: number, payload: any) {
         nombre_mob: item.nombre_mob,
         costo_mob: Number(item.costo_mob),
         available: Number(item.available),
+        ancho_cm: Number(item.ancho_cm ?? 0),
+        alto_cm: Number(item.alto_cm ?? 0),
+        fondo_cm: Number(item.fondo_cm ?? 0),
+        peso_kg: Number(item.peso_kg ?? 0),
+        uso_espacio: item.uso_espacio ?? null,
+        estilo: item.estilo ?? null,
+        color: item.color ?? null,
+        material: item.material ?? null,
         score,
         cantidad: quantity,
       };
     })
-    .filter((item: any) => item.available > 0)
+    .filter((item: any) => item.available > 0 && item.score >= 0)
     .sort((a: any, b: any) => b.score - a.score || a.costo_mob - b.costo_mob)
     .slice(0, 8);
 

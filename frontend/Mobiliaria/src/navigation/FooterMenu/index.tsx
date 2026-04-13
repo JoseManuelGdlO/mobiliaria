@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import React, { useMemo } from 'react'
 import { StyleSheet, Text, View, Platform } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useTheme } from '../../hooks/useTheme'
 import { NavigationScreens } from '../../interfaces/navigation'
 import { hasNotch } from 'react-native-device-info'
@@ -18,9 +19,9 @@ import DeliveryMap from '@screens/delivery-map'
 const Tab = createBottomTabNavigator()
 const Stack = createStackNavigator<NavigationScreens>()
 
-const TAB_ICON_SIZE = 26
+const TAB_ICON_SIZE = 24
 
-type MciName = React.ComponentProps<typeof MaterialCommunityIcons>['name']
+type IonName = React.ComponentProps<typeof Ionicons>['name']
 
 const FooterTabIcon = ({
   outline,
@@ -29,28 +30,17 @@ const FooterTabIcon = ({
   activeColor,
   inactiveColor
 }: {
-  outline: MciName
-  filled: MciName
+  outline: IonName
+  filled: IonName
   focused: boolean
   activeColor: string
   inactiveColor: string
 }): JSX.Element => (
-  <View
-    style={{
-      alignItems: 'center',
-      justifyContent: 'center',
-      paddingHorizontal: 11,
-      paddingVertical: 6,
-      borderRadius: 20,
-      backgroundColor: focused ? `${activeColor}40` : 'transparent'
-    }}
-  >
-    <MaterialCommunityIcons
-      name={focused ? filled : outline}
-      size={TAB_ICON_SIZE}
-      color={focused ? activeColor : inactiveColor}
-    />
-  </View>
+  <Ionicons
+    name={focused ? filled : outline}
+    size={TAB_ICON_SIZE}
+    color={focused ? activeColor : inactiveColor}
+  />
 )
 
 const HomeStak = (): JSX.Element => {
@@ -147,9 +137,12 @@ export const FooterMenu = (): JSX.Element => {
       backgroundColor: colors.background_parts.footer,
       borderTopWidth: StyleSheet.hairlineWidth,
       borderTopColor: `${colors.Morado100}28`,
-      paddingTop: 6,
+      paddingTop: Platform.select({
+        ios: 12,
+        android: 6
+      }),
       height: Platform.select({
-        ios: hasNotch() ? 86 : 70,
+        ios: hasNotch() ? 108 : 92,
         android: 72
       }),
       ...Platform.select({
@@ -171,7 +164,7 @@ export const FooterMenu = (): JSX.Element => {
       alignSelf: 'center',
       marginTop: 2,
       marginBottom: Platform.select({
-        ios: hasNotch() ? 2 : 12,
+        ios: hasNotch() ? 8 : 16,
         android: 14
       })
     },
@@ -184,7 +177,7 @@ export const FooterMenu = (): JSX.Element => {
       alignSelf: 'center',
       marginTop: 2,
       marginBottom: Platform.select({
-        ios: hasNotch() ? 2 : 12,
+        ios: hasNotch() ? 8 : 16,
         android: 14
       })
     }
@@ -193,6 +186,9 @@ export const FooterMenu = (): JSX.Element => {
     <Tab.Navigator
       screenOptions={{
         tabBarStyle: styles.tabBarStyle,
+        tabBarShowIcon: true,
+        tabBarActiveTintColor: colors.icon.footerActive,
+        tabBarInactiveTintColor: colors.icon.footerNoActive,
         tabBarLabelStyle: styles.labelStyleInactive,
         tabBarLabelPosition: 'below-icon',
         tabBarHideOnKeyboard: true
@@ -203,16 +199,13 @@ export const FooterMenu = (): JSX.Element => {
           headerShown: false,
           title: 'Inicio',
           tabBarIcon: ({ focused }) =>
-            <View sentry-label='Footer Inicio'>
-              <FooterTabIcon
-                outline='home-outline'
-                filled='home'
-                focused={focused}
-                activeColor={colors.icon.footerActive}
-                inactiveColor={colors.icon.footerNoActive}
-              />
-            </View>,
-          tabBarLabel: ({ focused }) => <Text style={focused ? styles.labelStyleActive : styles.labelStyleInactive}>Inicio</Text>
+            <FooterTabIcon
+              outline='home-outline'
+              filled='home'
+              focused={focused}
+              activeColor={colors.icon.footerActive}
+              inactiveColor={colors.icon.footerNoActive}
+            />
         }}
         name='HomeStack'
         component={HomeStak}
@@ -222,16 +215,13 @@ export const FooterMenu = (): JSX.Element => {
           title: 'Inventario',
           headerShown: false,
           tabBarIcon: ({ focused }) =>
-            <View sentry-label='Footer Inventario'>
-              <FooterTabIcon
-                outline='cube-outline'
-                filled='cube'
-                focused={focused}
-                activeColor={colors.icon.footerActive}
-                inactiveColor={colors.icon.footerNoActive}
-              />
-            </View>,
-          tabBarLabel: ({ focused }) => <Text style={focused ? styles.labelStyleActive : styles.labelStyleInactive}>Inventario</Text>
+            <FooterTabIcon
+              outline='cube-outline'
+              filled='cube'
+              focused={focused}
+              activeColor={colors.icon.footerActive}
+              inactiveColor={colors.icon.footerNoActive}
+            />
         }}
         name='CatalogoCursosStack'
         component={ExploreStak}
@@ -241,16 +231,13 @@ export const FooterMenu = (): JSX.Element => {
          title: 'Paquetes',
          headerShown: false,
          tabBarIcon: ({ focused }) =>
-           <View sentry-label='Footer Paquetes'>
-             <FooterTabIcon
-               outline='gift-outline'
-               filled='gift'
-               focused={focused}
-               activeColor={colors.icon.footerActive}
-               inactiveColor={colors.icon.footerNoActive}
-             />
-           </View>,
-         tabBarLabel: ({ focused }) => <Text style={focused ? styles.labelStyleActive : styles.labelStyleInactive}>Paquetes</Text>
+           <FooterTabIcon
+             outline='gift-outline'
+             filled='gift'
+             focused={focused}
+             activeColor={colors.icon.footerActive}
+             inactiveColor={colors.icon.footerNoActive}
+           />
        }}
        name='CatalogoPaquetesStack'
        component={PackageStak}
@@ -260,16 +247,13 @@ export const FooterMenu = (): JSX.Element => {
         title: 'Repartidores',
         headerShown: false,
         tabBarIcon: ({ focused }) =>
-          <View sentry-label='Footer Repartidores'>
-            <FooterTabIcon
-              outline='truck-delivery-outline'
-              filled='truck-delivery'
-              focused={focused}
-              activeColor={colors.icon.footerActive}
-              inactiveColor={colors.icon.footerNoActive}
-            />
-          </View>,
-        tabBarLabel: ({ focused }) => <Text style={focused ? styles.labelStyleActive : styles.labelStyleInactive}>Entregas</Text>
+          <FooterTabIcon
+            outline='car-outline'
+            filled='car'
+            focused={focused}
+            activeColor={colors.icon.footerActive}
+            inactiveColor={colors.icon.footerNoActive}
+          />
       }}
       name='DeliveryMapStack'
       component={DeliveryStak}
@@ -279,16 +263,13 @@ export const FooterMenu = (): JSX.Element => {
           title: 'Trabajadores',
           headerShown: false,
           tabBarIcon: ({ focused }) =>
-            <View sentry-label='Footer Trabajadores'>
-              <FooterTabIcon
-                outline='account-group-outline'
-                filled='account-group'
-                focused={focused}
-                activeColor={colors.icon.footerActive}
-                inactiveColor={colors.icon.footerNoActive}
-              />
-            </View>,
-          tabBarLabel: ({ focused }) => <Text style={focused ? styles.labelStyleActive : styles.labelStyleInactive}>Trabajadores</Text>
+            <FooterTabIcon
+              outline='people-outline'
+              filled='people'
+              focused={focused}
+              activeColor={colors.icon.footerActive}
+              inactiveColor={colors.icon.footerNoActive}
+            />
         }}
         name='TrabajadoresStak'
         component={WorkerStack}
@@ -298,16 +279,13 @@ export const FooterMenu = (): JSX.Element => {
           title: 'Ver más',
           headerShown: false,
           tabBarIcon: ({ focused }) =>
-            <View sentry-label='Footer Ver más'>
-              <FooterTabIcon
-                outline='view-grid-outline'
-                filled='view-grid'
-                focused={focused}
-                activeColor={colors.icon.footerActive}
-                inactiveColor={colors.icon.footerNoActive}
-              />
-            </View>,
-          tabBarLabel: ({ focused }) => <Text style={focused ? styles.labelStyleActive : styles.labelStyleInactive}>Ver más</Text>
+            <FooterTabIcon
+              outline='grid-outline'
+              filled='grid'
+              focused={focused}
+              activeColor={colors.icon.footerActive}
+              inactiveColor={colors.icon.footerNoActive}
+            />
         }}
         name='ViewMoreStack'
         component={ViewMoreStack}
