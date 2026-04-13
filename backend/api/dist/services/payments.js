@@ -72,6 +72,9 @@ function addPayment(body, idUsuario) {
                 code: 405
             };
         }
+        finally {
+            connection.release();
+        }
     });
 }
 module.exports = {

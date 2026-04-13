@@ -81,7 +81,7 @@ function addPackage(id, body) {
         yield connection.execute('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
         yield connection.beginTransaction();
         try {
-            const [pkt,] = yield connection.execute(`INSERT INTO paquetes (nombre, precio, fkid_empresa, descripcion)
+            const [pkt] = yield connection.execute(`INSERT INTO paquetes (nombre, precio, fkid_empresa, descripcion)
             VALUES ('${body.name}', '${body.price}', ${id},'${body.description}')`);
             for (let i = 0; i < body.products.length; i++) {
                 yield connection.execute(`INSERT INTO paquete_inventario (fkid_paquete, fkid_inventario, cantidad)
@@ -102,6 +102,9 @@ function addPackage(id, body) {
                 code,
                 data: error
             };
+        }
+        finally {
+            connection.release();
         }
     });
 }

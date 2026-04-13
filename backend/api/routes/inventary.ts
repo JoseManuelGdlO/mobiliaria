@@ -1,12 +1,11 @@
 import { verifyToken } from "../libs/headers";
 import express from 'express';
-import jwt_decode from "jwt-decode";
 const inventaryService = require('../services/inventary');
 const router = express.Router();
 
 router.get('/getInventary', verifyToken, async function (req: any, res: any, next: any) {
     try {
-        const bearer: any = jwt_decode(req.headers['authorization']);
+        const bearer: any = req.authPayload;
         let id = bearer.data.id_empresa;
 
         res.status(201).json(await inventaryService.getInventary(id));
@@ -44,7 +43,7 @@ router.put('/updateInventary', verifyToken, async function (req: any, res: any, 
 
 router.get('/getPackages', verifyToken, async function (req: any, res: any, next: any) {
     try {
-        const bearer: any = jwt_decode(req.headers['authorization']);
+        const bearer: any = req.authPayload;
         let id = bearer.data.id_empresa;       
 
         const response = await inventaryService.getPackages(id)
@@ -57,7 +56,7 @@ router.get('/getPackages', verifyToken, async function (req: any, res: any, next
 
 router.post('/addInventary', verifyToken, async function (req: any, res: any, next: any) {
     try {
-        const bearer: any = jwt_decode(req.headers['authorization']);
+        const bearer: any = req.authPayload;
         let id = bearer.data.id_empresa;       
 
         let body = req.body;
@@ -71,7 +70,7 @@ router.post('/addInventary', verifyToken, async function (req: any, res: any, ne
 });
 router.post('/addPackages', verifyToken, async function (req: any, res: any, next: any) {
     try {
-        const bearer: any = jwt_decode(req.headers['authorization']);
+        const bearer: any = req.authPayload;
         let id = bearer.data.id_empresa;    
         
         let body = req.body;   

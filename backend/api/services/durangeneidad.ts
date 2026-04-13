@@ -127,7 +127,7 @@ async function addArticle(body: any) {
   console.log(body.article.fkid_category, "id_fk");
 
   try {
-    const [article] = await connection.execute(
+    const [article]: any = await connection.execute(
       `INSERT INTO articulo (creador, creacion, titulo, body, lugar, descripcion, thumb, fkid_category)
             VALUES ('${body.article.creador}', '${body.article.creacion}', '${body.article.titulo}', '${body.article.body}', '${body.article.lugar}', '${body.article.descripcion}', '${body.article.thumb}', ${body.article.fkid_category})`
     );
@@ -148,6 +148,8 @@ async function addArticle(body: any) {
     connection.rollback();
     console.info("Rollback successful");
     return 405;
+  } finally {
+    connection.release();
   }
 }
 
@@ -206,7 +208,7 @@ async function addBook(body: any, files: any) {
       .join("_")}`;
 
     // Guarda el libro en la base de datos
-    const libroInsertResult = await connection.execute(
+    const libroInsertResult: any = await connection.execute(
       "INSERT INTO libro (titulo, descripcion, fecha_publicacion, autor, imagen_portada, archivo_pdf) VALUES (?, ?, ?, ?, ?, ?)",
       [
         titulo,
@@ -243,6 +245,8 @@ async function addBook(body: any, files: any) {
     code = 405;
     console.error("Error al agregar el libro:", error);
     return { code, error };
+  } finally {
+    connection.release();
   }
 }
 
@@ -467,6 +471,8 @@ async function addAdvice(body: any) {
     connection.rollback();
     console.info("Rollback successful");
     return { code: 405 };
+  } finally {
+    connection.release();
   }
 }
 
@@ -521,6 +527,8 @@ async function createConfiguration(body: any) {
     connection.rollback();
     console.info("Rollback successful");
     return 405;
+  } finally {
+    connection.release();
   }
 }
 
@@ -558,6 +566,8 @@ async function createConfigurationImage(body: any, files: any) {
     connection.rollback();
     console.info("Rollback successful");
     return 405;
+  } finally {
+    connection.release();
   }
 }
 
@@ -624,6 +634,8 @@ async function addCategory(body: any) {
   } catch (error) {
     console.error(error);
     return { code: 401, error };
+  } finally {
+    connection.release();
   }
 }
 
@@ -643,6 +655,8 @@ async function updateCategory(body: any) {
   } catch (error) {
     console.error(error);
     return { code: 401, error };
+  } finally {
+    connection.release();
   }
 }
 
@@ -684,6 +698,8 @@ async function uploadBio(body: any, files: any) {
     code = 405;
     console.error("Error al actualizar", error);
     return { code, error };
+  } finally {
+    connection.release();
   }
 }
 

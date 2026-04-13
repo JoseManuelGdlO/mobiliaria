@@ -16,7 +16,7 @@ const notifications_1 = require("../libs/notifications");
 function getEvents(id) {
     return __awaiter(this, void 0, void 0, function* () {
         let code = 200;
-        const rows = yield db_1.db.query(`SELECT nombre_evento, fecha_envio_evento, COUNT(fecha_envio_evento) as total from evento_mob where id_empresa = "${id}" AND fecha_envio_evento LIKE "%202%" GROUP BY fecha_envio_evento`);
+        const rows = yield db_1.db.query(`SELECT nombre_evento, fecha_envio_evento, COUNT(fecha_envio_evento) as total from evento_mob where id_empresa = ? AND fecha_envio_evento LIKE ? GROUP BY fecha_envio_evento`, [id, '%202%']);
         let data = helper_1.helper.emptyOrRows(rows);
         if (data.length === 0) {
             code = 404;
@@ -35,7 +35,10 @@ function getDetails(id) {
     return __awaiter(this, void 0, void 0, function* () {
         let code = 200;
         try {
-            let rows = yield db_1.db.query(`select * from evento_mob where id_evento = '${id}'`);
+            const idNum = Number(id);
+            let rows = yield db_1.db.query(`select * from evento_mob where id_evento = ?`, [
+                idNum,
+            ]);
             let event = helper_1.helper.emptyOrRows(rows);
             if (event.length === 0) {
                 code = 404;
@@ -45,20 +48,22 @@ function getDetails(id) {
                     code,
                 };
             }
-            rows = yield db_1.db.query(`select a.nombre_mob, b.costo, b.id_mob, b.ocupados, b.id_evento, b.id_fecha,
+            const [itemsRows, packagesRows] = yield Promise.all([
+                db_1.db.query(`select a.nombre_mob, b.costo, b.id_mob, b.ocupados, b.id_evento, b.id_fecha,
       b.fecha_evento, b.package
-      from inventario_mob a, inventario_disponibilidad_mob b where b.id_mob = a.id_mob and id_evento='${id}' AND  b.package IS NULL`);
-            let items = helper_1.helper.emptyOrRows(rows);
-            rows = yield db_1.db.query(`select a.nombre, b.costo, b.id_mob, b.ocupados, b.id_evento, b.id_fecha,
+      from inventario_mob a, inventario_disponibilidad_mob b where b.id_mob = a.id_mob and id_evento=? AND  b.package IS NULL`, [idNum]),
+                db_1.db.query(`select a.nombre, b.costo, b.id_mob, b.ocupados, b.id_evento, b.id_fecha,
       b.fecha_evento, b.package
-      from paquetes a, inventario_disponibilidad_mob b where b.id_mob = a.id and id_evento='${id}' AND  b.package = 1`);
-            let packages = helper_1.helper.emptyOrRows(rows);
+      from paquetes a, inventario_disponibilidad_mob b where b.id_mob = a.id and id_evento=? AND  b.package = 1`, [idNum]),
+            ]);
+            let items = helper_1.helper.emptyOrRows(itemsRows);
+            let packages = helper_1.helper.emptyOrRows(packagesRows);
             items = [...items, ...packages];
             rows = yield db_1.db.query(`SELECT P.* 
         FROM pagos_mob P
         LEFT JOIN evento_mob E
         ON P.id_evento = E.id_evento
-        WHERE P.id_evento =${id}`);
+        WHERE P.id_evento = ?`, [idNum]);
             let payments = helper_1.helper.emptyOrRows(rows);
             if (payments.length === 0) {
                 code = 404;
@@ -78,9 +83,7 @@ function getDetails(id) {
       FROM 
           historical h
       JOIN 
-          usuarios_mobiliaria u ON h.fkid_user = u.id_usuario
-      AND
-          h.fkid_event = ${id}`);
+          usuarios_mobiliaria u ON h.fkid_user = u.id_usuario AND h.fkid_event = ?`, [idNum]);
             return {
                 event: {
                     event: event[0],
@@ -102,6 +105,14 @@ function getDetails(id) {
 function getEventsOfDay(id, date) {
     return __awaiter(this, void 0, void 0, function* () {
         let code = 200;
+        // Validar que date no esté vacío
+        if (!date || date.trim() === '') {
+            code = 400;
+            return {
+                data: [],
+                code,
+            };
+        }
         const rows = yield db_1.db.query(`SELECT 
         e.*,
         p.id_pago, 
@@ -253,15 +264,15 @@ function availiable(id, dateArrive) {
 }
 function getPackages(id) {
     return __awaiter(this, void 0, void 0, function* () {
-        const rows = yield db_1.db.query(`SELECT * FROM paquetes WHERE fkid_empresa = ${id} AND eliminado = 0`);
+        const rows = yield db_1.db.query(`SELECT * FROM paquetes WHERE fkid_empresa = ? AND eliminado = 0`, [id]);
         let data = helper_1.helper.emptyOrRows(rows);
         if (data.length === 0) {
             return [];
         }
-        for (const pkt of data) {
-            const products = yield db_1.db.query(`SELECT * FROM paquete_inventario WHERE fkid_paquete = ${pkt.id}`);
+        yield Promise.all(data.map((pkt) => __awaiter(this, void 0, void 0, function* () {
+            const products = yield db_1.db.query(`SELECT * FROM paquete_inventario WHERE fkid_paquete = ?`, [pkt.id]);
             pkt.products = products;
-        }
+        })));
         return data;
     });
 }
@@ -316,6 +327,9 @@ function addEvent(body, id, idUsuario) {
             console.info("Rollback successful");
             return 405;
         }
+        finally {
+            connection.release();
+        }
     });
 }
 // Función para enviar notificaciones push
@@ -368,6 +382,9 @@ function addUrltoEvent(body, id, idUsuario) {
             console.info("Rollback successful");
             return 405;
         }
+        finally {
+            connection.release();
+        }
     });
 }
 function addFlete(body, id, idUsuario) {
@@ -392,6 +409,9 @@ function addFlete(body, id, idUsuario) {
             connection.rollback();
             console.info("Rollback successful");
             return 405;
+        }
+        finally {
+            connection.release();
         }
     });
 }
@@ -441,6 +461,9 @@ function addItems(body, idUsuario) {
             connection.rollback();
             console.info("Rollback successful");
             return 405;
+        }
+        finally {
+            connection.release();
         }
     });
 }
@@ -500,6 +523,9 @@ function remove(id) {
             console.info("Rollback successful");
             return 405;
         }
+        finally {
+            connection.release();
+        }
     });
 }
 function removeItem(id, id_mob) {
@@ -537,6 +563,9 @@ function removeItem(id, id_mob) {
             connection.rollback();
             console.info("Rollback successful");
             return 405;
+        }
+        finally {
+            connection.release();
         }
     });
 }

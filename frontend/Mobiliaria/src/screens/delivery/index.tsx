@@ -1,15 +1,15 @@
 import { useTheme } from "@hooks/useTheme"
 import { convertirEspLetra, mesEspanol } from "@utils/dateFormat"
 import React, { useEffect } from "react"
-import { FlatList, Platform, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { FlatList, Platform, Text, TextInput, TouchableOpacity, View, PermissionsAndroid } from 'react-native'
 import * as workersService from '@services/workers'
 import Loading from "@components/loading"
 import { Dimensions } from 'react-native';
 import { IEventDelivery, IInvDelivery } from "@interfaces/event-delivery"
 import PrimaryButton from "@components/PrimaryButton"
+import AppCard from "@components/AppCard"
 const windowWidth = Dimensions.get('window').width;
 import messaging from '@react-native-firebase/messaging';
-import {PermissionsAndroid} from 'react-native';
 import useReduxUser from "@hooks/useReduxUser";
 import Toast from "react-native-toast-message";
 import * as authService from '../../services/auth';
@@ -223,17 +223,17 @@ const Delivery = (): JSX.Element => {
                     onPress={() => clickButtons(item)}
                     style={{
                         width: windowWidth / 5,
-                        backgroundColor: item.selected ? '#9E2EBE' : 'white',
+                        backgroundColor: item.selected ? colors.Morado600 : colors.background_parts.card,
                         borderBottomLeftRadius: 8,
                         borderBottomRightRadius: 8,
                         height: 100,
                         justifyContent: 'center',
                         alignItems: 'center',
                         borderWidth: item.selected ? 0 : 1,
-                        borderColor: '#9E2EBE'
+                        borderColor: colors.Morado600
                     }}>
-                    <Text style={{ fontFamily: fonts.Roboto.Bold, color: item.selected ? '#fff' : 'rgb(111 96 129)', fontSize: 20 }}>{item.letter}</Text>
-                    <Text style={{ fontFamily: fonts.Roboto.Regular, paddingTop: 5, color: item.selected ? '#fff' : 'rgb(111 96 129)', fontSize: 16 }}>{item.dayNumber}</Text>
+                    <Text style={{ fontFamily: fonts.Inter.SemiBold, color: item.selected ? colors.white : colors.gris300, fontSize: 20 }}>{item.letter}</Text>
+                    <Text style={{ fontFamily: fonts.Inter.Regular, paddingTop: 5, color: item.selected ? colors.white : colors.gris300, fontSize: 16 }}>{item.dayNumber}</Text>
                 </TouchableOpacity>
             </>
         )
@@ -247,26 +247,20 @@ const Delivery = (): JSX.Element => {
         index: number
     }): JSX.Element => {
         return (
-            <View style={{ paddingHorizontal: 10, paddingBottom: 10 }}>
-                <View style={{
-                    backgroundColor: 'white',
-                    borderRadius: 8,
-                    paddingVertical: 10,
-                    paddingHorizontal: 25,
-                    width: '100%',
-                }}>
+            <View style={{ paddingHorizontal: 12, paddingBottom: 12 }}>
+                <AppCard padding={16}>
                     <View style={{ width: '100%', alignItems: 'center' }}>
-                        <Text style={{ color: '#9E2EBE', fontFamily: fonts.Roboto.Bold, fontSize: 15 }}>{item.nombre_evento}</Text>
-                        <Text style={{ paddingTop: 5, color: '#9E2EBE', fontFamily: fonts.Roboto.Regular, fontSize: 12 }}>{item.nombre_titular_evento}</Text>
-                        <Text style={{ paddingTop: 10, fontFamily: fonts.Roboto.Regular, fontSize: 12 }}>{item.telefono_titular_evento}</Text>
+                        <Text style={{ color: colors.Morado100, fontFamily: fonts.Inter.SemiBold, fontSize: 16 }}>{item.nombre_evento}</Text>
+                        <Text style={{ paddingTop: 5, color: colors.gris300, fontFamily: fonts.Inter.Regular, fontSize: 13 }}>{item.nombre_titular_evento}</Text>
+                        <Text style={{ paddingTop: 10, fontFamily: fonts.Inter.Regular, fontSize: 12, color: colors.Griss100 }}>{item.telefono_titular_evento}</Text>
                     </View>
                     <View>
-                        <Text style={{ color: '#488aff', paddingTop: 10, fontFamily: fonts.Roboto.Regular, fontSize: 14, width: 300 }}>Envio</Text>
+                        <Text style={{ color: colors.primario300, paddingTop: 10, fontFamily: fonts.Inter.Medium, fontSize: 14, width: 300 }}>Envío</Text>
                         <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12 }}>Direccion.- {item.direccion_evento}</Text>
                         <TouchableOpacity onPress={() => {
                             Linking.openURL(item?.url)
                         }}>
-                            <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: 'blue' }}>url.- {item.url}</Text>
+                            <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: colors.primario300 }}>url.- {item.url}</Text>
                         </TouchableOpacity>
                         <Text style={{ fontFamily: fonts.Inter.Bold, fontSize: 12 }}>Hora de {item.tipo_evento === 'recoleccion' ? 'recoleccion.- ' + item.hora_recoleccion_evento : 'envio.- ' + item.hora_envio_evento}</Text>
                     </View>
@@ -293,21 +287,22 @@ const Delivery = (): JSX.Element => {
                         />
                     </View>
                     <View>
-                        <Text style={{ color: '#488aff', paddingTop: 10, fontFamily: fonts.Roboto.Regular, fontSize: 14, width: 300 }}>Tus Observaciones</Text>
+                        <Text style={{ color: colors.primario300, paddingTop: 10, fontFamily: fonts.Inter.Medium, fontSize: 14, width: 300 }}>Tus observaciones</Text>
                         <View style={{ backgroundColor: 'rgba(0, 0, 0, 0.12)', width: '100%', minHeight: 30, borderRadius: 3, marginTop: 5, paddingHorizontal: 10, paddingBottom: 8 }}>
                             <TextInput
                                 style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, width: '100%', minHeight: 30 }}
                             />
                         </View>
                         <PrimaryButton
-                            containerStyle={{ width: '100%', paddingVertical: 5, marginTop: 10 }}
-                            backgroundButton={item.tipo_evento === 'recoleccion' ? 'red' : '#9E2EBE'}
+                            containerStyle={{ width: '100%', paddingVertical: 8, marginTop: 10 }}
+                            backgroundButton={item.tipo_evento === 'recoleccion' ? colors.red : colors.Morado600}
+                            textStyle={{ fontFamily: fonts.Inter.SemiBold, fontSize: 12, color: colors.white }}
                             onPress={() => console.log('hola')}
                             title={item.tipo_evento === 'recoleccion' ? 'INVENTARIO RECOGIDO' : 'INVENTARIO ENTREGADO'}
                         />
 
                     </View>
-                </View>
+                </AppCard>
             </View>
         )
     }
@@ -322,12 +317,12 @@ const Delivery = (): JSX.Element => {
     }, [])
 
     return (
-        <View style={{ backgroundColor: 'rgb(240, 246, 255)', height: '100%' }}>
+        <View style={{ backgroundColor: colors.DarkViolet300, height: '100%' }}>
             <View style={{ width: '100%', alignContent: 'center', justifyContent: 'center' }}>
                 <FlatList
                     ListHeaderComponent={() => {
                         return (
-                            <View style={{ backgroundColor: 'rgb(240, 246, 255)' }} key={0}>
+                            <View style={{ backgroundColor: colors.DarkViolet300 }} key={0}>
                                 <FlatList
                                     data={days}
                                     horizontal

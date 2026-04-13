@@ -78,7 +78,7 @@ async function addPayment(body: any, idUsuario: number) {
             code: 405
         }
     } finally {
-        await connection.end();
+        connection.release();
     }
 
 }

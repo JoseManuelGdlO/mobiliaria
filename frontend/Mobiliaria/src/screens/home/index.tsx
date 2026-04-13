@@ -1,22 +1,19 @@
-import React, { useEffect } from "react"
-import { FlatList, Platform, RefreshControl, ScrollView, Text, View } from "react-native";
+import React, { useCallback, useEffect, useMemo, useState } from "react"
+import { Dimensions, FlatList, PermissionsAndroid, Platform, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { CalendarList } from 'react-native-calendars'
 import { LocaleConfig } from 'react-native-calendars';
-import { Dimensions } from 'react-native';
 import * as eventService from '../../services/events';
 import * as authService from '../../services/auth';
 import { MarkedDates } from "react-native-calendars/src/types";
 import { useTheme } from "@hooks/useTheme";
 import CardEvents from "@components/CardEvents";
 import { monthToString } from "@utils/dateFormat";
-import { Skeleton } from "@rneui/themed/dist/Skeleton";
 import Loading from "@components/loading";
 import PrimaryButton from "@components/PrimaryButton";
 import { NavigationScreens } from "@interfaces/navigation";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 import messaging from '@react-native-firebase/messaging';
-import {PermissionsAndroid} from 'react-native';
 import useReduxUser from "@hooks/useReduxUser";
 import Toast from "react-native-toast-message";
 import { sendLocationWS } from "@utils/locationForegraund";
@@ -49,14 +46,18 @@ const Home = ({
 }: StackScreenProps<NavigationScreens, 'Home'>): JSX.Element => {
     const refresh = route.params?.refresh
     const navigation = useNavigation<StackNavigationProp<NavigationScreens>>()
-    const [dates, setDates] = React.useState<MarkedDates>({});
-    const [eventsDay, setEventsDay] = React.useState<any>([]);
-    const [refreshing, setRefreshing] = React.useState(false);
-    const [dateEvent, setDateEvent] = React.useState('');
-    const [total, setTotal] = React.useState('0');
-    const [loading, setLoading] = React.useState<boolean>(false);
-    const [ requestDate, setRequestDate ] = React.useState<string>('');
-    const [ comingNav, setComingNav ] = React.useState<boolean>(false);
+    const [dates, setDates] = useState<MarkedDates>({});
+    const [eventsDay, setEventsDay] = useState<any>([]);
+    const [refreshing, setRefreshing] = useState(false);
+    const [dateEvent, setDateEvent] = useState(() => {
+        const d = new Date().toISOString().split('T')[0]
+        const arr = d.split('-')
+        return `${arr[2]} de ${monthToString(Number(arr[1]))}`
+    });
+    const [total, setTotal] = useState('0');
+    const [loading, setLoading] = useState<boolean>(false);
+    const [requestDate, setRequestDate] = useState(() => new Date().toISOString().split('T')[0]);
+    const [selectedCalendarDay, setSelectedCalendarDay] = useState(() => new Date().toISOString().split('T')[0]);
 
     const { colors, fonts } = useTheme();
 
@@ -102,10 +103,6 @@ const Home = ({
                 autoHide: true
             })
         });
-
-        messaging().setBackgroundMessageHandler(async remoteMessage => {
-            console.log('Message handled in the background!', remoteMessage);
-        });
     }   
 
 
@@ -133,9 +130,8 @@ const Home = ({
             for (const date of response.data) {
 
                 dates[date.fecha_envio_evento.split('T')[0]] = {
-                    selected: true,
-                    marked: false,
-                    selectedColor: getColorSpecific(date.total),
+                    marked: true,
+                    dotColor: getColorSpecific(date.total),
                 }
             }
             setDates(dates)
@@ -152,8 +148,7 @@ const Home = ({
         try {
             setTotal('0')
             const response = await eventService.getEventsDay(date)
-            console.log('response', response, date);
-            
+
             if(response.data.length !== 0){
                 setTotal(formatCurrency(response.total.toString()))
             }
@@ -175,146 +170,334 @@ const Home = ({
       };
 
 
-    const keyExtractor = (item: (any), index: number): string => index.toString()
+    const keyExtractor = (item: any, index: number): string =>
+        item?.id_evento != null ? String(item.id_evento) : `ev-${index}`
 
-    const onRefresh = React.useCallback(() => {
-        setComingNav(true)
+    const onRefresh = useCallback(() => {
         setLoading(true)
-        setRefreshing(true);
+        setRefreshing(true)
         const date = new Date().toISOString().split('T')[0]
+        const arr = date.split('-')
+        setRequestDate(date)
+        setSelectedCalendarDay(date)
+        setDateEvent(`${arr[2]} de ${monthToString(Number(arr[1]))}`)
         getEventsDay(date)
         getEvents()
     }, []);
 
+    const markedDatesDisplay = useMemo((): MarkedDates => {
+        const merged: MarkedDates = { ...dates }
+        const sel = selectedCalendarDay
+        const prev = merged[sel] ?? {}
+        merged[sel] = {
+            ...prev,
+            selected: true,
+            selectedColor: colors.Morado600,
+            selectedTextColor: colors.white,
+        }
+        return merged
+    }, [dates, selectedCalendarDay, colors.Morado600, colors.white])
+
+    const calendarTheme = useMemo(
+        () => ({
+            calendarBackground: colors.background_parts.card,
+            backgroundColor: colors.background_parts.card,
+            monthTextColor: colors.Griss50,
+            textMonthFontFamily: fonts.Inter.SemiBold,
+            textMonthFontSize: 17,
+            dayTextColor: colors.Griss100,
+            textDayFontFamily: fonts.Inter.Medium,
+            textDayFontSize: 15,
+            textDayHeaderColor: colors.gris300,
+            textDayHeaderFontFamily: fonts.Inter.Medium,
+            textDayHeaderFontSize: 12,
+            textSectionTitleColor: colors.gris300,
+            todayTextColor: colors.Morado100,
+            todayBackgroundColor: `${colors.Morado600}22`,
+            selectedDayBackgroundColor: colors.Morado600,
+            selectedDayTextColor: colors.white,
+            textDisabledColor: colors.gris400,
+            dotColor: colors.Morado100,
+            selectedDotColor: colors.white,
+        }),
+        [colors, fonts],
+    )
+
+    const sheetStyles = useMemo(
+        () =>
+            StyleSheet.create({
+                root: {
+                    flex: 1,
+                    backgroundColor: colors.background_parts.header,
+                },
+                calendarShell: {
+                    marginHorizontal: 14,
+                    marginTop: 10,
+                    marginBottom: 6,
+                    borderRadius: 20,
+                    overflow: 'hidden',
+                    backgroundColor: colors.background_parts.card,
+                    ...Platform.select({
+                        ios: {
+                            shadowColor: colors.black,
+                            shadowOffset: { width: 0, height: 8 },
+                            shadowOpacity: 0.35,
+                            shadowRadius: 14,
+                        },
+                        android: { elevation: 10 },
+                    }),
+                },
+                calendarHeader: {
+                    paddingHorizontal: 18,
+                    paddingTop: 16,
+                    paddingBottom: 6,
+                    borderBottomWidth: StyleSheet.hairlineWidth,
+                    borderBottomColor: colors.gris400,
+                },
+                calendarTitle: {
+                    color: colors.Griss50,
+                    fontFamily: fonts.Inter.SemiBold,
+                    fontSize: 18,
+                    letterSpacing: 0.2,
+                },
+                calendarSubtitle: {
+                    marginTop: 4,
+                    color: colors.gris300,
+                    fontFamily: fonts.Inter.Regular,
+                    fontSize: 13,
+                },
+                eventsIntro: {
+                    backgroundColor: colors.DarkViolet300,
+                    borderTopLeftRadius: 22,
+                    borderTopRightRadius: 22,
+                    marginTop: -8,
+                    paddingTop: 20,
+                    paddingHorizontal: 16,
+                    paddingBottom: 6,
+                },
+                chipRow: {
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    alignItems: 'center',
+                    gap: 8,
+                    marginBottom: 12,
+                },
+                dateChip: {
+                    backgroundColor: `${colors.Morado600}33`,
+                    paddingHorizontal: 14,
+                    paddingVertical: 8,
+                    borderRadius: 999,
+                    borderWidth: 1,
+                    borderColor: `${colors.Morado100}44`,
+                },
+                dateChipText: {
+                    color: colors.Griss50,
+                    fontFamily: fonts.Inter.SemiBold,
+                    fontSize: 14,
+                },
+                totalPill: {
+                    backgroundColor: `${colors.primario500}29`,
+                    paddingHorizontal: 12,
+                    paddingVertical: 6,
+                    borderRadius: 999,
+                },
+                totalPillText: {
+                    color: colors.primario300,
+                    fontFamily: fonts.Inter.Medium,
+                    fontSize: 12,
+                },
+                legendRow: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    marginTop: 4,
+                    marginBottom: 10,
+                    gap: 12,
+                },
+                legendItem: {
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                },
+                legendDot: {
+                    width: 8,
+                    height: 8,
+                    borderRadius: 4,
+                    marginRight: 6,
+                },
+                legendLabel: {
+                    color: colors.gris300,
+                    fontFamily: fonts.Inter.Regular,
+                    fontSize: 11,
+                },
+                emptyWrap: {
+                    paddingVertical: 36,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                },
+                emptyText: {
+                    color: colors.gris300,
+                    fontFamily: fonts.Inter.Regular,
+                    fontSize: 15,
+                    textAlign: 'center',
+                },
+            }),
+        [colors, fonts],
+    )
+
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             setLoading(true)
-            getEvents();
+            getEvents()
             getEventsDay(requestDate)
-        });
-    
-        return unsubscribe;
-      }, [navigation]);
+        })
+
+        return unsubscribe
+    }, [navigation, requestDate])
 
     useEffect(() => {
-        
         requestUserPermissions()
         subscribeNotifications()
-       
-  
+        sendLocationWS(user)
+
+        const date = new Date().toISOString().split('T')[0]
+        const arrDate = date.split('-')
+        setRequestDate(date)
+        setSelectedCalendarDay(date)
+        setDateEvent(`${arrDate[2]} de ${monthToString(Number(arrDate[1]))}`)
+
         setLoading(true)
         getEvents()
-        sendLocationWS(user)
-        const date = new Date().toISOString().split('T')[0]
-        const arrDate = date.split('-') 
-        
+        getEventsDay(date)
+
         if (refresh) {
             setLoading(true)
             getEvents()
         }
-        
-        if(comingNav){
-            setRequestDate(`${arrDate[2]}-${arrDate[1]}-${arrDate[0]}`)
-            setDateEvent(`${arrDate[2]} de ${monthToString(Number(arrDate[1]))}`)
-            getEventsDay(date)
-        }
     }, [])
 
-    const renderItem = ({
-        item,
-        index
-    }: {
-        item: []
-        index: number
-    }): JSX.Element => {
-        return (
-            <>
-                <CardEvents data={item}></CardEvents>
-            </>
-        )
-    }
+    const calendarInnerWidth = Dimensions.get('window').width - 28
 
-
-    return (
+    const listHeader = (
         <View>
-            <ScrollView
-                refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                }>
+            <View style={sheetStyles.calendarShell}>
+                <View style={sheetStyles.calendarHeader}>
+                    <Text style={sheetStyles.calendarTitle}>Tu agenda</Text>
+                    <Text style={sheetStyles.calendarSubtitle}>
+                        Desliza entre meses y toca un día para ver los eventos
+                    </Text>
+                    <View style={sheetStyles.legendRow}>
+                        <View style={sheetStyles.legendItem}>
+                            <View style={[sheetStyles.legendDot, { backgroundColor: getColorSpecific(1) }]} />
+                            <Text style={sheetStyles.legendLabel}>Pocos</Text>
+                        </View>
+                        <View style={sheetStyles.legendItem}>
+                            <View style={[sheetStyles.legendDot, { backgroundColor: getColorSpecific(4) }]} />
+                            <Text style={sheetStyles.legendLabel}>Varios</Text>
+                        </View>
+                        <View style={sheetStyles.legendItem}>
+                            <View style={[sheetStyles.legendDot, { backgroundColor: getColorSpecific(8) }]} />
+                            <Text style={sheetStyles.legendLabel}>Muchos</Text>
+                        </View>
+                    </View>
+                </View>
                 <CalendarList
-                    key={1}
-                    onDayPress={async (day: any) => {
+                    theme={calendarTheme}
+                    firstDay={1}
+                    hideExtraDays
+                    horizontal
+                    pagingEnabled
+                    calendarWidth={calendarInnerWidth}
+                    markedDates={markedDatesDisplay}
+                    onDayPress={async (day: { dateString: string }) => {
                         const date = day.dateString
                         const arrDate = date.split('-')
                         setLoading(true)
-
+                        setSelectedCalendarDay(date)
                         setRequestDate(`${arrDate[0]}-${arrDate[1]}-${arrDate[2]}`)
                         setDateEvent(`${arrDate[2]} de ${monthToString(Number(arrDate[1]))}`)
                         await getEventsDay(date)
                         setLoading(false)
                     }}
-                    // Enable horizontal scrolling, default = false
-                    horizontal={true}
-                    // Enable paging on horizontal, default = false
-                    pagingEnabled={true}
-                    // Set custom calendarWidth.
-                    calendarWidth={Dimensions.get('window').width}
-                    markedDates={dates}
                 />
-            </ScrollView>
-            {loading
-                ? <View style={{ backgroundColor: 'rgba(148, 167, 244, 0.79)', borderTopLeftRadius: 8, paddingHorizontal: 30, paddingVertical: 25, borderTopRightRadius: 8, marginTop: -15 }}>
-                    <Skeleton animation="pulse" width={175} height={20} />
-                    <Skeleton animation="pulse" style={{ borderRadius: 8, marginTop: 15 }} width={350} height={180} />
-                    <Skeleton animation="pulse" style={{ borderRadius: 8, marginTop: 15 }} width={350} height={180} />
+            </View>
+            <View style={sheetStyles.eventsIntro}>
+                <Text
+                    style={{
+                        color: colors.gris300,
+                        fontFamily: fonts.Inter.Medium,
+                        fontSize: 12,
+                        textTransform: 'uppercase',
+                        letterSpacing: 0.6,
+                        marginBottom: 8,
+                    }}
+                >
+                    Eventos del día
+                </Text>
+                <View style={sheetStyles.chipRow}>
+                    <View style={sheetStyles.dateChip}>
+                        <Text style={sheetStyles.dateChipText}>{dateEvent}</Text>
+                    </View>
+                    {total !== '0' && (
+                        <View style={sheetStyles.totalPill}>
+                            <Text style={sheetStyles.totalPillText}>Corte: {total}</Text>
+                        </View>
+                    )}
                 </View>
-                :
-                <View style={{ backgroundColor: 'rgba(148, 167, 244, 0.79)', borderTopLeftRadius: 8, borderTopRightRadius: 8, marginTop: -15, height: 500, paddingBottom: 50 }}>
-                    <FlatList
-                        ListHeaderComponent={() => {
-                            return (
-                                <View>
-                                    <Text style={{ backgroundColor: 'rgba(148, 167, 244, 0.79)', color: '#000', fontSize: 15, fontWeight: '100', marginTop: 8, paddingHorizontal: 10, paddingVertical: 5, borderTopRightRadius:8, borderTopLeftRadius:8, fontFamily: fonts.Roboto.Regular }}>
-                                        Eventos del dia <Text style={{ fontWeight: '500', color: '#153acb', fontFamily: fonts.Roboto.BlackItalic, fontStyle: 'italic' }}>{dateEvent}</Text>
-                                    </Text>
-                                    { total !== '0' && <Text style={{ backgroundColor: 'rgba(148, 167, 244, 0.79)', color: '#000', fontSize: 10, fontWeight: '100', marginBottom: 8, paddingHorizontal: 10, paddingBottom: 5, borderBottomLeftRadius:8, borderBottomRightRadius:8, fontFamily: fonts.Roboto.Regular }}>
-                                        Corte diario <Text style={{ fontWeight: '500', color: '#153acb', fontFamily: fonts.Roboto.BlackItalic, fontStyle: 'italic' }}>{total}</Text>
-                                    </Text>}
-                                    <PrimaryButton
-                                        containerStyle={{ width: '100%', paddingVertical: 5, marginBottom: 5 }}
-                                        textStyle={{ fontSize: 12, fontFamily: fonts.Roboto.Regular, color: '#FFF' }}
-                                        backgroundButton="#9E2EBE"
-                                        onPress={addEvent}
-                                        title='Crear nuevo evento'
-                                    />
-                                </View>
-                            )
-                        }}
-                        ListEmptyComponent={() => {
-                            return (
-                                <View style={{ backgroundColor: 'rgba(148, 167, 244, 0.79)', paddingVertical: 20, height: 150, alignItems: 'center', justifyContent: 'center', flex: 1, marginTop: 50 }}>
-                                    <Text style={{ color: '#000', fontSize: 15, fontWeight: '100', marginVertical: 8, paddingHorizontal: 5, fontFamily: fonts.Roboto.Regular }}>
-                                        No hay eventos para este dia 😪
-                                    </Text>
-                                </View>
-                            )
-                        }}
-                        ListFooterComponent={() => {
-                            return (
-                                <View style={{ paddingVertical: 100, height: 50, alignItems: 'center', justifyContent: 'center', flex: 1, marginTop: 50 }}>
+                <PrimaryButton
+                    containerStyle={{ width: '100%', paddingVertical: 4, marginBottom: 4 }}
+                    textStyle={{
+                        fontSize: 14,
+                        fontFamily: fonts.Inter.SemiBold,
+                        color: colors.white,
+                    }}
+                    backgroundButton={colors.Morado600}
+                    onPress={addEvent}
+                    title="Crear nuevo evento"
+                />
+            </View>
+        </View>
+    )
 
-                                </View>
-                            )
-                        }}
-                        stickyHeaderIndices={[0]}
-                        contentContainerStyle={{ padding: 16 }}
-                        data={eventsDay}
-                        scrollEnabled
-                        renderItem={renderItem}
-                        keyExtractor={keyExtractor}
+    return (
+        <View style={sheetStyles.root}>
+            <FlatList
+                style={{ flex: 1 }}
+                data={eventsDay}
+                keyExtractor={keyExtractor}
+                nestedScrollEnabled
+                initialNumToRender={8}
+                maxToRenderPerBatch={8}
+                windowSize={7}
+                removeClippedSubviews={Platform.OS === 'android'}
+                ListHeaderComponent={listHeader}
+                ListEmptyComponent={
+                    <View style={[sheetStyles.emptyWrap, { paddingHorizontal: 16 }]}>
+                        <Text style={sheetStyles.emptyText}>
+                            No hay eventos para este día. Toca otro día o crea uno nuevo.
+                        </Text>
+                    </View>
+                }
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                        tintColor={colors.Morado100}
+                        colors={[colors.Morado600]}
                     />
-                </View>}
-            <Loading loading={loading}></Loading>
+                }
+                contentContainerStyle={{
+                    flexGrow: 1,
+                    paddingBottom: 120,
+                    backgroundColor: colors.DarkViolet300,
+                }}
+                showsVerticalScrollIndicator={false}
+                renderItem={({ item }) => (
+                    <View style={{ paddingHorizontal: 16, marginBottom: 10 }}>
+                        <CardEvents data={item} />
+                    </View>
+                )}
+            />
+            <Loading loading={loading} />
             <Toast />
         </View>
     )

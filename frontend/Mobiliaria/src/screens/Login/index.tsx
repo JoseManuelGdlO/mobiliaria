@@ -17,22 +17,18 @@ import { toast } from "@utils/alertToast";
 import Toast from "react-native-toast-message";
 import Loading from "@components/loading";
 import * as authService from "../../services/auth";
-import { StackNavigationProp } from "@react-navigation/stack";
 import { useDispatch } from "react-redux";
 import {
   rememberUser,
   setLoginData,
   updateToken,
 } from "@redux/actions/userAction";
-import { CommonActions, useNavigation } from "@react-navigation/native";
-import { NavigationScreens } from "@interfaces/navigation";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StorageKeysEnum } from "@interfaces/auth";
 import Geolocation from "@react-native-community/geolocation";
 
 const Login = (): JSX.Element => {
   const dispatch = useDispatch();
-  const navigation = useNavigation<StackNavigationProp<NavigationScreens>>();
   const [loading, setLoading] = React.useState(false);
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -54,13 +50,6 @@ const Login = (): JSX.Element => {
       dispatch(rememberUser(toggleSwitch));
 
       await AsyncStorage.setItem(StorageKeysEnum.refreshToken, response.token);
-
-      navigation.dispatch((state) => {
-        return CommonActions.reset({
-          index: 0,
-          routes: [{ name: "SignedInStack" }],
-        });
-      });
     } catch (error) {
       console.log(error);
       setError(String(error));
@@ -77,7 +66,7 @@ const Login = (): JSX.Element => {
   return (
     <View
       style={{
-        backgroundColor: "#f2edd9",
+        backgroundColor: colors.DarkViolet300,
         height: "100%",
         position: "absolute",
         left: 0,
@@ -149,17 +138,17 @@ const Login = (): JSX.Element => {
           <TouchableOpacity
             onPress={Login}
             style={{
-              backgroundColor: "#00bcbb",
+              backgroundColor: colors.Morado600,
               paddingVertical: 15,
               paddingHorizontal: 30,
-              borderRadius: 5,
+              borderRadius: 12,
               marginTop: 30,
             }}
           >
             <Text
               style={{
-                fontFamily: fonts.Roboto.Bold,
-                color: "white",
+                fontFamily: fonts.Inter.SemiBold,
+                color: colors.white,
                 fontSize: 15,
                 textAlign: "center",
               }}
@@ -174,7 +163,7 @@ const Login = (): JSX.Element => {
             <TouchableOpacity style={{ display: "flex", flexDirection: "row" }}>
               <Switch
                 style={{ paddingTop: 7 }}
-                trackColor={{ false: "#767577", true: "#00bcbb" }}
+                trackColor={{ false: "#767577", true: colors.Morado600 }}
                 thumbColor={toggleSwitch ? "#fe693f" : "#f4f3f4"}
                 ios_backgroundColor="#3e3e3e"
                 onValueChange={setToggleSwitch}
@@ -184,8 +173,8 @@ const Login = (): JSX.Element => {
                 style={{
                   paddingTop: 10,
                   paddingLeft: 5,
-                  fontFamily: fonts.Roboto.Regular,
-                  color: "#00bcbb",
+                  fontFamily: fonts.Inter.Regular,
+                  color: colors.Morado100,
                   fontSize: 12,
                   textAlign: "center",
                 }}
@@ -205,8 +194,8 @@ const Login = (): JSX.Element => {
             >
               <Text
                 style={{
-                  fontFamily: fonts.Roboto.Regular,
-                  color: "#00bcbb",
+                  fontFamily: fonts.Inter.Regular,
+                  color: colors.Morado100,
                   fontSize: 12,
                   textAlign: "right",
                 }}
@@ -219,8 +208,8 @@ const Login = (): JSX.Element => {
             <Text
               style={{
                 fontFamily: fonts.Inter.SemiBold,
-                color: "#00bcbb",
-                fontSize: 20,
+                color: colors.red,
+                fontSize: 14,
                 textAlign: "center",
                 marginTop: 20,
               }}

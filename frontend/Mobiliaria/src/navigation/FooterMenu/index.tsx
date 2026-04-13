@@ -1,33 +1,63 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { createStackNavigator } from '@react-navigation/stack'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { StyleSheet, Text, View, Platform } from 'react-native'
-import HomeIcon from '../../assets/images/icons/HomeIcon'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { useTheme } from '../../hooks/useTheme'
 import { NavigationScreens } from '../../interfaces/navigation'
-import ProfileIcon from '../../assets/images/icons/ProfileIcon'
 import { hasNotch } from 'react-native-device-info'
-import HorizontalDots from '@assets/images/icons/HorizontalDots'
 import ViewMore from '@screens/ViewMore'
 import MenuScreens from '@navigation/MenuScreens'
-import InvetaryIcon from '@assets/images/icons/inentaryIcon'
 import Workers from '@screens/workers'
 import Inventary from '@screens/inventary'
 import Home from '@screens/home'
 import BasicHeader from '@components/BasicHeader'
-import PackageIcon from '@assets/images/icons/PackagesIcon'
 import Packages from '@screens/packages'
 import DeliveryMap from '@screens/delivery-map'
-import PinIcon from '@assets/images/icons/PinIcon'
 
 const Tab = createBottomTabNavigator()
 const Stack = createStackNavigator<NavigationScreens>()
+
+const TAB_ICON_SIZE = 26
+
+type MciName = React.ComponentProps<typeof MaterialCommunityIcons>['name']
+
+const FooterTabIcon = ({
+  outline,
+  filled,
+  focused,
+  activeColor,
+  inactiveColor
+}: {
+  outline: MciName
+  filled: MciName
+  focused: boolean
+  activeColor: string
+  inactiveColor: string
+}): JSX.Element => (
+  <View
+    style={{
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: 11,
+      paddingVertical: 6,
+      borderRadius: 20,
+      backgroundColor: focused ? `${activeColor}40` : 'transparent'
+    }}
+  >
+    <MaterialCommunityIcons
+      name={focused ? filled : outline}
+      size={TAB_ICON_SIZE}
+      color={focused ? activeColor : inactiveColor}
+    />
+  </View>
+)
 
 const HomeStak = (): JSX.Element => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        options={{ title: 'Inicio', header: () => <BasicHeader hideBackArrow title='Home' color='#9E2EBE' backgroundColor='white' /> }}
+        options={{ title: 'Inicio', header: () => <BasicHeader hideBackArrow title='Home' /> }}
         name='Home'
         component={Home}
       />
@@ -52,7 +82,7 @@ const PackageStak = (): JSX.Element => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        options={{ title: 'Paquetes', headerShown: true, header: (props) => <BasicHeader color='#9E2EBE' hideBackArrow title='Paquetes 🎁' backgroundColor='white' /> }}
+        options={{ title: 'Paquetes', headerShown: true, header: () => <BasicHeader hideBackArrow title='Paquetes' /> }}
         name='Package'
         component={Packages}
       />
@@ -64,7 +94,7 @@ const DeliveryStak = (): JSX.Element => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        options={{ title: 'Repartidores', headerShown: true, header: (props) => <BasicHeader color='#9E2EBE' hideBackArrow title='Repartidores 🎁' backgroundColor='white' /> }}
+        options={{ title: 'Repartidores', headerShown: true, header: () => <BasicHeader hideBackArrow title='Repartidores' /> }}
         name='Delivery'
         component={DeliveryMap}
       />
@@ -77,7 +107,7 @@ const WorkerStack = (): JSX.Element => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        options={{ title: 'Administrador de trabajadores', headerShown: true, header: (props) => <BasicHeader color='#9E2EBE' hideBackArrow title='Trabajadores 🐱‍🚀' backgroundColor='white' /> }}
+        options={{ title: 'Administrador de trabajadores', headerShown: true, header: () => <BasicHeader hideBackArrow title='Trabajadores' /> }}
         name='Workers'
         component={Workers}
       />
@@ -112,62 +142,75 @@ const ViewMoreStack = (): JSX.Element => {
 export const FooterMenu = (): JSX.Element => {
   const { colors, fonts } = useTheme()
 
-  const styles = StyleSheet.create({
+  const styles = useMemo(() => StyleSheet.create({
     tabBarStyle: {
-      backgroundColor: '#FFF',
+      backgroundColor: colors.background_parts.footer,
+      borderTopWidth: StyleSheet.hairlineWidth,
+      borderTopColor: `${colors.Morado100}28`,
+      paddingTop: 6,
       height: Platform.select({
-        ios: hasNotch() ? 82 : 66,
-        android: 66
-      })
-    },
-    icon: {
-      marginTop: Platform.select({
-        ios: 4,
-        android: 0
+        ios: hasNotch() ? 86 : 70,
+        android: 72
+      }),
+      ...Platform.select({
+        ios: {
+          shadowColor: colors.black,
+          shadowOffset: { width: 0, height: -3 },
+          shadowOpacity: 0.14,
+          shadowRadius: 8
+        },
+        android: { elevation: 16 }
       })
     },
     labelStyleInactive: {
-      fontFamily: fonts.Inter.Regular,
-      color: colors.gray500,
-      fontSize: 10,
+      fontFamily: fonts.Inter.Medium,
+      color: colors.icon.footerNoActive,
+      fontSize: 11,
+      letterSpacing: 0.15,
       textAlign: 'center',
       alignSelf: 'center',
+      marginTop: 2,
       marginBottom: Platform.select({
-        ios: hasNotch() ? 0 : 14,
-        android: 18
+        ios: hasNotch() ? 2 : 12,
+        android: 14
       })
     },
     labelStyleActive: {
-      fontFamily: fonts.Inter.Bold,
-      fontWeight: 'bold',
-      color: '#9E2EBE',
-      fontSize: 10,
+      fontFamily: fonts.Inter.SemiBold,
+      color: colors.icon.footerActive,
+      fontSize: 11,
+      letterSpacing: 0.15,
       textAlign: 'center',
       alignSelf: 'center',
+      marginTop: 2,
       marginBottom: Platform.select({
-        ios: hasNotch() ? 0 : 14,
-        android: 18
+        ios: hasNotch() ? 2 : 12,
+        android: 14
       })
     }
-  })
+  }), [colors, fonts])
   return (
     <Tab.Navigator
       screenOptions={{
         tabBarStyle: styles.tabBarStyle,
         tabBarLabelStyle: styles.labelStyleInactive,
-        tabBarLabelPosition: 'below-icon'
+        tabBarLabelPosition: 'below-icon',
+        tabBarHideOnKeyboard: true
       }}
     >
       <Tab.Screen
         options={{
           headerShown: false,
           title: 'Inicio',
-          tabBarIcon: ({ color, focused }) =>
-            <View
-              sentry-label='Footer Inicio'
-              style={[styles.icon]}
-            >
-              <HomeIcon width={24} height={24} color={focused ?  '#9E2EBE' : colors.darkBlack100} focused={focused} />
+          tabBarIcon: ({ focused }) =>
+            <View sentry-label='Footer Inicio'>
+              <FooterTabIcon
+                outline='home-outline'
+                filled='home'
+                focused={focused}
+                activeColor={colors.icon.footerActive}
+                inactiveColor={colors.icon.footerNoActive}
+              />
             </View>,
           tabBarLabel: ({ focused }) => <Text style={focused ? styles.labelStyleActive : styles.labelStyleInactive}>Inicio</Text>
         }}
@@ -178,12 +221,15 @@ export const FooterMenu = (): JSX.Element => {
         options={{
           title: 'Inventario',
           headerShown: false,
-          tabBarIcon: ({ color, focused }) =>
-            <View
-              sentry-label='Footer Inventario'
-              style={[styles.icon]}
-            >
-              <InvetaryIcon width={24} height={24} color={focused ? '#9E2EBE' : colors.darkBlack100} focused={focused} />
+          tabBarIcon: ({ focused }) =>
+            <View sentry-label='Footer Inventario'>
+              <FooterTabIcon
+                outline='cube-outline'
+                filled='cube'
+                focused={focused}
+                activeColor={colors.icon.footerActive}
+                inactiveColor={colors.icon.footerNoActive}
+              />
             </View>,
           tabBarLabel: ({ focused }) => <Text style={focused ? styles.labelStyleActive : styles.labelStyleInactive}>Inventario</Text>
         }}
@@ -194,12 +240,15 @@ export const FooterMenu = (): JSX.Element => {
        options={{
          title: 'Paquetes',
          headerShown: false,
-         tabBarIcon: ({ color, focused }) =>
-           <View
-             sentry-label='Footer Paquetes'
-             style={[styles.icon]}
-           >
-             <PackageIcon width={24} height={24} color={focused ? '#9E2EBE' : colors.darkBlack100} focused={focused} />
+         tabBarIcon: ({ focused }) =>
+           <View sentry-label='Footer Paquetes'>
+             <FooterTabIcon
+               outline='gift-outline'
+               filled='gift'
+               focused={focused}
+               activeColor={colors.icon.footerActive}
+               inactiveColor={colors.icon.footerNoActive}
+             />
            </View>,
          tabBarLabel: ({ focused }) => <Text style={focused ? styles.labelStyleActive : styles.labelStyleInactive}>Paquetes</Text>
        }}
@@ -210,12 +259,15 @@ export const FooterMenu = (): JSX.Element => {
       options={{
         title: 'Repartidores',
         headerShown: false,
-        tabBarIcon: ({ color, focused }) =>
-          <View
-            sentry-label='Footer Repartidores'
-            style={[styles.icon]}
-          >
-            <PinIcon width={24} height={24} color={focused ? '#9E2EBE' : colors.darkBlack100} />
+        tabBarIcon: ({ focused }) =>
+          <View sentry-label='Footer Repartidores'>
+            <FooterTabIcon
+              outline='truck-delivery-outline'
+              filled='truck-delivery'
+              focused={focused}
+              activeColor={colors.icon.footerActive}
+              inactiveColor={colors.icon.footerNoActive}
+            />
           </View>,
         tabBarLabel: ({ focused }) => <Text style={focused ? styles.labelStyleActive : styles.labelStyleInactive}>Entregas</Text>
       }}
@@ -226,12 +278,15 @@ export const FooterMenu = (): JSX.Element => {
         options={{
           title: 'Trabajadores',
           headerShown: false,
-          tabBarIcon: ({ color, focused }) =>
-            <View
-              sentry-label='Footer Trabajadores'
-              style={[styles.icon]}
-            >
-              <ProfileIcon width={24} height={24} color={focused ? '#9E2EBE' : colors.darkBlack100} focused={focused} />
+          tabBarIcon: ({ focused }) =>
+            <View sentry-label='Footer Trabajadores'>
+              <FooterTabIcon
+                outline='account-group-outline'
+                filled='account-group'
+                focused={focused}
+                activeColor={colors.icon.footerActive}
+                inactiveColor={colors.icon.footerNoActive}
+              />
             </View>,
           tabBarLabel: ({ focused }) => <Text style={focused ? styles.labelStyleActive : styles.labelStyleInactive}>Trabajadores</Text>
         }}
@@ -242,12 +297,15 @@ export const FooterMenu = (): JSX.Element => {
         options={{
           title: 'Ver más',
           headerShown: false,
-          tabBarIcon: ({ color, focused }) =>
-            <View
-              sentry-label='Footer Ver más'
-              style={[styles.icon]}
-            >
-              <HorizontalDots width={20} height={20} color={focused ? '#9E2EBE' : colors.gris300} />
+          tabBarIcon: ({ focused }) =>
+            <View sentry-label='Footer Ver más'>
+              <FooterTabIcon
+                outline='view-grid-outline'
+                filled='view-grid'
+                focused={focused}
+                activeColor={colors.icon.footerActive}
+                inactiveColor={colors.icon.footerNoActive}
+              />
             </View>,
           tabBarLabel: ({ focused }) => <Text style={focused ? styles.labelStyleActive : styles.labelStyleInactive}>Ver más</Text>
         }}

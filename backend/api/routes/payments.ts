@@ -1,12 +1,11 @@
 import { verifyToken } from "../libs/headers";
 import express from 'express';
-import jwt_decode from "jwt-decode";
 const paymentsService = require('../services/payments');
 const router = express.Router();
 
 router.get('/getPayments', verifyToken, async function (req: any, res: any, next: any) {
     try {
-        const bearer: any = jwt_decode(req.headers['authorization']);
+        const bearer: any = req.authPayload;
         let id = bearer.data.id_empresa;
 
         res.status(201).json(await paymentsService.getPayments(id));
@@ -18,7 +17,7 @@ router.get('/getPayments', verifyToken, async function (req: any, res: any, next
 
 router.put('/addPayment', verifyToken, async function (req: any, res: any, next: any) {
     try {
-        const bearer: any = jwt_decode(req.headers['authorization']);
+        const bearer: any = req.authPayload;
         let idUsuario = bearer.data.id_usuario;
         const body = req.body;
         res.status(201).json(await paymentsService.addPayment(body, idUsuario));

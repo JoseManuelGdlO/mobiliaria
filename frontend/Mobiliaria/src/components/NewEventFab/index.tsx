@@ -1,12 +1,5 @@
 import React, { memo, useState } from 'react'
-import {
-  Dimensions,
-  Modal,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View
-} from 'react-native'
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native'
 
 import { NavigationScreens } from '@interfaces/navigation'
 import { useNavigation } from '@react-navigation/native'
@@ -16,9 +9,7 @@ import LottieView from 'lottie-react-native'
 import { useTheme } from '@hooks/useTheme'
 import PrimaryButton from '@components/PrimaryButton'
 import DatePicker from 'react-native-date-picker'
-import CloseCircleLine from '@assets/images/icons/CloseCircleLine'
-
-const height = Dimensions.get('window').height
+import AppModal from '@components/AppModal'
 
 export const FAB_WIDTH = 48
 
@@ -29,8 +20,7 @@ interface props {
 const NewEventFab = ({ activeRouteName }: props): JSX.Element => {
   const [visible, setVisible] = React.useState(false)
   const [date, setDate] = useState(new Date())
-  const [open, setOpen] = useState(false)
-  const animation = React.useRef(null);
+  const animation = React.useRef(null)
   const styles = _styles()
   const navigation = useNavigation<StackNavigationProp<NavigationScreens>>()
 
@@ -38,9 +28,7 @@ const NewEventFab = ({ activeRouteName }: props): JSX.Element => {
 
   const goSupport = (): void => {
     setVisible(true)
-    setOpen(true)
   }
-
 
   const closeModal = (): void => {
     setVisible(false)
@@ -51,72 +39,95 @@ const NewEventFab = ({ activeRouteName }: props): JSX.Element => {
     setVisible(false)
   }
 
-  return (
-    blackListSupportIconRoutes.includes(activeRouteName)
-      ? <></>
-      : (
-        <View>
-          <TouchableOpacity style={styles.rootStyles} onPress={goSupport}>
-            <View style={styles.fabButtonStyles}>
-              <LottieView
-                ref={animation}
-                autoPlay
-                loop={true}
-                style={{
-                  width: 80,
-                  height: 80,
-                  backgroundColor: 'transparent',
-                }}
-                // Find more Lottie files at https://lottiefiles.com/featured
-                source={require('../../assets/images/lottie/add.json')}
-              />
-            </View>
-          </TouchableOpacity>
-          <Modal visible={visible} transparent>
-            <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center' }}>
-              <View style={{ backgroundColor: '#FFF', borderRadius: 10, margin: 20, maxHeight: height - 100 }}>
-                <Text style={{ fontFamily: fonts.Inter.Bold, fontWeight: 'bold', fontSize: 16, color: '#FFF', marginTop: 16, marginLeft: 16 }}>
-                  Crear nuevo evento
-                </Text>
-                <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 12, color: '#FFF', marginTop: 5, marginLeft: 16 }}>
-                  selecciona el dia
-                </Text>
-                <ScrollView style={{ margin: 20 }} showsVerticalScrollIndicator={false}>
-                  <DatePicker
-                    open={open}
-                    date={date}
-                    locale='es'
-                    mode='date'
-                    onDateChange={(date) => {
-                      console.log(date);
-                      setDate(date)
-                    }}
-                  />
-                </ScrollView>
-                <View style={{ margin: 16, display: 'flex', flexDirection: 'row' }}>
-                  <PrimaryButton
-                  containerStyle={{ width: '50%'}}
-                    onPress={goToAvailable}
-                    title='Aceptar'
-                  />
-                  <PrimaryButton
-                    containerStyle={{ width: '50%' }}
-                    onPress={closeModal}
-                    backgroundButton='red'
-                    title='Cancelar'
-                  />
-                </View>
-              </View>
-            </View>
-          </Modal>
+  return blackListSupportIconRoutes.includes(activeRouteName) ? (
+    <></>
+  ) : (
+    <View>
+      <TouchableOpacity style={styles.rootStyles} onPress={goSupport}>
+        <View style={styles.fabButtonStyles}>
+          <LottieView
+            ref={animation}
+            autoPlay
+            loop={true}
+            style={{
+              width: 80,
+              height: 80,
+              backgroundColor: 'transparent',
+            }}
+            source={require('../../assets/images/lottie/add.json')}
+          />
         </View>
-      )
+      </TouchableOpacity>
+      <AppModal
+        visible={visible}
+        onRequestClose={closeModal}
+        maxHeight={undefined}
+      >
+        <View style={{ paddingHorizontal: 16, paddingTop: 20, paddingBottom: 8 }}>
+          <Text
+            style={{
+              fontFamily: fonts.Inter.SemiBold,
+              fontSize: 18,
+              color: colors.Griss50,
+            }}
+          >
+            Crear nuevo evento
+          </Text>
+          <Text
+            style={{
+              fontFamily: fonts.Inter.Regular,
+              fontSize: 14,
+              color: colors.gris300,
+              marginTop: 6,
+            }}
+          >
+            Selecciona el día
+          </Text>
+        </View>
+        <ScrollView
+          style={{ marginHorizontal: 16 }}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 8 }}
+        >
+          {visible ? (
+            <DatePicker
+              date={date}
+              locale="es"
+              mode="date"
+              modal={false}
+              theme="dark"
+              onDateChange={(d) => {
+                setDate(d)
+              }}
+            />
+          ) : null}
+        </ScrollView>
+        <View
+          style={{
+            margin: 16,
+            flexDirection: 'row',
+            borderTopWidth: 1,
+            borderTopColor: `${colors.Griss50}18`,
+            paddingTop: 16,
+          }}
+        >
+          <PrimaryButton
+            containerStyle={{ width: '50%' }}
+            onPress={goToAvailable}
+            title="Aceptar"
+          />
+          <PrimaryButton
+            containerStyle={{ width: '50%' }}
+            onPress={closeModal}
+            backgroundButton="red"
+            title="Cancelar"
+          />
+        </View>
+      </AppModal>
+    </View>
   )
 }
 
 export default memo(NewEventFab)
 
-export const blackListSupportIconRoutes = [
-  'SignedOutStack',
-  'SignedWorkerStack'
-]
+export const blackListSupportIconRoutes = ['SignedOutStack', 'SignedWorkerStack']

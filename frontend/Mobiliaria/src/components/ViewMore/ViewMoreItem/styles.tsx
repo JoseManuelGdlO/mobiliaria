@@ -15,24 +15,27 @@ const styles = (): StyleTypes => {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      paddingHorizontal: 32
+      paddingHorizontal: 16,
+      paddingVertical: 4,
     },
     container: {
       flexDirection: 'row',
       alignItems: 'center',
-      marginVertical: 16
+      marginVertical: 12,
+      flex: 1,
     },
     title: {
-      marginLeft: 16,
-      fontFamily: fonts.Inter.Regular,
+      marginLeft: 14,
+      fontFamily: fonts.Inter.Medium,
       fontSize: 16,
-      color: '#000'
+      color: colors.Griss50,
+      flex: 1,
     },
     line: {
-      height: 1,
-      backgroundColor: colors.Griss800,
-      marginHorizontal: 16
-    }
+      height: StyleSheet.hairlineWidth,
+      backgroundColor: `${colors.Griss50}18`,
+      marginHorizontal: 16,
+    },
   })
 }
 

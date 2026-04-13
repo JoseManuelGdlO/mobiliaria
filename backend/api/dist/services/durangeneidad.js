@@ -146,6 +146,9 @@ function addArticle(body) {
             console.info("Rollback successful");
             return 405;
         }
+        finally {
+            connection.release();
+        }
     });
 }
 function email(body) {
@@ -227,6 +230,9 @@ function addBook(body, files) {
             code = 405;
             console.error("Error al agregar el libro:", error);
             return { code, error };
+        }
+        finally {
+            connection.release();
         }
     });
 }
@@ -406,6 +412,9 @@ function addAdvice(body) {
             console.info("Rollback successful");
             return { code: 405 };
         }
+        finally {
+            connection.release();
+        }
     });
 }
 function getAdvice(id) {
@@ -454,6 +463,9 @@ function createConfiguration(body) {
             console.info("Rollback successful");
             return 405;
         }
+        finally {
+            connection.release();
+        }
     });
 }
 function createConfigurationImage(body, files) {
@@ -483,6 +495,9 @@ function createConfigurationImage(body, files) {
             connection.rollback();
             console.info("Rollback successful");
             return 405;
+        }
+        finally {
+            connection.release();
         }
     });
 }
@@ -549,6 +564,9 @@ function addCategory(body) {
             console.error(error);
             return { code: 401, error };
         }
+        finally {
+            connection.release();
+        }
     });
 }
 function updateCategory(body) {
@@ -565,6 +583,9 @@ function updateCategory(body) {
         catch (error) {
             console.error(error);
             return { code: 401, error };
+        }
+        finally {
+            connection.release();
         }
     });
 }
@@ -600,6 +621,9 @@ function uploadBio(body, files) {
             code = 405;
             console.error("Error al actualizar", error);
             return { code, error };
+        }
+        finally {
+            connection.release();
         }
     });
 }

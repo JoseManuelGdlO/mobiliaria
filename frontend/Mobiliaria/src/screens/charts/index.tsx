@@ -1,172 +1,222 @@
-import LottieView from "lottie-react-native"
-import { useEffect, useRef, useState } from "react";
-import { FlatList, Text, View } from "react-native"
-import RNPickerSelect from 'react-native-picker-select';
+import LottieView from 'lottie-react-native'
+import { useEffect, useRef, useState, useMemo } from 'react'
+import { ScrollView, Text, View, StyleSheet } from 'react-native'
+import RNPickerSelect from 'react-native-picker-select'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import * as reportsService from '@services/reports'
-import Loading from "@components/loading";
-import { useTheme } from "@hooks/useTheme";
-import { currencyFormat } from "@utils/dateFormat";
+import Loading from '@components/loading'
+import AppCard from '@components/AppCard'
+import { useTheme } from '@hooks/useTheme'
+import { currencyFormat } from '@utils/dateFormat'
+import { createAppPickerSelectStyle } from '@utils/pickerSelectTheme'
 
 const Charts = (): JSX.Element => {
-    const animation = useRef(null);
-    const [intervalMonth, setIntervalMonth] = useState(1)
-    const [loading, setLoading] = useState(false)
-    const [reports, setReports] = useState<any>()
-    const { fonts, colors } = useTheme()
+  const animation = useRef(null)
+  const [intervalMonth, setIntervalMonth] = useState(1)
+  const [loading, setLoading] = useState(false)
+  const [reports, setReports] = useState<any>()
+  const { fonts, colors } = useTheme()
 
-    
-    useEffect(() => {
+  const pickerSelectStyles = useMemo(() => createAppPickerSelectStyle(colors, fonts), [colors, fonts])
 
-        getReports(1)
+  const pickerCommon = useMemo(
+    () => ({
+      useNativeAndroidPickerStyle: false as const,
+      darkTheme: true as const,
+      style: pickerSelectStyles,
+      doneText: 'Listo' as const,
+    }),
+    [pickerSelectStyles],
+  )
 
-    }, [])
+  const PickerChevron = (): JSX.Element => (
+    <MaterialCommunityIcons name="chevron-down" size={22} color={colors.Morado100} />
+  )
 
-    const getReports = async (value: number) => {
-        try {
-            
-            setIntervalMonth(value)
-            setLoading(true)
-            const response = await reportsService.getReports(value)
-            console.log(value, 'response', intervalMonth);
-            
-            setReports(response)
-            setLoading(false)
-        } catch (error) {
-            console.log(error)
-            setLoading(false)
-        }
+  useEffect(() => {
+    getReports(1)
+  }, [])
+
+  const getReports = async (value: number) => {
+    try {
+      setIntervalMonth(value)
+      setLoading(true)
+      const response = await reportsService.getReports(value)
+      setReports(response)
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setLoading(false)
     }
+  }
 
-    const keyExtractor = (item: any, index: number) => index.toString()
+  const quantity = reports?.Quantity ?? []
+  const mostRent = reports?.mostRent ?? []
 
-    const renderItem = ({ item }: any) => {
-        
-        return (
-            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: 10 }}>
-                <Text style={{ fontFamily: fonts.Roboto.Medium, fontSize: 12 }}>{item.nombre_titular_evento}</Text>
-                <Text style={{ fontFamily: fonts.Roboto.Medium, fontSize: 12 }}>{item.veces_agrupado}</Text>
+  return (
+    <View style={[styles.root, { backgroundColor: colors.DarkViolet300 }]}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+        nestedScrollEnabled
+      >
+        <View style={styles.heroRow}>
+          <LottieView
+            ref={animation}
+            autoPlay
+            loop
+            style={styles.heroLottie}
+            source={require('../../assets/images/lottie/chart.json')}
+          />
+          <View style={styles.heroText}>
+            <Text style={[styles.intro, { color: colors.gris300, fontFamily: fonts.Inter.Regular }]}>
+              Estadísticas de rentas, pagos y eventos. Elige el intervalo de tiempo.
+            </Text>
+            <View style={[styles.pickerWrap, { borderBottomColor: `${colors.Griss50}33` }]}>
+              <RNPickerSelect
+                {...pickerCommon}
+                Icon={PickerChevron}
+                value={intervalMonth}
+                onValueChange={(value: number) => getReports(value)}
+                items={[
+                  { label: '1 mes atrás', value: 1 },
+                  { label: '2 meses atrás', value: 2 },
+                  { label: '3 meses atrás', value: 3 },
+                  { label: '4 meses atrás', value: 4 },
+                  { label: '5 meses atrás', value: 5 },
+                  { label: '6 meses atrás', value: 6 },
+                  { label: '7 meses atrás', value: 7 },
+                  { label: '8 meses atrás', value: 8 },
+                  { label: '9 meses atrás', value: 9 },
+                  { label: '10 meses atrás', value: 10 },
+                  { label: '11 meses atrás', value: 11 },
+                  { label: '12 meses atrás', value: 12 },
+                ]}
+              />
             </View>
-        )
-    }
-    
-    const keyExtractorInv = (item: any, index: number) => index.toString()
-
-    const renderInvItem = ({ item }: any) => {
-        
-        return (
-            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: 10 }}>
-                <Text style={{ fontFamily: fonts.Roboto.Medium, fontSize: 12, width: '60%' }}>{item.nombre_mobiliario}</Text>
-                <Text style={{ fontFamily: fonts.Roboto.Medium, fontSize: 12 }}>{item.veces_rentado}</Text>
-                <Text style={{ fontFamily: fonts.Roboto.Medium, fontSize: 12 }}>{item.ocupados}</Text>
-            </View>
-        )
-    }
-    
-    return (
-        <View>
-            <FlatList
-                data={[{}]}
-                renderItem={() => <>
-                <View style={{  display: 'flex', flexDirection: 'row'  }}>
-                <LottieView
-                        ref={animation}
-                        autoPlay
-                        loop={true}
-                        style={{
-                            width: '30%',
-                            height: 160,
-                            backgroundColor: 'transparent',
-                        }}
-                        // Find more Lottie files at https://lottiefiles.com/featured
-                        source={require('../../assets/images/lottie/chart.json')}
-                    />
-                <View>
-                    <Text style={{ width: "60%", paddingTop: 30, paddingRight: 10}}>
-                        Aqui veras reflejada una lista de estadisticas, referente a tus rentas, pagos y eventos
-                    </Text>
-                    <Text style={{ width: "70%", paddingTop: 5, paddingRight: 10}}>
-                        Selecciona el intervalo de tiempo
-                    </Text>
-                    <View style={{ borderBottomColor: '#CCCC', borderBottomWidth: 1, width: '50%' }}>
-                        <RNPickerSelect
-                                key={1}
-                                value={intervalMonth}
-                                onValueChange={(value) => {
-                                    getReports(value)
-                                }}
-                                items={[
-                                    { label: '1 mes atras', value: 1 },
-                                    { label: '2 meses atras', value: 2 },
-                                    { label: '3 meses atras', value: 3 },
-                                    { label: '4 meses atras', value: 4 },
-                                    { label: '5 meses atras', value: 5 },
-                                    { label: '6 meses atras', value: 6 },
-                                    { label: '7 meses atras', value: 7 },
-                                    { label: '9 meses atras', value: 8 },
-                                    { label: '10 meses atras', value: 9 },
-                                    { label: '11 meses atras', value: 10 },
-                                    { label: '12 meses atras', value: 11 },
-                                ]}
-                            />
-                    </View>
-                </View>
-
-            </View>
-            <View style={{paddingHorizontal: 8, paddingBottom: 10}}>
-                <View style={{
-                        padding: 10, borderColor: '#9E2EBE', borderRadius: 5, borderWidth: 1
-                    }}>
-                        <Text style={{ color: '#9E2EBE', fontFamily: fonts.Roboto.Medium, fontSize: 15 }}>Eventos en {intervalMonth} mes{intervalMonth>1?'es':''} </Text>
-                        <Text style={{ fontFamily: fonts.Roboto.Medium, fontSize: 12 }}>Total Generado: <Text style={{ color: '#9E2EBE', fontWeight: 'bold'}}>{currencyFormat(reports?.eventos?.total)}</Text></Text>
-                        <Text style={{ fontFamily: fonts.Roboto.Medium, fontSize: 12 }}>Todal de eventos: <Text style={{ color: '#9E2EBE', fontWeight: 'bold'}}>{reports?.eventos?.numero_eventos}</Text></Text>
-                        <Text style={{ fontFamily: fonts.Roboto.Medium, fontSize: 12 }}>Promedio en costo rentado por evento: <Text style={{ color: '#9E2EBE', fontWeight: 'bold'}}>{currencyFormat(reports?.eventos?.promedio)}</Text></Text>
-                </View>
-                <View style={{
-                        padding: 10, borderColor: '#9E2EBE', borderRadius: 5, borderWidth: 1, marginTop: 10
-                    }}>
-                        <Text style={{ color: '#9E2EBE', fontFamily: fonts.Roboto.Medium, fontSize: 15 }}>Clientes lealtad </Text>
-                        <Text style={{ fontFamily: fonts.Roboto.Medium, fontSize: 12 }}>
-                            Aqui unl lista de tus clientes quienes mas han rentado en el ultimo intervalo de tiempo
-                        </Text>
-                        <FlatList
-                            style={{ paddingTop: 10}}
-                            ListHeaderComponent={() => <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10 }}>
-                                <Text style={{ color: '#9E2EBE', fontFamily: fonts.Roboto.Medium, fontSize: 12 }}>Nombre</Text>
-                                <Text style={{ color: '#9E2EBE', fontFamily: fonts.Roboto.Medium, fontSize: 12 }}>Veces rentado</Text>
-                            </View>}
-                            ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: 'rgba(0, 0, 0, 0.12)' }}></View>}
-                            data={reports?.Quantity}
-                            renderItem={renderItem}
-                            keyExtractor={keyExtractor}
-                        />
-                </View>
-                <View style={{
-                        padding: 10, borderColor: '#9E2EBE', borderRadius: 5, borderWidth: 1, marginTop: 10
-                    }}>
-                        <Text style={{ color: '#9E2EBE', fontFamily: fonts.Roboto.Medium, fontSize: 15 }}>Mobiliario rentado </Text>
-                        <Text style={{ fontFamily: fonts.Roboto.Medium, fontSize: 12 }}>
-                            Aqui una lista de tus productos mas rentados en el ultimo intervalo de tiempo
-                        </Text>
-                        <FlatList
-                            style={{ paddingTop: 10}}
-                            ListHeaderComponent={() => <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 10 }}>
-                                <Text style={{ color: '#9E2EBE', width: '60%', fontFamily: fonts.Roboto.Medium, fontSize: 12 }}>Nombre</Text>
-                                <Text style={{ color: '#9E2EBE', fontFamily: fonts.Roboto.Medium, fontSize: 12 }}>Rentado</Text>
-                                <Text style={{ color: '#9E2EBE', fontFamily: fonts.Roboto.Medium, fontSize: 12 }}>Cantidad</Text>
-                            </View>}
-                            ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: 'rgba(0, 0, 0, 0.12)' }}></View>}
-                            data={reports?.mostRent}
-                            renderItem={renderInvItem}
-                            keyExtractor={keyExtractorInv}
-                        />
-                </View>
-            </View>
-                </>}
-            />
-           
-            <Loading loading={loading}></Loading>
+          </View>
         </View>
-    )
+
+        <View style={styles.sectionPad}>
+          <AppCard style={{ marginBottom: 12 }}>
+            <Text style={[styles.sectionTitle, { color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }]}>
+              Eventos en {intervalMonth} mes{intervalMonth > 1 ? 'es' : ''}
+            </Text>
+            <Text style={[styles.line, { color: colors.gris300, fontFamily: fonts.Inter.Regular }]}>
+              Total generado:{' '}
+              <Text style={{ color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }}>
+                {currencyFormat(reports?.eventos?.total)}
+              </Text>
+            </Text>
+            <Text style={[styles.line, { color: colors.gris300, fontFamily: fonts.Inter.Regular }]}>
+              Total de eventos:{' '}
+              <Text style={{ color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }}>
+                {reports?.eventos?.numero_eventos}
+              </Text>
+            </Text>
+            <Text style={[styles.line, { color: colors.gris300, fontFamily: fonts.Inter.Regular }]}>
+              Promedio por evento:{' '}
+              <Text style={{ color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }}>
+                {currencyFormat(reports?.eventos?.promedio)}
+              </Text>
+            </Text>
+          </AppCard>
+
+          <AppCard padding={12} style={{ marginBottom: 12 }}>
+            <Text style={[styles.sectionTitle, { color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }]}>
+              Clientes frecuentes
+            </Text>
+            <Text style={[styles.sub, { color: colors.gris400, fontFamily: fonts.Inter.Regular }]}>
+              Clientes con más rentas en el intervalo seleccionado.
+            </Text>
+            <View style={[styles.tableHead, { borderBottomColor: `${colors.Griss50}22` }]}>
+              <Text style={[styles.th, { color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }]}>Nombre</Text>
+              <Text style={[styles.th, { color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }]}>Veces</Text>
+            </View>
+            {quantity.map((item: any, index: number) => (
+              <View
+                key={`q-${index}`}
+                style={[styles.tableRow, { borderBottomColor: `${colors.Griss50}12` }]}
+              >
+                <Text style={[styles.td, { color: colors.Griss100, fontFamily: fonts.Inter.Regular }]} numberOfLines={2}>
+                  {item.nombre_titular_evento}
+                </Text>
+                <Text style={[styles.td, { color: colors.Griss100, fontFamily: fonts.Inter.Medium }]}>{item.veces_agrupado}</Text>
+              </View>
+            ))}
+          </AppCard>
+
+          <AppCard padding={12}>
+            <Text style={[styles.sectionTitle, { color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }]}>
+              Mobiliario más rentado
+            </Text>
+            <Text style={[styles.sub, { color: colors.gris400, fontFamily: fonts.Inter.Regular }]}>
+              Productos más solicitados en el intervalo.
+            </Text>
+            <View style={[styles.tableHead3, { borderBottomColor: `${colors.Griss50}22` }]}>
+              <Text style={[styles.th, { flex: 2, color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }]}>Nombre</Text>
+              <Text style={[styles.th, { color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }]}>Rentas</Text>
+              <Text style={[styles.th, { color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }]}>Cant.</Text>
+            </View>
+            {mostRent.map((item: any, index: number) => (
+              <View
+                key={`m-${index}`}
+                style={[styles.tableRow3, { borderBottomColor: `${colors.Griss50}12` }]}
+              >
+                <Text style={[styles.td, { flex: 2, color: colors.Griss100, fontFamily: fonts.Inter.Regular }]} numberOfLines={2}>
+                  {item.nombre_mobiliario}
+                </Text>
+                <Text style={[styles.td, { color: colors.Griss100, fontFamily: fonts.Inter.Medium }]}>{item.veces_rentado}</Text>
+                <Text style={[styles.td, { color: colors.Griss100, fontFamily: fonts.Inter.Medium }]}>{item.ocupados}</Text>
+              </View>
+            ))}
+          </AppCard>
+        </View>
+      </ScrollView>
+      <Loading loading={loading} />
+    </View>
+  )
 }
+
+const styles = StyleSheet.create({
+  root: { flex: 1 },
+  scrollContent: { paddingBottom: 40 },
+  heroRow: { flexDirection: 'row', paddingHorizontal: 12, paddingTop: 8 },
+  heroLottie: { width: '32%', height: 140, backgroundColor: 'transparent' },
+  heroText: { flex: 1, paddingLeft: 8, justifyContent: 'center' },
+  intro: { fontSize: 13, lineHeight: 18 },
+  pickerWrap: { marginTop: 10, borderBottomWidth: 1, alignSelf: 'stretch' },
+  sectionPad: { paddingHorizontal: 16, marginTop: 8 },
+  sectionTitle: { fontSize: 16, marginBottom: 8 },
+  sub: { fontSize: 12, marginBottom: 10 },
+  line: { fontSize: 13, marginTop: 4 },
+  tableHead: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    marginBottom: 4,
+  },
+  tableHead3: {
+    flexDirection: 'row',
+    paddingVertical: 8,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    marginBottom: 4,
+  },
+  tableRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  tableRow3: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+  th: { fontSize: 12, flex: 1 },
+  td: { fontSize: 12, flex: 1 },
+})
 
 export default Charts

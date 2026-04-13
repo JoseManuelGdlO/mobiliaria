@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { View, Text, Alert } from 'react-native'
+import { View, Text } from 'react-native'
 import React from 'react'
 import _styles from './styles'
 import { useTheme } from '@hooks/useTheme'
@@ -11,11 +11,9 @@ import { NavigationScreens } from '@interfaces/navigation'
 import { useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 
-
 interface Props {
   data: any
 }
-
 
 const CardEvents = ({
   data,
@@ -23,30 +21,60 @@ const CardEvents = ({
   const navigation = useNavigation<StackNavigationProp<NavigationScreens>>()
   const { colors } = useTheme()
   const styles = _styles()
+  const iconMuted = colors.gris300
+  const paid = data.pagado_evento === 1
+  const timeStr = `${data.hora_envio_evento.split(':')[0]}:${data.hora_envio_evento.split(':')[1]}`
 
   return (
     <TouchableRipple
-      borderless
-      onPress={() => { navigation.navigate('EventDetail', { id: data.id_evento })}}
+      borderless={false}
+      rippleColor={`${colors.Morado100}33`}
+      onPress={() => {
+        navigation.navigate('EventDetail', { id: data.id_evento })
+      }}
       style={styles.rippleContainer}
     >
       <View style={styles.container}>
-        <View style={styles.titleContainer}>
-          <TeamLine width={24} height={24} color="#95a8f4" />
-          <Text style={styles.title}>{data.nombre_titular_evento}</Text>
+        <View style={styles.topRow}>
+          <View style={styles.iconWrap}>
+            <TeamLine width={22} height={22} color={colors.Morado100} />
+          </View>
+          <View style={styles.titleBlock}>
+            <Text style={styles.title} numberOfLines={2}>
+              {data.nombre_titular_evento}
+            </Text>
+          </View>
+          <Text style={styles.chevron}>›</Text>
         </View>
-        <View style={styles.infoContainer}>
-          <View style={styles.rowContainer}>
-            <Book2Line />
-            <Text style={styles.description}>Direccion: {data.direccion_evento}</Text>
+
+        <View style={styles.metaRow}>
+          <Book2Line width={16} height={16} color={iconMuted} />
+          <Text style={styles.address} numberOfLines={3}>
+            {data.direccion_evento}
+          </Text>
+        </View>
+
+        <View style={styles.footerRow}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <BookMarkLine width={16} height={16} color={iconMuted} />
+            <Text style={styles.timeText}>{timeStr}</Text>
           </View>
-          <View style={styles.rowContainer}>
-            <BookMarkLine />
-            <Text style={styles.description}>Hora: {`${data.hora_envio_evento.split(':')[0]}:${data.hora_envio_evento.split(':')[1]}`}</Text>
-          </View>
-          <View style={styles.rowContainer}>
-            <BookMarkLine />
-            <Text style={[styles.description, {color: data.pagado_evento === 1 ? 'green' : 'red'}]}>{data.pagado_evento === 1 ? 'Pagado' : 'No pagado'}</Text>
+          <View
+            style={[
+              styles.badge,
+              {
+                backgroundColor: paid ? `${colors.exito500}2E` : `${colors.red}2E`,
+              },
+            ]}
+          >
+            <Text
+              style={[
+                styles.badgeText,
+                { color: paid ? colors.exito400 : colors.red },
+              ]}
+            >
+              {paid ? 'Pagado' : 'Pendiente'}
+            </Text>
           </View>
         </View>
       </View>

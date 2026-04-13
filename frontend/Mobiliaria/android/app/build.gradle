@@ -75,7 +75,7 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.mobiliaria"
+    namespace "com.eventivapp.jm.delao"
     defaultConfig {
         applicationId "com.eventivapp.jm.delao"
         minSdkVersion rootProject.ext.minSdkVersion

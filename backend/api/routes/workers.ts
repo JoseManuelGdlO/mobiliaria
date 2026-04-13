@@ -1,12 +1,11 @@
 import { verifyToken } from "../libs/headers";
 import express from 'express';
-import jwt_decode from "jwt-decode";
 const workersService = require('../services/workers');
 const router = express.Router();
 
 router.get('/getWorkers', verifyToken, async function (req: any, res: any, next: any) {
     try {
-        const bearer: any = jwt_decode(req.headers['authorization']);
+        const bearer: any = req.authPayload;
         let id = bearer.data.id_empresa;
 
         res.status(201).json(await workersService.getWorkers(id));
@@ -18,7 +17,7 @@ router.get('/getWorkers', verifyToken, async function (req: any, res: any, next:
 
 router.get('/getEventsDay', verifyToken, async function (req: any, res: any, next: any) {
     try {
-        const bearer: any = jwt_decode(req.headers['authorization']);
+        const bearer: any = req.authPayload;
         let id = bearer.data.id_empresa;
 
         let date = req.query.date;
@@ -33,7 +32,7 @@ router.get('/getEventsDay', verifyToken, async function (req: any, res: any, nex
 
 router.post('/addWorker', verifyToken, async function (req: any, res: any, next: any) {
     try {
-        const bearer: any = jwt_decode(req.headers['authorization']);
+        const bearer: any = req.authPayload;
         let id = bearer.data.id_empresa;
 
         let body = req.body;

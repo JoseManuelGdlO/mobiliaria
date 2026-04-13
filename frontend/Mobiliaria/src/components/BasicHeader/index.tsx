@@ -1,18 +1,19 @@
-import React, { useEffect, useMemo, useRef } from 'react'
-import { Alert, BackHandler, Text, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useRef } from 'react'
+import { BackHandler, Text, TouchableOpacity, View } from 'react-native'
 import { NavigationScreens } from '@interfaces/navigation'
 import { StackNavigationProp } from '@react-navigation/stack'
-import { CommonActions, useFocusEffect, useNavigation, useRoute } from '@react-navigation/native'
-import SaveButton from './SaveButton'
+import { CommonActions, useFocusEffect, useNavigation } from '@react-navigation/native'
 import _styles from './styles'
 import { useTheme } from '@hooks/useTheme'
 import BackIcon from '@assets/images/icons/BackIcon'
 import useReduxUser from '@hooks/useReduxUser'
 import useLogout from '@hooks/useLogout'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 interface Props {
   title?: string
   backButtonAction?: () => void
+  /** @deprecated use theme defaults; kept for backwards compatibility */
   color?: string
   hideBackArrow?: boolean
   backgroundColor?: string
@@ -23,29 +24,34 @@ export const headerHeight = 56
 
 const BasicHeader = ({
   title = '',
-  color = 'black',
+  color,
   backButtonAction,
   hideBackArrow = false,
-  backgroundColor = 'white',
-  showLogout
+  backgroundColor: backgroundColorProp,
+  showLogout,
 }: Props): JSX.Element => {
   const isBlockedRef = useRef(false)
   const [titleState, setTitleState] = React.useState('')
   const { user } = useReduxUser()
   const navigation = useNavigation<StackNavigationProp<NavigationScreens>>()
-  const route = useRoute()
-  const styles = _styles(headerHeight, backgroundColor, hideBackArrow)
   const { colors } = useTheme()
-  const { logout, loading } = useLogout(() => { })
+  const insets = useSafeAreaInsets()
+  const { logout } = useLogout(() => {})
+
+  const backgroundColor = backgroundColorProp ?? colors.background_parts.header
+  const titleColor = color ?? colors.Griss50
+  const borderColor = `${colors.Griss50}22`
+
+  const styles = _styles(headerHeight, insets.top, backgroundColor)
 
   const back = (): void => {
-    // Previene ejecutar dos veces la acción antes de cargar
     if (isBlockedRef.current) {
       return
     }
-    setTimeout(() => { isBlockedRef.current = false }, 1000)
+    setTimeout(() => {
+      isBlockedRef.current = false
+    }, 1000)
     isBlockedRef.current = true
-    // fin
 
     if (backButtonAction !== undefined) {
       backButtonAction()
@@ -62,11 +68,8 @@ const BasicHeader = ({
           navigation.dispatch(
             CommonActions.reset({
               index: 0,
-              routes: [
-                { name: 'SignedInStack' }
-
-              ]
-            })
+              routes: [{ name: 'SignedInStack' }],
+            }),
           )
         } else {
           return false
@@ -76,12 +79,12 @@ const BasicHeader = ({
       BackHandler.addEventListener('hardwareBackPress', onBackPress)
       return () =>
         BackHandler.removeEventListener('hardwareBackPress', onBackPress)
-    }, [navigation])
+    }, [navigation]),
   )
 
-  const getTitle = () => {
+  const getTitle = (): void => {
     if (title === 'Home') {
-      setTitleState(`Hola ${user.nombre_comp} 👋🏻`)
+      setTitleState(user?.nombre_comp != null ? `Hola ${user.nombre_comp}` : 'Inicio')
       return
     }
     setTitleState(title)
@@ -89,37 +92,36 @@ const BasicHeader = ({
 
   useEffect(() => {
     getTitle()
-  })
-
+  }, [title, user])
 
   return (
-    <View style={styles.container}>
-      {
-        !hideBackArrow
-        && (
-          <TouchableOpacity
-            hitSlop={{
-              top: 10,
-              left: 8,
-              right: 10,
-              bottom: 10
-            }}
-            onPress={back}
-          >
-            <BackIcon color={colors.DarkBlack200} />
-          </TouchableOpacity>)
-      }
+    <View style={[styles.container, { borderBottomColor: borderColor }]}>
+      {!hideBackArrow && (
+        <TouchableOpacity
+          hitSlop={{
+            top: 10,
+            left: 8,
+            right: 10,
+            bottom: 10,
+          }}
+          onPress={back}
+        >
+          <BackIcon color={colors.Griss100} />
+        </TouchableOpacity>
+      )}
 
-      <Text style={[styles.title, { color }]} numberOfLines={1} >{titleState}</Text>
-      {
-        showLogout
-        && (
-          <TouchableOpacity onPress={logout} style={{ width: 30 }}>
-            <Text style={{ width: '100%' }}>
-              Salir
-            </Text>
-          </TouchableOpacity>)
-      }
+      <Text
+        style={[styles.title, { color: titleColor, marginLeft: hideBackArrow ? 0 : 8 }]}
+        numberOfLines={1}
+        accessibilityRole="header"
+      >
+        {titleState}
+      </Text>
+      {showLogout && (
+        <TouchableOpacity onPress={logout} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+          <Text style={[styles.logoutLabel, { color: colors.Morado100 }]}>Salir</Text>
+        </TouchableOpacity>
+      )}
     </View>
   )
 }

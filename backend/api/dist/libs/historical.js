@@ -26,5 +26,8 @@ function saveHistorical(idEvent, idUser, description, obs) {
             connection.rollback();
             console.info("Rollback successful");
         }
+        finally {
+            connection.release();
+        }
     });
 }
