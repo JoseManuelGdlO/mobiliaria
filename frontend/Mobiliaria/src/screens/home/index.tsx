@@ -61,7 +61,7 @@ const Home = ({
 
     const { colors, fonts } = useTheme();
 
-    const { user } = useReduxUser()
+    const { user, token } = useReduxUser()
 
     const requestUserPermissions = async () => {
 
@@ -357,7 +357,10 @@ const Home = ({
     useEffect(() => {
         requestUserPermissions()
         subscribeNotifications()
-        sendLocationWS(user)
+        let cleanup: undefined | (() => Promise<void>)
+        sendLocationWS(user, { token }).then((stopFn) => {
+            cleanup = stopFn
+        })
 
         const date = new Date().toISOString().split('T')[0]
         const arrDate = date.split('-')
@@ -372,6 +375,12 @@ const Home = ({
         if (refresh) {
             setLoading(true)
             getEvents()
+        }
+
+        return () => {
+            if (cleanup) {
+                cleanup()
+            }
         }
     }, [])
 

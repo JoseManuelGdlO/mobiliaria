@@ -33,7 +33,7 @@ const Delivery = (): JSX.Element => {
     const [loading, setLoading] = React.useState<boolean>(true)
 
     const { fonts, colors } = useTheme()
-    const { user } = useReduxUser()
+    const { user, token } = useReduxUser()
 
     const requestUserPermissions = async () => {
 
@@ -323,7 +323,16 @@ const Delivery = (): JSX.Element => {
         subscribeNotifications()
        
         getDates()
-        sendLocationWS(user)
+        let cleanup: undefined | (() => Promise<void>)
+        sendLocationWS(user, { token }).then((stopFn) => {
+            cleanup = stopFn
+        })
+
+        return () => {
+            if (cleanup) {
+                cleanup()
+            }
+        }
 
     }, [])
 

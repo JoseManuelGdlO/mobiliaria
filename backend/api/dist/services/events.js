@@ -128,9 +128,9 @@ function getEventsOfDay(id, date) {
             WHERE p2.id_evento = e.id_evento
         )
     AND
-      e.id_empresa = ${id}
+      e.id_empresa = ?
     AND
-      e.fecha_envio_evento = '${date}';`);
+      e.fecha_envio_evento = ?;`, [id, date]);
         let data = helper_1.helper.emptyOrRows(rows);
         if (data.length === 0) {
             code = 404;
@@ -371,7 +371,7 @@ function addUrltoEvent(body, id, idUsuario) {
         yield connection.execute("SET TRANSACTION ISOLATION LEVEL READ COMMITTED");
         yield connection.beginTransaction();
         try {
-            const [event] = yield connection.execute(` UPDATE evento_mob SET url = '${body.url}', lat = '${body.lat}', lng = '${body.lng}' WHERE id_evento = ${id}`);
+            yield connection.execute(` UPDATE evento_mob SET url = ?, lat = ?, lng = ? WHERE id_evento = ?`, [body.url, body.lat, body.lng, id]);
             (0, historical_1.saveHistorical)(id, idUsuario, "Modificación", `Se actualizo la url ${body.url}`);
             yield connection.commit();
             return 201;

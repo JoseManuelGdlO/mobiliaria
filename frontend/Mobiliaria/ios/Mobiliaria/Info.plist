@@ -38,11 +38,11 @@
 		</dict>
 	</dict>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string></string>
+	<string>Usamos tu ubicación para mostrar tus entregas en tiempo real.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string></string>
+	<string>Necesitamos tu ubicación en segundo plano para compartirla durante tus rutas.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>Necesitamos tu ubicación para mostrar rutas y entregas cercanas.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Inter-Black.ttf</string>
@@ -83,6 +83,7 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
+		<string>location</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

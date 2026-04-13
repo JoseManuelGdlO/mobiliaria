@@ -35,7 +35,8 @@ async function login(body: any) {
     let code = 200;
     const rows = await db.query(
         `SELECT * FROM usuarios_mobiliaria
-      WHERE correo = "${body.email}" AND contrasena = "${body.password}"`
+      WHERE correo = ? AND contrasena = ?`,
+      [body.email, body.password]
     );
 
     let data = helper.emptyOrRows(rows);
@@ -60,7 +61,8 @@ async function token(body: any) {
     let code = 200;
     
     const rows = await db.query(
-        `UPDATE usuarios_mobiliaria SET token = '${body.token}' WHERE id_usuario = ${body.id};`
+        `UPDATE usuarios_mobiliaria SET token = ? WHERE id_usuario = ?;`,
+        [body.token, body.id]
     );
 
     let data = helper.emptyOrRows(rows);

@@ -1,11 +1,13 @@
 import remoteConfig from '@react-native-firebase/remote-config';
 
 let cachedApiUrl: string | null = null;
+let cachedSocketUrl: string | null = null;
 let loadPromise: Promise<string> | null = null;
 
 async function fetchRemoteConfig(): Promise<string> {
   await remoteConfig().setDefaults({
     API_URL: 'http://localhost:3000',
+    SOCKET_URL: 'http://localhost:3000',
   });
 
   await remoteConfig().setConfigSettings({
@@ -14,7 +16,9 @@ async function fetchRemoteConfig(): Promise<string> {
 
   await remoteConfig().fetchAndActivate();
   const apiUrl = remoteConfig().getValue('API_URL').asString();
+  const socketUrl = remoteConfig().getValue('SOCKET_URL').asString();
   cachedApiUrl = apiUrl;
+  cachedSocketUrl = socketUrl || apiUrl;
   return apiUrl;
 }
 
@@ -41,3 +45,11 @@ export async function bootstrapRemoteConfig(): Promise<string> {
 
 /** @deprecated Use ensureApiBaseUrl — now cached, no repeated fetch. */
 export const initRemoteConfig = ensureApiBaseUrl;
+
+export async function ensureSocketUrl(): Promise<string> {
+  if (cachedSocketUrl != null) {
+    return cachedSocketUrl;
+  }
+  await ensureApiBaseUrl();
+  return cachedSocketUrl || cachedApiUrl || 'http://localhost:3000';
+}

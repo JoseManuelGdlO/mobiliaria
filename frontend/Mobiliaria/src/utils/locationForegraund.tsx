@@ -1,8 +1,10 @@
 import { IUser } from '@interfaces/user';
 import Geolocation from '@react-native-community/geolocation';
-import { Platform } from 'react-native';
+import { AppState, AppStateStatus, Platform } from 'react-native';
 import BackgroundService from 'react-native-background-actions';
 import { io } from 'socket.io-client';
+import { ensureSocketUrl } from './remote-config';
+import { ensureLocationPermissions } from './location-permissions';
 
 Geolocation.setRNConfiguration({
   authorizationLevel: 'always', // Request "always" location permission
@@ -11,88 +13,129 @@ Geolocation.setRNConfiguration({
   locationProvider: 'auto'
 });
 
-export const sendLocationWS = async (user: IUser) => {
-    // Android 14+ (API 34): foreground services must declare a type; this library's
-    // native startForeground() call can hard-crash the app. Skip until upgraded/patched.
-    if (Platform.OS === 'android' && Platform.Version >= 34) {
-        return;
+type StartOptions = {
+  token?: string;
+};
+
+let socketInstance: any = null;
+let watchId: number | null = null;
+let appStateSub: { remove: () => void } | null = null;
+let startedForUserId: number | null = null;
+let lastEmitAt = 0;
+
+const shouldEmitNow = (coords: any) => {
+  const now = Date.now();
+  const accuracy = Number(coords?.accuracy ?? 0);
+  if (accuracy > 120) return false;
+  if (now - lastEmitAt < 8000) return false;
+  lastEmitAt = now;
+  return true;
+};
+
+const emitLocation = (user: IUser, location: any) => {
+  if (!socketInstance || !socketInstance.connected) return;
+  const payload = {
+    type: 'location:update',
+    user,
+    location,
+    sentAt: Date.now(),
+  };
+  socketInstance.emit('location:update', payload);
+};
+
+const startWatch = (user: IUser) => {
+  if (watchId != null) {
+    Geolocation.clearWatch(watchId);
+  }
+  watchId = Geolocation.watchPosition(
+    (position) => {
+      if (!shouldEmitNow(position?.coords)) return;
+      emitLocation(user, position);
+    },
+    (error) => {
+      console.log('location watch error', error);
+    },
+    {
+      enableHighAccuracy: true,
+      distanceFilter: 15,
+      interval: 10000,
+      fastestInterval: 7000,
+      maximumAge: 5000,
     }
+  );
+};
 
-    let location: any = null;
-    let lastLocation: any = null
-    const socket = io('http://192.168.0.21:3000');
+export const stopLocationWS = async (): Promise<void> => {
+  if (watchId != null) {
+    Geolocation.clearWatch(watchId);
+    watchId = null;
+  }
+  if (appStateSub != null) {
+    appStateSub.remove();
+    appStateSub = null;
+  }
+  if (socketInstance != null) {
+    socketInstance.disconnect();
+    socketInstance = null;
+  }
+  startedForUserId = null;
+  lastEmitAt = 0;
+  if (BackgroundService.isRunning()) {
+    await BackgroundService.stop();
+  }
+};
 
-    socket.on('connect', function () {
-      console.log('Websocket Connected with App');
-    });
+export const sendLocationWS = async (user: IUser, options?: StartOptions) => {
+  if (startedForUserId === user.id_usuario && socketInstance != null) {
+    return stopLocationWS;
+  }
 
-    socket.on('error', function (error: any) {
-      console.log('error socket', error);
+  await stopLocationWS();
+  const hasPermission = await ensureLocationPermissions();
+  if (!hasPermission) return stopLocationWS;
 
-    })
+  const socketUrl = await ensureSocketUrl();
+  socketInstance = io(socketUrl, {
+    transports: ['websocket'],
+    timeout: 10000,
+    reconnection: true,
+    reconnectionAttempts: Infinity,
+    reconnectionDelay: 1500,
+    auth: options?.token ? { token: options.token } : undefined,
+  });
 
-    socket.on('event', (msg) => { console.log('msg', msg) });
+  socketInstance.on('connect', () => console.log('Websocket connected'));
+  socketInstance.on('connect_error', (error: any) => console.log('socket connect_error', error?.message || error));
+  socketInstance.on('error', (error: any) => console.log('socket error', error));
 
+  startWatch(user);
+  appStateSub = AppState.addEventListener('change', (state: AppStateStatus) => {
+    if (state === 'active') {
+      startWatch(user);
+      return;
+    }
+    if (watchId != null) {
+      Geolocation.clearWatch(watchId);
+      watchId = null;
+    }
+  });
 
-    const sleep = (time: any) => new Promise((resolve) => setTimeout(() => resolve(), time));
-
-    // You can do anything in your task such as network requests, timers and so on,
-    // as long as it doesn't touch UI. Once your task completes (i.e. the promise is resolved),
-    // React Native will go into "paused" mode (unless there are other tasks running,
-    // or there is a foreground app).
-    const veryIntensiveTask = async (taskDataArguments: any) => {
-      // Example of an infinite loop task
-      const { delay } = taskDataArguments;
-      await new Promise(async (resolve) => {
-        for (let i = 0; BackgroundService.isRunning(); i++) {
-          // console.log(location, 'location');
-
-          if (location) {
-            lastLocation = location;
-            // location.coords.longitude = '-104.6608'
-            // location.coords.latitude = '24.0248'
-            // user.id_usuario = 1
-            socket.emit('location', {
-              type: 'location',
-              user: user,
-              location: location
-            });
-
-          }
-          await sleep(delay);
-        }
-      });
-
-
-    };
-
-    const options = {
-      taskName: 'Location',
-      taskTitle: 'obteniendo ubicación',
-      taskDesc: 'Estamos obteniendo tu ubicación',
-      taskIcon: {
-        name: 'ic_launcher',
-        type: 'mipmap',
-      },
-      color: '#ff00ff',
-      linkingURI: 'eventivapp://', // See Deep Linking for more info
-      parameters: {
-        delay: 10000,
-      },
-    };
-
-    Geolocation.getCurrentPosition(info => {
-      location = info
-    }, error => {
-      console.log('error', error);
-    })
+  if (Platform.OS === 'android' && Platform.Version < 34) {
     try {
-      await BackgroundService.start(veryIntensiveTask, options );
+      await BackgroundService.start(async () => {}, {
+        taskName: 'Location',
+        taskTitle: 'Compartiendo ubicación',
+        taskDesc: 'Tu ubicación está activa para entregas en tiempo real',
+        taskIcon: { name: 'ic_launcher', type: 'mipmap' },
+        color: '#7b4cff',
+        linkingURI: 'eventivapp://',
+        parameters: {},
+      });
     } catch (e) {
-      console.error('[BackgroundService] stop error', e);
+      console.log('background start warning', e);
     }
+  }
 
-    return () => {
-      socket.close();
-    };
-}
+  startedForUserId = user.id_usuario;
+  return stopLocationWS;
+};

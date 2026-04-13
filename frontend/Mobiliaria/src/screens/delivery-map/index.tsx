@@ -11,6 +11,7 @@ import { Linking } from "react-native";
 import { io } from "socket.io-client";
 import useReduxUser from "@hooks/useReduxUser";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { ensureSocketUrl } from "@utils/remote-config";
 
 /** Convierte lat/lng del API a números válidos para MapView (evita NaN). Corrige par lat/lng invertido. */
 function parseMapCoordinate(latRaw: unknown, lngRaw: unknown): { latitude: number; longitude: number } | null {
@@ -34,7 +35,7 @@ function parseMapCoordinate(latRaw: unknown, lngRaw: unknown): { latitude: numbe
 }
 
 const DeliveryMap = (): JSX.Element => {
-  const { user } = useReduxUser()
+  const { user, token } = useReduxUser()
   const [visible, setVisible] = useState(false)
   const [date, setDate] = useState(new Date())
   const [provitionalDate, setProvitionalDate] = useState(new Date())
@@ -47,19 +48,30 @@ const DeliveryMap = (): JSX.Element => {
 
   const [driversMarker, setDriversMarker] = useState<any>([])
 
-  const wSRecibed = () => {
-    const socket = io('http://192.168.0.21:3000');
+  const wSRecibed = async () => {
+    const socketUrl = await ensureSocketUrl()
+    const socket = io(socketUrl, {
+      transports: ['websocket'],
+      auth: token ? { token } : undefined,
+    });
 
     socket.on('connect', function () {
       console.log('Websocket Connected with App in Map');
     });
 
-    socket.on('empresa_' + user.id_empresa, (msg) => {
-      console.log('Websocket Received', msg);
+    socket.on('presence:sync', (msg) => {
       const list = Array.isArray(msg) ? msg : msg != null ? [msg] : []
       setDriversMarker(list)
     });
 
+    socket.on('empresa_' + user.id_empresa, (msg) => {
+      const list = Array.isArray(msg) ? msg : msg != null ? [msg] : []
+      setDriversMarker(list)
+    });
+
+    return () => {
+      socket.disconnect()
+    }
   }
 
   const onDatePickerResult = (picked: Date | null): void => {
@@ -139,8 +151,16 @@ const DeliveryMap = (): JSX.Element => {
 
   useEffect(() => {
     const date = new Date().toISOString().split('T')[0]
-    getEventsDay(date),
-      wSRecibed()
+    getEventsDay(date)
+    let cleanup: undefined | (() => void)
+    wSRecibed().then((closeFn) => {
+      cleanup = closeFn
+    })
+    return () => {
+      if (cleanup) {
+        cleanup()
+      }
+    }
   }, [])
 
   return (
@@ -241,17 +261,21 @@ const DeliveryMap = (): JSX.Element => {
                   const lngRaw = item?.location?.coords?.longitude
                   const coord = parseMapCoordinate(latRaw, lngRaw)
                   if (coord == null) return null
+                  const isOnline = item?.isOnline !== false
+                  const lastSeenText = item?.lastSeenAt
+                    ? new Date(item.lastSeenAt).toLocaleTimeString()
+                    : 'Sin reporte'
                   return (
                   <Marker
                     key={item.id_usuario ?? item.id ?? `drv-${index}`}
                     coordinate={coord}
-                    title={item.nombre_titular_evento}
-                    description={item.direccion_evento}
+                    title={item?.user?.nombre_comp ?? 'Repartidor'}
+                    description={`${isOnline ? 'En línea' : 'Última ubicación'}: ${lastSeenText}`}
                   >
                     <View style={{ alignItems: 'center' }}>
                       <View
                         style={{
-                          backgroundColor: `${colors.Morado600}EE`,
+                          backgroundColor: isOnline ? `${colors.Morado600}EE` : `${colors.gris400}CC`,
                           paddingHorizontal: 10,
                           paddingVertical: 8,
                           borderRadius: 22,
