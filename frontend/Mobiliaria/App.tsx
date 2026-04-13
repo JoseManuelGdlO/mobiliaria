@@ -28,6 +28,8 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { PersistGate } from 'redux-persist/lib/integration/react';
 // @ts-expect-error
 import GlobalFont from 'react-native-global-font'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 
 const MyStatusBar = ({ backgroundColor, barStyle, ...props }: { backgroundColor: string, barStyle: StatusBarStyle }): ReactElement => (
@@ -42,6 +44,8 @@ const App = (): JSX.Element => {
   GlobalFont.applyGlobal('Inter')
 
   useEffect(() => {
+    MaterialCommunityIcons.loadFont();
+    Ionicons.loadFont();
     bootstrapRemoteConfig().catch(() => {});
   }, []);
 

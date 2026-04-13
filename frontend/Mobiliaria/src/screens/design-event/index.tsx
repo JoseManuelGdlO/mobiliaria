@@ -17,6 +17,11 @@ const DesignEvent = (): JSX.Element => {
   const [guestCount, setGuestCount] = useState('80');
   const [budget, setBudget] = useState('0');
   const [eventId, setEventId] = useState('0');
+  const [filterStyle, setFilterStyle] = useState('');
+  const [filterColor, setFilterColor] = useState('');
+  const [filterMaterial, setFilterMaterial] = useState('');
+  const [filterSpaceUsage, setFilterSpaceUsage] = useState('');
+  const [maxWeightKg, setMaxWeightKg] = useState('');
   const [recommendation, setRecommendation] = useState<any>(null);
   const [quote, setQuote] = useState<any>(null);
 
@@ -29,6 +34,13 @@ const DesignEvent = (): JSX.Element => {
 
   const pickerSelectStyles = useMemo(() => createAppPickerSelectStyle(colors, fonts), [colors, fonts]);
 
+  const getErrorLogData = (error: any) => ({
+    message: error?.message,
+    code: error?.code,
+    status: error?.response?.status,
+    data: error?.response?.data,
+  });
+
   const buildRecommendation = async (): Promise<void> => {
     setLoading(true);
     try {
@@ -38,8 +50,20 @@ const DesignEvent = (): JSX.Element => {
         style,
         guestCount: Number(guestCount),
         budget: Number(budget),
+        filters: {
+          style: filterStyle,
+          color: filterColor,
+          material: filterMaterial,
+          spaceUsage: filterSpaceUsage,
+          maxWeightKg: Number(maxWeightKg || 0),
+        },
       };
+      console.log('[DesignEvent] buildRecommendation:start', payload);
       const data = await designService.getMoodboardRecommendation(payload);
+      console.log('[DesignEvent] buildRecommendation:moodboard:ok', {
+        style: data?.style?.label,
+        recommendedItems: data?.recommendedItems?.length ?? 0,
+      });
       setRecommendation(data);
       const live = await designService.getLiveQuote({
         items: data.recommendedItems,
@@ -47,6 +71,10 @@ const DesignEvent = (): JSX.Element => {
         logisticsFee: 0,
         discountPct: 0,
         applyIva: false,
+      });
+      console.log('[DesignEvent] buildRecommendation:liveQuote:ok', {
+        subtotal: live?.breakdown?.subtotal,
+        total: live?.breakdown?.total,
       });
       setQuote(live.breakdown);
       trackDesignEvent(designAnalyticsEvents.recommendationSucceeded, {
@@ -56,6 +84,7 @@ const DesignEvent = (): JSX.Element => {
       trackDesignEvent(designAnalyticsEvents.liveQuoteGenerated, { total: live.breakdown?.total ?? 0 });
       Toast.show({ type: 'success', text1: 'Listo', text2: 'Moodboard y cotización generados' });
     } catch (error) {
+      console.error('[DesignEvent] buildRecommendation:error', getErrorLogData(error));
       Toast.show({ type: 'error', text1: 'Error', text2: 'No se pudo generar la propuesta' });
     } finally {
       setLoading(false);
@@ -69,14 +98,21 @@ const DesignEvent = (): JSX.Element => {
     }
     setLoading(true);
     try {
+      console.log('[DesignEvent] saveDraft:start', {
+        eventId: Number(eventId) || 0,
+        hasRecommendation: recommendation != null,
+        hasQuote: quote != null,
+      });
       await designService.saveDesignDraft(Number(eventId) || 0, {
         form: { eventType, style, guestCount: Number(guestCount), budget: Number(budget) },
         recommendation,
         quote,
       });
+      console.log('[DesignEvent] saveDraft:ok');
       trackDesignEvent(designAnalyticsEvents.draftSaved, { eventId: Number(eventId) || 0 });
       Toast.show({ type: 'success', text1: 'Guardado', text2: 'Borrador de diseño actualizado' });
     } catch (error) {
+      console.error('[DesignEvent] saveDraft:error', getErrorLogData(error));
       Toast.show({ type: 'error', text1: 'Error', text2: 'No se pudo guardar el borrador' });
     } finally {
       setLoading(false);
@@ -143,6 +179,43 @@ const DesignEvent = (): JSX.Element => {
           <TextInput
             value={eventId}
             onChangeText={setEventId}
+            keyboardType="number-pad"
+            style={{ color: colors.Griss50, borderBottomColor: colors.gris400, borderBottomWidth: 1, paddingVertical: 8 }}
+          />
+
+          <Text style={{ color: colors.gris300, marginTop: 10, fontFamily: fonts.Inter.Medium }}>Filtro estilo (opcional)</Text>
+          <TextInput
+            value={filterStyle}
+            onChangeText={setFilterStyle}
+            style={{ color: colors.Griss50, borderBottomColor: colors.gris400, borderBottomWidth: 1, paddingVertical: 8 }}
+          />
+
+          <Text style={{ color: colors.gris300, marginTop: 10, fontFamily: fonts.Inter.Medium }}>Filtro color (opcional)</Text>
+          <TextInput
+            value={filterColor}
+            onChangeText={setFilterColor}
+            style={{ color: colors.Griss50, borderBottomColor: colors.gris400, borderBottomWidth: 1, paddingVertical: 8 }}
+          />
+
+          <Text style={{ color: colors.gris300, marginTop: 10, fontFamily: fonts.Inter.Medium }}>Filtro material (opcional)</Text>
+          <TextInput
+            value={filterMaterial}
+            onChangeText={setFilterMaterial}
+            style={{ color: colors.Griss50, borderBottomColor: colors.gris400, borderBottomWidth: 1, paddingVertical: 8 }}
+          />
+
+          <Text style={{ color: colors.gris300, marginTop: 10, fontFamily: fonts.Inter.Medium }}>Uso espacio (indoor/outdoor/both)</Text>
+          <TextInput
+            value={filterSpaceUsage}
+            onChangeText={setFilterSpaceUsage}
+            autoCapitalize="none"
+            style={{ color: colors.Griss50, borderBottomColor: colors.gris400, borderBottomWidth: 1, paddingVertical: 8 }}
+          />
+
+          <Text style={{ color: colors.gris300, marginTop: 10, fontFamily: fonts.Inter.Medium }}>Peso máximo kg (opcional)</Text>
+          <TextInput
+            value={maxWeightKg}
+            onChangeText={setMaxWeightKg}
             keyboardType="number-pad"
             style={{ color: colors.Griss50, borderBottomColor: colors.gris400, borderBottomWidth: 1, paddingVertical: 8 }}
           />

@@ -32,8 +32,10 @@ router.get('/getInventary', headers_1.verifyToken, function (req, res, next) {
 router.delete('/removeInventary', headers_1.verifyToken, function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            const bearer = req.authPayload;
+            const companyId = bearer.data.id_empresa;
             let id = req.query.id;
-            const response = yield inventaryService.removeInventary(id);
+            const response = yield inventaryService.removeInventary(id, companyId);
             res.status(response.code).json(response.data);
         }
         catch (err) {

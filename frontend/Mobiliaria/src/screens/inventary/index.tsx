@@ -1,5 +1,5 @@
 import { memo, useEffect } from "react"
-import { ActivityIndicator, Dimensions, FlatList, RefreshControl, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { ActivityIndicator, Alert, Dimensions, FlatList, RefreshControl, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
 import AppModal from "@components/AppModal"
 import { IInventary } from "@interfaces/inventary"
 import * as inventaryService from '../../services/inventary';
@@ -12,7 +12,6 @@ import PrimaryButton from "@components/PrimaryButton";
 import AppCard from "@components/AppCard";
 import EmptyState from "@components/EmptyState";
 import Toast from "react-native-toast-message";
-import ConfirmDialog from "@components/ConfirmDialog";
 const height = Dimensions.get('window').height
 
 const ITEMS_PEER_PAGE = 10
@@ -29,7 +28,14 @@ const Inventary = (): JSX.Element => {
     const [nombre, setNombre] = React.useState<string>('')
     const [cantidad, setCantidad] = React.useState<string>('')
     const [costo, setCosto] = React.useState<string>('')
-    const [openAlert, setOpenAlert] = React.useState(false)
+    const [anchoCm, setAnchoCm] = React.useState<string>('')
+    const [altoCm, setAltoCm] = React.useState<string>('')
+    const [fondoCm, setFondoCm] = React.useState<string>('')
+    const [pesoKg, setPesoKg] = React.useState<string>('')
+    const [usoEspacio, setUsoEspacio] = React.useState<string>('')
+    const [estilo, setEstilo] = React.useState<string>('')
+    const [color, setColor] = React.useState<string>('')
+    const [material, setMaterial] = React.useState<string>('')
 
     const { fonts, colors } = useTheme()
 
@@ -88,6 +94,14 @@ const Inventary = (): JSX.Element => {
                 setNombre(item.nombre_mob)
                 setCantidad(item.cantidad_mob.toString())
                 setCosto(item.costo_mob.toString())
+                setAnchoCm(item.ancho_cm ? String(item.ancho_cm) : '')
+                setAltoCm(item.alto_cm ? String(item.alto_cm) : '')
+                setFondoCm(item.fondo_cm ? String(item.fondo_cm) : '')
+                setPesoKg(item.peso_kg ? String(item.peso_kg) : '')
+                setUsoEspacio(item.uso_espacio ?? '')
+                setEstilo(item.estilo ?? '')
+                setColor(item.color ?? '')
+                setMaterial(item.material ?? '')
                 setVisible(true)
             }}>
                 <View style={{ paddingHorizontal: 16, marginBottom: 10 }}>
@@ -182,6 +196,18 @@ const Inventary = (): JSX.Element => {
                                 textStyle={{ fontSize: 12, fontFamily: fonts.Inter.SemiBold, color: colors.white }}
                                 backgroundButton={colors.Morado600}
                                 onPress={() => {
+                                    setInventaryNew({ nombre_mob: '', cantidad_mob: 0, costo_mob: 0 })
+                                    setNombre('')
+                                    setCantidad('')
+                                    setCosto('')
+                                    setAnchoCm('')
+                                    setAltoCm('')
+                                    setFondoCm('')
+                                    setPesoKg('')
+                                    setUsoEspacio('')
+                                    setEstilo('')
+                                    setColor('')
+                                    setMaterial('')
                                     setVisible(true)
                                 }}
                                 title='Agregar inventario'
@@ -319,6 +345,113 @@ const Inventary = (): JSX.Element => {
                                     />
                                 </View>
                             </View>
+                            <View style={{ flexDirection: 'row', paddingTop: 16, gap: 12 }}>
+                                <View style={{ flex: 1, minWidth: 0 }}>
+                                    <Text style={{ fontFamily: fonts.Inter.Medium, fontSize: 13, color: colors.gris300 }}>
+                                        Ancho (cm) opcional
+                                    </Text>
+                                    <TextInput
+                                        value={anchoCm}
+                                        onChangeText={setAnchoCm}
+                                        keyboardType="numeric"
+                                        placeholder="Ej. 120"
+                                        placeholderTextColor={colors.gris400}
+                                        style={{ width: '100%', marginTop: 8, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 12, borderWidth: 1, borderColor: `${colors.Morado100}44`, backgroundColor: `${colors.Griss50}0C`, color: colors.Griss50, fontFamily: fonts.Inter.Regular, fontSize: 15 }}
+                                    />
+                                </View>
+                                <View style={{ flex: 1, minWidth: 0 }}>
+                                    <Text style={{ fontFamily: fonts.Inter.Medium, fontSize: 13, color: colors.gris300 }}>
+                                        Alto (cm) opcional
+                                    </Text>
+                                    <TextInput
+                                        value={altoCm}
+                                        onChangeText={setAltoCm}
+                                        keyboardType="numeric"
+                                        placeholder="Ej. 75"
+                                        placeholderTextColor={colors.gris400}
+                                        style={{ width: '100%', marginTop: 8, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 12, borderWidth: 1, borderColor: `${colors.Morado100}44`, backgroundColor: `${colors.Griss50}0C`, color: colors.Griss50, fontFamily: fonts.Inter.Regular, fontSize: 15 }}
+                                    />
+                                </View>
+                            </View>
+                            <View style={{ flexDirection: 'row', paddingTop: 16, gap: 12 }}>
+                                <View style={{ flex: 1, minWidth: 0 }}>
+                                    <Text style={{ fontFamily: fonts.Inter.Medium, fontSize: 13, color: colors.gris300 }}>
+                                        Fondo (cm) opcional
+                                    </Text>
+                                    <TextInput
+                                        value={fondoCm}
+                                        onChangeText={setFondoCm}
+                                        keyboardType="numeric"
+                                        placeholder="Ej. 60"
+                                        placeholderTextColor={colors.gris400}
+                                        style={{ width: '100%', marginTop: 8, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 12, borderWidth: 1, borderColor: `${colors.Morado100}44`, backgroundColor: `${colors.Griss50}0C`, color: colors.Griss50, fontFamily: fonts.Inter.Regular, fontSize: 15 }}
+                                    />
+                                </View>
+                                <View style={{ flex: 1, minWidth: 0 }}>
+                                    <Text style={{ fontFamily: fonts.Inter.Medium, fontSize: 13, color: colors.gris300 }}>
+                                        Peso (kg) opcional
+                                    </Text>
+                                    <TextInput
+                                        value={pesoKg}
+                                        onChangeText={setPesoKg}
+                                        keyboardType="numeric"
+                                        placeholder="Ej. 20"
+                                        placeholderTextColor={colors.gris400}
+                                        style={{ width: '100%', marginTop: 8, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 12, borderWidth: 1, borderColor: `${colors.Morado100}44`, backgroundColor: `${colors.Griss50}0C`, color: colors.Griss50, fontFamily: fonts.Inter.Regular, fontSize: 15 }}
+                                    />
+                                </View>
+                            </View>
+                            <View style={{ paddingTop: 16 }}>
+                                <Text style={{ fontFamily: fonts.Inter.Medium, fontSize: 13, color: colors.gris300 }}>
+                                    Uso de espacio opcional (indoor, outdoor, both)
+                                </Text>
+                                <TextInput
+                                    value={usoEspacio}
+                                    onChangeText={setUsoEspacio}
+                                    autoCapitalize="none"
+                                    placeholder="indoor"
+                                    placeholderTextColor={colors.gris400}
+                                    style={{ width: '100%', marginTop: 8, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 12, borderWidth: 1, borderColor: `${colors.Morado100}44`, backgroundColor: `${colors.Griss50}0C`, color: colors.Griss50, fontFamily: fonts.Inter.Regular, fontSize: 15 }}
+                                />
+                            </View>
+                            <View style={{ flexDirection: 'row', paddingTop: 16, gap: 12 }}>
+                                <View style={{ flex: 1, minWidth: 0 }}>
+                                    <Text style={{ fontFamily: fonts.Inter.Medium, fontSize: 13, color: colors.gris300 }}>
+                                        Estilo opcional
+                                    </Text>
+                                    <TextInput
+                                        value={estilo}
+                                        onChangeText={setEstilo}
+                                        placeholder="boho"
+                                        placeholderTextColor={colors.gris400}
+                                        style={{ width: '100%', marginTop: 8, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 12, borderWidth: 1, borderColor: `${colors.Morado100}44`, backgroundColor: `${colors.Griss50}0C`, color: colors.Griss50, fontFamily: fonts.Inter.Regular, fontSize: 15 }}
+                                    />
+                                </View>
+                                <View style={{ flex: 1, minWidth: 0 }}>
+                                    <Text style={{ fontFamily: fonts.Inter.Medium, fontSize: 13, color: colors.gris300 }}>
+                                        Color opcional
+                                    </Text>
+                                    <TextInput
+                                        value={color}
+                                        onChangeText={setColor}
+                                        placeholder="beige"
+                                        placeholderTextColor={colors.gris400}
+                                        style={{ width: '100%', marginTop: 8, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 12, borderWidth: 1, borderColor: `${colors.Morado100}44`, backgroundColor: `${colors.Griss50}0C`, color: colors.Griss50, fontFamily: fonts.Inter.Regular, fontSize: 15 }}
+                                    />
+                                </View>
+                            </View>
+                            <View style={{ paddingTop: 16 }}>
+                                <Text style={{ fontFamily: fonts.Inter.Medium, fontSize: 13, color: colors.gris300 }}>
+                                    Material opcional
+                                </Text>
+                                <TextInput
+                                    value={material}
+                                    onChangeText={setMaterial}
+                                    placeholder="madera"
+                                    placeholderTextColor={colors.gris400}
+                                    style={{ width: '100%', marginTop: 8, paddingVertical: 12, paddingHorizontal: 14, borderRadius: 12, borderWidth: 1, borderColor: `${colors.Morado100}44`, backgroundColor: `${colors.Griss50}0C`, color: colors.Griss50, fontFamily: fonts.Inter.Regular, fontSize: 15 }}
+                                />
+                            </View>
                         </ScrollView>
                         <View
                             style={{
@@ -357,14 +490,35 @@ const Inventary = (): JSX.Element => {
                                         const body = {
                                             name: nombre,
                                             quantity: parseInt(cantidad),
-                                            price: costo
+                                            price: costo,
+                                            widthCm: anchoCm,
+                                            heightCm: altoCm,
+                                            depthCm: fondoCm,
+                                            weightKg: pesoKg,
+                                            spaceUsage: usoEspacio,
+                                            style: estilo,
+                                            color,
+                                            material
                                         }
 
                                         try {
 
                                             inventaryService.addInventary(body)
                                             const last = totalInventary[totalInventary.length - 1].id_mob
-                                            const inv: IInventary = { id_mob: last ? last + 1 : 9999, nombre_mob: body.name, cantidad_mob: body.quantity, costo_mob: parseInt(body.price) }
+                                            const inv: IInventary = {
+                                                id_mob: last ? last + 1 : 9999,
+                                                nombre_mob: body.name,
+                                                cantidad_mob: body.quantity,
+                                                costo_mob: parseInt(body.price),
+                                                ancho_cm: anchoCm ? Number(anchoCm) : null,
+                                                alto_cm: altoCm ? Number(altoCm) : null,
+                                                fondo_cm: fondoCm ? Number(fondoCm) : null,
+                                                peso_kg: pesoKg ? Number(pesoKg) : null,
+                                                uso_espacio: usoEspacio ? (usoEspacio as any) : null,
+                                                estilo: estilo || null,
+                                                color: color || null,
+                                                material: material || null
+                                            }
                                             setTotalInventary([...totalInventary, inv])
                                             setInventary([...inventary, inv])
                                             setVisible(false)
@@ -396,7 +550,15 @@ const Inventary = (): JSX.Element => {
                                             id: inventaryNew.id_mob,
                                             name: nombre,
                                             quantity: parseInt(cantidad),
-                                            price: costo
+                                            price: costo,
+                                            widthCm: anchoCm,
+                                            heightCm: altoCm,
+                                            depthCm: fondoCm,
+                                            weightKg: pesoKg,
+                                            spaceUsage: usoEspacio,
+                                            style: estilo,
+                                            color,
+                                            material
                                         }
 
                                         try {
@@ -405,6 +567,14 @@ const Inventary = (): JSX.Element => {
                                             inventaryNew.nombre_mob = body.name
                                             inventaryNew.cantidad_mob = body.quantity
                                             inventaryNew.costo_mob = parseInt(body.price)
+                                            inventaryNew.ancho_cm = anchoCm ? Number(anchoCm) : null
+                                            inventaryNew.alto_cm = altoCm ? Number(altoCm) : null
+                                            inventaryNew.fondo_cm = fondoCm ? Number(fondoCm) : null
+                                            inventaryNew.peso_kg = pesoKg ? Number(pesoKg) : null
+                                            inventaryNew.uso_espacio = usoEspacio ? (usoEspacio as any) : null
+                                            inventaryNew.estilo = estilo || null
+                                            inventaryNew.color = color || null
+                                            inventaryNew.material = material || null
 
                                             inventary.find((item: IInventary, index: number) => {
                                                 if (item.id_mob === inventaryNew.id_mob) {
@@ -438,6 +608,14 @@ const Inventary = (): JSX.Element => {
                                     setNombre('')
                                     setCantidad('')
                                     setCosto('')
+                                    setAnchoCm('')
+                                    setAltoCm('')
+                                    setFondoCm('')
+                                    setPesoKg('')
+                                    setUsoEspacio('')
+                                    setEstilo('')
+                                    setColor('')
+                                    setMaterial('')
 
                                 }}
                                 title={inventaryNew.nombre_mob === '' ? 'Guardar artículo' : 'Guardar cambios'}
@@ -457,7 +635,7 @@ const Inventary = (): JSX.Element => {
                                 onPress={() => setVisible(false)}
                                 title="Cancelar"
                             />
-                            {inventaryNew.nombre_mob !== '' && (
+                            {Boolean(inventaryNew.id_mob) && (
                             <PrimaryButton
                                 containerStyle={{
                                     width: '100%',
@@ -467,42 +645,62 @@ const Inventary = (): JSX.Element => {
                                 }}
                                 textStyle={{ fontSize: 15, fontFamily: fonts.Inter.SemiBold, color: colors.white }}
                                 backgroundButton={colors.red}
-                                onPress={() => setOpenAlert(true)}
+                                onPress={() => {
+                                    Alert.alert(
+                                        'Eliminar inventario',
+                                        'Esta acción realizará una baja lógica del artículo. ¿Deseas continuar?',
+                                        [
+                                            {
+                                                text: 'Cancelar',
+                                                style: 'cancel',
+                                            },
+                                            {
+                                                text: 'Eliminar',
+                                                style: 'destructive',
+                                                onPress: async () => {
+                                                    try {
+                                                        const inventoryId = inventaryNew.id_mob ? inventaryNew.id_mob : 0
+                                                        await inventaryService.remove(inventoryId)
+
+                                                        const inv = totalInventary.filter((item: IInventary) => item.id_mob !== inventaryNew.id_mob)
+                                                        setTotalInventary(inv)
+                                                        setInventary(inv.slice(0, page * ITEMS_PEER_PAGE))
+                                                        setSearch('')
+                                                        setVisible(false)
+                                                        Toast.show({
+                                                            type: 'success',
+                                                            text1: 'Exito',
+                                                            text2: 'Se elimino correctamente',
+                                                            visibilityTime: 3000,
+                                                            autoHide: true,
+                                                            onHide: () => { }
+                                                        })
+                                                    } catch (error) {
+                                                        console.log(error);
+                                                        Toast.show({
+                                                            type: 'error',
+                                                            text1: 'Error',
+                                                            text2: 'No se pudo eliminar el inventario',
+                                                            visibilityTime: 3000,
+                                                            autoHide: true,
+                                                            onHide: () => { }
+                                                        })
+                                                    } finally {
+                                                        setInventaryNew({ nombre_mob: '', cantidad_mob: 0, costo_mob: 0 })
+                                                        setVisible(false)
+                                                    }
+                                                },
+                                            },
+                                        ],
+                                        { cancelable: true },
+                                    )
+                                }}
                                 title="Eliminar del inventario"
                             />
                             )}
                         </View>
                     </View>
             </AppModal>
-            <ConfirmDialog open={openAlert} sure={() => {
-
-                try {
-                    inventaryService.remove(inventaryNew.id_mob ? inventaryNew.id_mob : 0)
-                    const inv = totalInventary.filter((item: IInventary) => item.id_mob !== inventaryNew.id_mob)
-                    setTotalInventary(inv)
-                    setInventary(inv.slice(0, page * ITEMS_PEER_PAGE))
-                    setSearch('')
-                    setVisible(false)
-                    setOpenAlert(false)
-                    Toast.show({
-                        type: 'success',
-                        text1: 'Exito',
-                        text2: 'Se elimino correctamente',
-                        visibilityTime: 3000,
-                        autoHide: true,
-                        onHide: () => { }
-                    })
-                } catch (error) {
-                    console.log(error);
-                }
-                setInventaryNew({ nombre_mob: '', cantidad_mob: 0, costo_mob: 0 })
-                setOpenAlert(false)
-                setVisible(false)
-            }}
-                notsure={() => {
-                    setOpenAlert(false)
-                }}
-            ></ConfirmDialog>
         </View>
     )
 }
