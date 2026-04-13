@@ -21,5 +21,8 @@ exports.config = {
     presenceTtlMs: Number(process.env.PRESENCE_TTL_MS || 60000),
     socketRateLimitWindowMs: Number(process.env.SOCKET_RATE_LIMIT_WINDOW_MS || 60000),
     socketRateLimitMaxEvents: Number(process.env.SOCKET_RATE_LIMIT_MAX_EVENTS || 180),
+    recommendationItemsLimit: Number(process.env.RECOMMENDATION_ITEMS_LIMIT || 8),
+    recommendationPackagesLimit: Number(process.env.RECOMMENDATION_PACKAGES_LIMIT || 3),
+    defaultLogisticsFee: Number(process.env.DEFAULT_LOGISTICS_FEE || 0),
     listPerPage: 10,
 };

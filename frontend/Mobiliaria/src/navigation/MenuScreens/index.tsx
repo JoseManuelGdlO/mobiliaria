@@ -2,6 +2,7 @@ import BasicHeader from '@components/BasicHeader'
 import Charts from '@screens/charts'
 import Clients from '@screens/clients/clients'
 import Payments from '@screens/payments'
+import DesignEvent from '@screens/design-event'
 import React from 'react'
 
 export interface screen {
@@ -31,6 +32,11 @@ const MenuScreens: screen[] = [
     name: 'Estadisticas',
     header: () => <BasicHeader title='Estadísticas' />,
     component: Charts
+  },
+  {
+    name: 'DisenaEvento',
+    header: () => <BasicHeader title='Diseña tu evento' />,
+    component: DesignEvent
   }
 
 ]

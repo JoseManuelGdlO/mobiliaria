@@ -5,6 +5,8 @@ export const API_WORKERS = '/workers'
 export const API_CLIENTS = '/clients'
 export const API_PAYMENTS = '/payments'
 export const API_REPORTS = '/reports'
+export const API_RECOMMENDATIONS = '/recommendations'
+export const API_QUOTES = '/quotes'
 
 export const GET_EVENTS_PATH = API_EVENTS + '/getEvents'
 export const GET_EVENTS_DAY_PATH = API_EVENTS + '/getEventsDay'
@@ -44,3 +46,6 @@ export const ADD_PAYMENTS = API_PAYMENTS + '/addPayment'
 export const ADD_FLETE = API_EVENTS + '/flete'
 
 export const GET_REPORTS = API_REPORTS + '/getReports'
+
+export const RECOMMEND_MOODBOARD = API_RECOMMENDATIONS + '/moodboard'
+export const LIVE_QUOTE = API_QUOTES + '/live'
