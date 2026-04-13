@@ -184,7 +184,7 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-    res.json({ message: "version: 0.4.3" });
+    res.json({ message: "version: 0.4.5" });
 });
 
 app.get("/metrics/realtime", (req, res) => {
@@ -223,7 +223,7 @@ const bootstrap = async () => {
 
     http.listen(port, () => {
       console.log(`Example app listening at YOUR_IP_INSTANCE:${port}`);
-      console.log('version: 0.4.4');
+      console.log('version: 0.4.5');
       console.log(`Socket.IO enabled on port ${port}`);
     });
   } catch (error) {
