@@ -7,7 +7,12 @@
     "preinstall": "npm i nodemon -g",
     "build": "npx tsc",
     "start": "node dist/index.js",
-    "dev": "nodemon index.ts"
+    "dev": "nodemon index.ts",
+    "db:migrate:main": "sequelize-cli db:migrate --env development_main",
+    "db:migrate:dgo": "sequelize-cli db:migrate --env development_dgo",
+    "db:migrate:all": "npm run db:migrate:main && npm run db:migrate:dgo",
+    "db:migrate:undo:main": "sequelize-cli db:migrate:undo --env development_main",
+    "db:migrate:undo:dgo": "sequelize-cli db:migrate:undo --env development_dgo"
   },
   "keywords": [],
   "author": "",
@@ -29,6 +34,8 @@
     "node-cron": "^3.0.3",
     "nodemailer": "^6.9.13",
     "nodemon": "^3.1.4",
+    "sequelize": "^6.37.8",
+    "sequelize-cli": "^6.6.5",
     "socket.io": "^4.7.5",
     "websocket-express": "^3.1.0",
     "ws": "^8.18.0"

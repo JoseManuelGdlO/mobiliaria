@@ -2,6 +2,9 @@ import { dbDurangeneidad } from "./db";
 import { helper } from "../helper";
 import { ftpSend } from "../libs/fts-service";
 import path from "path";
+import { ArticleModel } from "../models/article";
+import { TagModel } from "../models/tag";
+import { sequelizeDurangeneidad } from "./sequelize";
 const nodemailer = require("nodemailer");
 
 async function login(body: any) {
@@ -120,36 +123,43 @@ async function getDetail(id: number) {
 }
 
 async function addArticle(body: any) {
-  const connection = await dbDurangeneidad.connection();
-  await connection.execute("SET TRANSACTION ISOLATION LEVEL READ COMMITTED");
-
-  await connection.beginTransaction();
+  const transaction = await sequelizeDurangeneidad.transaction();
   console.log(body.article.fkid_category, "id_fk");
 
   try {
-    const [article]: any = await connection.execute(
-      `INSERT INTO articulo (creador, creacion, titulo, body, lugar, descripcion, thumb, fkid_category)
-            VALUES ('${body.article.creador}', '${body.article.creacion}', '${body.article.titulo}', '${body.article.body}', '${body.article.lugar}', '${body.article.descripcion}', '${body.article.thumb}', ${body.article.fkid_category})`
+    const article = await ArticleModel.create(
+      {
+        creador: body.article.creador,
+        creacion: body.article.creacion,
+        titulo: body.article.titulo,
+        body: body.article.body,
+        lugar: body.article.lugar,
+        descripcion: body.article.descripcion,
+        thumb: body.article.thumb,
+        fkid_category: Number(body.article.fkid_category),
+      },
+      { transaction }
     );
 
-    const articleId = article.insertId;
+    const articleId = Number(article.getDataValue("id"));
 
     for (let tag of body.tags) {
-      await connection.execute(
-        `INSERT INTO tags (fkid_articulo, label)
-                VALUES ('${articleId}', '${tag.label.toUpperCase()}')`
+      await TagModel.create(
+        {
+          fkid_articulo: articleId,
+          label: String(tag.label || "").toUpperCase(),
+        },
+        { transaction }
       );
     }
 
-    await connection.commit();
+    await transaction.commit();
     return 201;
   } catch (error) {
     console.error(error);
-    connection.rollback();
+    await transaction.rollback();
     console.info("Rollback successful");
     return 405;
-  } finally {
-    connection.release();
   }
 }
 

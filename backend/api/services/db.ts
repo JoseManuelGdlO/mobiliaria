@@ -30,6 +30,7 @@ export module db {
       return results as QueryResult;
     } catch (error) {
       console.log(error);
+      throw error;
     }
   }
 
@@ -46,6 +47,7 @@ export module dbDurangeneidad {
       return results as QueryResult;
     } catch (error) {
       console.log(error);
+      throw error;
     }
   }
 

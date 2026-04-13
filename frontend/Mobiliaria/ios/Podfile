@@ -2,8 +2,8 @@ use_modular_headers!
 
 $RNFirebaseAsStaticFramework = true
 
-pod 'GoogleMaps'
-pod 'Google-Maps-iOS-Utils'
+pod 'GoogleMaps', '9.3.0'
+pod 'Google-Maps-iOS-Utils', '6.1.0'
 
 # Resolve react_native_pods.rb with node to allow for hoisting
 require Pod::Executable.execute_command('node', ['-p',
@@ -12,7 +12,7 @@ require Pod::Executable.execute_command('node', ['-p',
     {paths: [process.argv[1]]},
   )', __dir__]).strip
 
-platform :ios, min_ios_version_supported
+platform :ios, '15.0'
 prepare_react_native_project!
 
 flipper_config = ENV['NO_FLIPPER'] == "1" ? FlipperConfiguration.disabled : FlipperConfiguration.enabled
@@ -57,6 +57,7 @@ target 'Mobiliaria' do
       target.build_configurations.each do |config|
         config.build_settings['ENABLE_BITCODE'] = 'NO'
         config.build_settings['BITCODE_GENERATION_MODE'] = 'marker' # Para evitar problemas en App Store Connect
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
         # En Apple Silicon, excluir arm64 en simulator impide seleccionar destinos iOS Simulator.
         config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = ''
 
