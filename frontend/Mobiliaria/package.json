@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
-    "ios": "react-native run-ios  --simulator=iPhone 15 Pro Max",
+    "ios": "react-native run-ios --simulator=\"iPhone 17 Pro Max\"",
     "lint": "eslint .",
     "start": "react-native start",
-    "pods": "arch -x86_64 pod install --project-directory=ios",
+    "pods": "pod install --project-directory=ios",
     "test": "jest"
   },
   "dependencies": {
