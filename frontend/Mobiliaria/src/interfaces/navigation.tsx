@@ -12,10 +12,12 @@ export type NavigationScreens =
         Package: undefined,
         ViewMore: undefined,
         /** Rutas del stack «Ver más» (MenuScreens en FooterMenu) */
+        CRM: undefined,
+        Estadisticas: undefined,
+        GastosFinanzas: undefined,
+        Clients: undefined,
         Clientes: undefined,
         Pagos: undefined,
-        Estadisticas: undefined,
-        Clients: undefined,
         EventDetail: {
             id: number
         },

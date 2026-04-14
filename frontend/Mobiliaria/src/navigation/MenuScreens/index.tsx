@@ -1,8 +1,8 @@
 import BasicHeader from '@components/BasicHeader'
 import Charts from '@screens/charts'
-import Clients from '@screens/clients/clients'
-import Payments from '@screens/payments'
+import CRM from '@screens/crm'
 import DesignEvent from '@screens/design-event'
+import Expenses from '@screens/expenses'
 import React from 'react'
 
 export interface screen {
@@ -19,14 +19,9 @@ export interface children {
 
 const MenuScreens: screen[] = [
   {
-    name: 'Pagos',
-    header: () => <BasicHeader title='Seguimiento de pagos' />,
-    component: Payments
-  },
-  {
-    name: 'Clientes',
-    header: () => <BasicHeader title='Clientes' />,
-    component: Clients
+    name: 'CRM',
+    header: () => <BasicHeader title='Seguimiento CRM' />,
+    component: CRM
   },
   {
     name: 'Estadisticas',
@@ -37,6 +32,11 @@ const MenuScreens: screen[] = [
     name: 'DisenaEvento',
     header: () => <BasicHeader title='Diseña tu evento' />,
     component: DesignEvent
+  },
+  {
+    name: 'GastosFinanzas',
+    header: () => <BasicHeader title='Gastos y Finanzas' />,
+    component: Expenses
   }
 
 ]

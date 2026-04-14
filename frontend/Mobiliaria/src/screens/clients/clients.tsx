@@ -1,36 +1,42 @@
 import Loading from '@components/loading'
 import AppCard from '@components/AppCard'
 import EmptyState from '@components/EmptyState'
+import PrimaryButton from '@components/PrimaryButton'
 import { useTheme } from '@hooks/useTheme'
-import { IClients } from '@interfaces/clients'
+import { ClientsQueryParams, IClients } from '@interfaces/clients'
 import LottieView from 'lottie-react-native'
-import React, { useEffect } from 'react'
-import { View, Text, TouchableOpacity, FlatList, StyleSheet, Alert } from 'react-native'
+import React, { useMemo, useCallback } from 'react'
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, Alert, Linking, RefreshControl } from 'react-native'
 import * as clientsService from '../../services/clients'
+import SearchInput from '@components/SearchInput'
+import KpiCard from '@components/KpiCard'
+import { usePaginatedList } from '@hooks/usePaginatedList'
 
 const Clients = (): JSX.Element => {
-  const [workers, setWorkers] = React.useState<IClients[]>([])
-  const [loading, setLoading] = React.useState(false)
-
   const { fonts, colors } = useTheme()
-
-  const getWorkers = async () => {
-    setLoading(true)
-    try {
-      const list = await clientsService.getClients()
-      setWorkers(list as IClients[])
-    } catch (error) {
-      console.log(error)
-    } finally {
-      setLoading(false)
+  const clientKey = useCallback((item: IClients) => item.id_cliente, [])
+  const fetchClients = useCallback(async (params: ClientsQueryParams & { page: number, pageSize: number }) => {
+    const response = await clientsService.getClients(params)
+    return {
+      items: response.items,
+      hasMore: response.hasMore,
+      total: response.total,
     }
-  }
-
-  useEffect(() => {
-    getWorkers()
   }, [])
 
+  const { items, query, total, loading, refreshing, loadingMore, setQuery, onRefresh, onEndReached } = usePaginatedList<IClients, ClientsQueryParams>({
+    initialQuery: { search: '' },
+    fetchPage: fetchClients,
+    getKey: clientKey,
+  })
+
   const keyExtractor = (item: IClients): string => String(item.id_cliente)
+
+  const kpis = useMemo(() => ({
+    loaded: items.length,
+    withPhone: items.filter((item) => (item.telefono_cliente ?? '').trim().length > 0).length,
+    withMail: items.filter((item) => (item.correo_cliente ?? '').trim().length > 0).length,
+  }), [items])
 
   const onDelete = (item: IClients): void => {
     Alert.alert('Eliminar cliente', `¿Eliminar a ${item.nombre_cliente}?`, [
@@ -43,6 +49,25 @@ const Clients = (): JSX.Element => {
         },
       },
     ])
+  }
+
+  const callClient = async (phone?: string) => {
+    const clean = (phone ?? '').replace(/\D/g, '')
+    if (clean.length === 0) {
+      Alert.alert('Sin teléfono', 'Este cliente no tiene teléfono registrado.')
+      return
+    }
+    await Linking.openURL(`tel:${clean}`)
+  }
+
+  const sendWhatsApp = async (item: IClients) => {
+    const clean = (item.telefono_cliente ?? '').replace(/\D/g, '')
+    if (clean.length === 0) {
+      Alert.alert('Sin teléfono', 'Este cliente no tiene teléfono registrado.')
+      return
+    }
+    const text = encodeURIComponent(`Hola ${item.nombre_cliente}, te contactamos desde Mobiliaria para dar seguimiento a tu evento.`)
+    await Linking.openURL(`https://wa.me/52${clean}?text=${text}`)
   }
 
   const renderItem = ({ item }: { item: IClients }): JSX.Element => {
@@ -79,6 +104,29 @@ const Clients = (): JSX.Element => {
               <Text style={{ fontFamily: fonts.Inter.SemiBold, fontSize: 12, color: colors.red }}>Eliminar</Text>
             </TouchableOpacity>
           </View>
+          <View style={styles.actionsRow}>
+            <PrimaryButton
+              title='Llamar'
+              onPress={() => { callClient(item.telefono_cliente).catch(() => Alert.alert('Error', 'No se pudo abrir el marcador.')) }}
+              containerStyle={{ minWidth: 96, paddingVertical: 6 }}
+              textStyle={{ fontSize: 12, fontFamily: fonts.Inter.SemiBold, color: colors.white }}
+              backgroundButton={colors.primario300}
+            />
+            <PrimaryButton
+              title='WhatsApp'
+              onPress={() => { sendWhatsApp(item).catch(() => Alert.alert('Error', 'No se pudo abrir WhatsApp.')) }}
+              containerStyle={{ minWidth: 106, paddingVertical: 6 }}
+              textStyle={{ fontSize: 12, fontFamily: fonts.Inter.SemiBold, color: colors.white }}
+              backgroundButton={colors.green}
+            />
+            <PrimaryButton
+              title='Historial'
+              onPress={() => Alert.alert('Historial', 'Próximamente: historial de eventos del cliente.')}
+              containerStyle={{ minWidth: 98, paddingVertical: 6 }}
+              textStyle={{ fontSize: 12, fontFamily: fonts.Inter.SemiBold, color: colors.white }}
+              backgroundButton={colors.Morado600}
+            />
+          </View>
         </AppCard>
       </View>
     )
@@ -88,17 +136,35 @@ const Clients = (): JSX.Element => {
     <View style={[styles.root, { backgroundColor: colors.DarkViolet300 }]}>
       <FlatList
         ListHeaderComponent={
-          <LottieView
-            autoPlay
-            loop
-            style={styles.heroLottie}
-            source={require('../../assets/images/lottie/clients.json')}
-          />
+          <View style={styles.headerWrap}>
+            <LottieView
+              autoPlay
+              loop
+              style={styles.heroLottie}
+              source={require('../../assets/images/lottie/clients.json')}
+            />
+            <View style={styles.contentPad}>
+              <SearchInput
+                value={query.search ?? ''}
+                placeholder='Buscar por nombre, teléfono o correo'
+                onChangeText={(value) => setQuery((prev: ClientsQueryParams) => ({ ...prev, search: value }))}
+              />
+              <View style={styles.kpiRow}>
+                <KpiCard label='Cargados' value={String(kpis.loaded)} hint={`Total: ${total}`} />
+                <KpiCard label='Con teléfono' value={String(kpis.withPhone)} />
+                <KpiCard label='Con correo' value={String(kpis.withMail)} />
+              </View>
+            </View>
+          </View>
         }
-        data={workers}
+        data={items}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         contentContainerStyle={styles.listContent}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { onRefresh().catch(console.log) }} tintColor={colors.Morado100} />}
+        onEndReachedThreshold={0.4}
+        onEndReached={() => { onEndReached().catch(console.log) }}
+        ListFooterComponent={loadingMore ? <Text style={[styles.loadMore, { color: colors.gris300 }]}>Cargando más...</Text> : null}
         ListEmptyComponent={
           !loading ? <EmptyState title="No hay clientes cargados." subtitle="Agrega clientes desde tu flujo habitual." /> : null
         }
@@ -111,7 +177,10 @@ const Clients = (): JSX.Element => {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   listContent: { paddingBottom: 32 },
+  headerWrap: { paddingBottom: 8 },
+  contentPad: { paddingHorizontal: 16 },
   heroLottie: { width: '100%', height: 200, backgroundColor: 'transparent' },
+  kpiRow: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginTop: 10 },
   itemPad: { paddingHorizontal: 16, marginBottom: 12 },
   row: { flexDirection: 'row', alignItems: 'flex-start' },
   lottieIcon: { width: 56, height: 56, backgroundColor: 'transparent' },
@@ -127,6 +196,8 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderWidth: 1,
   },
+  actionsRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 12 },
+  loadMore: { textAlign: 'center', marginVertical: 14, fontSize: 12 },
 })
 
 export default Clients

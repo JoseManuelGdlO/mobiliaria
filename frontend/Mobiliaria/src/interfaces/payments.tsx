@@ -23,3 +23,10 @@ export interface IPayments {
     saldo: number,
     anticipo: number
 }
+
+export interface PaymentsQueryParams {
+    page?: number
+    pageSize?: number
+    search?: string
+    status?: 'paid' | 'pending' | ''
+}

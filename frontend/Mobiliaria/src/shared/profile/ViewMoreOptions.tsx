@@ -27,19 +27,19 @@ export const useViewMoreMenuOptions = (): Option[] => {
             navigate: 'Estadisticas',
         },
         {
-            name: 'Clientes',
+            name: 'CRM Clientes y pagos',
             icon: <MaterialCommunityIcons name="account-group-outline" size={ICON_SIZE} color={c} />,
-            navigate: 'Clientes',
-        },
-        {
-            name: 'Seguimiento a pagos',
-            icon: <MaterialCommunityIcons name="credit-card-outline" size={ICON_SIZE} color={c} />,
-            navigate: 'Pagos',
+            navigate: 'CRM',
         },
         {
             name: 'Diseña tu evento',
             icon: <MaterialCommunityIcons name="palette-outline" size={ICON_SIZE} color={c} />,
             navigate: 'DisenaEvento',
+        },
+        {
+            name: 'Gastos y Finanzas',
+            icon: <MaterialCommunityIcons name="cash-multiple" size={ICON_SIZE} color={c} />,
+            navigate: 'GastosFinanzas',
         },
     ]
 

@@ -22,6 +22,7 @@ const authRouter = require("./routes/auth");
 const workersRouter = require("./routes/workers");
 const clientsRouter = require("./routes/clients");
 const paymentsRouter = require("./routes/payments");
+const expensesRouter = require("./routes/expenses");
 const reportsRouter = require("./routes/reports");
 // const durangRouter = require("./routes/durangeneidad");
 const recommendationsRouter = require("./routes/recommendations");
@@ -179,7 +180,7 @@ app.use(express_1.default.urlencoded({
     limit: '25mb'
 }));
 app.get("/", (req, res) => {
-    res.json({ message: "version: 0.4.3" });
+    res.json({ message: "version: 0.4.5" });
 });
 app.get("/metrics/realtime", (req, res) => {
     res.json(Object.assign(Object.assign({}, metrics), { trackedWorkers: presenceByWorker.size, updatedAt: Date.now() }));
@@ -190,6 +191,7 @@ app.use("/inventary", inventaryRouter);
 app.use("/workers", workersRouter);
 app.use("/clients", clientsRouter);
 app.use("/payments", paymentsRouter);
+app.use("/expenses", expensesRouter);
 app.use("/reports", reportsRouter);
 app.use("/recommendations", recommendationsRouter);
 app.use("/quotes", quotesRouter);
@@ -208,7 +210,7 @@ const bootstrap = () => __awaiter(void 0, void 0, void 0, function* () {
         console.log("Sequelize connected to main database");
         http.listen(port, () => {
             console.log(`Example app listening at YOUR_IP_INSTANCE:${port}`);
-            console.log('version: 0.4.3');
+            console.log('version: 0.4.5');
             console.log(`Socket.IO enabled on port ${port}`);
         });
     }

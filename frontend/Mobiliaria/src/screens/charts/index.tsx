@@ -9,12 +9,13 @@ import AppCard from '@components/AppCard'
 import { useTheme } from '@hooks/useTheme'
 import { currencyFormat } from '@utils/dateFormat'
 import { createAppPickerSelectStyle } from '@utils/pickerSelectTheme'
+import { ReportsResponse, SalesKpis } from '@interfaces/reports'
 
 const Charts = (): JSX.Element => {
   const animation = useRef(null)
   const [intervalMonth, setIntervalMonth] = useState(1)
   const [loading, setLoading] = useState(false)
-  const [reports, setReports] = useState<any>()
+  const [reports, setReports] = useState<ReportsResponse>()
   const { fonts, colors } = useTheme()
 
   const pickerSelectStyles = useMemo(() => createAppPickerSelectStyle(colors, fonts), [colors, fonts])
@@ -52,6 +53,18 @@ const Charts = (): JSX.Element => {
 
   const quantity = reports?.Quantity ?? []
   const mostRent = reports?.mostRent ?? []
+  const salesKpis: SalesKpis = reports?.salesKpis ?? {
+    total_events: 0,
+    paid_events: 0,
+    pending_events: 0,
+    payment_rate: 0,
+    total_income: 0,
+    avg_ticket: 0,
+    pending_balance_total: 0,
+    recurrent_clients: 0,
+    top_clients_by_revenue: [],
+    top_event_types: [],
+  }
 
   return (
     <View style={[styles.root, { backgroundColor: colors.DarkViolet300 }]}>
@@ -100,6 +113,56 @@ const Charts = (): JSX.Element => {
         <View style={styles.sectionPad}>
           <AppCard style={{ marginBottom: 12 }}>
             <Text style={[styles.sectionTitle, { color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }]}>
+              KPI de ventas ({intervalMonth} mes{intervalMonth > 1 ? 'es' : ''})
+            </Text>
+            <View style={styles.kpiGrid}>
+              <View style={styles.kpiItem}>
+                <Text style={[styles.kpiLabel, { color: colors.gris400 }]}>Ingreso total</Text>
+                <Text style={[styles.kpiValue, { color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }]}>
+                  {currencyFormat(salesKpis.total_income)}
+                </Text>
+              </View>
+              <View style={styles.kpiItem}>
+                <Text style={[styles.kpiLabel, { color: colors.gris400 }]}>Ticket promedio</Text>
+                <Text style={[styles.kpiValue, { color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }]}>
+                  {currencyFormat(salesKpis.avg_ticket)}
+                </Text>
+              </View>
+              <View style={styles.kpiItem}>
+                <Text style={[styles.kpiLabel, { color: colors.gris400 }]}>Tasa de cobro</Text>
+                <Text style={[styles.kpiValue, { color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }]}>
+                  {salesKpis.payment_rate.toFixed(1)}%
+                </Text>
+              </View>
+              <View style={styles.kpiItem}>
+                <Text style={[styles.kpiLabel, { color: colors.gris400 }]}>Clientes recurrentes</Text>
+                <Text style={[styles.kpiValue, { color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }]}>
+                  {salesKpis.recurrent_clients}
+                </Text>
+              </View>
+            </View>
+          </AppCard>
+
+          <AppCard style={{ marginBottom: 12 }}>
+            <Text style={[styles.sectionTitle, { color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }]}>
+              Conversión y cobranza
+            </Text>
+            <Text style={[styles.line, { color: colors.gris300, fontFamily: fonts.Inter.Regular }]}>
+              Eventos totales: <Text style={{ color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }}>{salesKpis.total_events}</Text>
+            </Text>
+            <Text style={[styles.line, { color: colors.gris300, fontFamily: fonts.Inter.Regular }]}>
+              Eventos pagados: <Text style={{ color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }}>{salesKpis.paid_events}</Text>
+            </Text>
+            <Text style={[styles.line, { color: colors.gris300, fontFamily: fonts.Inter.Regular }]}>
+              Eventos pendientes: <Text style={{ color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }}>{salesKpis.pending_events}</Text>
+            </Text>
+            <Text style={[styles.line, { color: colors.gris300, fontFamily: fonts.Inter.Regular }]}>
+              Saldo pendiente: <Text style={{ color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }}>{currencyFormat(salesKpis.pending_balance_total)}</Text>
+            </Text>
+          </AppCard>
+
+          <AppCard style={{ marginBottom: 12 }}>
+            <Text style={[styles.sectionTitle, { color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }]}>
               Eventos en {intervalMonth} mes{intervalMonth > 1 ? 'es' : ''}
             </Text>
             <Text style={[styles.line, { color: colors.gris300, fontFamily: fonts.Inter.Regular }]}>
@@ -124,7 +187,7 @@ const Charts = (): JSX.Element => {
 
           <AppCard padding={12} style={{ marginBottom: 12 }}>
             <Text style={[styles.sectionTitle, { color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }]}>
-              Clientes frecuentes
+              Clientes frecuentes (volumen)
             </Text>
             <Text style={[styles.sub, { color: colors.gris400, fontFamily: fonts.Inter.Regular }]}>
               Clientes con más rentas en el intervalo seleccionado.
@@ -142,6 +205,52 @@ const Charts = (): JSX.Element => {
                   {item.nombre_titular_evento}
                 </Text>
                 <Text style={[styles.td, { color: colors.Griss100, fontFamily: fonts.Inter.Medium }]}>{item.veces_agrupado}</Text>
+              </View>
+            ))}
+          </AppCard>
+
+          <AppCard padding={12} style={{ marginBottom: 12 }}>
+            <Text style={[styles.sectionTitle, { color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }]}>
+              Top clientes por ingreso
+            </Text>
+            <View style={[styles.tableHead3, { borderBottomColor: `${colors.Griss50}22` }]}>
+              <Text style={[styles.th, { flex: 2, color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }]}>Cliente</Text>
+              <Text style={[styles.th, { color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }]}>Eventos</Text>
+              <Text style={[styles.th, { color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }]}>Ingreso</Text>
+            </View>
+            {salesKpis.top_clients_by_revenue.map((item, index) => (
+              <View
+                key={`c-${index}`}
+                style={[styles.tableRow3, { borderBottomColor: `${colors.Griss50}12` }]}
+              >
+                <Text style={[styles.td, { flex: 2, color: colors.Griss100, fontFamily: fonts.Inter.Regular }]} numberOfLines={2}>
+                  {item.client_name}
+                </Text>
+                <Text style={[styles.td, { color: colors.Griss100, fontFamily: fonts.Inter.Medium }]}>{item.total_events}</Text>
+                <Text style={[styles.td, { color: colors.Griss100, fontFamily: fonts.Inter.Medium }]}>{currencyFormat(item.total_income)}</Text>
+              </View>
+            ))}
+          </AppCard>
+
+          <AppCard padding={12} style={{ marginBottom: 12 }}>
+            <Text style={[styles.sectionTitle, { color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }]}>
+              Tipos de evento más rentables
+            </Text>
+            <View style={[styles.tableHead3, { borderBottomColor: `${colors.Griss50}22` }]}>
+              <Text style={[styles.th, { flex: 2, color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }]}>Tipo</Text>
+              <Text style={[styles.th, { color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }]}>Eventos</Text>
+              <Text style={[styles.th, { color: colors.Morado100, fontFamily: fonts.Inter.SemiBold }]}>Ingreso</Text>
+            </View>
+            {salesKpis.top_event_types.map((item, index) => (
+              <View
+                key={`t-${index}`}
+                style={[styles.tableRow3, { borderBottomColor: `${colors.Griss50}12` }]}
+              >
+                <Text style={[styles.td, { flex: 2, color: colors.Griss100, fontFamily: fonts.Inter.Regular }]} numberOfLines={2}>
+                  {item.event_type || 'Sin tipo'}
+                </Text>
+                <Text style={[styles.td, { color: colors.Griss100, fontFamily: fonts.Inter.Medium }]}>{item.total_events}</Text>
+                <Text style={[styles.td, { color: colors.Griss100, fontFamily: fonts.Inter.Medium }]}>{currencyFormat(item.total_income)}</Text>
               </View>
             ))}
           </AppCard>
@@ -187,6 +296,10 @@ const styles = StyleSheet.create({
   intro: { fontSize: 13, lineHeight: 18 },
   pickerWrap: { marginTop: 10, borderBottomWidth: 1, alignSelf: 'stretch' },
   sectionPad: { paddingHorizontal: 16, marginTop: 8 },
+  kpiGrid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
+  kpiItem: { width: '48%', marginBottom: 10, padding: 10, borderRadius: 10, backgroundColor: 'rgba(255,255,255,0.04)' },
+  kpiLabel: { fontSize: 12, marginBottom: 4 },
+  kpiValue: { fontSize: 15 },
   sectionTitle: { fontSize: 16, marginBottom: 8 },
   sub: { fontSize: 12, marginBottom: 10 },
   line: { fontSize: 13, marginTop: 4 },
