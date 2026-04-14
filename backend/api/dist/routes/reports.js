@@ -49,5 +49,25 @@ router.get('/getReports', headers_1.verifyToken, function (req, res, next) {
         }
     });
 });
+router.get('/getFinancialSummary', headers_1.verifyToken, function (req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const bearer = req.authPayload;
+            let id = bearer.data.id_empresa;
+            const months = req.query.months;
+            const period = req.query.period;
+            const month = req.query.month;
+            const year = req.query.year;
+            const compareMonth = req.query.compareMonth;
+            const compareYear = req.query.compareYear;
+            const response = yield reportService.getFinancialSummary(id, months, period, month, year, compareMonth, compareYear);
+            res.status(response.code || 200).json(response);
+        }
+        catch (err) {
+            console.error(`Error while getting financial summary`, err.message);
+            next(err);
+        }
+    });
+});
 cron.schedule('1 * * * *', reviewNotifications);
 module.exports = router;

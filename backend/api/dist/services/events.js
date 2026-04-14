@@ -246,15 +246,34 @@ function availiable(id, dateArrive) {
         }
         const packages = yield getPackages(id);
         for (const pkt of packages) {
-            let up = 99999;
-            for (let product of pkt.products) {
-                const prd = data.find((item) => item.id_mob === product.fkid_inventario);
-                if (prd) {
-                    const total = Math.trunc(prd.cantidad_mob / product.cantidad);
-                    up = total < up ? total : up;
+            let up = Number.MAX_SAFE_INTEGER;
+            let hasInvalidProduct = false;
+            const packetProducts = Array.isArray(pkt.products) ? pkt.products : [];
+            if (packetProducts.length === 0) {
+                pkt.availiable = 0;
+                continue;
+            }
+            for (const product of packetProducts) {
+                const prd = data.find((item) => Number(item.id_mob) === Number(product.fkid_inventario));
+                if (!prd) {
+                    hasInvalidProduct = true;
+                    product.nombre_mob = "Producto no disponible";
+                    product.cantidad_mob = 0;
+                    continue;
                 }
                 product.nombre_mob = prd.nombre_mob;
                 product.cantidad_mob = prd.cantidad_mob;
+                const quantityPerPackage = Number(product.cantidad || 0);
+                if (quantityPerPackage <= 0) {
+                    hasInvalidProduct = true;
+                    continue;
+                }
+                const total = Math.trunc(Number(prd.cantidad_mob) / quantityPerPackage);
+                up = total < up ? total : up;
+            }
+            if (hasInvalidProduct || up === Number.MAX_SAFE_INTEGER || up < 0) {
+                pkt.availiable = 0;
+                continue;
             }
             pkt.availiable = up;
         }

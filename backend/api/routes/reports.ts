@@ -37,6 +37,25 @@ router.get('/getReports', verifyToken, async function (req: any, res: any, next:
     }
 });
 
+router.get('/getFinancialSummary', verifyToken, async function (req: any, res: any, next: any) {
+    try {
+        const bearer: any = req.authPayload;
+        let id = bearer.data.id_empresa;
+        const months = req.query.months;
+        const period = req.query.period;
+        const month = req.query.month;
+        const year = req.query.year;
+        const compareMonth = req.query.compareMonth;
+        const compareYear = req.query.compareYear;
+
+        const response = await reportService.getFinancialSummary(id, months, period, month, year, compareMonth, compareYear);
+        res.status(response.code || 200).json(response);
+    } catch (err: any) {
+        console.error(`Error while getting financial summary`, err.message);
+        next(err);
+    }
+});
+
 cron.schedule('1 * * * *', reviewNotifications)
 
 module.exports = router;

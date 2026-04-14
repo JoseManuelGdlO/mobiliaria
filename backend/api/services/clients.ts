@@ -1,28 +1,61 @@
 import { db } from './db';
 import { helper } from '../helper';
 
-async function getClients(id: number) {
-    let code = 200;
+interface ClientsQuery {
+    page?: number;
+    pageSize?: number;
+    search?: string;
+}
 
-    console.log('id', id);
+async function getClients(id: number, query: ClientsQuery = {}) {
+    const page = query.page && query.page > 0 ? query.page : 1;
+    const pageSize = query.pageSize && query.pageSize > 0 ? Math.min(query.pageSize, 100) : 20;
+    const search = query.search?.trim() || '';
+    const offset = helper.getOffset(page, pageSize);
 
-    const rows = await db.query(
-        `SELECT * FROM catalogo_clientes_mob WHERE id_empresa = ${id} order by nombre_cliente`
+    const whereClauses = ['id_empresa = ?'];
+    const params: any[] = [id];
+
+    if (search.length > 0) {
+        whereClauses.push(`(
+            nombre_cliente LIKE ?
+            OR telefono_cliente LIKE ?
+            OR correo_cliente LIKE ?
+        )`);
+        const searchLike = `%${search}%`;
+        params.push(searchLike, searchLike, searchLike);
+    }
+
+    const whereSql = whereClauses.join(' AND ');
+    const totalRows: any = await db.query(
+        `SELECT COUNT(*) as total
+         FROM catalogo_clientes_mob
+         WHERE ${whereSql}`,
+        params
     );
 
-    let data = helper.emptyOrRows(rows);
-    if (data.length === 0) {
-        code = 404;
-        return {
-            data,
-            code
-        }
-    }
+    const total = Number(totalRows?.[0]?.total || 0);
+    const rows = await db.query(
+        `SELECT *
+         FROM catalogo_clientes_mob
+         WHERE ${whereSql}
+         ORDER BY nombre_cliente
+         LIMIT ${Math.floor(pageSize)} OFFSET ${Math.floor(offset)}`,
+        params
+    );
+
+    const items = helper.emptyOrRows(rows);
+    const hasMore = offset + items.length < total;
 
     return {
-        data,
-        code
-    }
+        data: items,
+        items,
+        total,
+        page,
+        pageSize,
+        hasMore,
+        code: 200
+    };
 }
 
 module.exports = {
