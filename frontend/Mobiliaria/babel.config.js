@@ -19,7 +19,8 @@ module.exports = {
           '@shared': './src/shared',
           '@theme': './src/theme',
           '@utils': './src/utils',
-          '@config': './src/config'
+          '@config': './src/config',
+          '@widgets': './src/widgets'
         }
       }
     ],
