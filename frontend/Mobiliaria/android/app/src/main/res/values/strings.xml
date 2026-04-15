@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Eventiva</string>
+    <string name="widget_title">Eventos de hoy</string>
+    <string name="widget_subtitle_empty">Sin datos sincronizados</string>
+    <string name="widget_subtitle_template">%1$s  ·  Corte %2$s</string>
+    <string name="widget_subtitle_next">Sin eventos hoy · Próximo: %1$s</string>
+    <string name="widget_empty_today">No tienes eventos hoy</string>
+    <string name="widget_footer_tap">Toca para abrir la app</string>
+    <string name="widget_subtitle_no_events">Sin eventos programados</string>
+    <string name="widget_description">Agenda del dia por tamano</string>
 </resources>

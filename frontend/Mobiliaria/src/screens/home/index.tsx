@@ -7,7 +7,7 @@ import * as authService from '../../services/auth';
 import { MarkedDates } from "react-native-calendars/src/types";
 import { useTheme } from "@hooks/useTheme";
 import CardEvents from "@components/CardEvents";
-import { monthToString } from "@utils/dateFormat";
+import { getLocalYmd, monthToString } from "@utils/dateFormat";
 import Loading from "@components/loading";
 import PrimaryButton from "@components/PrimaryButton";
 import { NavigationScreens } from "@interfaces/navigation";
@@ -17,6 +17,8 @@ import messaging from '@react-native-firebase/messaging';
 import useReduxUser from "@hooks/useReduxUser";
 import Toast from "react-native-toast-message";
 import { sendLocationWS } from "@utils/locationForegraund";
+import { refreshHomeWidgetSnapshot } from "@widgets/refreshHomeWidgetSnapshot";
+import { requestWidgetRefresh } from "@widgets/widgetSync";
 
 LocaleConfig.locales['es'] = {
     monthNames: [
@@ -50,14 +52,14 @@ const Home = ({
     const [eventsDay, setEventsDay] = useState<any>([]);
     const [refreshing, setRefreshing] = useState(false);
     const [dateEvent, setDateEvent] = useState(() => {
-        const d = new Date().toISOString().split('T')[0]
+        const d = getLocalYmd()
         const arr = d.split('-')
         return `${arr[2]} de ${monthToString(Number(arr[1]))}`
     });
     const [total, setTotal] = useState('0');
     const [loading, setLoading] = useState<boolean>(false);
-    const [requestDate, setRequestDate] = useState(() => new Date().toISOString().split('T')[0]);
-    const [selectedCalendarDay, setSelectedCalendarDay] = useState(() => new Date().toISOString().split('T')[0]);
+    const [requestDate, setRequestDate] = useState(() => getLocalYmd());
+    const [selectedCalendarDay, setSelectedCalendarDay] = useState(() => getLocalYmd());
 
     const { colors, fonts } = useTheme();
 
@@ -152,7 +154,6 @@ const Home = ({
         try {
             setTotal('0')
             const response = await eventService.getEventsDay(date)
-
             if(response.data.length !== 0){
                 setTotal(formatCurrency(response.total.toString()))
             }
@@ -180,13 +181,14 @@ const Home = ({
     const onRefresh = useCallback(() => {
         setLoading(true)
         setRefreshing(true)
-        const date = new Date().toISOString().split('T')[0]
+        const date = getLocalYmd()
         const arr = date.split('-')
         setRequestDate(date)
         setSelectedCalendarDay(date)
         setDateEvent(`${arr[2]} de ${monthToString(Number(arr[1]))}`)
         getEventsDay(date)
         getEvents()
+        refreshHomeWidgetSnapshot().catch(() => {})
     }, []);
 
     const markedDatesDisplay = useMemo((): MarkedDates => {
@@ -353,6 +355,7 @@ const Home = ({
             setLoading(true)
             getEvents()
             getEventsDay(requestDate)
+            refreshHomeWidgetSnapshot().catch(() => {})
         })
 
         return unsubscribe
@@ -361,12 +364,13 @@ const Home = ({
     useEffect(() => {
         requestUserPermissions()
         subscribeNotifications()
+        requestWidgetRefresh().catch(() => {})
         let cleanup: undefined | (() => Promise<void>)
         sendLocationWS(user, { token }).then((stopFn) => {
             cleanup = stopFn
         })
 
-        const date = new Date().toISOString().split('T')[0]
+        const date = getLocalYmd()
         const arrDate = date.split('-')
         setRequestDate(date)
         setSelectedCalendarDay(date)
@@ -375,6 +379,7 @@ const Home = ({
         setLoading(true)
         getEvents()
         getEventsDay(date)
+        refreshHomeWidgetSnapshot().catch(() => {})
 
         if (refresh) {
             setLoading(true)

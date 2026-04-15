@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* MobiliariaTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* MobiliariaTests.m */; };
+		0F1E2D3C4B5A69788796A5B4 /* EventivWidgets.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 0F1E2D3C4B5A69788796A5B3 /* EventivWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		0F1E2D3C4B5A69788796A5B5 /* EventivWidgetsBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F1E2D3C4B5A69788796A5B0 /* EventivWidgetsBundle.swift */; };
+		0F1E2D3C4B5A69788796A5B6 /* EventivWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F1E2D3C4B5A69788796A5B1 /* EventivWidgets.swift */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
@@ -47,6 +50,7 @@
 		EACC11FA2F1C47308E90C639 /* SourceSansPro-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F4886D9946B042F58B32C354 /* SourceSansPro-Black.ttf */; };
 		EB333B90DE57477088ECED44 /* Inter-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 222E9AE16A7647FA946C810F /* Inter-ExtraBold.ttf */; };
 		EED7D9B00E364C849C1B85DF /* Inter-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C52D358CA3934131BDF249F9 /* Inter-Black.ttf */; };
+		F0A1B2C3D4E5F60718293A4B /* EventWidgetSyncModule.m in Sources */ = {isa = PBXBuildFile; fileRef = F0A1B2C3D4E5F60718293A4A /* EventWidgetSyncModule.m */; };
 		FAA830DC886C4583B6DD8C77 /* SourceSansPro-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1B83BE6240354853BA42AF5F /* SourceSansPro-BoldItalic.ttf */; };
 		FB78CB0CDB134172ADCE8F8C /* Inter-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0A33363B9EDF4E9081BA2A63 /* Inter-Medium.ttf */; };
 		FB862C0B54CB4B92922AA871 /* Roboto-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 40B6C98F82164686B455CF18 /* Roboto-LightItalic.ttf */; };
@@ -62,12 +66,31 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		0F1E2D3C4B5A69788796A5B7 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				0F1E2D3C4B5A69788796A5B4 /* EventivWidgets.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		00E356EE1AD99517003FC87E /* MobiliariaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MobiliariaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* MobiliariaTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MobiliariaTests.m; sourceTree = "<group>"; };
 		08B0945050624379B63D4420 /* Roboto-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Thin.ttf"; path = "../src/assets/fonts/roboto/Roboto-Thin.ttf"; sourceTree = "<group>"; };
 		0A33363B9EDF4E9081BA2A63 /* Inter-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Inter-Medium.ttf"; path = "../src/assets/fonts/Inter/Inter-Medium.ttf"; sourceTree = "<group>"; };
+		0F1E2D3C4B5A69788796A5AF /* EventivWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EventivWidgets.entitlements; sourceTree = "<group>"; };
+		0F1E2D3C4B5A69788796A5B0 /* EventivWidgetsBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventivWidgetsBundle.swift; sourceTree = "<group>"; };
+		0F1E2D3C4B5A69788796A5B1 /* EventivWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventivWidgets.swift; sourceTree = "<group>"; };
+		0F1E2D3C4B5A69788796A5B2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0F1E2D3C4B5A69788796A5B3 /* EventivWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = EventivWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07F961A680F5B00A75B9A /* Mobiliaria.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Mobiliaria.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Mobiliaria/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = Mobiliaria/AppDelegate.mm; sourceTree = "<group>"; };
@@ -114,6 +137,8 @@
 		E310597AB54D4B46B71B307D /* Roboto-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Black.ttf"; path = "../src/assets/fonts/roboto/Roboto-Black.ttf"; sourceTree = "<group>"; };
 		E4CE86F24E5340DEB8E84531 /* Roboto-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-BoldItalic.ttf"; path = "../src/assets/fonts/roboto/Roboto-BoldItalic.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		F0A1B2C3D4E5F60718293A49 /* EventWidgetConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EventWidgetConstants.h; path = Mobiliaria/EventWidgetConstants.h; sourceTree = "<group>"; };
+		F0A1B2C3D4E5F60718293A4A /* EventWidgetSyncModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = EventWidgetSyncModule.m; path = Mobiliaria/EventWidgetSyncModule.m; sourceTree = "<group>"; };
 		F0EACFEB99984F0098F9D97B /* SourceSansPro-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SourceSansPro-Regular.ttf"; path = "../src/assets/fonts/SourceSansPro/SourceSansPro-Regular.ttf"; sourceTree = "<group>"; };
 		F4886D9946B042F58B32C354 /* SourceSansPro-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SourceSansPro-Black.ttf"; path = "../src/assets/fonts/SourceSansPro/SourceSansPro-Black.ttf"; sourceTree = "<group>"; };
 		F878C9E3C4344038A8B60773 /* Roboto-BlackItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-BlackItalic.ttf"; path = "../src/assets/fonts/roboto/Roboto-BlackItalic.ttf"; sourceTree = "<group>"; };
@@ -125,6 +150,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				57872007898A41C49475FF95 /* Pods_Mobiliaria_MobiliariaTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0F1E2D3C4B5A69788796A5B8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -154,6 +186,17 @@
 				00E356F11AD99517003FC87E /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		0F1E2D3C4B5A69788796A5B9 /* EventivWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				0F1E2D3C4B5A69788796A5AF /* EventivWidgets.entitlements */,
+				0F1E2D3C4B5A69788796A5B0 /* EventivWidgetsBundle.swift */,
+				0F1E2D3C4B5A69788796A5B1 /* EventivWidgets.swift */,
+				0F1E2D3C4B5A69788796A5B2 /* Info.plist */,
+			);
+			path = EventivWidgets;
 			sourceTree = "<group>";
 		};
 		1001E5C1046E4B9F91FE8AA8 /* Resources */ = {
@@ -201,6 +244,8 @@
 			isa = PBXGroup;
 			children = (
 				84B5C7EE2C25694600326FBB /* Mobiliaria.entitlements */,
+				F0A1B2C3D4E5F60718293A49 /* EventWidgetConstants.h */,
+				F0A1B2C3D4E5F60718293A4A /* EventWidgetSyncModule.m */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -233,6 +278,7 @@
 			isa = PBXGroup;
 			children = (
 				84B5C7EC2C25686400326FBB /* GoogleService-Info.plist */,
+				0F1E2D3C4B5A69788796A5B9 /* EventivWidgets */,
 				13B07FAE1A68108700A75B9A /* Mobiliaria */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* MobiliariaTests */,
@@ -251,6 +297,7 @@
 			children = (
 				13B07F961A680F5B00A75B9A /* Mobiliaria.app */,
 				00E356EE1AD99517003FC87E /* MobiliariaTests.xctest */,
+				0F1E2D3C4B5A69788796A5B3 /* EventivWidgets.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -289,6 +336,23 @@
 			productReference = 00E356EE1AD99517003FC87E /* MobiliariaTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		0F1E2D3C4B5A69788796A5BA /* EventivWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0F1E2D3C4B5A69788796A5BE /* Build configuration list for PBXNativeTarget "EventivWidgets" */;
+			buildPhases = (
+				0F1E2D3C4B5A69788796A5BB /* Sources */,
+				0F1E2D3C4B5A69788796A5B8 /* Frameworks */,
+				0F1E2D3C4B5A69788796A5BC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = EventivWidgets;
+			productName = EventivWidgets;
+			productReference = 0F1E2D3C4B5A69788796A5B3 /* EventivWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		13B07F861A680F5B00A75B9A /* Mobiliaria */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Mobiliaria" */;
@@ -298,6 +362,7 @@
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
+				0F1E2D3C4B5A69788796A5B7 /* Embed App Extensions */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
 				750AC7AB95030B3C36184672 /* [CP-User] [RNFB] Core Configuration */,
@@ -323,6 +388,9 @@
 						CreatedOnToolsVersion = 6.2;
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
+					0F1E2D3C4B5A69788796A5BA = {
+						CreatedOnToolsVersion = 16.0;
+					};
 					13B07F861A680F5B00A75B9A = {
 						LastSwiftMigration = 1120;
 					};
@@ -343,12 +411,20 @@
 			targets = (
 				13B07F861A680F5B00A75B9A /* Mobiliaria */,
 				00E356ED1AD99517003FC87E /* MobiliariaTests */,
+				0F1E2D3C4B5A69788796A5BA /* EventivWidgets */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		00E356EC1AD99517003FC87E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0F1E2D3C4B5A69788796A5BC /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -550,10 +626,20 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		0F1E2D3C4B5A69788796A5BB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0F1E2D3C4B5A69788796A5B5 /* EventivWidgetsBundle.swift in Sources */,
+				0F1E2D3C4B5A69788796A5B6 /* EventivWidgets.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		13B07F871A680F5B00A75B9A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F0A1B2C3D4E5F60718293A4B /* EventWidgetSyncModule.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
@@ -621,6 +707,42 @@
 			};
 			name = Release;
 		};
+		0F1E2D3C4B5A69788796A5BD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = EventivWidgets/EventivWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 582K6827K7;
+				INFOPLIST_FILE = EventivWidgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.eventivapp.jm.garcia.EventivWidgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		0F1E2D3C4B5A69788796A5C0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = EventivWidgets/EventivWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 582K6827K7;
+				INFOPLIST_FILE = EventivWidgets/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.eventivapp.jm.garcia.EventivWidgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3B4392A12AC88292D35C810B /* Pods-Mobiliaria.debug.xcconfig */;
@@ -641,7 +763,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2;
+				MARKETING_VERSION = 3.4;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -675,7 +797,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.2;
+				MARKETING_VERSION = 3.4;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -903,6 +1025,15 @@
 			buildConfigurations = (
 				00E356F61AD99517003FC87E /* Debug */,
 				00E356F71AD99517003FC87E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0F1E2D3C4B5A69788796A5BE /* Build configuration list for PBXNativeTarget "EventivWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0F1E2D3C4B5A69788796A5BD /* Debug */,
+				0F1E2D3C4B5A69788796A5C0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
