@@ -37,7 +37,10 @@ function getEventsDay(id, date) {
     return __awaiter(this, void 0, void 0, function* () {
         const startedAt = Date.now();
         let code = 200;
-        const eventsDelivery = yield db_1.db.query(`SELECT * FROM evento_mob WHERE id_empresa = ? AND fecha_envio_evento = ? ORDER BY hora_envio_evento `, [id, date]);
+        const eventsDelivery = yield db_1.db.query(`SELECT e.*, rep.nombre_comp AS repartidor_nombre
+         FROM evento_mob e
+         LEFT JOIN usuarios_mobiliaria rep ON e.id_repartidor = rep.id_usuario
+         WHERE e.id_empresa = ? AND e.fecha_envio_evento = ? ORDER BY e.hora_envio_evento `, [id, date]);
         let dataEventsDelivery = helper_1.helper.emptyOrRows(eventsDelivery);
         if (dataEventsDelivery.length === 0) {
             code = 404;

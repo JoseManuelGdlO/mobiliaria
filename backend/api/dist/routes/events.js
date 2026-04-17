@@ -44,6 +44,22 @@ router.get('/getEventsDay', headers_1.verifyToken, function (req, res, next) {
         }
     });
 });
+router.put('/assignRepartidor', headers_1.verifyToken, (0, headers_1.authorizeRoles)(['Administrador']), function (req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var _a;
+        try {
+            const bearer = req.authPayload;
+            const idEmpresa = Number(bearer.data.id_empresa);
+            const idUsuario = Number(bearer.data.id_usuario);
+            const response = yield eventService.assignRepartidor(idEmpresa, idUsuario, (_a = req.body) !== null && _a !== void 0 ? _a : {});
+            res.status(response.code).json(response.data);
+        }
+        catch (err) {
+            console.error(`Error assignRepartidor`, err.message);
+            next(err);
+        }
+    });
+});
 router.get('/getDetail', headers_1.verifyToken, function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {

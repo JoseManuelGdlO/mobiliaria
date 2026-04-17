@@ -32,5 +32,6 @@ export type NavigationScreens =
         DisenaEvento: undefined
         DesignEventResult: {
             refresh?: boolean
-        }
+        },
+        PlaneacionRutas: undefined
     }

@@ -10,6 +10,7 @@ import TeamLine from '@assets/images/icons/TeamLine'
 import { NavigationScreens } from '@interfaces/navigation'
 import { useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 interface Props {
   data: any
@@ -53,6 +54,15 @@ const CardEvents = ({
             {data.direccion_evento}
           </Text>
         </View>
+
+        {Boolean(data.repartidor_nombre) && (
+          <View style={[styles.metaRow, { marginTop: 6 }]}>
+            <MaterialCommunityIcons name="truck-delivery-outline" size={16} color={iconMuted} />
+            <Text style={styles.address} numberOfLines={1}>
+              {String(data.repartidor_nombre)}
+            </Text>
+          </View>
+        )}
 
         <View style={styles.footerRow}>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>

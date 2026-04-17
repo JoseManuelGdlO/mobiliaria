@@ -51,9 +51,13 @@ async function getDetails(id: number) {
   let code = 200;
   try {
     const idNum = Number(id);
-    let rows = await db.query(`select * from evento_mob where id_evento = ?`, [
-      idNum,
-    ]);
+    let rows = await db.query(
+      `SELECT e.*, rep.nombre_comp AS repartidor_nombre
+       FROM evento_mob e
+       LEFT JOIN usuarios_mobiliaria rep ON e.id_repartidor = rep.id_usuario
+       WHERE e.id_evento = ?`,
+      [idNum]
+    );
 
     let event = helper.emptyOrRows(rows);
     if (event.length === 0) {
@@ -153,8 +157,10 @@ async function getEventsOfDay(id: number, date: string) {
     `SELECT
         e.*,
         p.id_pago,
-        p.costo_total
+        p.costo_total,
+        rep.nombre_comp AS repartidor_nombre
      FROM evento_mob e
+     LEFT JOIN usuarios_mobiliaria rep ON e.id_repartidor = rep.id_usuario
      INNER JOIN (
        SELECT id_evento, MAX(id_pago) AS max_id_pago
        FROM pagos_mob
@@ -189,6 +195,61 @@ async function getEventsOfDay(id: number, date: string) {
     total,
     code,
   };
+}
+
+async function assignRepartidor(
+  idEmpresa: number,
+  idUsuarioToken: number,
+  body: { id_evento?: unknown; id_repartidor?: unknown }
+) {
+  const idEvent = Number(body?.id_evento);
+  if (!Number.isFinite(idEvent) || idEvent <= 0) {
+    return { code: 400, data: { error: "id_evento invalido" } };
+  }
+
+  const evRows = await db.query(
+    `SELECT id_evento, id_empresa FROM evento_mob WHERE id_evento = ?`,
+    [idEvent]
+  );
+  const events = helper.emptyOrRows(evRows) as any[];
+  if (events.length === 0 || Number(events[0].id_empresa) !== idEmpresa) {
+    return { code: 404, data: { error: "Evento no encontrado" } };
+  }
+
+  const rawRep = body?.id_repartidor;
+  let repId: number | null = null;
+  if (rawRep != null && rawRep !== "") {
+    const rid = Number(rawRep);
+    if (!Number.isFinite(rid) || rid <= 0) {
+      return { code: 400, data: { error: "id_repartidor invalido" } };
+    }
+    const uRows = await db.query(
+      `SELECT id_usuario, id_empresa, admin, delete_usuario FROM usuarios_mobiliaria WHERE id_usuario = ?`,
+      [rid]
+    );
+    const users = helper.emptyOrRows(uRows) as any[];
+    if (users.length === 0 || Number(users[0].id_empresa) !== idEmpresa) {
+      return { code: 400, data: { error: "Usuario no valido para la empresa" } };
+    }
+    if (users[0].admin != null || users[0].delete_usuario != null) {
+      return { code: 400, data: { error: "Usuario no valido" } };
+    }
+    repId = rid;
+  }
+
+  await db.query(
+    `UPDATE evento_mob SET id_repartidor = ? WHERE id_evento = ? AND id_empresa = ?`,
+    [repId, idEvent, idEmpresa]
+  );
+
+  saveHistorical(
+    idEvent,
+    idUsuarioToken,
+    "Modificación",
+    repId != null ? `Asignacion de ruta: repartidor id ${repId}` : "Asignacion de ruta: sin asignar"
+  );
+
+  return { code: 200, data: { id_evento: idEvent, id_repartidor: repId } };
 }
 
 async function editEvent(body: any, idUser: number) {
@@ -851,6 +912,7 @@ async function saveDesignDraft(
 module.exports = {
   getEvents,
   getEventsOfDay,
+  assignRepartidor,
   availiable,
   addEvent,
   updateObvs,

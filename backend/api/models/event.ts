@@ -23,9 +23,10 @@ interface EventAttributes {
   id_creador: number;
   notificacion_envio: number;
   notificacion_recoleccion: number;
+  id_repartidor: number | null;
 }
 
-type EventCreationAttributes = Optional<EventAttributes, "id_evento">;
+type EventCreationAttributes = Optional<EventAttributes, "id_evento" | "id_repartidor">;
 
 export class EventModel extends Model<EventAttributes, EventCreationAttributes> {}
 
@@ -52,6 +53,7 @@ EventModel.init(
     id_creador: { type: DataTypes.INTEGER },
     notificacion_envio: { type: DataTypes.INTEGER },
     notificacion_recoleccion: { type: DataTypes.INTEGER },
+    id_repartidor: { type: DataTypes.INTEGER, allowNull: true },
   },
   {
     sequelize: sequelizeMain,
