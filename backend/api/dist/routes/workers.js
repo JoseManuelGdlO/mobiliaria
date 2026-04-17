@@ -16,7 +16,7 @@ const headers_1 = require("../libs/headers");
 const express_1 = __importDefault(require("express"));
 const workersService = require('../services/workers');
 const router = express_1.default.Router();
-router.get('/getWorkers', headers_1.verifyToken, function (req, res, next) {
+router.get('/getWorkers', headers_1.verifyToken, (0, headers_1.authorizeRoles)(['Administrador']), function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const bearer = req.authPayload;
@@ -43,7 +43,7 @@ router.get('/getEventsDay', headers_1.verifyToken, function (req, res, next) {
         }
     });
 });
-router.post('/addWorker', headers_1.verifyToken, function (req, res, next) {
+router.post('/addWorker', headers_1.verifyToken, (0, headers_1.authorizeRoles)(['Administrador']), function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const bearer = req.authPayload;
@@ -58,7 +58,7 @@ router.post('/addWorker', headers_1.verifyToken, function (req, res, next) {
         }
     });
 });
-router.put('/editWorker', headers_1.verifyToken, function (req, res, next) {
+router.put('/editWorker', headers_1.verifyToken, (0, headers_1.authorizeRoles)(['Administrador']), function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             let body = req.body;
@@ -71,7 +71,7 @@ router.put('/editWorker', headers_1.verifyToken, function (req, res, next) {
         }
     });
 });
-router.delete('/remove', headers_1.verifyToken, function (req, res, next) {
+router.delete('/remove', headers_1.verifyToken, (0, headers_1.authorizeRoles)(['Administrador']), function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             let id = req.query.id;
@@ -84,7 +84,7 @@ router.delete('/remove', headers_1.verifyToken, function (req, res, next) {
         }
     });
 });
-router.put('/active', headers_1.verifyToken, function (req, res, next) {
+router.put('/active', headers_1.verifyToken, (0, headers_1.authorizeRoles)(['Administrador']), function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             let id = req.query.id;
@@ -98,7 +98,7 @@ router.put('/active', headers_1.verifyToken, function (req, res, next) {
         }
     });
 });
-router.get('/gen', headers_1.verifyToken, function (req, res, next) {
+router.get('/gen', headers_1.verifyToken, (0, headers_1.authorizeRoles)(['Administrador']), function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             let id = req.query.id;

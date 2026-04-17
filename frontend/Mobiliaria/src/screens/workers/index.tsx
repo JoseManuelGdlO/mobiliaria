@@ -341,6 +341,7 @@ const Workers = (): JSX.Element => {
                                     }}
                                     items={[
                                         { label: 'Administrador', value: 'Administrador' },
+                                        { label: 'Administrativo', value: 'Administrativo' },
                                         { label: 'Repartidor', value: 'Repartidor' },
                                     ]}
                                 />

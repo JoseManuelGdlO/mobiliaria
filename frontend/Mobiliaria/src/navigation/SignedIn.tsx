@@ -15,12 +15,17 @@ import AddEvent from '@screens/add-event'
 import Charts from '@screens/charts'
 import DesignEvent from '@screens/design-event'
 import CRM from '@screens/crm'
+import useReduxUser from '@hooks/useReduxUser'
+import { canAccess } from '@utils/permissions'
 
 
 const Stack = createNativeStackNavigator()
 
 export default function SignedIn(): JSX.Element {
     const { colors } = useTheme()
+    const { user } = useReduxUser()
+    const canSeeStatistics = canAccess(user?.rol_usuario, 'statistics')
+    const canSeeFinance = canAccess(user?.rol_usuario, 'finance')
     return (
         <>
             <Stack.Navigator
@@ -41,9 +46,13 @@ export default function SignedIn(): JSX.Element {
                         }}
                     />
                     <Stack.Screen options={{ title: 'Clientes', headerShown: true, header: () => <BasicHeader title='Clientes' /> }} name='Clients' component={Clients} />
-                    <Stack.Screen options={{ title: 'Seguimiento a pagos', headerShown: true, header: () => <BasicHeader title='Seguimiento de pagos' /> }} name='Payments' component={Payments} />
+                    {canSeeFinance && (
+                        <Stack.Screen options={{ title: 'Seguimiento a pagos', headerShown: true, header: () => <BasicHeader title='Seguimiento de pagos' /> }} name='Payments' component={Payments} />
+                    )}
                     <Stack.Screen options={{ title: 'Seguimiento CRM', headerShown: true, header: () => <BasicHeader title='Seguimiento CRM' /> }} name='CRM' component={CRM} />
-                    <Stack.Screen options={{ title: 'Estadisticas', headerShown: true, header: () => <BasicHeader title='Estadísticas' /> }} name='Charts' component={Charts} />
+                    {canSeeStatistics && (
+                        <Stack.Screen options={{ title: 'Estadisticas', headerShown: true, header: () => <BasicHeader title='Estadísticas' /> }} name='Charts' component={Charts} />
+                    )}
                     <Stack.Screen options={{ title: 'Detalle de evento', headerShown: true, header: () => <BasicHeader title='Detalle de evento' /> }} name='EventDetail' component={EventDetail} />
                     <Stack.Screen options={{ title: 'Productos disponibles', headerShown: true, header: () => <BasicHeader title='Productos y paquetes' /> }} name='Available' component={Availability} />
                     <Stack.Screen options={{ title: 'Nuevo Evento', headerShown: true, header: () => <BasicHeader title='Nuevo evento' /> }} name='AddEvent' component={AddEvent} />

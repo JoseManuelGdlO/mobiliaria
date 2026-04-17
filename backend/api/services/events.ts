@@ -6,26 +6,41 @@ import { EventModel } from "../models/event";
 import { InventoryAvailabilityModel } from "../models/inventoryAvailability";
 import { PaymentModel } from "../models/payment";
 import { sequelizeMain } from "./sequelize";
+import { perfLog } from "../libs/perfLog";
 
 const designDraftStore = new Map<string, any>();
 
+/** Rolling window for calendar dots (months). Override with CALENDAR_EVENTS_MONTHS. */
+const calendarEventsMonths = (): number => {
+  const n = Number(process.env.CALENDAR_EVENTS_MONTHS || 18);
+  return Number.isFinite(n) && n > 0 ? Math.min(Math.floor(n), 120) : 18;
+};
+
 async function getEvents(id: number) {
+  const startedAt = Date.now();
   let code = 200;
+  const months = calendarEventsMonths();
 
   const rows = await db.query(
-    `SELECT nombre_evento, fecha_envio_evento, COUNT(fecha_envio_evento) as total from evento_mob where id_empresa = ? AND fecha_envio_evento LIKE ? GROUP BY fecha_envio_evento`,
-    [id, '%202%']
+    `SELECT nombre_evento, fecha_envio_evento, COUNT(fecha_envio_evento) AS total
+     FROM evento_mob
+     WHERE id_empresa = ?
+       AND fecha_envio_evento >= DATE_SUB(CURDATE(), INTERVAL ? MONTH)
+     GROUP BY fecha_envio_evento`,
+    [id, months]
   );
 
   let data = helper.emptyOrRows(rows);
   if (data.length === 0) {
     code = 404;
+    perfLog("events.getEvents", startedAt);
     return {
       data,
       code,
     };
   }
 
+  perfLog("events.getEvents", startedAt);
   return {
     data,
     code,
@@ -121,11 +136,13 @@ async function getDetails(id: number) {
 }
 
 async function getEventsOfDay(id: number, date: string) {
+  const startedAt = Date.now();
   let code = 200;
 
   // Validar que date no esté vacío
   if (!date || date.trim() === '') {
     code = 400;
+    perfLog("events.getEventsOfDay", startedAt);
     return {
       data: [],
       code,
@@ -133,24 +150,20 @@ async function getEventsOfDay(id: number, date: string) {
   }
 
   const rows = await db.query(
-    `SELECT 
+    `SELECT
         e.*,
-        p.id_pago, 
+        p.id_pago,
         p.costo_total
-    FROM 
-        evento_mob e
-    LEFT JOIN 
-        pagos_mob p ON e.id_evento = p.id_evento
-    WHERE 
-        p.id_pago = (
-            SELECT MAX(p2.id_pago)
-            FROM pagos_mob p2
-            WHERE p2.id_evento = e.id_evento
-        )
-    AND
-      e.id_empresa = ?
-    AND
-      e.fecha_envio_evento = ?;`,
+     FROM evento_mob e
+     INNER JOIN (
+       SELECT id_evento, MAX(id_pago) AS max_id_pago
+       FROM pagos_mob
+       GROUP BY id_evento
+     ) latest ON latest.id_evento = e.id_evento
+     INNER JOIN pagos_mob p
+       ON p.id_evento = latest.id_evento AND p.id_pago = latest.max_id_pago
+     WHERE e.id_empresa = ?
+       AND e.fecha_envio_evento = ?`,
     [id, date]
   );
 
@@ -158,17 +171,19 @@ async function getEventsOfDay(id: number, date: string) {
 
   if (data.length === 0) {
     code = 404;
+    perfLog("events.getEventsOfDay", startedAt);
     return {
       data,
       code,
     };
   }
 
-  let total = 0
-  for(const event of data) {
-    total += event.costo_total
+  let total = 0;
+  for (const event of data) {
+    total += Number(event.costo_total ?? 0);
   }
 
+  perfLog("events.getEventsOfDay", startedAt);
   return {
     data,
     total,
@@ -347,15 +362,26 @@ async function getPackages(id: number) {
     return [];
   }
 
-  await Promise.all(
-    data.map(async (pkt: any) => {
-      const products = await db.query(
-        `SELECT * FROM paquete_inventario WHERE fkid_paquete = ?`,
-        [pkt.id]
-      );
-      pkt.products = products;
-    })
+  const ids = data.map((p: any) => p.id);
+  const placeholders = ids.map(() => "?").join(",");
+  const allProducts: any = await db.query(
+    `SELECT * FROM paquete_inventario WHERE fkid_paquete IN (${placeholders})`,
+    ids
   );
+  const rowsList = helper.emptyOrRows(allProducts);
+  const byPaquete = new Map<number, any[]>();
+  for (const row of rowsList) {
+    const pid = Number((row as any).fkid_paquete);
+    const list = byPaquete.get(pid);
+    if (list) {
+      list.push(row);
+    } else {
+      byPaquete.set(pid, [row]);
+    }
+  }
+  for (const pkt of data) {
+    pkt.products = byPaquete.get(Number(pkt.id)) ?? [];
+  }
 
   return data;
 }
@@ -408,40 +434,33 @@ async function addEvent(body: any, id: number, idUsuario: number) {
     );
 
     const eventId = Number(event.getDataValue("id_evento"));
-    for (const mobiliario of body.mobiliario) {
-      await InventoryAvailabilityModel.create(
-        {
-          fecha_evento: mobiliario.fecha_evento,
-          hora_evento: mobiliario.hora_evento,
-          id_mob: Number(mobiliario.id_mob),
-          ocupados: Number(mobiliario.ocupados),
-          id_evento: eventId,
-          hora_recoleccion: mobiliario.hora_recoleccion,
-          costo: Number(mobiliario.costo),
-        },
-        { transaction }
-      );
-    }
 
-    if(
-      body.paquetes
-    ) {
-    for (const paquete of body.paquetes) {
-      await InventoryAvailabilityModel.create(
-        {
-          fecha_evento: body.evento.fecha_envio_evento,
-          hora_evento: body.evento.hora_envio_evento,
-          id_mob: Number(paquete.id),
-          ocupados: Number(paquete.cantidad),
-          id_evento: eventId,
-          hora_recoleccion: body.evento.hora_recoleccion_evento,
-          costo: Number(paquete.precio),
-          package: 1,
-        },
-        { transaction }
-      );
-    }
+    const mobRows = (body.mobiliario || []).map((mobiliario: any) => ({
+      fecha_evento: mobiliario.fecha_evento,
+      hora_evento: mobiliario.hora_evento,
+      id_mob: Number(mobiliario.id_mob),
+      ocupados: Number(mobiliario.ocupados),
+      id_evento: eventId,
+      hora_recoleccion: mobiliario.hora_recoleccion,
+      costo: Number(mobiliario.costo),
+    }));
 
+    const pkgRows = (body.paquetes || []).map((paquete: any) => ({
+      fecha_evento: body.evento.fecha_envio_evento,
+      hora_evento: body.evento.hora_envio_evento,
+      id_mob: Number(paquete.id),
+      ocupados: Number(paquete.cantidad),
+      id_evento: eventId,
+      hora_recoleccion: body.evento.hora_recoleccion_evento,
+      costo: Number(paquete.precio),
+      package: 1,
+    }));
+
+    if (mobRows.length > 0) {
+      await InventoryAvailabilityModel.bulkCreate(mobRows, { transaction });
+    }
+    if (pkgRows.length > 0) {
+      await InventoryAvailabilityModel.bulkCreate(pkgRows, { transaction });
     }
 
     await PaymentModel.create(

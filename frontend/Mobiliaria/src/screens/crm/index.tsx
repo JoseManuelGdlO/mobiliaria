@@ -8,19 +8,28 @@ import Payments from '@screens/payments'
 import * as paymentService from '@services/payments'
 import React, { useEffect, useMemo, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import useReduxUser from '@hooks/useReduxUser'
+import { canAccess } from '@utils/permissions'
 
 type CrmTab = 'seguimiento' | 'clientes' | 'pagos'
 
 const CRM = (): JSX.Element => {
   const { colors, fonts } = useTheme()
+  const { user } = useReduxUser()
+  const canSeeFinance = canAccess(user?.rol_usuario, 'finance')
   const [activeTab, setActiveTab] = useState<CrmTab>('seguimiento')
   const [snapshot, setSnapshot] = useState<IPayments[]>([])
 
   useEffect(() => {
+    if (!canSeeFinance) {
+      setSnapshot([])
+      return
+    }
+
     paymentService.getPayments({ page: 1, pageSize: 20 }).then((response) => {
       setSnapshot(response.items)
     }).catch(console.log)
-  }, [])
+  }, [canSeeFinance])
 
   const kpis = useMemo(() => {
     const pending = snapshot.filter((item) => Number(item.saldo ?? 0) > 0)
@@ -31,7 +40,7 @@ const CRM = (): JSX.Element => {
 
   const renderBody = (): JSX.Element => {
     if (activeTab === 'clientes') return <Clients />
-    if (activeTab === 'pagos') return <Payments />
+    if (activeTab === 'pagos' && canSeeFinance) return <Payments />
 
     return (
       <View style={styles.overviewWrap}>
@@ -49,11 +58,13 @@ const CRM = (): JSX.Element => {
         <AppCard>
           <Text style={{ color: colors.Morado100, fontFamily: fonts.Inter.SemiBold, fontSize: 15 }}>Acciones rápidas</Text>
           <View style={styles.quickActions}>
-            <PrimaryButton
-              title='Ver pagos pendientes'
-              onPress={() => setActiveTab('pagos')}
-              containerStyle={{ marginTop: 10, paddingVertical: 8 }}
-            />
+            {canSeeFinance && (
+              <PrimaryButton
+                title='Ver pagos pendientes'
+                onPress={() => setActiveTab('pagos')}
+                containerStyle={{ marginTop: 10, paddingVertical: 8 }}
+              />
+            )}
             <PrimaryButton
               title='Contactar clientes'
               onPress={() => setActiveTab('clientes')}
@@ -73,7 +84,7 @@ const CRM = (): JSX.Element => {
           { id: 'seguimiento', label: 'Seguimiento' },
           { id: 'clientes', label: 'Clientes' },
           { id: 'pagos', label: 'Pagos' },
-        ].map((tab) => {
+        ].filter((tab) => (tab.id === 'pagos' ? canSeeFinance : true)).map((tab) => {
           const active = activeTab === tab.id
           return (
             <PrimaryButton

@@ -1,4 +1,4 @@
-import { verifyToken } from "../libs/headers";
+import { authorizeRoles, verifyToken } from "../libs/headers";
 import express from 'express';
 const paymentsService = require('../services/payments');
 const router = express.Router();
@@ -14,7 +14,7 @@ const parsePagination = (query: any) => {
     return { page, pageSize, search, status };
 };
 
-router.get('/getPayments', verifyToken, async function (req: any, res: any, next: any) {
+router.get('/getPayments', verifyToken, authorizeRoles(['Administrador']), async function (req: any, res: any, next: any) {
     try {
         const bearer: any = req.authPayload;
         let id = bearer.data.id_empresa;
@@ -27,7 +27,7 @@ router.get('/getPayments', verifyToken, async function (req: any, res: any, next
     }
 });
 
-router.put('/addPayment', verifyToken, async function (req: any, res: any, next: any) {
+router.put('/addPayment', verifyToken, authorizeRoles(['Administrador']), async function (req: any, res: any, next: any) {
     try {
         const bearer: any = req.authPayload;
         let idUsuario = bearer.data.id_usuario;

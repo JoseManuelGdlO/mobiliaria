@@ -15,6 +15,8 @@ import Home from '@screens/home'
 import BasicHeader from '@components/BasicHeader'
 import Packages from '@screens/packages'
 import DeliveryMap from '@screens/delivery-map'
+import useReduxUser from '@hooks/useReduxUser'
+import { canAccess } from '@utils/permissions'
 
 const Tab = createBottomTabNavigator()
 const Stack = createStackNavigator<NavigationScreens>()
@@ -106,6 +108,17 @@ const WorkerStack = (): JSX.Element => {
 }
 
 const ViewMoreStack = (): JSX.Element => {
+  const { user } = useReduxUser()
+  const visibleMenuScreens = useMemo(
+    () =>
+      MenuScreens.filter((screen) => {
+        if (screen.name === 'Estadisticas') return canAccess(user?.rol_usuario, 'statistics')
+        if (screen.name === 'GastosFinanzas') return canAccess(user?.rol_usuario, 'finance')
+        return true
+      }),
+    [user?.rol_usuario],
+  )
+
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -114,7 +127,7 @@ const ViewMoreStack = (): JSX.Element => {
         component={ViewMore}
       />
       {
-        MenuScreens.map((s, index) => (
+        visibleMenuScreens.map((s, index) => (
           <React.Fragment key={`sharedScreed-${index}`}>
             <Stack.Screen options={{ header: s.header }} name={s.name} component={s.component} />
             {
@@ -131,6 +144,8 @@ const ViewMoreStack = (): JSX.Element => {
 
 export const FooterMenu = (): JSX.Element => {
   const { colors, fonts } = useTheme()
+  const { user } = useReduxUser()
+  const canSeeWorkers = canAccess(user?.rol_usuario, 'workers')
 
   const styles = useMemo(() => StyleSheet.create({
     tabBarStyle: {
@@ -258,22 +273,24 @@ export const FooterMenu = (): JSX.Element => {
       name='DeliveryMapStack'
       component={DeliveryStak}
     />
-      <Tab.Screen
-        options={{
-          title: 'Trabajadores',
-          headerShown: false,
-          tabBarIcon: ({ focused }) =>
-            <FooterTabIcon
-              outline='people-outline'
-              filled='people'
-              focused={focused}
-              activeColor={colors.icon.footerActive}
-              inactiveColor={colors.icon.footerNoActive}
-            />
-        }}
-        name='TrabajadoresStak'
-        component={WorkerStack}
-      />
+      {canSeeWorkers && (
+        <Tab.Screen
+          options={{
+            title: 'Trabajadores',
+            headerShown: false,
+            tabBarIcon: ({ focused }) =>
+              <FooterTabIcon
+                outline='people-outline'
+                filled='people'
+                focused={focused}
+                activeColor={colors.icon.footerActive}
+                inactiveColor={colors.icon.footerNoActive}
+              />
+          }}
+          name='TrabajadoresStak'
+          component={WorkerStack}
+        />
+      )}
       <Tab.Screen
         options={{
           title: 'Ver más',
