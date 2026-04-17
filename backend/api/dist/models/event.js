@@ -28,6 +28,7 @@ EventModel.init({
     id_creador: { type: sequelize_1.DataTypes.INTEGER },
     notificacion_envio: { type: sequelize_1.DataTypes.INTEGER },
     notificacion_recoleccion: { type: sequelize_1.DataTypes.INTEGER },
+    id_repartidor: { type: sequelize_1.DataTypes.INTEGER, allowNull: true },
 }, {
     sequelize: sequelize_2.sequelizeMain,
     tableName: "evento_mob",

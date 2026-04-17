@@ -1,5 +1,5 @@
 import express from 'express';
-import { verifyToken } from '../libs/headers';
+import { authorizeRoles, verifyToken } from '../libs/headers';
 const router = express.Router();
 const eventService = require('../services/events');
 import { getAccessToken } from '../libs/notifications';
@@ -26,6 +26,19 @@ router.get('/getEventsDay', verifyToken, async function (req: any, res: any, nex
         res.status(201).json(await eventService.getEventsOfDay(id, date));
     } catch (err: any) {
         console.error(`Error while getting enarm students info `, err.message);
+        next(err);
+    }
+});
+
+router.put('/assignRepartidor', verifyToken, authorizeRoles(['Administrador']), async function (req: any, res: any, next: any) {
+    try {
+        const bearer: any = req.authPayload;
+        const idEmpresa = Number(bearer.data.id_empresa);
+        const idUsuario = Number(bearer.data.id_usuario);
+        const response = await eventService.assignRepartidor(idEmpresa, idUsuario, req.body ?? {});
+        res.status(response.code).json(response.data);
+    } catch (err: any) {
+        console.error(`Error assignRepartidor`, err.message);
         next(err);
     }
 });

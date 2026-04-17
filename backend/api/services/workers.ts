@@ -34,7 +34,10 @@ async function getEventsDay(id: number, date: string) {
     let code = 200;
 
     const eventsDelivery = await db.query(
-        `SELECT * FROM evento_mob WHERE id_empresa = ? AND fecha_envio_evento = ? ORDER BY hora_envio_evento `,
+        `SELECT e.*, rep.nombre_comp AS repartidor_nombre
+         FROM evento_mob e
+         LEFT JOIN usuarios_mobiliaria rep ON e.id_repartidor = rep.id_usuario
+         WHERE e.id_empresa = ? AND e.fecha_envio_evento = ? ORDER BY e.hora_envio_evento `,
         [id, date]
     );
 

@@ -36,7 +36,9 @@ export interface IEvent {
     descuento: number,
     iva: number,
     flete: number,
-    fecha_creacion: string
+    fecha_creacion: string,
+    id_repartidor?: number | null,
+    repartidor_nombre?: string | null
 }
 
 export interface IPayment {

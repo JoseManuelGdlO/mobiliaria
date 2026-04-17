@@ -351,6 +351,14 @@ const EventDetail = ({
                                         {event?.event?.telefono_titular_evento}
                                     </Text>
                                 </View>
+                                {Boolean(event?.event?.repartidor_nombre) && (
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
+                                        <MaterialCommunityIcons name="truck-delivery-outline" size={18} color={colors.gris300} />
+                                        <Text style={{ fontFamily: fonts.Inter.Regular, fontSize: 14, color: colors.gris300, marginLeft: 6 }}>
+                                            Repartidor: {event?.event?.repartidor_nombre}
+                                        </Text>
+                                    </View>
+                                )}
                                 <TouchableOpacity
                                     onPress={() => setOpenEdit(true)}
                                     style={{

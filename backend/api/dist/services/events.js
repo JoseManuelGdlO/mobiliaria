@@ -55,9 +55,10 @@ function getDetails(id) {
         let code = 200;
         try {
             const idNum = Number(id);
-            let rows = yield db_1.db.query(`select * from evento_mob where id_evento = ?`, [
-                idNum,
-            ]);
+            let rows = yield db_1.db.query(`SELECT e.*, rep.nombre_comp AS repartidor_nombre
+       FROM evento_mob e
+       LEFT JOIN usuarios_mobiliaria rep ON e.id_repartidor = rep.id_usuario
+       WHERE e.id_evento = ?`, [idNum]);
             let event = helper_1.helper.emptyOrRows(rows);
             if (event.length === 0) {
                 code = 404;
@@ -138,8 +139,10 @@ function getEventsOfDay(id, date) {
         const rows = yield db_1.db.query(`SELECT
         e.*,
         p.id_pago,
-        p.costo_total
+        p.costo_total,
+        rep.nombre_comp AS repartidor_nombre
      FROM evento_mob e
+     LEFT JOIN usuarios_mobiliaria rep ON e.id_repartidor = rep.id_usuario
      INNER JOIN (
        SELECT id_evento, MAX(id_pago) AS max_id_pago
        FROM pagos_mob
@@ -168,6 +171,39 @@ function getEventsOfDay(id, date) {
             total,
             code,
         };
+    });
+}
+function assignRepartidor(idEmpresa, idUsuarioToken, body) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const idEvent = Number(body === null || body === void 0 ? void 0 : body.id_evento);
+        if (!Number.isFinite(idEvent) || idEvent <= 0) {
+            return { code: 400, data: { error: "id_evento invalido" } };
+        }
+        const evRows = yield db_1.db.query(`SELECT id_evento, id_empresa FROM evento_mob WHERE id_evento = ?`, [idEvent]);
+        const events = helper_1.helper.emptyOrRows(evRows);
+        if (events.length === 0 || Number(events[0].id_empresa) !== idEmpresa) {
+            return { code: 404, data: { error: "Evento no encontrado" } };
+        }
+        const rawRep = body === null || body === void 0 ? void 0 : body.id_repartidor;
+        let repId = null;
+        if (rawRep != null && rawRep !== "") {
+            const rid = Number(rawRep);
+            if (!Number.isFinite(rid) || rid <= 0) {
+                return { code: 400, data: { error: "id_repartidor invalido" } };
+            }
+            const uRows = yield db_1.db.query(`SELECT id_usuario, id_empresa, admin, delete_usuario FROM usuarios_mobiliaria WHERE id_usuario = ?`, [rid]);
+            const users = helper_1.helper.emptyOrRows(uRows);
+            if (users.length === 0 || Number(users[0].id_empresa) !== idEmpresa) {
+                return { code: 400, data: { error: "Usuario no valido para la empresa" } };
+            }
+            if (users[0].admin != null || users[0].delete_usuario != null) {
+                return { code: 400, data: { error: "Usuario no valido" } };
+            }
+            repId = rid;
+        }
+        yield db_1.db.query(`UPDATE evento_mob SET id_repartidor = ? WHERE id_evento = ? AND id_empresa = ?`, [repId, idEvent, idEmpresa]);
+        (0, historical_1.saveHistorical)(idEvent, idUsuarioToken, "Modificación", repId != null ? `Asignacion de ruta: repartidor id ${repId}` : "Asignacion de ruta: sin asignar");
+        return { code: 200, data: { id_evento: idEvent, id_repartidor: repId } };
     });
 }
 function editEvent(body, idUser) {
@@ -679,6 +715,7 @@ function saveDesignDraft(idEvent, idEmpresa, idUsuario, draft) {
 module.exports = {
     getEvents,
     getEventsOfDay,
+    assignRepartidor,
     availiable,
     addEvent,
     updateObvs,

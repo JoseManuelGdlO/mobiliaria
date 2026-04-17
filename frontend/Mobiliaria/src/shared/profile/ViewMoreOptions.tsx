@@ -44,11 +44,17 @@ export const useViewMoreMenuOptions = (): Option[] => {
             icon: <MaterialCommunityIcons name="cash-multiple" size={ICON_SIZE} color={c} />,
             navigate: 'GastosFinanzas',
         },
+        {
+            name: 'Planeación de rutas',
+            icon: <MaterialCommunityIcons name="truck-delivery-outline" size={ICON_SIZE} color={c} />,
+            navigate: 'PlaneacionRutas',
+        },
     ]
 
     return options.filter((option) => {
         if (option.navigate === 'Estadisticas') return canAccess(user?.rol_usuario, 'statistics')
         if (option.navigate === 'GastosFinanzas') return canAccess(user?.rol_usuario, 'finance')
+        if (option.navigate === 'PlaneacionRutas') return canAccess(user?.rol_usuario, 'workers')
         return true
     })
 }

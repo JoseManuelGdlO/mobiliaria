@@ -3,6 +3,7 @@ import Charts from '@screens/charts'
 import CRM from '@screens/crm'
 import DesignEvent from '@screens/design-event'
 import Expenses from '@screens/expenses'
+import RoutePlanning from '@screens/route-planning'
 import React from 'react'
 
 export interface screen {
@@ -37,6 +38,11 @@ const MenuScreens: screen[] = [
     name: 'GastosFinanzas',
     header: () => <BasicHeader title='Gastos y Finanzas' />,
     component: Expenses
+  },
+  {
+    name: 'PlaneacionRutas',
+    header: () => <BasicHeader title='Planeación de rutas' />,
+    component: RoutePlanning
   }
 
 ]

@@ -4,6 +4,7 @@ import {
   ADD_OBS,
   CREATE_EVENT,
   EDIT_EVENT,
+  ASSIGN_REPARTIDOR,
   GET_AVAILABLE_DAY_PATH,
   GET_DETAILS_EVENT_PATH,
   GET_EVENTS_DAY_PATH,
@@ -144,4 +145,12 @@ export const editEvent = async (
 ): Promise<any> => {
   const body = { id, titular, telefono, direccion };
   return apiClient.post(EDIT_EVENT, body);
+};
+
+export const assignRepartidor = async (body: {
+  id_evento: number;
+  id_repartidor: number | null;
+}): Promise<any> => {
+  const { data } = await apiClient.put(ASSIGN_REPARTIDOR, body);
+  return data;
 };
