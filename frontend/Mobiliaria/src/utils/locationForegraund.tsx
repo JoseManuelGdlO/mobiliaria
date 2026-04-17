@@ -7,9 +7,9 @@ import { ensureSocketUrl } from './remote-config';
 import { ensureLocationPermissions } from './location-permissions';
 
 Geolocation.setRNConfiguration({
-  authorizationLevel: 'always', // Request "always" location permission
-  skipPermissionRequests: false, // Prompt for permission if not granted
-  enableBackgroundLocationUpdates: true, // Enable or disable background location updates
+  authorizationLevel: 'whenInUse',
+  skipPermissionRequests: false,
+  enableBackgroundLocationUpdates: false,
   locationProvider: 'auto'
 });
 
