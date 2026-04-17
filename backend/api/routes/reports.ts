@@ -1,4 +1,4 @@
-import { verifyToken } from "../libs/headers";
+import { authorizeRoles, verifyToken } from "../libs/headers";
 import express from 'express';
 const clientsService = require('../services/clients');
 const reportService = require('../services/reports');
@@ -23,7 +23,7 @@ router.get('/clients', verifyToken, async function (req: any, res: any, next: an
     }
 });
 
-router.get('/getReports', verifyToken, async function (req: any, res: any, next: any) {
+router.get('/getReports', verifyToken, authorizeRoles(['Administrador']), async function (req: any, res: any, next: any) {
     try {
         const bearer: any = req.authPayload;
         let id = bearer.data.id_empresa;
@@ -37,7 +37,7 @@ router.get('/getReports', verifyToken, async function (req: any, res: any, next:
     }
 });
 
-router.get('/getFinancialSummary', verifyToken, async function (req: any, res: any, next: any) {
+router.get('/getFinancialSummary', verifyToken, authorizeRoles(['Administrador']), async function (req: any, res: any, next: any) {
     try {
         const bearer: any = req.authPayload;
         let id = bearer.data.id_empresa;

@@ -180,7 +180,7 @@ app.use(express_1.default.urlencoded({
     limit: '25mb'
 }));
 app.get("/", (req, res) => {
-    res.json({ message: "version: 0.4.5" });
+    res.json({ message: "version: 0.4.6" });
 });
 app.get("/metrics/realtime", (req, res) => {
     res.json(Object.assign(Object.assign({}, metrics), { trackedWorkers: presenceByWorker.size, updatedAt: Date.now() }));
@@ -210,7 +210,7 @@ const bootstrap = () => __awaiter(void 0, void 0, void 0, function* () {
         console.log("Sequelize connected to main database");
         http.listen(port, () => {
             console.log(`Example app listening at YOUR_IP_INSTANCE:${port}`);
-            console.log('version: 0.4.5');
+            console.log('version: 0.4.6');
             console.log(`Socket.IO enabled on port ${port}`);
         });
     }

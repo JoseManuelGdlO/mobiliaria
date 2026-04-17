@@ -29,7 +29,7 @@ const parsePagination = (query) => {
     const to = typeof query.to === 'string' ? query.to.trim() : '';
     return { page, pageSize, search, status, category, type, from, to };
 };
-router.get('/getExpenses', headers_1.verifyToken, function (req, res, next) {
+router.get('/getExpenses', headers_1.verifyToken, (0, headers_1.authorizeRoles)(['Administrador']), function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const bearer = req.authPayload;
@@ -43,7 +43,7 @@ router.get('/getExpenses', headers_1.verifyToken, function (req, res, next) {
         }
     });
 });
-router.put('/addExpense', headers_1.verifyToken, function (req, res, next) {
+router.put('/addExpense', headers_1.verifyToken, (0, headers_1.authorizeRoles)(['Administrador']), function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const bearer = req.authPayload;
@@ -59,7 +59,7 @@ router.put('/addExpense', headers_1.verifyToken, function (req, res, next) {
         }
     });
 });
-router.put('/addRecurringExpense', headers_1.verifyToken, function (req, res, next) {
+router.put('/addRecurringExpense', headers_1.verifyToken, (0, headers_1.authorizeRoles)(['Administrador']), function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const bearer = req.authPayload;
@@ -75,7 +75,7 @@ router.put('/addRecurringExpense', headers_1.verifyToken, function (req, res, ne
         }
     });
 });
-router.put('/editExpense', headers_1.verifyToken, function (req, res, next) {
+router.put('/editExpense', headers_1.verifyToken, (0, headers_1.authorizeRoles)(['Administrador']), function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const bearer = req.authPayload;
@@ -90,7 +90,7 @@ router.put('/editExpense', headers_1.verifyToken, function (req, res, next) {
         }
     });
 });
-router.delete('/removeExpense', headers_1.verifyToken, function (req, res, next) {
+router.delete('/removeExpense', headers_1.verifyToken, (0, headers_1.authorizeRoles)(['Administrador']), function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const bearer = req.authPayload;

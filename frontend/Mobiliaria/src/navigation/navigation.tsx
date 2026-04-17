@@ -6,6 +6,7 @@ import { useTheme } from '@hooks/useTheme'
 import { View } from 'react-native'
 import SignedIn from './SignedIn'
 import SignedInDelivery from './SignedInDelivery'
+import { isDeliveryRole } from '@utils/permissions'
 
 /**
  * Auth switching mounts one navigator tree at a time.
@@ -16,8 +17,7 @@ export default function Navigation(): JSX.Element {
     const { token, user } = useReduxUser()
     const { colors } = useTheme()
 
-    const signedInBody =
-        user?.rol_usuario === 'Repartidor' ? <SignedInDelivery /> : <SignedIn />
+    const signedInBody = isDeliveryRole(user?.rol_usuario) ? <SignedInDelivery /> : <SignedIn />
 
     return (
         <View style={{ flex: 1, backgroundColor: colors.background_parts.header }}>

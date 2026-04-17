@@ -1,9 +1,9 @@
-import { verifyToken } from "../libs/headers";
+import { authorizeRoles, verifyToken } from "../libs/headers";
 import express from 'express';
 const workersService = require('../services/workers');
 const router = express.Router();
 
-router.get('/getWorkers', verifyToken, async function (req: any, res: any, next: any) {
+router.get('/getWorkers', verifyToken, authorizeRoles(['Administrador']), async function (req: any, res: any, next: any) {
     try {
         const bearer: any = req.authPayload;
         let id = bearer.data.id_empresa;
@@ -30,7 +30,7 @@ router.get('/getEventsDay', verifyToken, async function (req: any, res: any, nex
 });
 
 
-router.post('/addWorker', verifyToken, async function (req: any, res: any, next: any) {
+router.post('/addWorker', verifyToken, authorizeRoles(['Administrador']), async function (req: any, res: any, next: any) {
     try {
         const bearer: any = req.authPayload;
         let id = bearer.data.id_empresa;
@@ -45,7 +45,7 @@ router.post('/addWorker', verifyToken, async function (req: any, res: any, next:
 });
 
 
-router.put('/editWorker', verifyToken, async function (req: any, res: any, next: any) {
+router.put('/editWorker', verifyToken, authorizeRoles(['Administrador']), async function (req: any, res: any, next: any) {
     try {
         let body = req.body;
         const response = await workersService.editWorker(body)
@@ -57,7 +57,7 @@ router.put('/editWorker', verifyToken, async function (req: any, res: any, next:
 });
 
 
-router.delete('/remove', verifyToken, async function (req: any, res: any, next: any) {
+router.delete('/remove', verifyToken, authorizeRoles(['Administrador']), async function (req: any, res: any, next: any) {
     try {
         let id = req.query.id;
         const response = await workersService.remove(id)
@@ -69,7 +69,7 @@ router.delete('/remove', verifyToken, async function (req: any, res: any, next: 
 });
 
 
-router.put('/active', verifyToken, async function (req: any, res: any, next: any) {
+router.put('/active', verifyToken, authorizeRoles(['Administrador']), async function (req: any, res: any, next: any) {
     try {
         let id = req.query.id;
         let type = req.query.type;
@@ -81,7 +81,7 @@ router.put('/active', verifyToken, async function (req: any, res: any, next: any
     }
 });
 
-router.get('/gen', verifyToken, async function (req: any, res: any, next: any) {
+router.get('/gen', verifyToken, authorizeRoles(['Administrador']), async function (req: any, res: any, next: any) {
     try {
         let id = req.query.id;
         const response = await workersService.generePass(id)

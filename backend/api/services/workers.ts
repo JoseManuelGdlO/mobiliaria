@@ -1,6 +1,8 @@
 import { db } from './db';
 import { helper } from '../helper';
 import { generatePassword } from '../libs/encrypt';
+import { perfLog } from '../libs/perfLog';
+import { isAllowedRole } from '../libs/roles';
 
 async function getWorkers(id: number) {
     let code = 200;
@@ -28,8 +30,8 @@ async function getWorkers(id: number) {
 }
 
 async function getEventsDay(id: number, date: string) {
+    const startedAt = Date.now();
     let code = 200;
-
 
     const eventsDelivery = await db.query(
         `SELECT * FROM evento_mob WHERE id_empresa = ? AND fecha_envio_evento = ? ORDER BY hora_envio_evento `,
@@ -39,64 +41,51 @@ async function getEventsDay(id: number, date: string) {
     let dataEventsDelivery = helper.emptyOrRows(eventsDelivery);
     if (dataEventsDelivery.length === 0) {
         code = 404;
+        perfLog('workers.getEventsDay', startedAt);
         return {
             dataEventsDelivery,
             code
         }
     }
 
-    for (const event of dataEventsDelivery) {
-        const inv = await db.query(
-            `SELECT D.id_mob, D.ocupados, I.nombre_mob
-            FROM inventario_disponibilidad_mob D
-            LEFT JOIN inventario_mob I ON D.id_mob = I.id_mob
-            WHERE id_evento = ?`,
-            [event.id_evento]
-        );
-
-        let dataInv = helper.emptyOrRows(inv);
-
-        event.inventario = dataInv;
-        event.tipo_evento = 'envio';
-        event.lastSeenAt = null;
-        event.accuracy = null;
-        event.isOnline = false;
-    }
-
-    const eventReturn = await db.query(
-        `SELECT * FROM evento_mob WHERE id_empresa = ? AND fecha_envio_evento = ? ORDER BY hora_envio_evento `,
-        [id, date]
+    const eventIds = dataEventsDelivery.map((e: any) => e.id_evento);
+    const placeholders = eventIds.map(() => '?').join(',');
+    const invRows = await db.query(
+        `SELECT D.id_evento, D.id_mob, D.ocupados, I.nombre_mob
+         FROM inventario_disponibilidad_mob D
+         LEFT JOIN inventario_mob I ON D.id_mob = I.id_mob
+         WHERE D.id_evento IN (${placeholders})`,
+        eventIds
     );
 
-    let dataeventReturn = helper.emptyOrRows(eventReturn);
-    if (dataeventReturn.length === 0) {
-        code = 404;
-        return {
-            dataeventReturn,
-            code
+    const invByEvent = new Map<number, any[]>();
+    for (const row of helper.emptyOrRows(invRows) as any[]) {
+        const eid = Number(row.id_evento);
+        const slice = { id_mob: row.id_mob, ocupados: row.ocupados, nombre_mob: row.nombre_mob };
+        const list = invByEvent.get(eid);
+        if (list) {
+            list.push(slice);
+        } else {
+            invByEvent.set(eid, [slice]);
         }
     }
 
-    for (const event of dataeventReturn) {
-        const inv = await db.query(
-            `SELECT D.id_mob, D.ocupados, I.nombre_mob
-            FROM inventario_disponibilidad_mob D
-            LEFT JOIN inventario_mob I ON D.id_mob = I.id_mob
-            WHERE id_evento = ?`,
-            [event.id_evento]
-        );
+    const withTipo = (rows: any[], tipo: string) =>
+        rows.map((event: any) => ({
+            ...event,
+            inventario: invByEvent.get(Number(event.id_evento)) ?? [],
+            tipo_evento: tipo,
+            lastSeenAt: null,
+            accuracy: null,
+            isOnline: false,
+        }));
 
-        let dataInv = helper.emptyOrRows(inv);
+    const dataEnvio = withTipo(dataEventsDelivery, 'envio');
+    const dataRecoleccion = withTipo(dataEventsDelivery, 'recoleccion');
 
-        event.inventario = dataInv;
-        event.tipo_evento = 'recoleccion';
-        event.lastSeenAt = null;
-        event.accuracy = null;
-        event.isOnline = false;
-    }
-
+    perfLog('workers.getEventsDay', startedAt);
     return {
-        data: [...dataEventsDelivery, ...dataeventReturn],
+        data: [...dataEnvio, ...dataRecoleccion],
         code
     }
 }
@@ -104,6 +93,12 @@ async function getEventsDay(id: number, date: string) {
 
 async function addWorker(body: any, id: number) {
     let code = 200;
+    if (!isAllowedRole(body?.userType)) {
+        return {
+            data: { error: 'invalid role' },
+            code: 400
+        };
+    }
 
     const rows = await db.query(
         `INSERT INTO usuarios_mobiliaria (id_empresa, nombre_comp, contrasena, usuario, rol_usuario, fecha_creacion, correo, active)
@@ -127,6 +122,12 @@ async function addWorker(body: any, id: number) {
 
 async function editWorker(body: any) {
     let code = 200;
+    if (!isAllowedRole(body?.rol_usuario)) {
+        return {
+            data: { error: 'invalid role' },
+            code: 400
+        };
+    }
 
     const rows = await db.query(
         `UPDATE usuarios_mobiliaria SET nombre_comp = '${body.nombre_comp}', contrasena = '${body.contrasena}', usuario = '${body.usuario}', rol_usuario = '${body.rol_usuario}', fecha_creacion = '${body.fecha_creacion}', correo = '${body.correo}', active = 1

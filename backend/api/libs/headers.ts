@@ -1,6 +1,7 @@
 
 const jwt = require('jsonwebtoken');
 import { config } from "../config";
+import { AppRole, normalizeRole } from "./roles";
 
 export function verifyToken(req: any, res: any, next: any) {
     const bearerHeader = req.headers['authorization'];
@@ -20,4 +21,16 @@ export function verifyToken(req: any, res: any, next: any) {
     } else {
         res.status(409).json({error: 'token invalido'});
     }
+}
+
+export function authorizeRoles(roles: AppRole[]) {
+    return (req: any, res: any, next: any) => {
+        const currentRole = normalizeRole(req?.authPayload?.data?.rol_usuario);
+
+        if (currentRole == null || !roles.includes(currentRole)) {
+            return res.status(403).json({ error: 'forbidden' });
+        }
+
+        next();
+    };
 }

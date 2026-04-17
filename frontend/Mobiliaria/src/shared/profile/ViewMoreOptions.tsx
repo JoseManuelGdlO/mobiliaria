@@ -1,6 +1,8 @@
 import React from 'react'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { useTheme } from '@hooks/useTheme'
+import useReduxUser from '@hooks/useReduxUser'
+import { canAccess } from '@utils/permissions'
 
 export interface Option {
     name: string
@@ -18,6 +20,7 @@ const ICON_SIZE = 26
  */
 export const useViewMoreMenuOptions = (): Option[] => {
     const { colors } = useTheme()
+    const { user } = useReduxUser()
     const c = colors.Morado100
 
     const options: Option[] = [
@@ -43,5 +46,9 @@ export const useViewMoreMenuOptions = (): Option[] => {
         },
     ]
 
-    return options
+    return options.filter((option) => {
+        if (option.navigate === 'Estadisticas') return canAccess(user?.rol_usuario, 'statistics')
+        if (option.navigate === 'GastosFinanzas') return canAccess(user?.rol_usuario, 'finance')
+        return true
+    })
 }

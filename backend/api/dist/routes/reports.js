@@ -35,7 +35,7 @@ router.get('/clients', headers_1.verifyToken, function (req, res, next) {
         }
     });
 });
-router.get('/getReports', headers_1.verifyToken, function (req, res, next) {
+router.get('/getReports', headers_1.verifyToken, (0, headers_1.authorizeRoles)(['Administrador']), function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const bearer = req.authPayload;
@@ -49,7 +49,7 @@ router.get('/getReports', headers_1.verifyToken, function (req, res, next) {
         }
     });
 });
-router.get('/getFinancialSummary', headers_1.verifyToken, function (req, res, next) {
+router.get('/getFinancialSummary', headers_1.verifyToken, (0, headers_1.authorizeRoles)(['Administrador']), function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const bearer = req.authPayload;

@@ -1,4 +1,4 @@
-import { verifyToken } from "../libs/headers";
+import { authorizeRoles, verifyToken } from "../libs/headers";
 import express from 'express';
 const expensesService = require('../services/expenses');
 const router = express.Router();
@@ -18,7 +18,7 @@ const parsePagination = (query: any) => {
   return { page, pageSize, search, status, category, type, from, to };
 };
 
-router.get('/getExpenses', verifyToken, async function (req: any, res: any, next: any) {
+router.get('/getExpenses', verifyToken, authorizeRoles(['Administrador']), async function (req: any, res: any, next: any) {
   try {
     const bearer: any = req.authPayload;
     const idEmpresa = bearer.data.id_empresa;
@@ -31,7 +31,7 @@ router.get('/getExpenses', verifyToken, async function (req: any, res: any, next
   }
 });
 
-router.put('/addExpense', verifyToken, async function (req: any, res: any, next: any) {
+router.put('/addExpense', verifyToken, authorizeRoles(['Administrador']), async function (req: any, res: any, next: any) {
   try {
     const bearer: any = req.authPayload;
     const idUsuario = bearer.data.id_usuario;
@@ -45,7 +45,7 @@ router.put('/addExpense', verifyToken, async function (req: any, res: any, next:
   }
 });
 
-router.put('/addRecurringExpense', verifyToken, async function (req: any, res: any, next: any) {
+router.put('/addRecurringExpense', verifyToken, authorizeRoles(['Administrador']), async function (req: any, res: any, next: any) {
   try {
     const bearer: any = req.authPayload;
     const idUsuario = bearer.data.id_usuario;
@@ -59,7 +59,7 @@ router.put('/addRecurringExpense', verifyToken, async function (req: any, res: a
   }
 });
 
-router.put('/editExpense', verifyToken, async function (req: any, res: any, next: any) {
+router.put('/editExpense', verifyToken, authorizeRoles(['Administrador']), async function (req: any, res: any, next: any) {
   try {
     const bearer: any = req.authPayload;
     const idUsuario = bearer.data.id_usuario;
@@ -72,7 +72,7 @@ router.put('/editExpense', verifyToken, async function (req: any, res: any, next
   }
 });
 
-router.delete('/removeExpense', verifyToken, async function (req: any, res: any, next: any) {
+router.delete('/removeExpense', verifyToken, authorizeRoles(['Administrador']), async function (req: any, res: any, next: any) {
   try {
     const bearer: any = req.authPayload;
     const idUsuario = bearer.data.id_usuario;

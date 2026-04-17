@@ -25,7 +25,7 @@ const parsePagination = (query) => {
     const status = typeof query.status === 'string' ? query.status.trim().toLowerCase() : '';
     return { page, pageSize, search, status };
 };
-router.get('/getPayments', headers_1.verifyToken, function (req, res, next) {
+router.get('/getPayments', headers_1.verifyToken, (0, headers_1.authorizeRoles)(['Administrador']), function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const bearer = req.authPayload;
@@ -39,7 +39,7 @@ router.get('/getPayments', headers_1.verifyToken, function (req, res, next) {
         }
     });
 });
-router.put('/addPayment', headers_1.verifyToken, function (req, res, next) {
+router.put('/addPayment', headers_1.verifyToken, (0, headers_1.authorizeRoles)(['Administrador']), function (req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const bearer = req.authPayload;
