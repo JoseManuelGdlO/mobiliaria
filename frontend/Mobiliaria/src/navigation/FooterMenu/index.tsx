@@ -17,6 +17,7 @@ import Packages from '@screens/packages'
 import DeliveryMap from '@screens/delivery-map'
 import useReduxUser from '@hooks/useReduxUser'
 import { canAccess } from '@utils/permissions'
+import { useLayoutMetrics } from '@theme/layout'
 
 const Tab = createBottomTabNavigator()
 const Stack = createStackNavigator<NavigationScreens>()
@@ -145,6 +146,7 @@ const ViewMoreStack = (): JSX.Element => {
 export const FooterMenu = (): JSX.Element => {
   const { colors, fonts } = useTheme()
   const { user } = useReduxUser()
+  const { isTablet } = useLayoutMetrics()
   const canSeeWorkers = canAccess(user?.rol_usuario, 'workers')
 
   const styles = useMemo(() => StyleSheet.create({
@@ -153,12 +155,12 @@ export const FooterMenu = (): JSX.Element => {
       borderTopWidth: StyleSheet.hairlineWidth,
       borderTopColor: `${colors.Morado100}28`,
       paddingTop: Platform.select({
-        ios: 12,
-        android: 6
+        ios: isTablet ? 10 : 12,
+        android: isTablet ? 8 : 6
       }),
       height: Platform.select({
-        ios: hasNotch() ? 108 : 92,
-        android: 72
+        ios: isTablet ? (hasNotch() ? 92 : 82) : (hasNotch() ? 108 : 92),
+        android: isTablet ? 68 : 72
       }),
       ...Platform.select({
         ios: {
@@ -173,7 +175,7 @@ export const FooterMenu = (): JSX.Element => {
     labelStyleInactive: {
       fontFamily: fonts.Inter.Medium,
       color: colors.icon.footerNoActive,
-      fontSize: 11,
+      fontSize: isTablet ? 10 : 11,
       letterSpacing: 0.15,
       textAlign: 'center',
       alignSelf: 'center',
@@ -186,7 +188,7 @@ export const FooterMenu = (): JSX.Element => {
     labelStyleActive: {
       fontFamily: fonts.Inter.SemiBold,
       color: colors.icon.footerActive,
-      fontSize: 11,
+      fontSize: isTablet ? 10 : 11,
       letterSpacing: 0.15,
       textAlign: 'center',
       alignSelf: 'center',
@@ -196,11 +198,14 @@ export const FooterMenu = (): JSX.Element => {
         android: 14
       })
     }
-  }), [colors, fonts])
+  }), [colors, fonts, isTablet])
   return (
     <Tab.Navigator
       screenOptions={{
         tabBarStyle: styles.tabBarStyle,
+        tabBarItemStyle: {
+          paddingHorizontal: isTablet ? 4 : 0,
+        },
         tabBarShowIcon: true,
         tabBarActiveTintColor: colors.icon.footerActive,
         tabBarInactiveTintColor: colors.icon.footerNoActive,

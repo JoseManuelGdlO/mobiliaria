@@ -16,9 +16,11 @@ import FilterChips from '@components/FilterChips'
 import KpiCard from '@components/KpiCard'
 import StatusBadge from '@components/StatusBadge'
 import { usePaginatedList } from '@hooks/usePaginatedList'
+import { useLayoutMetrics } from '@theme/layout'
 
 const Payments = (): JSX.Element => {
   const { fonts, colors } = useTheme()
+  const { isTablet, contentHorizontalPadding } = useLayoutMetrics()
   const navigation = useNavigation<StackNavigationProp<NavigationScreens>>()
   const paymentKey = useCallback((item: IPayments) => item.id_evento, [])
   const fetchPayments = useCallback(async (params: PaymentsQueryParams & { page: number, pageSize: number }) => {
@@ -69,7 +71,7 @@ const Payments = (): JSX.Element => {
 
   const renderItem = ({ item }: { item: IPayments }): JSX.Element => {
     return (
-      <View style={styles.itemPad}>
+      <View style={[styles.itemPad, { paddingHorizontal: contentHorizontalPadding }]}>
         <AppCard>
           <View style={styles.row}>
             <LottieView
@@ -107,7 +109,7 @@ const Payments = (): JSX.Element => {
               </Text>
             </View>
           </View>
-          <View style={styles.actionsRow}>
+          <View style={[styles.actionsRow, isTablet && styles.actionsRowTablet]}>
             <PrimaryButton
               containerStyle={{ paddingVertical: 6, paddingHorizontal: 10, minWidth: 92 }}
               textStyle={{ fontSize: 12, fontFamily: fonts.Inter.SemiBold, color: colors.white }}
@@ -146,7 +148,7 @@ const Payments = (): JSX.Element => {
               style={styles.heroLottie}
               source={require('../../assets/images/lottie/payments.json')}
             />
-            <View style={styles.contentPad}>
+            <View style={[styles.contentPad, { paddingHorizontal: contentHorizontalPadding }]}>
               <SearchInput
                 value={query.search ?? ''}
                 placeholder='Buscar por evento, cliente o teléfono'
@@ -212,6 +214,7 @@ const styles = StyleSheet.create({
   },
   date: { fontSize: 13, marginTop: 4 },
   actionsRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 12 },
+  actionsRowTablet: { justifyContent: 'flex-start', gap: 10 },
   loadMore: { textAlign: 'center', marginVertical: 14, fontSize: 12 },
 })
 

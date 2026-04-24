@@ -11,9 +11,11 @@ import * as clientsService from '../../services/clients'
 import SearchInput from '@components/SearchInput'
 import KpiCard from '@components/KpiCard'
 import { usePaginatedList } from '@hooks/usePaginatedList'
+import { useLayoutMetrics } from '@theme/layout'
 
 const Clients = (): JSX.Element => {
   const { fonts, colors } = useTheme()
+  const { isTablet, contentHorizontalPadding } = useLayoutMetrics()
   const clientKey = useCallback((item: IClients) => item.id_cliente, [])
   const fetchClients = useCallback(async (params: ClientsQueryParams & { page: number, pageSize: number }) => {
     const response = await clientsService.getClients(params)
@@ -72,7 +74,7 @@ const Clients = (): JSX.Element => {
 
   const renderItem = ({ item }: { item: IClients }): JSX.Element => {
     return (
-      <View style={styles.itemPad}>
+      <View style={[styles.itemPad, { paddingHorizontal: contentHorizontalPadding }]}>
         <AppCard>
           <View style={styles.row}>
             <LottieView
@@ -104,7 +106,7 @@ const Clients = (): JSX.Element => {
               <Text style={{ fontFamily: fonts.Inter.SemiBold, fontSize: 12, color: colors.red }}>Eliminar</Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.actionsRow}>
+          <View style={[styles.actionsRow, isTablet && styles.actionsRowTablet]}>
             <PrimaryButton
               title='Llamar'
               onPress={() => { callClient(item.telefono_cliente).catch(() => Alert.alert('Error', 'No se pudo abrir el marcador.')) }}
@@ -143,7 +145,7 @@ const Clients = (): JSX.Element => {
               style={styles.heroLottie}
               source={require('../../assets/images/lottie/clients.json')}
             />
-            <View style={styles.contentPad}>
+            <View style={[styles.contentPad, { paddingHorizontal: contentHorizontalPadding }]}>
               <SearchInput
                 value={query.search ?? ''}
                 placeholder='Buscar por nombre, teléfono o correo'
@@ -197,6 +199,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   actionsRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 12 },
+  actionsRowTablet: { justifyContent: 'flex-start', gap: 10 },
   loadMore: { textAlign: 'center', marginVertical: 14, fontSize: 12 },
 })
 

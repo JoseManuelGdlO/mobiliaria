@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import {
     ActivityIndicator,
-    Dimensions,
     FlatList,
     RefreshControl,
     StyleSheet,
@@ -31,7 +30,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 const ITEMS_PEER_PAGE = 20
-const height = Dimensions.get('window').height
 const LABEL_ON_SOLID = '#FFFFFF'
 
 const Availability = ({ route }: StackScreenProps<NavigationScreens, 'Available'>): JSX.Element => {
@@ -64,7 +62,7 @@ const Availability = ({ route }: StackScreenProps<NavigationScreens, 'Available'
     const [packagesSectionOpen, setPackagesSectionOpen] = React.useState(true)
     const [expandedPackageId, setExpandedPackageId] = React.useState<number | null>(null)
 
-    const { fonts, colors } = useTheme()
+    const { fonts, colors, layout } = useTheme()
 
     const footerReserve = 200 + Math.max(insets.bottom, 12)
 
@@ -125,7 +123,7 @@ const Availability = ({ route }: StackScreenProps<NavigationScreens, 'Available'
 
     const renderItem = ({ item }: { item: IAvailability; index: number }): JSX.Element => {
         return (
-            <View style={{ paddingHorizontal: 16, marginBottom: 10 }}>
+            <View style={{ paddingHorizontal: layout.contentHorizontalPadding, marginBottom: 10 }}>
                 <TouchableOpacity
                     activeOpacity={0.88}
                     onPress={() => {
@@ -229,7 +227,7 @@ const Availability = ({ route }: StackScreenProps<NavigationScreens, 'Available'
     }
 
     const searchBar = (
-        <View style={{ paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8 }}>
+        <View style={{ paddingHorizontal: layout.contentHorizontalPadding, paddingTop: 12, paddingBottom: 8 }}>
             <AppCard>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <MaterialCommunityIcons name="magnify" size={22} color={colors.gris300} style={{ marginRight: 10 }} />
@@ -278,7 +276,7 @@ const Availability = ({ route }: StackScreenProps<NavigationScreens, 'Available'
 
     const packagesSection =
         packages.length !== 0 ? (
-            <View style={{ paddingHorizontal: 16, paddingBottom: 8 }}>
+            <View style={{ paddingHorizontal: layout.contentHorizontalPadding, paddingBottom: 8 }}>
                 <AppCard style={{ marginBottom: 0, padding: 0 }}>
                     <TouchableOpacity
                         activeOpacity={0.88}
@@ -486,7 +484,7 @@ const Availability = ({ route }: StackScreenProps<NavigationScreens, 'Available'
         <View>
             {searchBar}
             {packagesSection}
-            <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, marginTop: 4, marginBottom: 8 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: layout.contentHorizontalPadding + 4, marginTop: 4, marginBottom: 8 }}>
                 <MaterialCommunityIcons name="warehouse" size={22} color={colors.Morado100} />
                 <Text style={{ fontFamily: fonts.Inter.SemiBold, fontSize: 18, color: colors.Griss50, marginLeft: 8 }}>Productos</Text>
             </View>
@@ -509,7 +507,7 @@ const Availability = ({ route }: StackScreenProps<NavigationScreens, 'Available'
                 contentContainerStyle={{ paddingBottom: footerReserve, flexGrow: 1 }}
                 ListEmptyComponent={
                     !loading ? (
-                        <View style={{ paddingHorizontal: 16, paddingTop: 8 }}>
+                        <View style={{ paddingHorizontal: layout.contentHorizontalPadding, paddingTop: 8 }}>
                             <EmptyState
                                 title="No hay productos para mostrar"
                                 subtitle="Agrega artículos al inventario para poder asignarlos al evento."
@@ -532,7 +530,7 @@ const Availability = ({ route }: StackScreenProps<NavigationScreens, 'Available'
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    paddingHorizontal: 16,
+                    paddingHorizontal: layout.contentHorizontalPadding,
                     paddingTop: 12,
                     paddingBottom: Math.max(insets.bottom, 12),
                     backgroundColor: colors.DarkViolet300,
@@ -673,7 +671,7 @@ const Availability = ({ route }: StackScreenProps<NavigationScreens, 'Available'
                         onPress={() => navigation.goBack()}
                         activeOpacity={0.88}
                         style={{
-                            width: 52,
+                            width: layout.isTablet ? 64 : 52,
                             borderRadius: 14,
                             borderWidth: 1.5,
                             borderColor: `${colors.red}88`,
@@ -690,7 +688,7 @@ const Availability = ({ route }: StackScreenProps<NavigationScreens, 'Available'
             <Loading loading={loading} />
             <Toast />
 
-            <AppModal visible={modalVisible} onRequestClose={() => setModalVisible(false)} keyboardAvoiding maxHeight={height - 100}>
+            <AppModal visible={modalVisible} onRequestClose={() => setModalVisible(false)} keyboardAvoiding maxHeight={layout.modalMaxHeight}>
                 <View style={{ paddingHorizontal: 20, paddingTop: 20, paddingBottom: 8 }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
                         <MaterialCommunityIcons name="numeric" size={26} color={colors.Morado100} />

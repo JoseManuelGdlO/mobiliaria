@@ -10,11 +10,13 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import useReduxUser from '@hooks/useReduxUser'
 import { canAccess } from '@utils/permissions'
+import { useLayoutMetrics } from '@theme/layout'
 
 type CrmTab = 'seguimiento' | 'clientes' | 'pagos'
 
 const CRM = (): JSX.Element => {
   const { colors, fonts } = useTheme()
+  const { isTablet, contentHorizontalPadding } = useLayoutMetrics()
   const { user } = useReduxUser()
   const canSeeFinance = canAccess(user?.rol_usuario, 'finance')
   const [activeTab, setActiveTab] = useState<CrmTab>('seguimiento')
@@ -43,7 +45,7 @@ const CRM = (): JSX.Element => {
     if (activeTab === 'pagos' && canSeeFinance) return <Payments />
 
     return (
-      <View style={styles.overviewWrap}>
+      <View style={[styles.overviewWrap, { paddingHorizontal: contentHorizontalPadding }]}>
         <Text style={[styles.title, { color: colors.Griss50, fontFamily: fonts.Inter.SemiBold }]}>
           Seguimiento diario CRM
         </Text>
@@ -79,7 +81,7 @@ const CRM = (): JSX.Element => {
 
   return (
     <View style={[styles.root, { backgroundColor: colors.DarkViolet300 }]}>
-      <View style={[styles.tabsRow, { borderBottomColor: `${colors.Griss50}22` }]}>
+      <View style={[styles.tabsRow, isTablet && styles.tabsRowTablet, { borderBottomColor: `${colors.Griss50}22`, paddingHorizontal: contentHorizontalPadding }]}>
         {[
           { id: 'seguimiento', label: 'Seguimiento' },
           { id: 'clientes', label: 'Clientes' },
@@ -91,7 +93,7 @@ const CRM = (): JSX.Element => {
               key={tab.id}
               title={tab.label}
               onPress={() => setActiveTab(tab.id as CrmTab)}
-              containerStyle={styles.tabButton}
+              containerStyle={[styles.tabButton, isTablet && styles.tabButtonTablet]}
               backgroundButton={active ? colors.Morado600 : `${colors.white}14`}
               textStyle={{ color: active ? colors.white : colors.gris300, fontFamily: fonts.Inter.SemiBold, fontSize: 12 }}
             />
@@ -106,7 +108,9 @@ const CRM = (): JSX.Element => {
 const styles = StyleSheet.create({
   root: { flex: 1 },
   tabsRow: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 12, paddingVertical: 10, borderBottomWidth: 1 },
+  tabsRowTablet: { justifyContent: 'flex-start', gap: 10 },
   tabButton: { minWidth: 110, paddingVertical: 7, borderRadius: 10 },
+  tabButtonTablet: { minWidth: 132 },
   body: { flex: 1 },
   overviewWrap: { paddingHorizontal: 16, paddingTop: 12 },
   title: { fontSize: 18 },
