@@ -398,6 +398,7 @@ function addEvent(body, id, idUsuario) {
                 direccion_evento: body.evento.direccion_evento,
                 telefono_titular_evento: body.evento.telefono_titular_evento,
                 descuento: Number(body.evento.descuento || 0),
+                descuento_aplica_flete: Number(body.evento.descuento_aplica_flete || 0),
                 iva: Number(body.evento.ivavalor || 0),
                 flete: Number(body.evento.fletevalor || 0),
                 lat: String(((_a = body.evento.maps) === null || _a === void 0 ? void 0 : _a.lat) || ""),

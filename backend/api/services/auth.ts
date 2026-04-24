@@ -1,6 +1,25 @@
 import { db } from './db';
 import { helper } from '../helper';
 import { encrypt } from '../libs/encrypt';
+import crypto from 'crypto';
+import { config } from '../config';
+
+const REFRESH_TOKEN_BYTES = 48;
+
+function hashToken(token: string): string {
+    return crypto.createHash('sha256').update(token).digest('hex');
+}
+
+function generateRefreshToken(): string {
+    return crypto.randomBytes(REFRESH_TOKEN_BYTES).toString('hex');
+}
+
+function getRefreshExpiryDate() {
+    const ttlDays = config.jwtRefreshExpiresInDays;
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + ttlDays);
+    return expiresAt;
+}
 
 async function register(body: any) {
     // body.password = await encrypt.encryptPassword(body.password);
@@ -55,6 +74,103 @@ async function login(body: any) {
         data,
         code
     }
+}
+
+async function createRefreshSession(userId: number) {
+    const refreshToken = generateRefreshToken();
+    const refreshTokenHash = hashToken(refreshToken);
+    const expiresAt = getRefreshExpiryDate();
+
+    await db.query(
+        `INSERT INTO auth_refresh_tokens (id_usuario, token_hash, expires_at)
+         VALUES (?, ?, ?)`,
+        [userId, refreshTokenHash, expiresAt]
+    );
+
+    return refreshToken;
+}
+
+async function rotateRefreshToken(refreshToken: string) {
+    if (!refreshToken) {
+        return { code: 400, message: 'refresh token requerido' };
+    }
+    let code = 200;
+    const currentHash = hashToken(refreshToken);
+    const rows = await db.query(
+        `SELECT id, id_usuario, expires_at, revoked_at
+         FROM auth_refresh_tokens
+         WHERE token_hash = ?
+         LIMIT 1`,
+        [currentHash]
+    );
+
+    const matches = helper.emptyOrRows(rows);
+    if (matches.length === 0) {
+        return { code: 401, message: 'refresh token invalido' };
+    }
+
+    const current = matches[0];
+    const now = new Date();
+    if (current.revoked_at || new Date(current.expires_at) <= now) {
+        return { code: 401, message: 'refresh token expirado' };
+    }
+
+    const nextRefreshToken = generateRefreshToken();
+    const nextHash = hashToken(nextRefreshToken);
+    const nextExpiresAt = getRefreshExpiryDate();
+
+    const conn = await db.connection();
+    try {
+        await conn.beginTransaction();
+        const [insertResult]: any = await conn.execute(
+            `INSERT INTO auth_refresh_tokens (id_usuario, token_hash, expires_at)
+             VALUES (?, ?, ?)`,
+            [current.id_usuario, nextHash, nextExpiresAt]
+        );
+        await conn.execute(
+            `UPDATE auth_refresh_tokens
+             SET revoked_at = NOW(), replaced_by = ?
+             WHERE id = ?`,
+            [insertResult.insertId, current.id]
+        );
+        await conn.commit();
+    } catch (error) {
+        await conn.rollback();
+        throw error;
+    } finally {
+        conn.release();
+    }
+
+    const userRows = await db.query(
+        `SELECT * FROM usuarios_mobiliaria WHERE id_usuario = ? LIMIT 1`,
+        [current.id_usuario]
+    );
+    const users = helper.emptyOrRows(userRows);
+    if (users.length === 0) {
+        code = 404;
+        return { code, message: 'usuario no encontrado' };
+    }
+
+    return {
+        code,
+        data: users[0],
+        refreshToken: nextRefreshToken,
+    };
+}
+
+async function revokeRefreshToken(refreshToken: string) {
+    if (!refreshToken) {
+        return { code: 200 };
+    }
+    const refreshTokenHash = hashToken(refreshToken);
+    await db.query(
+        `UPDATE auth_refresh_tokens
+         SET revoked_at = NOW()
+         WHERE token_hash = ? AND revoked_at IS NULL`,
+        [refreshTokenHash]
+    );
+
+    return { code: 200 };
 }
 
 async function token(body: any) {
@@ -150,6 +266,9 @@ async function resetPassword(id: number) {
 module.exports = {
     register,
     login,
+    createRefreshSession,
+    rotateRefreshToken,
+    revokeRefreshToken,
     token,
     loginForId,
     resetPassword,

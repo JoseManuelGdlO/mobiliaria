@@ -24,9 +24,8 @@ import {
   setLoginData,
   updateToken,
 } from "@redux/actions/userAction";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { StorageKeysEnum } from "@interfaces/auth";
 import { ensureLocationPermissions } from "@utils/location-permissions";
+import { saveSessionTokens } from "@utils/token";
 
 const Login = (): JSX.Element => {
   const dispatch = useDispatch();
@@ -46,11 +45,12 @@ const Login = (): JSX.Element => {
     setLoading(true);
     try {
       const response = await authService.login(email, password);
+      const accessToken = response.accessToken || response.token;
+      const refreshToken = response.refreshToken || response.token;
       dispatch(setLoginData(response.data));
-      dispatch(updateToken(response.token));
+      dispatch(updateToken(accessToken));
       dispatch(rememberUser(toggleSwitch));
-
-      await AsyncStorage.setItem(StorageKeysEnum.refreshToken, response.token);
+      await saveSessionTokens(accessToken, refreshToken);
     } catch (error) {
       console.log(error);
       setError(String(error));

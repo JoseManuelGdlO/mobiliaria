@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getAccessTokenAsync } from '@utils/token';
+import { clearSessionTokens, getAccessTokenAsync, getRefreshTokenAsync, saveSessionTokens } from '@utils/token';
 import { ensureApiBaseUrl } from '@utils/remote-config';
 
 export const apiClient = axios.create({
@@ -8,6 +8,49 @@ export const apiClient = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
+let refreshPromise: Promise<string | null> | null = null;
+
+const refreshAccessToken = async (): Promise<string | null> => {
+  if (refreshPromise) {
+    return refreshPromise;
+  }
+
+  refreshPromise = (async () => {
+    const refreshToken = await getRefreshTokenAsync();
+    if (!refreshToken) {
+      return null;
+    }
+
+    try {
+      const base = await ensureApiBaseUrl();
+      const { data } = await axios.post(
+        `${String(base || '').replace(/\/$/, '')}/auth/refresh`,
+        { refreshToken },
+        {
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      const nextAccessToken = data?.accessToken || data?.token;
+      const nextRefreshToken = data?.refreshToken || refreshToken;
+      if (!nextAccessToken) {
+        return null;
+      }
+      await saveSessionTokens(nextAccessToken, nextRefreshToken);
+      return nextAccessToken;
+    } catch (error) {
+      await clearSessionTokens();
+      return null;
+    } finally {
+      refreshPromise = null;
+    }
+  })();
+
+  return refreshPromise;
+};
 
 apiClient.interceptors.request.use(async (config) => {
   const base = await ensureApiBaseUrl();
@@ -41,6 +84,25 @@ apiClient.interceptors.response.use(
     return response;
   },
   (error) => {
+    const originalRequest = error?.config || {};
+    const shouldTryRefresh =
+      error?.response?.status === 401 &&
+      !originalRequest._retry &&
+      !String(originalRequest?.url || '').includes('/auth/refresh') &&
+      !String(originalRequest?.url || '').includes('/auth/login');
+
+    if (shouldTryRefresh) {
+      originalRequest._retry = true;
+      return refreshAccessToken().then((token) => {
+        if (!token) {
+          return Promise.reject(error);
+        }
+        originalRequest.headers = originalRequest.headers || {};
+        originalRequest.headers.Authorization = `Bearer ${token}`;
+        return apiClient(originalRequest);
+      });
+    }
+
     const method = (error?.config?.method || 'get').toUpperCase();
     const fullUrl = `${String(error?.config?.baseURL || '').replace(/\/$/, '')}/${String(error?.config?.url || '').replace(/^\//, '')}`;
     console.error('[ApiClient] response:error', {
