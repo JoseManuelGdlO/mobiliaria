@@ -1,7 +1,6 @@
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import * as React from 'react'
-import { Dimensions } from 'react-native'
 import { useTheme } from '../hooks/useTheme'
 import Login from '../screens/Login'
 import Home from '@screens/home'

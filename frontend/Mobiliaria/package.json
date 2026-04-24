@@ -5,6 +5,7 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios --simulator=\"iPhone 17 Pro Max\" --no-packager",
+    "ios:ipad": "react-native run-ios --simulator=\"iPad Pro (13-inch, 3rd generation)\" --no-packager",
     "lint": "eslint .",
     "start": "react-native start",
     "pods": "pod install --project-directory=ios",

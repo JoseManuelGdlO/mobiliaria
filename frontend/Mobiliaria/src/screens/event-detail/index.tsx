@@ -1,7 +1,7 @@
 import { NavigationScreens } from "@interfaces/navigation";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 import { useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, Dimensions, FlatList, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { ActivityIndicator, FlatList, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
 import AppModal from "@components/AppModal"
 import * as eventService from '../../services/events';
 import { Linking } from "react-native";
@@ -17,8 +17,6 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import SelectStreetMap from "@components/select-street-map";
 import HistoryEvent from "@components/history";
 import AppCard from "@components/AppCard";
-
-const height = Dimensions.get('window').height
 
 /** Texto/icono sobre Morado, rojo, etc.; el token `colors.white` en modo oscuro del tema es #000. */
 const LABEL_ON_SOLID = '#FFFFFF'
@@ -46,7 +44,7 @@ const EventDetail = ({
     const [url, SetURL] = useState<string>('')
     const [detailTab, setDetailTab] = useState<'evento' | 'pagos' | 'material'>('evento')
 
-    const { fonts, colors } = useTheme()
+    const { fonts, colors, layout } = useTheme()
     const insets = useSafeAreaInsets()
 
     const getDetails = async () => {
@@ -263,7 +261,7 @@ const EventDetail = ({
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 100 + Math.max(insets.bottom, 12) }}
             >
-                <View style={{ paddingHorizontal: 16, paddingTop: 12 }}>
+                <View style={{ paddingHorizontal: layout.contentHorizontalPadding, paddingTop: 12 }}>
                     <View
                         style={{
                             flexDirection: 'row',
@@ -321,7 +319,7 @@ const EventDetail = ({
                     </View>
                 </View>
                 {detailTab === 'evento' && (
-                <View style={{ paddingHorizontal: 16, paddingTop: 0 }}>
+                <View style={{ paddingHorizontal: layout.contentHorizontalPadding, paddingTop: 0 }}>
                     <AppCard>
                         <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
                             <View
@@ -601,7 +599,7 @@ const EventDetail = ({
                 </View>
                 )}
                 {detailTab === 'pagos' && (
-                    <View style={{ paddingHorizontal: 16, paddingTop: 0 }}>
+                    <View style={{ paddingHorizontal: layout.contentHorizontalPadding, paddingTop: 0 }}>
                         {event?.payments && event.payments.length > 0 ? (
                         <AppCard>
                             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
@@ -610,7 +608,7 @@ const EventDetail = ({
                                     Seguimiento al pago
                                 </Text>
                             </View>
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
+                            <View style={{ flexDirection: layout.isTablet ? 'row' : 'column', justifyContent: 'space-between', width: '100%' }}>
                                 <View style={{ flex: 1, paddingRight: 8 }}>
                                     <Text style={{ fontFamily: fonts.Inter.SemiBold, fontSize: 13, color: colors.gris300, lineHeight: 20 }}>
                                         <Text style={{ fontFamily: fonts.Inter.Medium, color: colors.Morado100 }}>IVA: </Text>
@@ -713,6 +711,8 @@ const EventDetail = ({
                                         justifyContent: 'center',
                                         borderWidth: 1,
                                         borderColor: `${colors.Morado100}33`,
+                                        marginTop: layout.isTablet ? 0 : 14,
+                                        alignSelf: layout.isTablet ? 'auto' : 'center',
                                     }}
                                 >
                                     <MaterialCommunityIcons name="chart-timeline-variant" size={56} color={colors.Morado100} />
@@ -803,7 +803,7 @@ const EventDetail = ({
                     </View>
                 )}
                 {detailTab === 'material' && (
-                <View style={{ paddingHorizontal: 16, paddingTop: 0, paddingBottom: 24 }}>
+                <View style={{ paddingHorizontal: layout.contentHorizontalPadding, paddingTop: 0, paddingBottom: 24 }}>
                     <AppCard>
                         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
                             <MaterialCommunityIcons name="warehouse" size={26} color={colors.Morado100} />
@@ -904,7 +904,7 @@ const EventDetail = ({
                     onRequestClose={() => setOpenEdit(false)}
                     animationType="fade"
                     keyboardAvoiding
-                    maxHeight={height - 100}
+                    maxHeight={layout.modalMaxHeight}
                 >
                         <View
                             style={{

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react"
-import { Dimensions, FlatList, PermissionsAndroid, Platform, RefreshControl, StyleSheet, Text, View } from "react-native";
+import { FlatList, PermissionsAndroid, Platform, RefreshControl, StyleSheet, Text, View } from "react-native";
 import { CalendarList } from 'react-native-calendars'
 import { LocaleConfig } from 'react-native-calendars';
 import * as eventService from '../../services/events';
@@ -61,7 +61,7 @@ const Home = ({
     const [requestDate, setRequestDate] = useState(() => getLocalYmd());
     const [selectedCalendarDay, setSelectedCalendarDay] = useState(() => getLocalYmd());
 
-    const { colors, fonts } = useTheme();
+    const { colors, fonts, layout } = useTheme();
 
     const { user, token } = useReduxUser()
 
@@ -237,7 +237,7 @@ const Home = ({
                     backgroundColor: colors.background_parts.header,
                 },
                 calendarShell: {
-                    marginHorizontal: 14,
+                    marginHorizontal: layout.contentHorizontalPadding,
                     marginTop: 10,
                     marginBottom: 6,
                     borderRadius: 20,
@@ -278,7 +278,7 @@ const Home = ({
                     borderTopRightRadius: 22,
                     marginTop: -8,
                     paddingTop: 20,
-                    paddingHorizontal: 16,
+                    paddingHorizontal: layout.contentHorizontalPadding,
                     paddingBottom: 6,
                 },
                 chipRow: {
@@ -347,7 +347,7 @@ const Home = ({
                     textAlign: 'center',
                 },
             }),
-        [colors, fonts],
+        [colors, fonts, layout.contentHorizontalPadding],
     )
 
     useEffect(() => {
@@ -393,7 +393,7 @@ const Home = ({
         }
     }, [])
 
-    const calendarInnerWidth = Dimensions.get('window').width - 28
+    const calendarInnerWidth = layout.width - (layout.contentHorizontalPadding * 2)
 
     const listHeader = (
         <View>
@@ -506,7 +506,7 @@ const Home = ({
                 removeClippedSubviews={Platform.OS === 'android'}
                 ListHeaderComponent={listHeader}
                 ListEmptyComponent={
-                    <View style={[sheetStyles.emptyWrap, { paddingHorizontal: 16 }]}>
+                    <View style={[sheetStyles.emptyWrap, { paddingHorizontal: layout.contentHorizontalPadding }]}>
                         <Text style={sheetStyles.emptyText}>
                             No hay eventos para este día. Toca otro día o crea uno nuevo.
                         </Text>
@@ -527,7 +527,7 @@ const Home = ({
                 }}
                 showsVerticalScrollIndicator={false}
                 renderItem={({ item }) => (
-                    <View style={{ paddingHorizontal: 16, marginBottom: 10 }}>
+                    <View style={{ paddingHorizontal: layout.contentHorizontalPadding, marginBottom: 10 }}>
                         <CardEvents data={item} />
                     </View>
                 )}

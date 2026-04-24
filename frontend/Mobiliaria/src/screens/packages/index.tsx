@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   FlatList,
   ScrollView,
-  Dimensions,
   TextInput,
   StyleSheet,
 } from "react-native";
@@ -22,8 +21,6 @@ import AppCard from "@components/AppCard";
 import AppModal from "@components/AppModal";
 import PrimaryButton from "@components/PrimaryButton";
 import EmptyState from "@components/EmptyState";
-const height = Dimensions.get("window").height;
-
 const Packages = (): JSX.Element => {
   const [packages, setPackages] = React.useState<IPackage[]>([]);
   const [invantary, setInventary] = React.useState<IInventary[]>([]);
@@ -40,7 +37,7 @@ const Packages = (): JSX.Element => {
 
   const [open, setOpen] = React.useState(false);
 
-  const { fonts, colors } = useTheme();
+  const { fonts, colors, layout } = useTheme();
 
   const getInit = async () => {
     setLoading(true);
@@ -74,7 +71,7 @@ const Packages = (): JSX.Element => {
     index: number;
   }): JSX.Element => {
     return (
-      <View style={{ paddingHorizontal: 16, marginBottom: 12 }}>
+      <View style={{ paddingHorizontal: layout.contentHorizontalPadding, marginBottom: 12, width: layout.isTablet ? '50%' : '100%' }}>
         <AppCard>
           <View style={{ display: "flex", flexDirection: "row" }}>
             <View
@@ -142,7 +139,7 @@ const Packages = (): JSX.Element => {
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "space-between",
-          paddingHorizontal: 16,
+          paddingHorizontal: layout.contentHorizontalPadding,
           paddingVertical: 16,
         }}
       >
@@ -217,7 +214,8 @@ const Packages = (): JSX.Element => {
       </View>
       <FlatList
         data={packages}
-        numColumns={1}
+        numColumns={layout.isTablet ? 2 : 1}
+        key={layout.isTablet ? 'packages-tablet' : 'packages-phone'}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         contentContainerStyle={{ paddingBottom: 32 }}
@@ -247,7 +245,7 @@ const Packages = (): JSX.Element => {
         visible={open}
         onRequestClose={() => setOpen(false)}
         keyboardAvoiding
-        maxHeight={height - 100}
+        maxHeight={layout.modalMaxHeight}
       >
             <View>
               <View style={{ paddingHorizontal: 18, paddingTop: 18, paddingBottom: 8 }}>
@@ -390,7 +388,7 @@ const Packages = (): JSX.Element => {
                         paddingVertical: 8,
                         borderRadius: 12,
                         marginRight: 8,
-                        maxWidth: 200,
+                        maxWidth: layout.isTablet ? 260 : 200,
                       }}
                     >
                       <Text
@@ -466,7 +464,7 @@ const Packages = (): JSX.Element => {
                         style={{
                           fontFamily: fonts.Inter.Regular,
                           fontSize: 14,
-                          width: "58%",
+                          width: layout.isTablet ? "62%" : "58%",
                           color: colors.Griss50,
                           textAlign: "left",
                         }}
@@ -478,7 +476,7 @@ const Packages = (): JSX.Element => {
                           flexDirection: "row",
                           justifyContent: "flex-end",
                           alignItems: "center",
-                          width: "42%",
+                          width: layout.isTablet ? "38%" : "42%",
                           gap: 8,
                         }}
                       >

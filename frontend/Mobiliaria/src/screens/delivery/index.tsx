@@ -4,11 +4,9 @@ import React, { useEffect } from "react"
 import { FlatList, Platform, Text, TextInput, TouchableOpacity, View, PermissionsAndroid } from 'react-native'
 import * as workersService from '@services/workers'
 import Loading from "@components/loading"
-import { Dimensions } from 'react-native';
 import { IEventDelivery, IInvDelivery } from "@interfaces/event-delivery"
 import PrimaryButton from "@components/PrimaryButton"
 import AppCard from "@components/AppCard"
-const windowWidth = Dimensions.get('window').width;
 import messaging from '@react-native-firebase/messaging';
 import useReduxUser from "@hooks/useReduxUser";
 import Toast from "react-native-toast-message";
@@ -32,7 +30,8 @@ const Delivery = (): JSX.Element => {
     const [events, setEvents] = React.useState<IEventDelivery[]>([])
     const [loading, setLoading] = React.useState<boolean>(true)
 
-    const { fonts, colors } = useTheme()
+    const { fonts, colors, layout } = useTheme()
+    const dayCardWidth = layout.isTablet ? 118 : (layout.width - 28) / 5
     const { user, token } = useReduxUser()
 
     const requestUserPermissions = async () => {
@@ -222,7 +221,7 @@ const Delivery = (): JSX.Element => {
                 <TouchableOpacity
                     onPress={() => clickButtons(item)}
                     style={{
-                        width: (windowWidth - 28) / 5,
+                        width: dayCardWidth,
                         marginHorizontal: 2,
                         backgroundColor: item.selected ? colors.Morado600 : `${colors.white}0B`,
                         borderRadius: 14,
@@ -347,7 +346,7 @@ const Delivery = (): JSX.Element => {
                                     data={days}
                                     horizontal
                                     style={{ flexGrow: 0, width: '100%' }}
-                                    contentContainerStyle={{ paddingHorizontal: 6, paddingBottom: 10, flexGrow: 0, width: '100%' }}
+                                    contentContainerStyle={{ paddingHorizontal: layout.contentHorizontalPadding - 10, paddingBottom: 10, flexGrow: 0 }}
                                     renderItem={renderItem}
                                     keyExtractor={keyExtractor}
                                     showsHorizontalScrollIndicator={false}

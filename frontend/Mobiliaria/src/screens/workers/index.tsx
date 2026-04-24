@@ -1,7 +1,7 @@
 import Loading from "@components/loading"
 import { IWorker } from "@interfaces/workers"
 import React, { useEffect, useMemo, useRef } from "react"
-import { Dimensions, FlatList, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { FlatList, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
 import AppModal from "@components/AppModal"
 import * as workersService from '../../services/workers';
 import LottieView from "lottie-react-native";
@@ -9,7 +9,6 @@ import { useTheme } from "@hooks/useTheme";
 import PrimaryButton from "@components/PrimaryButton";
 import AppCard from "@components/AppCard";
 import EmptyState from "@components/EmptyState";
-const height = Dimensions.get('window').height
 import RNPickerSelect from 'react-native-picker-select';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Toast from "react-native-toast-message";
@@ -35,7 +34,7 @@ const Workers = (): JSX.Element => {
     const [ visible, setVisible ] = React.useState(false)
     const [ openAlert, setOpenAlert ] = React.useState(0)
 
-    const { fonts, colors } = useTheme()
+    const { fonts, colors, layout } = useTheme()
 
     const pickerSelectStyles = useMemo(() => createAppPickerSelectStyle(colors, fonts), [colors, fonts])
     const pickerCommon = useMemo(
@@ -84,7 +83,7 @@ const Workers = (): JSX.Element => {
         index: number
     }): JSX.Element => {
         return (
-            <View style={{ paddingHorizontal: 16, marginBottom: 12 }}>
+            <View style={{ paddingHorizontal: layout.contentHorizontalPadding, marginBottom: 12, width: layout.isTablet ? '50%' : '100%' }}>
                 <AppCard>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <LottieView
@@ -148,7 +147,7 @@ const Workers = (): JSX.Element => {
 
     const listHeader = () => {
         return(
-            <View style={{ paddingHorizontal: 16, marginBottom: 10 }}>
+            <View style={{ paddingHorizontal: layout.contentHorizontalPadding, marginBottom: 10 }}>
                 <View
                     style={{
                         borderRadius: 16,
@@ -169,7 +168,7 @@ const Workers = (): JSX.Element => {
     }
     const footerRender = () => {
         return (
-            <View style={{ paddingHorizontal: 16 }}>
+            <View style={{ paddingHorizontal: layout.contentHorizontalPadding }}>
                 <PrimaryButton
                     containerStyle={{ width: '100%', paddingVertical: 10, marginBottom: 12 }}
                     textStyle={{ fontSize: 13, fontFamily: fonts.Inter.SemiBold, color: colors.white }}
@@ -188,6 +187,8 @@ const Workers = (): JSX.Element => {
 
             <FlatList
                 data={workers}
+                numColumns={layout.isTablet ? 2 : 1}
+                key={layout.isTablet ? 'workers-tablet' : 'workers-phone'}
                 renderItem={renderItem}
                 keyExtractor={keyExtractor}
                 ListHeaderComponent={listHeader}
@@ -200,7 +201,7 @@ const Workers = (): JSX.Element => {
                 visible={visible}
                 onRequestClose={() => setVisible(false)}
                 keyboardAvoiding
-                maxHeight={height - 100}
+                maxHeight={layout.modalMaxHeight}
             >
                     <View>
                         <View style={{ paddingHorizontal: 18, paddingTop: 18, paddingBottom: 8 }}>

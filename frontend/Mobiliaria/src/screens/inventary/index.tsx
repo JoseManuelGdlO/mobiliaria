@@ -1,5 +1,5 @@
 import { memo, useEffect } from "react"
-import { ActivityIndicator, Alert, Dimensions, FlatList, RefreshControl, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { ActivityIndicator, Alert, FlatList, RefreshControl, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
 import AppModal from "@components/AppModal"
 import { IInventary } from "@interfaces/inventary"
 import * as inventaryService from '../../services/inventary';
@@ -12,7 +12,6 @@ import PrimaryButton from "@components/PrimaryButton";
 import AppCard from "@components/AppCard";
 import EmptyState from "@components/EmptyState";
 import Toast from "react-native-toast-message";
-const height = Dimensions.get('window').height
 
 const ITEMS_PEER_PAGE = 10
 
@@ -37,7 +36,7 @@ const Inventary = (): JSX.Element => {
     const [color, setColor] = React.useState<string>('')
     const [material, setMaterial] = React.useState<string>('')
 
-    const { fonts, colors } = useTheme()
+    const { fonts, colors, layout } = useTheme()
 
     const addData = () => {
         if (search.length > 2) {
@@ -104,7 +103,7 @@ const Inventary = (): JSX.Element => {
                 setMaterial(item.material ?? '')
                 setVisible(true)
             }}>
-                <View style={{ paddingHorizontal: 16, marginBottom: 10 }}>
+                <View style={{ paddingHorizontal: layout.contentHorizontalPadding, marginBottom: 10 }}>
                     <AppCard>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                             <View style={{ flex: 1, paddingRight: 8 }}>
@@ -154,14 +153,14 @@ const Inventary = (): JSX.Element => {
 
             <FlatList
                 ListHeaderComponent={
-                    <View>
+                    <View style={{ flex: 1 }}>
                         
-                        <View style={{ display: 'flex', flexDirection: 'row', padding: 16, backgroundColor: colors.background_parts.card, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: `${colors.Griss50}18` }}>
+                        <View style={{ display: 'flex', flexDirection: 'row', padding: layout.contentHorizontalPadding, backgroundColor: colors.background_parts.card, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: `${colors.Griss50}18` }}>
                             <View style={{ paddingTop: 10 }}>
                                 <SearchIcon></SearchIcon>
                             </View>
                             <TextInput
-                                style={{ width: '85%', height: 40, paddingVertical: 0, paddingHorizontal: 10, borderBottomWidth: 1, borderBottomColor: `${colors.Griss50}33`, color: colors.Griss50 }}
+                                style={{ flex: 1, height: 40, paddingVertical: 0, paddingHorizontal: 10, borderBottomWidth: 1, borderBottomColor: `${colors.Griss50}33`, color: colors.Griss50 }}
                                 placeholder="Búsqueda"
                                 placeholderTextColor={colors.gris400}
                                 onChangeText={(value: string) => {
@@ -236,9 +235,9 @@ const Inventary = (): JSX.Element => {
                 visible={visible}
                 onRequestClose={() => setVisible(false)}
                 keyboardAvoiding
-                maxHeight={height - 100}
+                maxHeight={layout.modalMaxHeight}
             >
-                    <View>
+                    <View style={{ maxHeight: layout.modalMaxHeight }}>
                         <View style={{ paddingHorizontal: 18, paddingTop: 18, paddingBottom: 4 }}>
                             <Text style={{ fontFamily: fonts.Inter.SemiBold, fontSize: 22, color: colors.Griss50, letterSpacing: 0.2 }}>
                                 Inventario
@@ -261,10 +260,11 @@ const Inventary = (): JSX.Element => {
                             </View>
                         </View>
                         <ScrollView
-                            style={{ paddingHorizontal: 18 }}
-                            contentContainerStyle={{ paddingBottom: 12 }}
+                            style={{ paddingHorizontal: 18, maxHeight: layout.modalMaxHeight - (inventaryNew.id_mob ? 250 : 190) }}
+                            contentContainerStyle={{ paddingBottom: 20 }}
                             showsVerticalScrollIndicator={false}
                             keyboardShouldPersistTaps="handled"
+                            bounces={false}
                         >
                             <View>
                                 <Text style={{ fontFamily: fonts.Inter.Medium, fontSize: 13, color: colors.gris300, marginTop: 8 }}>
@@ -455,8 +455,8 @@ const Inventary = (): JSX.Element => {
                         </ScrollView>
                         <View
                             style={{
-                                paddingHorizontal: 18,
                                 paddingTop: 16,
+                                paddingHorizontal: 18,
                                 paddingBottom: 18,
                                 borderTopWidth: StyleSheet.hairlineWidth,
                                 borderTopColor: `${colors.Griss50}22`,
@@ -636,67 +636,67 @@ const Inventary = (): JSX.Element => {
                                 title="Cancelar"
                             />
                             {Boolean(inventaryNew.id_mob) && (
-                            <PrimaryButton
-                                containerStyle={{
-                                    width: '100%',
-                                    paddingVertical: 14,
-                                    borderRadius: 14,
-                                    minHeight: 50,
-                                }}
-                                textStyle={{ fontSize: 15, fontFamily: fonts.Inter.SemiBold, color: colors.white }}
-                                backgroundButton={colors.red}
-                                onPress={() => {
-                                    Alert.alert(
-                                        'Eliminar inventario',
-                                        'Esta acción realizará una baja lógica del artículo. ¿Deseas continuar?',
-                                        [
-                                            {
-                                                text: 'Cancelar',
-                                                style: 'cancel',
-                                            },
-                                            {
-                                                text: 'Eliminar',
-                                                style: 'destructive',
-                                                onPress: async () => {
-                                                    try {
-                                                        const inventoryId = inventaryNew.id_mob ? inventaryNew.id_mob : 0
-                                                        await inventaryService.remove(inventoryId)
-
-                                                        const inv = totalInventary.filter((item: IInventary) => item.id_mob !== inventaryNew.id_mob)
-                                                        setTotalInventary(inv)
-                                                        setInventary(inv.slice(0, page * ITEMS_PEER_PAGE))
-                                                        setSearch('')
-                                                        setVisible(false)
-                                                        Toast.show({
-                                                            type: 'success',
-                                                            text1: 'Exito',
-                                                            text2: 'Se elimino correctamente',
-                                                            visibilityTime: 3000,
-                                                            autoHide: true,
-                                                            onHide: () => { }
-                                                        })
-                                                    } catch (error) {
-                                                        console.log(error);
-                                                        Toast.show({
-                                                            type: 'error',
-                                                            text1: 'Error',
-                                                            text2: 'No se pudo eliminar el inventario',
-                                                            visibilityTime: 3000,
-                                                            autoHide: true,
-                                                            onHide: () => { }
-                                                        })
-                                                    } finally {
-                                                        setInventaryNew({ nombre_mob: '', cantidad_mob: 0, costo_mob: 0 })
-                                                        setVisible(false)
-                                                    }
+                                <PrimaryButton
+                                    containerStyle={{
+                                        width: '100%',
+                                        paddingVertical: 14,
+                                        borderRadius: 14,
+                                        minHeight: 50,
+                                    }}
+                                    textStyle={{ fontSize: 15, fontFamily: fonts.Inter.SemiBold, color: colors.white }}
+                                    backgroundButton={colors.red}
+                                    onPress={() => {
+                                        Alert.alert(
+                                            'Eliminar inventario',
+                                            'Esta acción realizará una baja lógica del artículo. ¿Deseas continuar?',
+                                            [
+                                                {
+                                                    text: 'Cancelar',
+                                                    style: 'cancel',
                                                 },
-                                            },
-                                        ],
-                                        { cancelable: true },
-                                    )
-                                }}
-                                title="Eliminar del inventario"
-                            />
+                                                {
+                                                    text: 'Eliminar',
+                                                    style: 'destructive',
+                                                    onPress: async () => {
+                                                        try {
+                                                            const inventoryId = inventaryNew.id_mob ? inventaryNew.id_mob : 0
+                                                            await inventaryService.remove(inventoryId)
+
+                                                            const inv = totalInventary.filter((item: IInventary) => item.id_mob !== inventaryNew.id_mob)
+                                                            setTotalInventary(inv)
+                                                            setInventary(inv.slice(0, page * ITEMS_PEER_PAGE))
+                                                            setSearch('')
+                                                            setVisible(false)
+                                                            Toast.show({
+                                                                type: 'success',
+                                                                text1: 'Exito',
+                                                                text2: 'Se elimino correctamente',
+                                                                visibilityTime: 3000,
+                                                                autoHide: true,
+                                                                onHide: () => { }
+                                                            })
+                                                        } catch (error) {
+                                                            console.log(error);
+                                                            Toast.show({
+                                                                type: 'error',
+                                                                text1: 'Error',
+                                                                text2: 'No se pudo eliminar el inventario',
+                                                                visibilityTime: 3000,
+                                                                autoHide: true,
+                                                                onHide: () => { }
+                                                            })
+                                                        } finally {
+                                                            setInventaryNew({ nombre_mob: '', cantidad_mob: 0, costo_mob: 0 })
+                                                            setVisible(false)
+                                                        }
+                                                    },
+                                                },
+                                            ],
+                                            { cancelable: true },
+                                        )
+                                    }}
+                                    title="Eliminar del inventario"
+                                />
                             )}
                         </View>
                     </View>

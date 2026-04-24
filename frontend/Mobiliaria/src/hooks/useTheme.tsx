@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../App'
 import { Colors, NavigationTheme, PaperTheme, realThemeMode, ThemeMode } from '../interfaces/theme'
 import { setTheme } from '../redux/actions/themeActions'
+import { useLayoutMetrics } from '@theme/layout'
 
 interface useThemeTypes {
   mode: ThemeMode
@@ -54,10 +55,12 @@ interface useThemeTypes {
       SemiBoldItalic: string
     }
   }
+  layout: ReturnType<typeof useLayoutMetrics>
 }
 
 export const useTheme = (): useThemeTypes => {
   const dispatch = useDispatch()
+  const layout = useLayoutMetrics()
 
   const { mode, realMode, colors, navigationTheme, paperTheme } = useSelector((state: RootState) => state.theme)
 
@@ -117,7 +120,8 @@ export const useTheme = (): useThemeTypes => {
     colors,
     navigationTheme,
     paperTheme,
-    fonts
+    fonts,
+    layout
   }
 }
 // Ejemplo de uso
