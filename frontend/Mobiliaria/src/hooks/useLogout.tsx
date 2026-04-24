@@ -6,6 +6,8 @@ import { CommonActions, useNavigation } from '@react-navigation/native'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { NavigationScreens } from '@interfaces/navigation'
 import { updateToken, removeLoginData, rememberUser } from '@redux/actions/userAction'
+import { clearSessionTokens, getRefreshTokenAsync } from '@utils/token'
+import { logoutSession } from '@services/auth'
 
 interface UseLogoutTypes {
   logout: () => void
@@ -24,13 +26,22 @@ const useLogout = (onLogout = () => { }): UseLogoutTypes => {
     setLoading(true)
       try {
         console.log('Eliminando FCM token')
+        const refreshToken = await getRefreshTokenAsync()
+        if (refreshToken) {
+          await logoutSession(refreshToken)
+        }
         if (token !== undefined && token.length > 0) {
           dispatch(updateToken(''))
         }
         dispatch(removeLoginData())
         dispatch(rememberUser(false))
+        await clearSessionTokens()
         setLoading(false)
       } catch (error) {
+        await clearSessionTokens()
+        dispatch(updateToken(''))
+        dispatch(removeLoginData())
+        dispatch(rememberUser(false))
         setLoading(false)
         Toast.show({
           type: 'error',

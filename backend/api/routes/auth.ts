@@ -3,15 +3,33 @@ const router = express.Router();
 const authService = require('../services/auth');
 const jwt = require('jsonwebtoken');
 import { config } from '../config';
+import { verifyToken } from '../libs/headers';
+
+function signAccessToken(data: any): Promise<string> {
+    return new Promise((resolve, reject) => {
+        jwt.sign({ data }, config.jwtSecret, { expiresIn: config.jwtExpiresIn }, (err: any, token: any) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve(token);
+        });
+    });
+}
 
 
 router.post('/login', async function (req: any, res: any, next: any) {
     try {
         const response = await authService.login(req.body)
         if (response.code === 200) {
-            jwt.sign(response, config.jwtSecret, { expiresIn: config.jwtExpiresIn }, (err: any, token: any) => {
-                res.status(response.code).json({ data: response.data, token });
-            })
+            const accessToken = await signAccessToken(response.data);
+            const refreshToken = await authService.createRefreshSession(response.data.id_usuario);
+            res.status(response.code).json({
+                data: response.data,
+                token: accessToken,
+                accessToken,
+                refreshToken,
+            });
         } else {
             res.status(response.code).json(response);
         }
@@ -21,8 +39,43 @@ router.post('/login', async function (req: any, res: any, next: any) {
     }
 });
 
-router.post('/token', async function (req: any, res: any, next: any) {
+router.post('/refresh', async function (req: any, res: any, next: any) {
+    try {
+        const response = await authService.rotateRefreshToken(req.body?.refreshToken);
+        if (response.code !== 200) {
+            res.status(response.code).json({ message: response.message });
+            return;
+        }
+
+        const accessToken = await signAccessToken(response.data);
+        res.status(200).json({
+            data: response.data,
+            token: accessToken,
+            accessToken,
+            refreshToken: response.refreshToken,
+        });
+    } catch (err: any) {
+        console.error(`Error while refreshing auth token`, err.message);
+        next(err);
+    }
+});
+
+router.post('/logout', async function (req: any, res: any, next: any) {
+    try {
+        const response = await authService.revokeRefreshToken(req.body?.refreshToken);
+        res.status(response.code || 200).json({ message: 'ok' });
+    } catch (err: any) {
+        console.error(`Error while logging out`, err.message);
+        next(err);
+    }
+});
+
+router.post('/token', verifyToken, async function (req: any, res: any, next: any) {
     try {        
+        if (Number(req.body?.id) !== Number(req?.authPayload?.data?.id_usuario)) {
+            res.status(403).json({ error: 'forbidden' });
+            return;
+        }
         const response = await authService.token(req.body)
         if (response.code === 200) {
             jwt.sign(response, config.jwtSecret, { expiresIn: config.jwtExpiresIn }, (err: any, token: any) => {

@@ -20,6 +20,7 @@ EventModel.init({
     direccion_evento: { type: sequelize_1.DataTypes.STRING },
     telefono_titular_evento: { type: sequelize_1.DataTypes.STRING },
     descuento: { type: sequelize_1.DataTypes.FLOAT },
+    descuento_aplica_flete: { type: sequelize_1.DataTypes.TINYINT, defaultValue: 0 },
     iva: { type: sequelize_1.DataTypes.INTEGER },
     flete: { type: sequelize_1.DataTypes.FLOAT },
     lat: { type: sequelize_1.DataTypes.STRING },

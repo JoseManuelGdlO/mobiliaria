@@ -220,6 +220,9 @@ app.use((err: any, req: any, res: any, next: any) => {
 
 const bootstrap = async () => {
   try {
+    if (!config.jwtSecret) {
+      throw new Error('JWT_SECRET is required');
+    }
     await sequelizeMain.authenticate();
     console.log("Sequelize connected to main database");
 
