@@ -482,6 +482,7 @@ async function addEvent(body: any, id: number, idUsuario: number) {
         direccion_evento: body.evento.direccion_evento,
         telefono_titular_evento: body.evento.telefono_titular_evento,
         descuento: Number(body.evento.descuento || 0),
+        descuento_aplica_flete: Number(body.evento.descuento_aplica_flete || 0),
         iva: Number(body.evento.ivavalor || 0),
         flete: Number(body.evento.fletevalor || 0),
         lat: String(body.evento.maps?.lat || ""),

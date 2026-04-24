@@ -58,6 +58,7 @@ const AddEvent = ({ route }: StackScreenProps<NavigationScreens, 'AddEvent'>): J
     const [persentage, setPersentage] = useState<string>('0')
     const [flete, setFlete] = useState<string>('0')
     const [iva, setIva] = useState<boolean>(false)
+    const [applyDiscountToFreight, setApplyDiscountToFreight] = useState<boolean>(false)
     const [openModalPicker, setOpenModalPicker] = useState<boolean>(false)
     const [toggleSwitch, setToggleSwitch] = useState<boolean>(false)
     const [togglePaymenthSwitch, setTogglePaymenthSwitch] = useState<boolean>(false)
@@ -178,6 +179,7 @@ const AddEvent = ({ route }: StackScreenProps<NavigationScreens, 'AddEvent'>): J
             descuento: persentage ? parseInt(persentage, 10) : 0,
             ivavalor: iva ? 1 : 0,
             fletevalor: flete ? Number(flete) : 0,
+            descuento_aplica_flete: applyDiscountToFreight ? 1 : 0,
             maps: latlon,
         }
 
@@ -655,6 +657,16 @@ const AddEvent = ({ route }: StackScreenProps<NavigationScreens, 'AddEvent'>): J
                             <CheckBox value={iva} onValueChange={setIva} tintColors={{ true: colors.Morado600, false: colors.gris400 }} />
                             <Text style={{ fontFamily: fonts.Inter.Medium, fontSize: 14, color: colors.Griss50, marginLeft: 8 }}>Aplicar IVA</Text>
                         </View>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
+                            <CheckBox
+                                value={applyDiscountToFreight}
+                                onValueChange={setApplyDiscountToFreight}
+                                tintColors={{ true: colors.Morado600, false: colors.gris400 }}
+                            />
+                            <Text style={{ fontFamily: fonts.Inter.Medium, fontSize: 14, color: colors.Griss50, marginLeft: 8 }}>
+                                Aplicar descuento al flete
+                            </Text>
+                        </View>
 
                         <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
                             <View style={{ flex: 1, minWidth: 120, marginRight: 8, marginBottom: 8 }}>
@@ -687,13 +699,11 @@ const AddEvent = ({ route }: StackScreenProps<NavigationScreens, 'AddEvent'>): J
 
                         <TouchableOpacity
                             onPress={() => {
-                                let locallyTotal = totalRx
-                                if (flete && flete !== '0') {
-                                    locallyTotal += parseInt(flete, 10)
-                                }
-                                if (persentage && persentage !== '0') {
-                                    locallyTotal -= locallyTotal * (parseInt(persentage, 10) / 100)
-                                }
+                                const freightValue = flete && flete !== '0' ? parseInt(flete, 10) : 0
+                                const discountRate = persentage && persentage !== '0' ? parseInt(persentage, 10) / 100 : 0
+                                const discountBase = totalRx + (applyDiscountToFreight ? freightValue : 0)
+                                const discountedBase = discountBase - discountBase * discountRate
+                                let locallyTotal = applyDiscountToFreight ? discountedBase : discountedBase + freightValue
                                 if (iva) {
                                     locallyTotal += locallyTotal * 0.16
                                 }

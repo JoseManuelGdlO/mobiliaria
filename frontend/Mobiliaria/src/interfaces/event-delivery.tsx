@@ -15,6 +15,7 @@ export interface IEventDelivery {
     entregado: number,
     recolectado: number,
     descuento: number,
+    descuento_aplica_flete: number,
     iva: number,
     flete: number,
     fecha_creacion: string,

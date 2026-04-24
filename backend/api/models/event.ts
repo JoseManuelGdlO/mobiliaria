@@ -15,6 +15,7 @@ interface EventAttributes {
   direccion_evento: string;
   telefono_titular_evento: string;
   descuento: number;
+  descuento_aplica_flete: number;
   iva: number;
   flete: number;
   lat: string;
@@ -45,6 +46,7 @@ EventModel.init(
     direccion_evento: { type: DataTypes.STRING },
     telefono_titular_evento: { type: DataTypes.STRING },
     descuento: { type: DataTypes.FLOAT },
+    descuento_aplica_flete: { type: DataTypes.TINYINT, defaultValue: 0 },
     iva: { type: DataTypes.INTEGER },
     flete: { type: DataTypes.FLOAT },
     lat: { type: DataTypes.STRING },

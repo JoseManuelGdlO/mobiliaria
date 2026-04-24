@@ -19,13 +19,18 @@ async function buildLiveQuote(payload: any) {
   const packageItems: QuoteItem[] = Array.isArray(payload?.packages) ? payload.packages : [];
   const logisticsFee = toNumber(payload?.logisticsFee);
   const discountPct = toNumber(payload?.discountPct);
+  const applyDiscountToFreight = Boolean(payload?.applyDiscountToFreight);
   const applyIva = Boolean(payload?.applyIva);
 
   const itemsSubtotal = items.reduce((acc, item) => acc + quoteLineTotal(item), 0);
   const packagesSubtotal = packageItems.reduce((acc, item) => acc + quoteLineTotal(item), 0);
   const subtotal = itemsSubtotal + packagesSubtotal;
-  const discountAmount = subtotal * (Math.max(0, Math.min(discountPct, 100)) / 100);
-  const taxableBase = subtotal - discountAmount + logisticsFee;
+  const discountRate = Math.max(0, Math.min(discountPct, 100)) / 100;
+  const discountBase = subtotal + (applyDiscountToFreight ? logisticsFee : 0);
+  const discountAmount = discountBase * discountRate;
+  const taxableBase = applyDiscountToFreight
+    ? subtotal + logisticsFee - discountAmount
+    : subtotal - discountAmount + logisticsFee;
   const ivaAmount = applyIva ? taxableBase * 0.16 : 0;
   const total = taxableBase + ivaAmount;
   const suggestedUpsells = [
@@ -47,6 +52,7 @@ async function buildLiveQuote(payload: any) {
         packagesSubtotal,
         subtotal,
         discountPct,
+        applyDiscountToFreight,
         discountAmount,
         logisticsFee,
         ivaAmount,

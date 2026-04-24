@@ -70,6 +70,7 @@ const DesignEvent = (): JSX.Element => {
         packages: [],
         logisticsFee: 0,
         discountPct: 0,
+        applyDiscountToFreight: false,
         applyIva: false,
       });
       console.log('[DesignEvent] buildRecommendation:liveQuote:ok', {
