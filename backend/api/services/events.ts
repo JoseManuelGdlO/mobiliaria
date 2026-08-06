@@ -555,13 +555,20 @@ async function addEvent(body: any, id: number, idUsuario: number) {
 // Función para enviar notificaciones push
 async function send(message: string, title: string, idCompany: number) {
   const axios = require('axios');
-  var admin = require("firebase-admin");
+  const admin = require("firebase-admin");
+  const { config } = require("../config");
 
-  var serviceAccount = require("../assets/eventivakey.json");
+  const serviceAccount = config.firebaseCredentials;
+  if (!serviceAccount) {
+    throw new Error("FIREBASE_CREDENTIALS is required");
+  }
 
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
-  });
+  if (!admin.apps.length) {
+    admin.initializeApp({
+      credential: admin.credential.cert(serviceAccount),
+      databaseURL: `https://${serviceAccount.project_id}.firebaseio.com`,
+    });
+  }
 
   const rows = await db.query(
     `SELECT token FROM usuarios_mobiliaria WHERE id_empresa = ${idCompany} AND token IS NOT NULL`
@@ -586,10 +593,11 @@ async function send(message: string, title: string, idCompany: number) {
     }
   };
 
-  axios.post('https://fcm.googleapis.com/v1/projects/eventivapp/messages:send', payload, {
+  const access_token = await getAccessToken();
+  axios.post(`https://fcm.googleapis.com/v1/projects/${serviceAccount.project_id}/messages:send`, payload, {
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${getAccessToken()}`
+      'Authorization': `Bearer ${access_token}`
     }
   });
 }

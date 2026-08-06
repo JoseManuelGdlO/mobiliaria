@@ -2,6 +2,18 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+function parseFirebaseCredentials() {
+    const raw = process.env.FIREBASE_CREDENTIALS;
+    if (!raw) {
+        return null;
+    }
+    try {
+        return JSON.parse(raw);
+    } catch {
+        throw new Error('FIREBASE_CREDENTIALS must be a valid JSON string');
+    }
+}
+
 export const config = {
     db: {
         host: process.env.DB_HOST || "",
@@ -27,4 +39,5 @@ export const config = {
     recommendationPackagesLimit: Number(process.env.RECOMMENDATION_PACKAGES_LIMIT || 3),
     defaultLogisticsFee: Number(process.env.DEFAULT_LOGISTICS_FEE || 0),
     listPerPage: 10,
+    firebaseCredentials: parseFirebaseCredentials(),
 };
