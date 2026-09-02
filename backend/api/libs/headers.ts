@@ -12,14 +12,14 @@ export function verifyToken(req: any, res: any, next: any) {
 
         jwt.verify(req.token, config.jwtSecret, (err: any, authData: any) => {
             if (err) {
-                res.status(409).json({error: 'token invalido'});
+                res.status(401).json({error: 'token invalido'});
             } else {
                 req.authPayload = authData;
                 next();
             }
         });
     } else {
-        res.status(409).json({error: 'token invalido'});
+        res.status(401).json({error: 'token invalido'});
     }
 }
 

@@ -17,6 +17,7 @@ export const sequelizeMain = new Sequelize(
   config.db.password,
   {
     host: config.db.host,
+    port: config.db.port,
     ...sharedOptions,
   }
 );

@@ -1,6 +1,7 @@
 import axios from 'axios';
-import { clearSessionTokens, getAccessTokenAsync, getRefreshTokenAsync, saveSessionTokens } from '@utils/token';
+import { getAccessTokenAsync } from '@utils/token';
 import { ensureApiBaseUrl } from '@utils/remote-config';
+import { isUnauthorizedStatus, refreshAccessToken } from './sessionAuth';
 
 export const apiClient = axios.create({
   headers: {
@@ -8,49 +9,6 @@ export const apiClient = axios.create({
     'Content-Type': 'application/json',
   },
 });
-
-let refreshPromise: Promise<string | null> | null = null;
-
-const refreshAccessToken = async (): Promise<string | null> => {
-  if (refreshPromise) {
-    return refreshPromise;
-  }
-
-  refreshPromise = (async () => {
-    const refreshToken = await getRefreshTokenAsync();
-    if (!refreshToken) {
-      return null;
-    }
-
-    try {
-      const base = await ensureApiBaseUrl();
-      const { data } = await axios.post(
-        `${String(base || '').replace(/\/$/, '')}/auth/refresh`,
-        { refreshToken },
-        {
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-      const nextAccessToken = data?.accessToken || data?.token;
-      const nextRefreshToken = data?.refreshToken || refreshToken;
-      if (!nextAccessToken) {
-        return null;
-      }
-      await saveSessionTokens(nextAccessToken, nextRefreshToken);
-      return nextAccessToken;
-    } catch (error) {
-      await clearSessionTokens();
-      return null;
-    } finally {
-      refreshPromise = null;
-    }
-  })();
-
-  return refreshPromise;
-};
 
 apiClient.interceptors.request.use(async (config) => {
   const base = await ensureApiBaseUrl();
@@ -85,8 +43,9 @@ apiClient.interceptors.response.use(
   },
   (error) => {
     const originalRequest = error?.config || {};
+    const status = error?.response?.status;
     const shouldTryRefresh =
-      error?.response?.status === 401 &&
+      isUnauthorizedStatus(status) &&
       !originalRequest._retry &&
       !String(originalRequest?.url || '').includes('/auth/refresh') &&
       !String(originalRequest?.url || '').includes('/auth/login');

@@ -178,22 +178,39 @@ const EventDetail = ({
     }
 
     const removeEvent = async () => {
+        const eventId = event?.event?.id_evento ?? id
+        if (!eventId) {
+            Toast.show({
+                type: 'error',
+                text1: 'Error',
+                text2: 'No se pudo identificar el evento',
+                visibilityTime: 2000,
+                autoHide: true,
+            })
+            return
+        }
+
         try {
-            console.log('event?.event?.id_evento', event?.event?.id_evento);
-            
             setLoading(true)
-            await eventService.removeEvent(event?.event?.id_evento)
-            setLoading(false)
+            await eventService.removeEvent(eventId)
             Toast.show({
                 type: 'success',
                 text1: 'Hecho',
-                text2: 'se ha eliminado el evento',
+                text2: 'Se ha eliminado el evento',
                 visibilityTime: 1000,
-                autoHide: true
+                autoHide: true,
             })
             navigation.navigate('Home', { refresh: false })
         } catch (error) {
-            console.log(error);
+            console.log(error)
+            Toast.show({
+                type: 'error',
+                text1: 'Error',
+                text2: 'No se pudo eliminar el evento',
+                visibilityTime: 2000,
+                autoHide: true,
+            })
+        } finally {
             setLoading(false)
         }
     }
@@ -849,6 +866,8 @@ const EventDetail = ({
                     flexDirection: 'row',
                     position: 'absolute',
                     bottom: 0,
+                    zIndex: 20,
+                    elevation: 20,
                 }}
             >
                 <MaterialCommunityIcons name="delete-outline" size={22} color={LABEL_ON_SOLID} />
@@ -867,21 +886,22 @@ const EventDetail = ({
                 confirmLabel={confirmDialog.confirmLabel}
                 tone={confirmDialog.tone}
                 sure={() => {
-                    if (openAlert === 1) {
+                    const alertType = openAlert
+                    setOpenAlert(0)
+                    if (alertType === 1) {
                         changeStatus()
-                    } else if (openAlert === 2) {
+                    } else if (alertType === 2) {
                         removeEvent()
-                    } else {
+                    } else if (alertType === 3) {
                         removeItem()
                     }
-                    setOpenAlert(0)
                 }}
                 notsure={() => {
                     setItemRemove(0)
                     setOpenAlert(0)
                 }}
             />
-            <View style={{ flex: 1 }}>
+            <View pointerEvents="box-none">
                 <SelectStreetMap open={openMap} props={(p: any) => {
                     console.log('p', p);
                     
