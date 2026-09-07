@@ -22,7 +22,7 @@ async function getEvents(id: number) {
   const months = calendarEventsMonths();
 
   const rows = await db.query(
-    `SELECT nombre_evento, fecha_envio_evento, COUNT(fecha_envio_evento) AS total
+    `SELECT fecha_envio_evento, COUNT(*) AS total
      FROM evento_mob
      WHERE id_empresa = ?
        AND fecha_envio_evento >= DATE_SUB(CURDATE(), INTERVAL ? MONTH)
@@ -344,7 +344,7 @@ async function availiable(id: number, dateArrive: string) {
             ) dis ON inv.id_mob = dis.id_mob
             WHERE inv.id_empresa = ${id} AND inv.eliminado = 0
         GROUP BY 
-            inv.id_mob, inv.nombre_mob
+            inv.id_mob, inv.nombre_mob, inv.cantidad_mob, inv.costo_mob, inv.extra_mob, inv.extra_mob_costo
         ORDER BY 
             inv.id_mob;`
   );

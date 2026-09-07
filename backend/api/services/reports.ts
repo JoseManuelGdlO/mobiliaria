@@ -54,9 +54,9 @@ async function getReports(id: number, months: string) {
         ),
         db.query(
             `SELECT 
-            telefono_titular_evento,
+            nombre_titular_evento,
             COUNT(*) AS veces_agrupado,
-            nombre_titular_evento
+            ANY_VALUE(telefono_titular_evento) AS telefono_titular_evento
         FROM 
             evento_mob
         WHERE
