@@ -203,7 +203,7 @@ const Availability = ({ route }: StackScreenProps<NavigationScreens, 'Available'
     const addItemsToEvent = async () => {
         try {
             setLoading(true)
-            await eventsService.addItemsToEvent(Number(id), invSelected)
+            await eventsService.addItemsToEvent(Number(id), invSelected, pktSelected)
             navigation.navigate('EventDetail', { id: Number(id) })
         } catch (error) {
             console.log(error)

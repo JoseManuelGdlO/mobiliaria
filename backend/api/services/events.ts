@@ -73,7 +73,9 @@ async function getDetails(id: number) {
       db.query(
         `select a.nombre_mob, b.costo, b.id_mob, b.ocupados, b.id_evento, b.id_fecha,
       b.fecha_evento, b.package
-      from inventario_mob a, inventario_disponibilidad_mob b where b.id_mob = a.id_mob and id_evento=? AND  b.package IS NULL`,
+      from inventario_mob a, inventario_disponibilidad_mob b
+      where b.id_mob = a.id_mob and id_evento=?
+        AND (b.\`package\` IS NULL OR b.\`package\` = 0)`,
         [idNum]
       ),
       db.query(
@@ -672,81 +674,190 @@ async function addFlete(body: any, id: number, idUsuario: number) {
   }
 }
 
+function toSqlDate(value: any): string {
+  if (value == null) {
+    throw new Error("Missing date value");
+  }
+  if (value instanceof Date) {
+    return value.toISOString().split("T")[0];
+  }
+  const raw = String(value);
+  if (raw.includes("T")) {
+    return raw.split("T")[0];
+  }
+  return raw.slice(0, 10);
+}
+
 async function addItems(body: any, idUsuario: number) {
   const connection = await db.connection();
   await connection.execute("SET TRANSACTION ISOLATION LEVEL READ COMMITTED");
 
   await connection.beginTransaction();
   try {
-    let [event]: any = await connection.execute(
-      `SELECT * FROM evento_mob WHERE id_evento = ${body.id}`
+    const eventId = Number(body.id);
+    const items = Array.isArray(body.items) ? body.items : [];
+    const packages = Array.isArray(body.paquetes)
+      ? body.paquetes
+      : Array.isArray(body.packages)
+        ? body.packages
+        : [];
+
+    if (!eventId) {
+      throw new Error("Event id is required");
+    }
+    if (items.length === 0 && packages.length === 0) {
+      throw new Error("At least one item or package is required");
+    }
+
+    let [eventRows]: any = await connection.execute(
+      `SELECT * FROM evento_mob WHERE id_evento = ?`,
+      [eventId]
     );
-    event = event[0];
+    const event = eventRows[0];
+    if (!event) {
+      throw new Error(`Event ${eventId} not found`);
+    }
+
+    const fechaEnvio = toSqlDate(event.fecha_envio_evento);
+    const horaEnvio = event.hora_envio_evento;
+    const horaRecoleccion = event.hora_recoleccion_evento;
 
     let sumTotal = 0;
 
-    for (const mobiliario of body.items) {
-      sumTotal += mobiliario.cantidad * mobiliario.costo_mob;
+    for (const mobiliario of items) {
+      const idMob = Number(mobiliario.id_mob);
+      const cantidad = Number(mobiliario.cantidad);
+      const costo = Number(mobiliario.costo_mob);
+      sumTotal += cantidad * costo;
 
       const mobEvent: any = await connection.execute(
-        `SELECT * FROM inventario_disponibilidad_mob WHERE id_evento = ${body.id} AND id_mob = ${mobiliario.id_mob}`
+        `SELECT * FROM inventario_disponibilidad_mob
+         WHERE id_evento = ? AND id_mob = ?
+           AND (\`package\` IS NULL OR \`package\` = 0)`,
+        [eventId, idMob]
       );
 
       if (mobEvent[0].length === 0) {
-
         await connection.execute(
-          `INSERT INTO inventario_disponibilidad_mob (fecha_evento, hora_evento, id_mob, ocupados, id_evento, hora_recoleccion, costo)
-                VALUES ('${event.fecha_envio_evento.toISOString().split("T")[0]
-          }', '${event.hora_envio_evento}', ${mobiliario.id_mob}, ${mobiliario.cantidad
-          }, ${body.id}, '${event.fecha_recoleccion_evento.toISOString().split("T")[0]
-          }', ${mobiliario.costo_mob})`
+          `INSERT INTO inventario_disponibilidad_mob
+            (fecha_evento, hora_evento, id_mob, ocupados, id_evento, hora_recoleccion, costo, \`package\`)
+           VALUES (?, ?, ?, ?, ?, ?, ?, NULL)`,
+          [fechaEnvio, horaEnvio, idMob, cantidad, eventId, horaRecoleccion, costo]
         );
-        saveHistorical(body.id, idUsuario, "Modificación", `Se agregó ${mobiliario.cantidad} ${mobiliario.nombre_mob}`);
+        saveHistorical(
+          eventId,
+          idUsuario,
+          "Modificación",
+          `Se agregó ${cantidad} ${mobiliario.nombre_mob || idMob}`
+        );
       } else {
         await connection.execute(
-          `UPDATE inventario_disponibilidad_mob SET ocupados = ${mobEvent[0][0].ocupados + mobiliario.cantidad
-          } WHERE id_evento = ${body.id} AND id_mob = ${mobiliario.id_mob}`
+          `UPDATE inventario_disponibilidad_mob
+           SET ocupados = ?
+           WHERE id_evento = ? AND id_mob = ?
+             AND (\`package\` IS NULL OR \`package\` = 0)`,
+          [Number(mobEvent[0][0].ocupados) + cantidad, eventId, idMob]
         );
-        saveHistorical(body.id, idUsuario, "Modificación", `Se actualizo a ${mobiliario.cantidad} ${mobiliario.nombre_mob}`);
-        continue;
+        saveHistorical(
+          eventId,
+          idUsuario,
+          "Modificación",
+          `Se actualizo a ${cantidad} ${mobiliario.nombre_mob || idMob}`
+        );
       }
     }
 
-    let [payment]: any = await connection.execute(
-      `SELECT * FROM pagos_mob WHERE id_evento = ${body.id}`
-    );
-    payment = payment[payment.length - 1];
+    for (const paquete of packages) {
+      const idPkg = Number(paquete.id);
+      const cantidad = Number(paquete.cantidad);
+      const costo = Number(paquete.precio);
+      sumTotal += cantidad * costo;
 
-    let discount = event.descuento;
-    let ivavalor = event.iva;
+      const pkgEvent: any = await connection.execute(
+        `SELECT * FROM inventario_disponibilidad_mob
+         WHERE id_evento = ? AND id_mob = ? AND \`package\` = 1`,
+        [eventId, idPkg]
+      );
+
+      if (pkgEvent[0].length === 0) {
+        await connection.execute(
+          `INSERT INTO inventario_disponibilidad_mob
+            (fecha_evento, hora_evento, id_mob, ocupados, id_evento, hora_recoleccion, costo, \`package\`)
+           VALUES (?, ?, ?, ?, ?, ?, ?, 1)`,
+          [fechaEnvio, horaEnvio, idPkg, cantidad, eventId, horaRecoleccion, costo]
+        );
+        saveHistorical(
+          eventId,
+          idUsuario,
+          "Modificación",
+          `Se agregó ${cantidad} paquete ${paquete.nombre || idPkg}`
+        );
+      } else {
+        await connection.execute(
+          `UPDATE inventario_disponibilidad_mob
+           SET ocupados = ?
+           WHERE id_evento = ? AND id_mob = ? AND \`package\` = 1`,
+          [Number(pkgEvent[0][0].ocupados) + cantidad, eventId, idPkg]
+        );
+        saveHistorical(
+          eventId,
+          idUsuario,
+          "Modificación",
+          `Se actualizo a ${cantidad} paquete ${paquete.nombre || idPkg}`
+        );
+      }
+    }
+
+    let [paymentRows]: any = await connection.execute(
+      `SELECT * FROM pagos_mob WHERE id_evento = ?`,
+      [eventId]
+    );
+    let payment = paymentRows[paymentRows.length - 1];
+
+    if (!payment) {
+      payment = { costo_total: 0, saldo: 0, anticipo: 0 };
+    }
+
+    let discount = Number(event.descuento || 0);
+    let ivavalor = Number(event.iva || 0);
 
     if (discount > 0) {
       sumTotal = sumTotal - (sumTotal * discount) / 100;
     }
 
-    if(ivavalor === 1) {
+    if (ivavalor === 1) {
       sumTotal = sumTotal + (sumTotal * 16) / 100;
     }
 
-    payment.costo_total += sumTotal;
-    payment.saldo += sumTotal;
+    const costoTotal = Number(payment.costo_total) + sumTotal;
+    const saldo = Number(payment.saldo) + sumTotal;
+    const anticipo = Number(payment.anticipo || 0);
 
     await connection.execute(
       `INSERT INTO pagos_mob (id_evento, costo_total, saldo, anticipo)
-            VALUES (${body.id},${payment.costo_total},${payment.saldo},${payment.anticipo})`
+       VALUES (?, ?, ?, ?)`,
+      [eventId, costoTotal, saldo, anticipo]
     );
 
     await connection.execute(
-      `UPDATE evento_mob SET pagado_evento = 0 WHERE id_evento = ${body.id}`
+      `UPDATE evento_mob SET pagado_evento = 0 WHERE id_evento = ?`,
+      [eventId]
     );
 
     await connection.commit();
-    return 201;
-  } catch (error) {
-    console.error(error);
-    connection.rollback();
-    console.info("Rollback successful");
-    return 405;
+    return { code: 201, message: "Items added" };
+  } catch (error: any) {
+    console.error("addItems failed:", error);
+    try {
+      await connection.rollback();
+      console.info("Rollback successful");
+    } catch (rollbackError) {
+      console.error("Rollback failed:", rollbackError);
+    }
+    return {
+      code: 500,
+      message: error?.message || "Failed to add items",
+    };
   } finally {
     connection.release();
   }

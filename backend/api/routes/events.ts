@@ -154,10 +154,12 @@ router.post('/additems', verifyToken, async function (req: any, res: any, next: 
         let idUsuario = bearer.data.id_usuario;
         
         const response = await eventService.addItems(body, idUsuario);
+        const code = typeof response === 'number' ? response : response.code;
+        const payload = typeof response === 'number' ? {} : response;
         
-        res.status(response).json();
+        res.status(code).json(payload);
     } catch (err: any) {
-        console.error(`Error while getting enarm students info `, err.message);
+        console.error(`Error while adding items to event`, err.message);
         next(err);
     }
 }); 

@@ -123,9 +123,10 @@ export const changeStatus = async (
 
 export const addItemsToEvent = async (
   id: number,
-  items: IAvailability[]
+  items: IAvailability[],
+  packages: any[] = []
 ): Promise<any> => {
-  const body = { id, items };
+  const body = { id, items, paquetes: packages };
   return apiClient.post(ADD_ITEMS, body);
 };
 
